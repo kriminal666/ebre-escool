@@ -115,10 +115,9 @@ class skeleton_main extends CI_Controller {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
+			//redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-		//redirect($this->skeleton_auth->login_page, 'refresh');
-		
+
 		//LOAD VIEW
 		
 		/*******************
