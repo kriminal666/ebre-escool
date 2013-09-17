@@ -35,7 +35,8 @@ class skeleton_main extends CI_Controller {
     	$this->lang->load('skeleton', $current_language);	       
     	
     	$this->lang->load('attendance', $current_language);	
-        
+    	
+		$this->lang->load('managment', $current_language);        
 	}
 	
 	protected function _load_html_header($html_header_data=array(),$grocery_crud_data=array()) {
@@ -79,6 +80,12 @@ class skeleton_main extends CI_Controller {
 			$data['mentoring']=true;
 			$data['reports']=true;
 		}
+		
+		$data['show_managment_menu']=true;
+			$data['show_maintenace_menu']=true;
+			$data['check_attendance']=true;
+			$data['mentoring']=true;
+			$data['reports']=true;
 		
 		// TODO: check others roles if allowed to show management menu and show_maintenace_menu
 		
@@ -144,7 +151,7 @@ class skeleton_main extends CI_Controller {
 		$skeleton_js_files=array();
 		
 		$lodash_js="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/1.2.1/lodash.min.js";
-		$jquery_js="http://code.jquery.com/jquery-1.10.2.min.js";
+		$jquery_js=base_url("assets/grocery_crud/js/jquery-1.10.2.min.js");
 		$lazyload_js=base_url("assets/grocery_crud/js/common/lazyload-min.js");
 		$bootstrap_js=base_url("assets/js/bootstrap.min.js");
 		
