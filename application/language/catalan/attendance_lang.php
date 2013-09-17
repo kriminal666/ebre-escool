@@ -34,3 +34,6 @@ $lang['reports']   = 'Informes';
 
 //CHECK ATTENDANCE PAGE
 $lang['check_attendance_table_title'] = 'Passar llista';
+$lang['choose_date_string'] = 'Escolliu la data (format dd-mm-aaa)';
+
+

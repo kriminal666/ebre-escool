@@ -8,6 +8,13 @@ class attendance extends skeleton_main {
     {
         parent::__construct();
         
+        //$this->load->library('attendance');
+        $this->load->model('attendance_model');
+        
+	}
+	
+	public function prova() {
+		$this->load->view('attendance/prova');
 	}
 	
 	public function check_attendance() {
@@ -16,24 +23,42 @@ class attendance extends skeleton_main {
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-		//redirect($this->skeleton_auth->login_page, 'refresh');
 		
-		//LOAD VIEW
-		
-		/*******************
-		/*      HEADER     *
-		/******************/
-		$this->_load_html_header($this->_get_html_header_data());
-		
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			
+		$this->_load_html_header($header_data); 
 		
 		/*******************
 		/*      BODY     *
 		/******************/
 		$this->_load_body_header();
 		
+		//Obtain all teacher groups for selected date
+		
+		//$teacher_code = $_SESSION['codi_professor'];
+		
+		//$teacher_code = $_SESSION['codi_professor'];
+		
+		$teacher_code = 41;
+		
+		//teacher: teacher_code:
+		//day
+		
+		
 		$data= array();
 		$data['check_attendance_day']="TODO";
 		$data['check_attendance_table_title']=lang('check_attendance_table_title');
+		$data['choose_date_string']=lang('choose_date_string');
+		$data['today']=date('d-m-Y');
 		
 		$teacher_groups_current_day=array();
 		

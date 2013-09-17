@@ -7,7 +7,7 @@ class skeleton_main extends CI_Controller {
     {
         parent::__construct();
         
-        $this->load->add_package_path(APPPATH.'third_party/skeleton/application/');
+        $this->load->add_package_path(APPPATH.'third_party/skeleton/application/',true);
     	$params = array('model' => "skeleton_auth_model");
 		$this->load->library('skeleton_auth',$params);
 		
@@ -83,7 +83,7 @@ class skeleton_main extends CI_Controller {
 		// TODO: check others roles if allowed to show management menu and show_maintenace_menu
 		
 		$data['body_header_app_name']="Skeleton";
-		$this->load->view('include/body_header',$data);
+		$this->load->view('include/ebre_escool_body_header',$data);
 	}
 	
 	protected function _load_body() {
@@ -115,30 +115,20 @@ class skeleton_main extends CI_Controller {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
-			//redirect($this->skeleton_auth->login_page, 'refresh');
+			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-
-		//LOAD VIEW
-		
-		/*******************
-		/*      HEADER     *
-		/******************/
-		$this->_load_html_header($this->_get_html_header_data());
-		
-		
-		/*******************
-		/*      BODY     *
-		/******************/
-		$this->_load_body_header();
-		
-		$this->_load_body();
-		
-		 
-		/*******************
-		/*      FOOTER     *
-		*******************/
-		$this->_load_body_footer();		
+		redirect('attendance/check_attendance','refresh');
 	}
+	
+	protected function add_javascript_to_html_header_data($html_header_data,$js_file) {		
+		array_push($html_header_data['skeleton_js_files'],$js_file);
+		return $html_header_data;
+	} 
+	
+	protected function add_css_to_html_header_data($html_header_data,$css_file) {		
+		array_push($html_header_data['skeleton_css_files'],$css_file);
+		return $html_header_data;
+	} 
 	
 	protected function _get_html_header_data() {
 
