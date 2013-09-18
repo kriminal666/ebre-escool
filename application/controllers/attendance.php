@@ -70,16 +70,23 @@ class attendance extends skeleton_main {
 		
 		$teacher_groups_current_day['key1']= $group;
 		
-		$group = new stdClass;
-		$group->time_interval="8:00 - 9:00";
-		$group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-		$group->group_name="i automa (S)";
-		$group->group_code="M 1";
+		$group1 = new stdClass;
+		$group1->time_interval="9:00 - 1:00";
+		$group1->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+		$group1->group_name="GRUP MPROVA";
+		$group1->group_code="M 8";
+		
+		$group2 = new stdClass;
+		$group2->time_interval="11:00 - 12:00";
+		$group2->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+		$group2->group_name="GRUP M9";
+		$group2->group_code="M 9";
 		
 		
 		$teacher_groups_current_day['key2']=$group;
-		$teacher_groups_current_day['key3']=$group;
+		$teacher_groups_current_day['key3']=$group1;
 		$teacher_groups_current_day['key4']=$group;
+		$teacher_groups_current_day['key4']=$group2;
 		
 		$data['teacher_groups_current_day']=$teacher_groups_current_day;
 		
