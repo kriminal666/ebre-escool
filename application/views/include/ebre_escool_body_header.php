@@ -77,6 +77,7 @@
             <li><a href='<?=base_url()?>index.php/skeleton_main/users')?><?php echo lang('users');?></a></li>
             <li><a href='<?=base_url()?>index.php/skeleton_main/groups')?><?php echo lang('groups');?></a></li>
             <li><a href='<?=base_url()?>index.php/managment/massive_change_password')?><?php echo lang('massive_change_password');?></a></li>
+            <li><a href='<?=base_url()?>index.php/managment/statistics_reports.php')?><?php echo lang('statistics_checkings');?></a></li>
 			  <?php endif; ?>
             <li><a href='<?=base_url()?>index.php/skeleton_main/preferences')?><?php echo lang('preferences');?></a></li>                                            
           </ul>

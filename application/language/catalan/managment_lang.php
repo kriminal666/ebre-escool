@@ -14,6 +14,8 @@
  
 $lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
 $lang['select_group']   = 'Escolliu un grup';
+$lang['statistics_checkings']   = 'Estadístiques. Comprovacions';
+
 
 
 
