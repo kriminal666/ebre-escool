@@ -13,6 +13,8 @@
  */
  
 $lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
+$lang['select_data_source']   = 'Escolliu origen de les dades';
+
 $lang['select_group']   = 'Escolliu un grup';
 
 
