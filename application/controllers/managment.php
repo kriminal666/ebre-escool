@@ -22,12 +22,15 @@ class managment extends skeleton_main {
 		
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
-			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));		
-			
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+		
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
@@ -44,7 +47,7 @@ class managment extends skeleton_main {
 		$this->massive_change_password();
 	}
 	
-	public function statistics_checkings() {
+	public function statistics_checkings_groups() {
 		$skeleton_admin_group = $this->config->item('skeleton_admin_group','skeleton_auth');
 		
 		if (!$this->skeleton_auth->logged_in() || !
@@ -57,10 +60,21 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/css/jquery.dataTables.css'));	
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));		
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/js/jquery.dataTables.min.js"));					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));				
 			
 		$this->_load_html_header($header_data); 
 		
@@ -68,10 +82,13 @@ class managment extends skeleton_main {
 		
 		$data['prova']="prova";
 		
-		$this->load->view('managment/statistics_checkings.php',$data);
+		$this->load->view('managment/statistics_checkings_groups.php',$data);
 		
 		$this->_load_body_footer();	
-		
+	}
+	
+	public function statistics_checkings() {
+		$this->statistics_checkings_groups();
 	}
 	
 }

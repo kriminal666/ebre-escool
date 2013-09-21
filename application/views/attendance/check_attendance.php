@@ -3,8 +3,7 @@
 <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 <script>
 $(function() {
-	console.log("HEY YOU");
-	
+
 	$('#groups_by_teacher_an_date').dataTable( {
 		"oLanguage": {
 			"sProcessing":   "Processant...",

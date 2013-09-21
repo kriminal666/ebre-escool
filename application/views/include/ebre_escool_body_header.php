@@ -77,13 +77,20 @@
             <li><a href='<?=base_url()?>index.php/skeleton_main/users')?><?php echo lang('users');?></a></li>
             <li><a href='<?=base_url()?>index.php/skeleton_main/groups')?><?php echo lang('groups');?></a></li>
             <li><a href='<?=base_url()?>index.php/managment/massive_change_password')?><?php echo lang('massive_change_password');?></a></li>
-            <li><a href='<?=base_url()?>index.php/managment/statistics_reports.php')?><?php echo lang('statistics_checkings');?></a></li>
+            <li class="dropdown-submenu">
+				<a tabindex="-1" href="#"><?php echo lang('statistics_checkings');?></a>
+					<ul class="dropdown-menu">
+						<li><a href='<?=base_url()?>index.php/managment/statistics_checkings_groups')?><?php echo lang('statistics_checkings_groups');?></a></li>
+					</ul>
+			</li>
 			  <?php endif; ?>
             <li><a href='<?=base_url()?>index.php/skeleton_main/preferences')?><?php echo lang('preferences');?></a></li>                                            
           </ul>
       </li>
       
-	                                                                                        
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    ...
+                                                                            
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo lang('language');?> <b class="caret"></b></a>
           <ul class="dropdown-menu">
