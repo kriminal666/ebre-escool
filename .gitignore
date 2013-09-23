@@ -15,5 +15,6 @@ application/logs/*
 application/third_party/grocery-crud/
 application/third_party/image-crud/
 application/third_party/skeleton/
+application/third_party/fpdf-codeigniter/
 
 application/third_party/skeleton_auth/application/config/auth_ldap.php
