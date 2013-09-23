@@ -49,7 +49,7 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'ebre-escool';
+$db['default']['username'] = 'ebre_escool';
 $db['default']['password'] = 'PUT_YOUR_PASSWORD_HERE';
 $db['default']['database'] = 'ebre_escool';
 $db['default']['dbdriver'] = 'mysql';
