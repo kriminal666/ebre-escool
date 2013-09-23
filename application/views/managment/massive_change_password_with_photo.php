@@ -169,9 +169,10 @@ $data_source_additional_parameters="";
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_users_in_group">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="9" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
+    <td colspan="10" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
   </tr>
   <tr>
+     <th><font size="-4">FOTO Dropbox</font></th>
      <th><font size="-4"><?php echo lang('externalID')?></font></th>
      <th><font size="-4"><?php echo lang('internalID')?></font></th>
      <th><font size="-4"><?php echo lang('sn1')?></font></th>
@@ -187,6 +188,7 @@ $data_source_additional_parameters="";
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_students_in_group as $student_key => $student) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
+     <td><font size="-4"><img src="http://www.iesebre.com/Imatges-Matrícules-TIC/<?php echo $student->irisPersonalUniqueID;?>.jpg" alt="<?php echo $student->irisPersonalUniqueID;?>" height="42" width="42"></font></td> 
      <td><font size="-4"><?php echo $student->irisPersonalUniqueID;?></font></td>
      <td><font size="-4"><?php echo $student->highSchoolUserId;?></font></td>
      <td><font size="-4"><?php echo $student->sn1;?></font></td>
