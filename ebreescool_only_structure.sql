@@ -153,7 +153,29 @@ CREATE TABLE IF NOT EXISTS `location` (
   `markedForDeletion` enum('n','y') NOT NULL,
   `markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`locationId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Database: `ebre_escool`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `classroom_group`
+--
+
+CREATE TABLE IF NOT EXISTS `classroom_group` (
+  `groupId` int(11) NOT NULL AUTO_INCREMENT,
+  `groupCode` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `groupShortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `groupName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `groupDescription` text COLLATE utf8_unicode_ci NOT NULL,
+  `educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`groupId`),
+  UNIQUE KEY `groupCode` (`groupCode`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Restriccions per la taula `users_groups`
