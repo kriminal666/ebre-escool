@@ -1,6 +1,5 @@
 <!-- http://jqueryui.com/datepicker/ -->
-<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
 <script>
 $(function(){
 
@@ -21,19 +20,16 @@ $(function(){
 				"sNext":     "Següent",
 				"sLast":     "Últim"
 			}
-	    },
-		"bPaginate": false,
-		"bFilter": false,
-        "bInfo": false,
+	    }
+		
 	});
 
 });
 </script>
 
 <?php
-
+/*
 $all_groups_table_title="Tots els grups";
-
 $all_groups=array();
 
 $all_groups['1AF']= new stdClass;
@@ -60,7 +56,7 @@ $all_groups['1DIE']->mentor_code="19";
 $all_groups['1DIE']->mentor_name="Linus Torvalds";
 $all_groups['1DIE']->ldap_cn="cn=prova1";
 $all_groups['1DIE']->total_students=25;
-
+* */
 ?>
 
 <div class="container">
@@ -75,7 +71,7 @@ $all_groups['1DIE']->total_students=25;
      <th><?php echo lang('group_name')?></th>
      <th><?php echo lang('mentor_code')?></th>
      <th><?php echo lang('mentor_name')?></th>
-     <th><?php echo lang('ldap_cn')?></th>
+     <th><?php echo lang('ldap_dn')?></th>
      <th><?php echo lang('total_students')?></th>
   </tr>
  </thead>
@@ -83,11 +79,11 @@ $all_groups['1DIE']->total_students=25;
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_groups as $group_key => $group) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><?php echo $group->group_code;?></td>
-     <td><?php echo $group->group_name;?></td>
-     <td><?php echo $group->mentor_code;?></td>
+     <td><?php echo $group->groupCode;?></td>
+     <td><?php echo $group->groupShortName;?></td>
+     <td><?php echo $group->mentorId;?></td>
      <td><?php echo $group->mentor_name;?></td>
-     <td><?php echo $group->ldap_cn;?></td>
+     <td><font size="-3"><?php echo $group->ldap_dn;?></font></td>
      <td><?php echo $group->total_students;?></td>
    </tr>
   <?php endforeach; ?>

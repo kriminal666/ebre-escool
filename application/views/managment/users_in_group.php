@@ -3,21 +3,13 @@
 $(function(){
 	$(".chosen-select,.chosen-multiple-select").chosen({allow_single_deselect:true});	
 	
-	$('#group_code').chosen().change(function(event) {
-		selectedValue = $(this).find("option:selected").val();
-		window.location.href = "<?php echo base_url('index.php/managment/massive_change_password');?>/" + selectedValue;
-	}); 
+	//$("#dialog-message").dialog("open");
 	
 	
 	$('#massive_password_change_form').submit(function(e) {
-		var r=confirm("Esteu segurs que voleu imprimir i canviar les paraules de pas dels usuaris del grup? <br/>Els usuaris ja no podran entrar al sistema fins que no els hi proporcioneu la nova paraula de pas.");
-		if (r==true)	{
-			window.open('', 'formpopup', 'width=200,height=200,scrollbars=yes');
-			this.target = 'formpopup';
-		} else {
-			e.preventDefault();
-		}
-		/*
+		window.open('', 'formpopup', 'width=200,height=200,scrollbars=yes');
+        this.target = 'formpopup';
+        /*
 		e.preventDefault();
 		alert("test:" + $(this).attr('action'));
 		$('<div/>', {'id':'dialog-message', 'title':'Descàrrega completada'})
@@ -37,37 +29,6 @@ $(function(){
     });
     
     $('#all_users_in_group').dataTable( {
-		"sDom": 'T<"clear">lfrtip',
-		"oTableTools": {
-            "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
-			"aButtons": [
-				{
-					"sExtends": "copy",
-					"sButtonText": "Copiar"
-				},
-				{
-					"sExtends": "csv",
-					"sButtonText": "CSV"
-				},
-				{
-					"sExtends": "xls",
-					"sButtonText": "XLS"
-				},
-				{
-					"sExtends": "pdf",
-					"sPdfOrientation": "landscape",
-					"sPdfMessage": "Alumnes del grup",
-					"sTitle": "<?php echo $selected_group . ". " . $selected_group_names[1] . "( " . $selected_group_names[0] . ")" ;?>",
-					"sButtonText": "PDF"
-				},
-				{
-					"sExtends": "print",
-					"sButtonText": "Imprimir"
-				},
-			]
-
-        },
-        "aaSorting": [[ 2, "asc" ],[ 3, "asc" ],[ 4, "asc" ]],
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
@@ -144,23 +105,19 @@ $data_source_additional_parameters="";
 <div class="row" >
   <div class="span4"> </div>
   <div class="span4" style="padding:5px;">
-   <select id="group_code" name="group_code" class="chosen-select" data-place_holder="<?php echo lang("select_group")?>" style="width:400px;">
+   <select name="group_code" class="chosen-select" data-place_holder="<?php echo lang("select_group")?>">
 	<?php foreach ($all_groups as $group_key => $group) : ?>
 	    <?php $group_additional_parameters=""; ?>
 		<?php if ($group->groupCode == $selected_group)	{
 			$group_additional_parameters='selected="selected"';
 		}?>
-		<option value="<?php echo $group->groupCode;?>" <?php echo $group_additional_parameters?>$><?php echo $group->groupCode . " - " . $group->groupShortName?></option>
+		<option value="<?php echo $group->groupCode;?>" <?php echo $group_additional_parameters?>$><?php echo $group->groupShortName?></option>
 
 	 <?php endforeach; ?>
    </select>
-   <select name="only_students_with_all_data" class="chosen-select" data-place_holder="TODO" style="width:400px;">
-		 <option value="1" selected="selected">Imprimir només alumnes amb totes les dades</option>
-		 <option value="2">Imprimir només alumnes amb correu personal</option>
-		 <option value="3">Imprimir només alumnes amb foto</option>
-		 <option value="4">Imprimir tots els alumnes</option>
-   </select>
-   <button id="print_new_passwords" class="btn" type="submit">Canviar i Imprimir passwords</button>
+   <br/>
+   <button id="show_group_data" class="btn">Mostrar dades</button>
+   <button id="print_new_passwords" class="btn">Imprimir</button>
   </div>
 </div>
 </form>
@@ -168,18 +125,27 @@ $data_source_additional_parameters="";
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_users_in_group">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="9" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
+    <td colspan="18" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo lang('selected_group')?></h4></td>
   </tr>
   <tr>
      <th><font size="-4"><?php echo lang('externalID')?></font></th>
+     <th><font size="-4"><?php echo lang('irisPersonalUniqueIDType')?></font></th>
+     <th><font size="-4"><?php echo lang('TSI')?></font></th>
      <th><font size="-4"><?php echo lang('internalID')?></font></th>
+     <th><font size="-4"><?php echo lang('employeeNumber')?></font></th>
      <th><font size="-4"><?php echo lang('sn1')?></font></th>
      <th><font size="-4"><?php echo lang('sn2')?></font></th>
      <th><font size="-4"><?php echo lang('givenName')?></font></th>
+     <th><font size="-4"><?php echo lang('Gender')?></font></th>
+     <th><font size="-4"><?php echo lang('homePostalAddress')?></font></th>
+     <th><font size="-4"><?php echo lang('location')?></font></th>
+     <th><font size="-4"><?php echo lang('postalCode')?></font></th>
+     <th><font size="-4"><?php echo lang('mobile')?></font></th>
+     <th><font size="-4"><?php echo lang('homePhone')?></font></th>
+     <th><font size="-4"><?php echo lang('dateOfBirth')?></font></th>
      <th><font size="-4"><?php echo lang('uid')?></font></th>
      <th><font size="-4"><?php echo lang('personal_email')?></font></th>
      <th><font size="-4"><?php echo lang('photo')?></font></th>
-     <th><font size="-4"><?php echo lang('Ok')?></font></th>
   </tr>
  </thead>
  <tbody>
@@ -187,32 +153,29 @@ $data_source_additional_parameters="";
   <?php foreach ($all_students_in_group as $student_key => $student) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
      <td><font size="-4"><?php echo $student->irisPersonalUniqueID;?></font></td>
+     <td><font size="-4"><?php echo $student->irisPersonalUniqueIDType;?></font></td>
+     <td><font size="-4"><?php echo $student->highSchoolTSI;?></font></td>
      <td><font size="-4"><?php echo $student->highSchoolUserId;?></font></td>
+     <td><font size="-4"><?php echo $student->employeeNumber;?></font></td>
      <td><font size="-4"><?php echo $student->sn1;?></font></td>
      <td><font size="-4"><?php echo $student->sn2;?></font></td>
      <td><font size="-4"><?php echo $student->givenName;?></font></td>
+     <td><font size="-4"><?php echo $student->gender;?></font></td>
+     <td><font size="-4"><?php echo $student->homePostalAddress;?></font></td>
+     <td><font size="-4"><?php echo $student->location;?></font></td>
+     <td><font size="-4"><?php echo $student->postalCode;?></font></td>
+     <td><font size="-4"><?php echo $student->mobile;?></font></td>
+     <td><font size="-4"><?php echo $student->homePhone;?></font></td>
+     <td><font size="-4"><?php echo $student->dateOfBirth;?></font></td>
      <td><font size="-4"><?php echo $student->uid;?></font></td>
      <td><font size="-4"><?php echo $student->highSchoolPersonalEmail;?></font></td>
      <td>
-	  <font size="-4">
 	   <?php if ($student->jpegPhoto !="") {
-				echo "S";
+				echo "Sí";
 		   }
 		   else {
-				echo "N";
+				echo "No";
 		   }?>
-	  </font>	   
-	 </td>
-	 <td>
-	  <font size="-4">
-	   
-	   <?php if (($student->jpegPhoto !="") && ($student->highSchoolPersonalEmail !="")) {
-				echo "S";
-		   }
-		   else {
-				echo "N";
-		   }?>
-	  </font>
 	 </td>
      <!-- <?php echo $student->jpegPhoto;?> -->
    </tr>

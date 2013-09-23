@@ -8,10 +8,238 @@ class reports extends skeleton_main {
     {
         parent::__construct();
         
-        //$this->load->library('attendance');
-        //$this->load->model('attendance_model');
+        $this->load->library('ebre_escool_ldap');
         
+        $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
+        $this->load->library('pdf'); // Load library
+		$this->pdf->fontpath = 'font/'; // Specify font folder
+		
+		// Load the language file
+        $this->lang->load('ebre_escool_ldap','catalan');
+        $this->load->helper('language');
+        
+        $this->_init_config();
 	}
+	
+	protected function _init_config() {
+		$this->rules_url="http://moodle.iesebre.com/normesTIC";
+		$this->services_url="http://moodle.iesebre.com/serveisTIC";
+		
+		$this->high_school_name="Institut de l'Ebre";
+		$this->high_school_suffix_email="iesebre.com"; 
+		
+		$this->document_name_suffix="_matriculaTIC.pdf";
+		$this->window_header_title="Matrícula TIC de l'alumne";
+		
+		//IMAGES PATHS
+		$this->logo_image="/usr/share/gosa/html/pdfreports/images/logo1.jpeg";
+		$this->signature_image="/usr/share/gosa/html/pdfreports/images/signature.jpeg";
+		
+		//STRINGS
+		$this->enrollment_str_title=lang("enrollment_str_title");
+		$this->enrollment_str_user=lang("enrollment_str_user");
+		$this->enrollment_str_password=lang("enrollment_str_password");
+		$this->enrollment_str_internalid=lang("enrollment_str_internalid");
+		$this->enrollment_str_email=lang("enrollment_str_email");
+		$this->enrollment_str_corporative_email=lang("enrollment_str_corporative_email");
+		$this->enrollment_str_userSignature=lang("enrollment_str_userSignature");
+		$this->enrollment_str_school_signature=lang("enrollment_str_school_signature");
+		$this->enrollment_str_userPageType=lang("enrollment_str_userPageType");
+		$this->enrollment_str_school_page_type=lang("enrollment_str_school_page_type");
+		$this->enrollment_str_tutor_page_type=lang("enrollment_str_tutor_page_type");
+		$this->enrollment_str_important_note=lang("enrollment_str_important_note");
+		
+	
+
+		$this->enrollment_text2 = lang("enrollment_text2");
+		$this->enrollment_text3 = lang("enrollment_text3");
+		$this->enrollment_text4 = lang("enrollment_text4");
+		$this->enrollment_text5 = lang("enrollment_text5");
+	
+	}
+	
+	public function print_massive_enrollment () {
+		$all_group_students_dns = (array) $this->session->flashdata('all_group_students_dns');
+		$new_passwords_array = (array) $this->session->flashdata('new_passwords_array');
+		$group_code = $this->session->flashdata('group_code');
+		$url_after_download = $this->session->flashdata('url_after_download');
+		
+		ob_start();
+		/* UNCOMMENT THIS TO ACTIVATE ERROR REPORTING! */
+		/*error_reporting(E_ALL);
+		ini_set("display_errors", 1);
+		*/
+		
+		error_reporting(0);
+		ini_set("display_errors", 0);
+
+		// Mountain Standard Time (MST) Time Zone
+		$date= date('j-m-y');	
+		setlocale(LC_TIME, "ca_ES.UTF-8");
+
+		//FPDF needs a clean output --> force:
+		ob_end_clean();
+		
+		//CREATE PDF OUPUT:
+
+		//DOCUMENT TITLE: Appears at PDF window title 
+		$this->pdf->SetTitle(utf8_decode($this->window_header_title)." ". utf8_decode($fullName), false);
+		
+		//$all_group_students_dns
+
+		//ONE PAGE PER USER
+		$numPages=count($all_group_students_dns);	
+		$this->pdf->SetMargins(20, 20, 20);
+		$this->pdf->SetLeftMargin(20);
+		
+		for ($i = 0; $i <= $numPages-1; $i++) {
+			//Obtain enrollment data.
+			if (!isset($all_group_students_dns[$i]))	{
+				continue;
+			}
+			$enrollment_data= $this->ebre_escool_ldap->getEnrollmentData($all_group_students_dns[$i]);
+		
+			if ($enrollment_data == "") {
+				echo "<br/>Fatal Error! No enrollment data found for DN: " . $all_group_students_dns[$i];
+				exit(1);
+			}
+
+			$givenName = $enrollment_data['givenname']['0'];
+			$internalID = $enrollment_data['highschooluserid']['0'];
+			$employeeNumber = $enrollment_data['employeenumber']['0'];
+			$externalID = $enrollment_data['irispersonaluniqueid']['0'];
+			$personal_email = $enrollment_data['highschoolpersonalemail']['0'];
+			$emailCorporatiu = $enrollment_data['email']['0'];
+			$uid = $enrollment_data['uid']['0'];
+			$sn1 = $enrollment_data['sn1']['0'];
+			$sn2 = $enrollment_data['sn2']['0'];
+
+
+			//PDF Document Name when downloading:
+			$documentName=$group_code.$this->document_name_suffix;
+			$fullName= $givenName ." ". $sn1 . " " . $sn2;
+
+			$this->pdf->AddPage();
+			$this->pdf->SetFont('Times','',18);
+			
+			//HEADER IMAGE
+			$this->pdf->Image($this->logo_image,$this->pdf->GetX(),$this->pdf->GetY());
+			
+			//TITLE
+			$this->pdf->SetY(45);
+			$this->pdf->Cell(170,10,utf8_decode($this->enrollment_str_title),1,2,'C');
+			
+			//TEXTS
+			$this->enrollment_text1 = <<<EOF
+En/Na $givenName $sn1 $sn2, amb número identificatiu $externalID, ha estat matriculat/da el $date per tal de tenir accés als recursos TIC de l'$this->high_school_name. Les dades que heu d'utilitzar per accedir als recursos TIC del centre són:
+EOF;
+	
+			//TEXT1
+			$this->pdf->SetFont('Times','',10);	
+			$this->pdf->Ln();
+			$this->pdf->write(5,utf8_decode($this->enrollment_text1));
+			
+			//ENROLLMENT DATA
+			//USER
+			$this->pdf->Ln();
+			$this->pdf->Ln();
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_user).": ",0);
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($uid),0);
+			$this->pdf->Ln();
+			
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_password).": ",0);
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($new_passwords_array[$i]),0);
+			$this->pdf->Ln();
+	
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_internalid).": ",0);
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($internalID),0);
+			$this->pdf->Ln();
+	
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_email).": ",0);
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($personal_email),0);
+			$this->pdf->Ln();
+	
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_corporative_email).": ",0);
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($uid."@".$this->high_school_suffix_email),0);
+			$this->pdf->Ln();
+	
+			//TEXT 2
+			$this->pdf->Ln();		
+			$this->pdf->write(5,utf8_decode($this->enrollment_text2));
+	
+			//RULES URL
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,utf8_decode($this->rules_url));
+			$this->pdf->Ln();
+			$this->pdf->Ln();
+
+			//IMPORTANT NOTE
+			$this->pdf->SetFont('Times','',10);	
+			$this->pdf->SetLeftMargin(20+10); 
+			$this->pdf->SetRightMargin(20+10); 
+			$this->pdf->MultiCell(0,5,utf8_decode($this->enrollment_str_important_note),1,"L");
+			$this->pdf->SetLeftMargin(20); 
+			$this->pdf->SetRightMargin(20); 
+			$this->pdf->Ln();
+	
+			//TEXT3
+			$this->pdf->write(5,utf8_decode($this->enrollment_text3));
+		
+			//SERVICES URL
+			$this->pdf->SetX($this->pdf->GetX()+10);	
+			$this->pdf->SetFont('Times','B',10); 
+			$this->pdf->write(5,utf8_decode($this->services_url));
+			$this->pdf->Ln();
+			$this->pdf->Ln();
+	
+			//TEXT 4
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($this->enrollment_text4));
+			$this->pdf->Ln();
+		
+			//USER_SIGNATURE
+			$this->pdf->SetFont('Times','',10); 
+			$this->pdf->write(5,utf8_decode($this->enrollment_str_userSignature. ","));
+			$this->pdf->Ln();
+	
+			//FOOTNOTE
+			$this->pdf->SetY(-50);
+			$this->pdf->SetFont('Times','',10);	
+			$this->pdf->write(5,utf8_decode($this->enrollment_text5));
+	
+			//OFICIAL SIGNATURE
+			$this->pdf->Ln();
+			$this->pdf->Image($this->signature_image,$this->pdf->GetX()-3, $this->pdf->GetY());
+			$this->pdf->write(5,utf8_decode($this->enrollment_str_school_signature),0);
+		
+			//TYPE    
+			$this->pdf->Ln();
+			$this->pdf->Line($this->pdf->GetX(), $this->pdf->GetY(), $this->pdf->GetX()+170, $this->pdf->GetY());
+			$this->pdf->SetX(133);
+	}
+	
+	$this->pdf->Output($documentName,"D");
+	
+	redirect($url_after_download, 'refresh');
+
+}
+	
 	
 	public function print_enrollment () {
 		ob_start();
@@ -31,47 +259,7 @@ class reports extends skeleton_main {
 		require_once ("/usr/share/php/fpdf/fpdf.php");
                
 
-		//*******************************************************************
-		//**          		  CONFIGURATION								   **			
-		//*******************************************************************
-		
-		//GENERAL CONFIG
 
-		//URL LINKS
-		$rulesURL="http://moodle.iesebre.com/normesTIC";
-		$servicesURL="http://moodle.iesebre.com/serveisTIC";
-		
-		$HIGHSCHOOLSNAME="Institut de l'Ebre";
-		$HIGHSCHOOLSUFFIXEMAIL="iesebre.com"; 
-
-		/////////////////// DO NOT TOUCH WHEN CONFIGURING 
-		//PDF DOCUMENT
-		// DOCUMENT NAME= externalID_internalID_documentNameSufix
-		$documentNameSufix="_matriculaTIC.pdf";
-
-		//WINDOWS HEADER AT PDF DOCUMENT
-		// TITLE USER FULL NAME
-		$windowheadertitle="Matrícula TIC de l'alumne";
-		
-		//IMAGES PATHS
-		$logo_image="/usr/share/gosa/html/pdfreports/images/logo1.jpeg";
-		$signature_image="/usr/share/gosa/html/pdfreports/images/signature.jpeg";
-
-		//STRINGS
-		$STR_TITLE=_("MATRÍCULA TIC");
-		$STR_User=_("Usuari");
-		$STR_Password=_("Paraula de pas");
-		$STR_InternalID=_("Identificador del centre");
-		$STR_PersonalEmail=_("Correu electrònic personal");
-		$STR_Email=_("Correu electrònic del centre");
-		$STR_UserSignature=_("Signatura de l'interessat/interessada");
-		$STR_SchoolSignature=_("Signatura i segell del centre");
-		$STR_UserPageType=_("Exemplar per a la persona interessada");
-		$STR_SchoolPageType=_("Exemplar per a l'escola");
-		$STR_TutorPageType=_("Exemplar per al tutor");
-
-		$IMPORTANT_NOTE=_("IMPORTANT: La paraula de pas ha de ser PERSONAL i INTRANSFERIBLE, s'ha d'utilitzar en cura i no es pot deixar-la o prestar-la a altres usuaris. És la vostra responsabilitat no facilitar el vostre usuari o paraula de pas a NINGÚ. Queda expressament prohibit assumir la identitat d'altres usuaris.");
-		
 		/////////////////// DO NOT TOUCH WHEN CONFIGURING 
 
 $dn=$_GET['dn'];
@@ -116,43 +304,13 @@ $year = strftime("%G");
 
 /////////////////// END DO NOT TOUCH WHEN CONFIGURING 
 
-//TEXTS
-
-$text1 = <<<EOF
-En/Na $givenName $sn1 $sn2, amb número identificatiu $externalID, ha estat matriculat/da el $date per tal de tenir accés als recursos TIC de l'$HIGHSCHOOLSNAME. Les dades que heu d'utilitzar per accedir als recursos TIC del centre són:
-EOF;
-
-$text2 = <<<EOF
-En firmar aquesta matrícula esteu acceptant les normes d'ús dels recursos TIC del centre. Les normes les podeu consultar a: 
-
-
-EOF;
-
-$text3 = <<<EOF
-Amb el vostre compte d'usuari de centre podeu accedir a una sèrie de serveis que us ofereix el centre i que podeu consultar a:
-
-
-EOF;
-
-$text4 = <<<EOF
-En aquesta pàgina web també podeu trobar les instruccions per tal de modificar la vostra paraula de pas. És important que escolliu una paraula de pas prou segura i que us sigui fàcil de recordar. 
-
-IMPORTANT: Si oblideu la vosta paraula de pas, la forma de recuperar-la serà enviar-vos una de nova a la vostra adreça de correu electrònic personal, per tant és molt important que ens proporcioneu una adreça de correu electrònic vàlida.
-
-EOF;
-
-$text5 = <<<EOF
-Amposta, $day_of_month de $month de $year
-EOF;
-	
-
 //*******************************************************************
 //**          		  CONFIGURATION	END							   **			
 //*******************************************************************
 
 
 //PDF Document Name when downloading:
-$documentName=$externalID."_".$internalID.$documentNameSufix;
+$documentName=$externalID."_".$internalID.$this->document_name_suffix;
 $fullName= $givenName ." ". $sn1 . " " . $sn2;
 
 //uncomment when debugging
@@ -162,10 +320,9 @@ $fullName= $givenName ." ". $sn1 . " " . $sn2;
 ob_end_clean();
 
 //CREATE PDF OUPUT:
-$pdf=new FPDF();
 
 //DOCUMENT TITLE: Appears at PDF window title 
-$pdf->SetTitle(utf8_decode($windowheadertitle)." ". utf8_decode($fullName), false);
+$this->pdf->SetTitle(utf8_decode($this->window_header_title)." ". utf8_decode($fullName), false);
 
 
 //CREATE PAGES: Multiple similar pages with some changes
@@ -173,133 +330,138 @@ $pdf->SetTitle(utf8_decode($windowheadertitle)." ". utf8_decode($fullName), fals
 $numPages=3;
 $pageTypes=array("user","school","tutor");
 
-$pdf->SetMargins(20, 20, 20);
-$pdf->SetLeftMargin(20);
+$this->pdf->SetMargins(20, 20, 20);
+$this->pdf->SetLeftMargin(20);
 
 for ($i = 1; $i <= $numPages; $i++) {
-	$pdf->AddPage();
-	$pdf->SetFont('Times','',18);
+	$this->pdf->AddPage();
+	$this->pdf->SetFont('Times','',18);
 
 	//HEADER IMAGE
-	$pdf->Image($logo_image,$pdf->GetX(),$pdf->GetY());
+	$this->pdf->Image($this->logo_image,$this->pdf->GetX(),$this->pdf->GetY());
 	
 	//TITLE
-	$pdf->SetY(45);
-	$pdf->Cell(170,10,utf8_decode($STR_TITLE),1,2,'C');
+	$this->pdf->SetY(45);
+	$this->pdf->Cell(170,10,utf8_decode($this->enrollment_str_title),1,2,'C');
+	
+	//TEXTS
+	$this->enrollment_text1 = <<<EOF
+En/Na $givenName $sn1 $sn2, amb número identificatiu $externalID, ha estat matriculat/da el $date per tal de tenir accés als recursos TIC de l'$this->high_school_name. Les dades que heu d'utilitzar per accedir als recursos TIC del centre són:
+EOF;
 	
 	//TEXT1
-	$pdf->SetFont('Times','',10);	
-	$pdf->Ln();
-	$pdf->write(5,utf8_decode($text1));
+	$this->pdf->SetFont('Times','',10);	
+	$this->pdf->Ln();
+	$this->pdf->write(5,utf8_decode($this->enrollment_text1));
 	
 	//ENROLLMENT DATA
 	//USER
-	$pdf->Ln();
-	$pdf->Ln();
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,"- ". utf8_decode($STR_User).": ",0);
-	$pdf->SetFont('Times','',10); 
-	$pdf->write(5,utf8_decode($uid),0);
-	$pdf->Ln();
+	$this->pdf->Ln();
+	$this->pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_user).": ",0);
+	$this->pdf->SetFont('Times','',10); 
+	$this->pdf->write(5,utf8_decode($uid),0);
+	$this->pdf->Ln();
 	
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,"- ". utf8_decode($STR_Password).": ",0);
-	$pdf->SetFont('Times','',10); 
-	$pdf->write(5,utf8_decode($password),0);
-	$pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_password).": ",0);
+	$this->pdf->SetFont('Times','',10); 
+	$this->pdf->write(5,utf8_decode($password),0);
+	$this->pdf->Ln();
 	
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,"- ". utf8_decode($STR_InternalID).": ",0);
-	$pdf->SetFont('Times','',10); 
-	$pdf->write(5,utf8_decode($internalID),0);
-	$pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_internalid).": ",0);
+	$this->pdf->SetFont('Times','',10); 
+	$this->pdf->write(5,utf8_decode($internalID),0);
+	$this->pdf->Ln();
 	
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,"- ". utf8_decode($STR_PersonalEmail).": ",0);
-	$pdf->SetFont('Times','',10); 
-	$pdf->write(5,utf8_decode($personal_email),0);
-	$pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_email).": ",0);
+	$this->pdf->SetFont('Times','',10); 
+	$this->pdf->write(5,utf8_decode($personal_email),0);
+	$this->pdf->Ln();
 	
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,"- ". utf8_decode($STR_Email).": ",0);
-	$pdf->SetFont('Times','',10); 
-	$pdf->write(5,utf8_decode($uid."@".$HIGHSCHOOLSUFFIXEMAIL),0);
-	$pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,"- ". utf8_decode($this->enrollment_str_corporative_email).": ",0);
+	$this->pdf->SetFont('Times','',10); 
+	$this->pdf->write(5,utf8_decode($uid."@".$this->high_school_suffix_email),0);
+	$this->pdf->Ln();
 	
 	//TEXT 2
-	$pdf->Ln();		
-	$pdf->write(5,utf8_decode($text2));
+	$this->pdf->Ln();		
+	$this->pdf->write(5,utf8_decode($this->enrollment_text2));
 	
 	//RULES URL
-	$pdf->SetX($pdf->GetX()+10);	
-	$pdf->SetFont('Times','B',10); 
-	$pdf->write(5,utf8_decode($rulesURL));
-	$pdf->Ln();
-		$pdf->Ln();
+	$this->pdf->SetX($this->pdf->GetX()+10);	
+	$this->pdf->SetFont('Times','B',10); 
+	$this->pdf->write(5,utf8_decode($this->rules_url));
+	$this->pdf->Ln();
+		$this->pdf->Ln();
 
 		//IMPORTANT NOTE
-		$pdf->SetFont('Times','',10);	
-		$pdf->SetLeftMargin(20+10); 
-		$pdf->SetRightMargin(20+10); 
-		$pdf->MultiCell(0,5,utf8_decode($IMPORTANT_NOTE),1,"L");
-		$pdf->SetLeftMargin(20); 
-		$pdf->SetRightMargin(20); 
-		$pdf->Ln();
+		$this->pdf->SetFont('Times','',10);	
+		$this->pdf->SetLeftMargin(20+10); 
+		$this->pdf->SetRightMargin(20+10); 
+		$this->pdf->MultiCell(0,5,utf8_decode($this->enrollment_str_important_note),1,"L");
+		$this->pdf->SetLeftMargin(20); 
+		$this->pdf->SetRightMargin(20); 
+		$this->pdf->Ln();
 	
 		//TEXT3
-		$pdf->write(5,utf8_decode($text3));
+		$this->pdf->write(5,utf8_decode($this->enrollment_text3));
 	
 		//SERVICES URL
-		$pdf->SetX($pdf->GetX()+10);	
-		$pdf->SetFont('Times','B',10); 
-		$pdf->write(5,utf8_decode($servicesURL));
-		$pdf->Ln();
-		$pdf->Ln();
+		$this->pdf->SetX($this->pdf->GetX()+10);	
+		$this->pdf->SetFont('Times','B',10); 
+		$this->pdf->write(5,utf8_decode($this->services_url));
+		$this->pdf->Ln();
+		$this->pdf->Ln();
 	
 		//TEXT 4
-		$pdf->SetFont('Times','',10); 
-		$pdf->write(5,utf8_decode($text4));
-		$pdf->Ln();
+		$this->pdf->SetFont('Times','',10); 
+		$this->pdf->write(5,utf8_decode($this->enrollment_text4));
+		$this->pdf->Ln();
 		
 		//USER_SIGNATURE
-		$pdf->SetFont('Times','',10); 
-		$pdf->write(5,utf8_decode($STR_UserSignature. ","));
-		$pdf->Ln();
+		$this->pdf->SetFont('Times','',10); 
+		$this->pdf->write(5,utf8_decode($this->enrollment_str_userSignature. ","));
+		$this->pdf->Ln();
 	
 		//FOOTNOTE
-		$pdf->SetY(-50);
-		$pdf->SetFont('Times','',10);	
-		$pdf->write(5,utf8_decode($text5));
+		$this->pdf->SetY(-50);
+		$this->pdf->SetFont('Times','',10);	
+		$this->pdf->write(5,utf8_decode($this->enrollment_text5));
 	
 		//OFICIAL SIGNATURE
-		$pdf->Ln();
-		$pdf->Image($signature_image,$pdf->GetX()-3, $pdf->GetY());
-		$pdf->write(5,utf8_decode($STR_SchoolSignature),0);
+		$this->pdf->Ln();
+		$this->pdf->Image($this->signature_image,$this->pdf->GetX()-3, $this->pdf->GetY());
+		$this->pdf->write(5,utf8_decode($this->enrollment_str_school_signature),0);
 		
 		//TYPE    
-		$pdf->Ln();
-		$pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+170, $pdf->GetY());
-		$pdf->SetX(133);
+		$this->pdf->Ln();
+		$this->pdf->Line($this->pdf->GetX(), $this->pdf->GetY(), $this->pdf->GetX()+170, $this->pdf->GetY());
+		$this->pdf->SetX(133);
 	
 		switch ($pageTypes[$i-1]) {
 			case "user":
-				$pdf->write(5,utf8_decode($STR_UserPageType),0);
+				$this->pdf->write(5,utf8_decode($this->enrollment_str_userPageType),0);
 				break;
 			case "school":
-				$pdf->write(5,utf8_decode($STR_SchoolPageType),0);
+				$this->pdf->write(5,utf8_decode($this->enrollment_str_school_page_type),0);
 				break;
 			case "tutor":
-				$pdf->write(5,utf8_decode($STR_TutorPageType),0);
+				$this->pdf->write(5,utf8_decode($this->enrollment_str_tutor_page_type),0);
 				break;
 		}
 	}
 	
-	$pdf->Output($documentName,"D");
+	$this->pdf->Output($documentName,"D");
 
 
 	}

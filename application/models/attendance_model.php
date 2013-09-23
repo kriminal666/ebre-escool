@@ -26,6 +26,68 @@ class attendance_model  extends CI_Model  {
 		} 	
 		return false;
 	}
+	
+	function get_all_classroom_groups($orderby='asc') {
+		//classroom_group
+		$this->db->select('groupId,groupCode,groupShortName,groupName,groupDescription,educationalLevelId,mentorId');
+		$this->db->from('classroom_group');
+		$this->db->order_by('groupCode', $orderby);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0)
+			return $query;
+		else
+			return false;
+	}
+	
+	function getGroupNameByGroupCode($group_code) {
+		//classroom_group
+		$this->db->select('groupName');
+		$this->db->from('classroom_group');
+		$this->db->where('groupCode', $group_code);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1)	{
+			$row = $query->row(); 
+			return $row->groupName;
+		}
+		else
+			return false;
+	}
+	
+	function getGroupShortNameByGroupCode($group_code) {
+		//classroom_group
+		$this->db->select('groupShortName');
+		$this->db->from('classroom_group');
+		$this->db->where('groupCode', $group_code);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			$row = $query->row(); 
+			return $row->groupShortame;
+		}
+		else
+			return false;
+	}
+	
+	function getGroupNamesByGroupCode($group_code) {
+		//classroom_group
+		$this->db->select('groupName,groupShortName');
+		$this->db->from('classroom_group');
+		$this->db->where('groupCode', $group_code);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			$row = $query->row(); 
+			return array($row->groupShortName,$row->groupName);
+		}
+		else
+			return false;
+	}
     
    
 	function get_group_by_teachercode_and_day($teacher_code,$day_code)	{

@@ -81,6 +81,7 @@
 				<a tabindex="-1" href="#"><?php echo lang('statistics_checkings');?></a>
 					<ul class="dropdown-menu">
 						<li><a href='<?=base_url()?>index.php/managment/statistics_checkings_groups')?><?php echo lang('statistics_checkings_groups');?></a></li>
+						<li><a href='<?=base_url()?>index.php/managment/users_in_group')?><?php echo lang('users_in_group');?></a></li>
 					</ul>
 			</li>
 			  <?php endif; ?>
