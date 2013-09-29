@@ -1,12 +1,12 @@
 <?php
 /**
- * Ebre-inventory Model
+ * Attendance_model Model
  *
  *
- * @package    	Ebre-inventory CRUD
+ * @package    	Ebre-escool
  * @author     	Sergi Tur <sergitur@ebretic.com>
  * @version    	1.0
- * @link		http://www.acacha.com/index.php/ebre-inventory
+ * @link		http://www.acacha.com/index.php/ebre-escool
  */
 class attendance_model  extends CI_Model  {
 	

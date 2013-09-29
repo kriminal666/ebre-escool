@@ -223,7 +223,22 @@ class ebre_escool_ldap  {
 	}
 		
 	public function userHaveShadowAccount($dn) {
-		return true;
+		$return_value=false;
+		
+		if ($this->_bind()) {
+			$required_attributes=array("objectClass");
+			$filter = '(objectClass=posixAccount)';		
+			$search = ldap_search($this->ldapconn, $dn, $filter,$required_attributes);
+        	$user = ldap_get_entries($this->ldapconn, $search);
+        	
+        	if ($user["count"] != 0) {		
+				print_r($user[0]["objectClass"]);
+				if (in_array("shadowAccount", $user[0]["objectClass"])) {
+					$return_value=true;	
+				}
+			}
+		}
+		return $return_value;
 	}
 	
 	
@@ -273,209 +288,6 @@ class ebre_escool_ldap  {
 		}
 		return $hash; 
 	}
-	
-	public function change_password_gosa ($dn, $password, $mode=FALSE, $hash= "", $old_password = "", &$message = "")	{
-		
-		global $config;
-		$newpass= "";
-
-		// Not sure, why this is here, but maybe some encryption methods require it.
-		mt_srand((double) microtime()*1000000);
-
-		// Get a list of all available password encryption methods.
-		$methods = new passwordMethod(session::get('config'),$dn);
-		$available = $methods->get_available_methods();
-
-		// Fetch the current object data, to be able to detect the current hashing method
-		//  and to be able to rollback changes once has an error occured.
-		$ldap = $config->get_ldap_link();
-		$ldap->cat ($dn, array("shadowLastChange", "userPassword","sambaNTPassword","sambaLMPassword", "uid", "objectClass"));
-		$attrs = $ldap->fetch ();
-		$initialAttrs = $attrs;
-
-		// If no hashing method is enforced, then detect what method we've to use.
-		$hash = strtolower($hash);
-		if(empty($hash)){
-
-			// Do we need clear-text password for this object?
-			if(isset($attrs['userPassword'][0]) && !preg_match ("/^{([^}]+)}(.+)/", $attrs['userPassword'][0])){
-				$hash = "clear";
-				$test = new $available[$hash]($config,$dn);
-				$test->set_hash($hash);
-			}
-
-			// If we've still no valid hashing method detected, then try to extract if from the userPassword attribute.
-			elseif(isset($attrs['userPassword'][0]) && preg_match ("/^{([^}]+)}(.+)/", $attrs['userPassword'][0], $matches)){
-				$test = passwordMethod::get_method($attrs['userPassword'][0],$dn);
-				if($test){
-					$hash = $test->get_hash_name();
-				}
-			}
-
-			// No current password was found and no hash is enforced, so we've to use the config default here.
-			$hash = $config->get_cfg_value('core','passwordDefaultHash');
-			$test = new $available[$hash]($config,$dn);
-			$test->set_hash($hash);
-		}else{
-			$test = new $available[$hash]($config,$dn);
-			$test->set_hash($hash);
-		}	
-
-    // We've now a valid password-method-handle and can create the new password hash or don't we?
-    if(!$test instanceOf passwordMethod){
-        $message = _("Cannot detect password hash!");
-    }else{
-
-        // Feed password backends with object information. 
-        $test->dn = $dn;
-        $test->attrs = $attrs;
-        $newpass= $test->generate_hash($password);
-
-        // Do we have to append samba attributes too?
-        // - sambaNTPassword / sambaLMPassword
-        $tmp = $config->get_cfg_value('core','sambaHashHook');
-        $attrs= array();
-        if (!$mode && !empty($tmp)){
-            $attrs= generate_smb_nt_hash($password);
-            if(!count($attrs) || !is_array($attrs)){
-                msg_dialog::display(_("Error"),_("Cannot generate SAMBA hash!"),ERROR_DIALOG);
-                return(FALSE);    
-            }
-        }
-
-        // Write back the new password hash 
-        $ldap->cd($dn);
-        $attrs['userPassword']= $newpass;
-
-        // For posixUsers - Set the last changed value.
-        if(in_array_strict("shadowAccount", $initialAttrs['objectClass'])){
-            $attrs['shadowLastChange'] = (int)(date("U") / 86400);
-        }
-
-        // Prepare a special attribute list, which will be used for event hook calls
-        $attrsEvent = array();
-        foreach($initialAttrs as $name => $value){
-            if(!is_numeric($name))
-                $attrsEvent[$name] = escapeshellarg($value[0]);
-        }
-        $attrsEvent['dn'] = escapeshellarg($initialAttrs['dn']);
-        foreach($attrs as $name => $value){
-            $attrsEvent[$name] = escapeshellarg($value);
-        }
-        $attrsEvent['current_password'] = escapeshellarg($old_password);
-        $attrsEvent['new_password'] = escapeshellarg($password);
-
-        // Call the premodify hook now
-        $passwordPlugin = new password($config,$dn);
-        plugin::callHook($passwordPlugin, 'PREMODIFY', $attrsEvent, $output,$retCode,$error, $directlyPrintError = FALSE);
-        if($retCode === 0 && count($output)){
-            $message = sprintf(_("Pre-event hook reported a problem: %s. Password change canceled!"),implode($output));
-            return(FALSE);
-        }
-
-        // Perform ldap operations
-        $ldap->modify($attrs);
-
-        // Check if the object was locked before, if it was, lock it again!
-        $deactivated = $test->is_locked($config,$dn);
-        if($deactivated){
-            $test->lock_account($config,$dn);
-        }
-
-        // Check if everything went fine and then call the post event hooks.
-        // If an error occures, then try to rollback the complete actions done.
-        $preRollback = FALSE;
-        $ldapRollback = FALSE;
-        $success = TRUE;
-        if (!$ldap->success()) {
-            new log("modify","users/passwordMethod",$dn,array(),"Password change - ldap modifications! - FAILED");
-            $success =FALSE;
-            $message = msgPool::ldaperror($ldap->get_error(), $dn, LDAP_MOD);
-            $preRollback  =TRUE;
-        } else {
-
-            // Now call the passwordMethod change mechanism.
-            if(!$test->set_password($password)){
-                $ldapRollback = TRUE;
-                $preRollback  =TRUE;
-                $success = FALSE;
-                new log("modify","users/passwordMethod",$dn,array(),"Password change - set_password! - FAILED");
-                $message = _("Password change failed!");
-            }else{
-        
-                // Execute the password hook
-                plugin::callHook($passwordPlugin, 'POSTMODIFY', $attrsEvent, $output,$retCode,$error, $directlyPrintError = FALSE);
-                if($retCode === 0){
-                    if(count($output)){
-                        new log("modify","users/passwordMethod",$dn,array(),"Password change - Post modify hook reported! - FAILED!");
-                        $message = sprintf(_("Post-event hook reported a problem: %s. Password change canceled!"),implode($output));
-                        $ldapRollback = TRUE;
-                        $preRollback = TRUE;
-                        $success = FALSE;
-                    }else{
-                        #new log("modify","users/passwordMethod",$dn,array(),"Password change - successfull!");
-                    }
-                }else{
-                    $ldapRollback = TRUE;
-                    $preRollback = TRUE;
-                    $success = FALSE;
-                    new log("modify","users/passwordMethod",$dn,array(),"Password change - postmodify hook execution! - FAILED");
-                    new log("modify","users/passwordMethod",$dn,array(),$error);
-
-                    // Call password method again and send in old password to 
-                    //  keep the database consistency
-                    $test->set_password($old_password);
-                }
-            }
-        }
-
-        // Setting the password in the ldap database or further operation failed, we should now execute 
-        //  the plugins pre-event hook, using switched passwords, new/old password.
-        // This ensures that passwords which were set outside of GOsa, will be reset to its 
-        //  starting value.
-        if($preRollback){
-            new log("modify","users/passwordMethod",$dn,array(),"Rolling back premodify hook!");
-            $oldpass= $test->generate_hash($old_password);
-            $attrsEvent['current_password'] = escapeshellarg($password);
-            $attrsEvent['new_password'] = escapeshellarg($old_password);
-            foreach(array("userPassword","sambaNTPassword","sambaLMPassword") as $attr){
-                if(isset($initialAttrs[$attr][0])) $attrsEvent[$attr] = $initialAttrs[$attr][0];
-            }
-            
-            plugin::callHook($passwordPlugin, 'PREMODIFY', $attrsEvent, $output,$retCode,$error, $directlyPrintError = FALSE);
-            if($retCode === 0 && count($output)){
-                $message = sprintf(_("Pre-event hook reported a problem: %s. Password change canceled!"),implode($output));
-                new log("modify","users/passwordMethod",$dn,array(),"Rolling back premodify hook! - FAILED!");
-            }
-        }
-        
-        // We've written the password to the ldap database, but executing the postmodify hook failed.
-        // Now, we've to rollback all password related ldap operations.
-        if($ldapRollback){
-            new log("modify","users/passwordMethod",$dn,array(),"Rolling back ldap modifications!");
-            $attrs = array();
-            foreach(array("userPassword","sambaNTPassword","sambaLMPassword") as $attr){
-                if(isset($initialAttrs[$attr][0])) $attrs[$attr] = $initialAttrs[$attr][0];
-            }
-            $ldap->cd($dn);
-            $ldap->modify($attrs);
-            if(!$ldap->success()){
-                $message = msgPool::ldaperror($ldap->get_error(), $dn, LDAP_MOD);
-                new log("modify","users/passwordMethod",$dn,array(),"Rolling back ldap modifications! - FAILED");
-            }
-        }
-
-        // Log action.
-        if($success){
-            stats::log('global', 'global', array('users'),  $action = 'change_password', $amount = 1, 0, $test->get_hash());
-            new log("modify","users/passwordMethod",$dn,array(),"Password change - successfull!");
-        }else{
-            new log("modify","users/passwordMethod",$dn,array(),"Password change - FAILED!");
-        }
-
-        return($success);
-    }
-}
 	
 	public function getAllGroupStudentsDNs($groupdn) {
 		$allGroupStudentsDNs=array();
