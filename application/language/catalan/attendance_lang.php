@@ -36,4 +36,7 @@ $lang['reports']   = 'Informes';
 $lang['check_attendance_table_title'] = 'Passar llista';
 $lang['choose_date_string'] = 'Escolliu la data (format dd-mm-aaa)';
 
+$lang['timetables']='Horaris';
+$lang['my_timetables']='Els meus horaris';
+
 
