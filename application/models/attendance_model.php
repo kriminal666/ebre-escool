@@ -34,7 +34,7 @@ class attendance_model  extends CI_Model  {
 		$this->db->order_by('groupCode', $orderby);
 		
 		$query = $this->db->get();
-
+		
 		if ($query->num_rows() > 0)
 			return $query;
 		else

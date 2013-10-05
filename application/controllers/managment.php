@@ -246,11 +246,15 @@ class managment extends skeleton_main {
 		$this->_load_body_header();
 		
 		$data['all_groups_table_title']="Tots els grups";
-
+		
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
 		$data['all_groups']=$all_groups->result();
-		$all_groups_dns= $this->ebre_escool_ldap->getAllGroupsDNs("ou=Alumnes,ou=All,dc=iesebre,dc=com");
+		
+		$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+		
+		$all_groups_dns= $this->ebre_escool_ldap->getAllGroupsDNs($students_base_dn);
+		                
 		$all_groups_totals= array();
 		foreach ($all_groups_dns as $groupdn) {
 			if ($groupdn != ""){
@@ -258,7 +262,8 @@ class managment extends skeleton_main {
 				$all_groups_totals += array( $groupdn => $group_total);
 			}
 		}
-		$all_teachers= $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
+		$teachers_base_dn= $this->config->item('teachers_base_dn','skeleton_auth');                     		                
+		$all_teachers= $this->ebre_escool_ldap->getAllTeachers($teachers_base_dn);
 		
 			
 		foreach ($data['all_groups'] as $group_key => $group) {
