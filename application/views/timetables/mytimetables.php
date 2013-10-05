@@ -1,41 +1,4 @@
-﻿<!-- 
- This work by http://twitter.com/Ben_Lowe of http://www.triballabs.net is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 2.0 UK: England & Wales License.
- http://creativecommons.org/licenses/by-nc-sa/2.0/uk/ 
--->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
-    <link href="css/docs.css" rel="stylesheet" />
-    <link href="css/tribal-bootstrap.css" rel="stylesheet" />
-    <link href="css/tribal-timetable.css" rel="stylesheet" />
-
-    <script type="text/javascript" src="js/jquery-latest.js"></script>
-    <script type="text/javascript" src="js/jquery.ba-resize.js"></script>
-    <script type="text/javascript" src="js/bootstrap-tooltip.js"></script>
-    <script type="text/javascript" src="js/bootstrap-collapse.js"></script>
-    <script type="text/javascript" src="js/tribal.js"></script>
-    <script type="text/javascript" src="js/tribal-shared.js"></script>
-    <script type="text/javascript" src="js/tribal-timetable.js"></script>
-    <title>jQuery Timetable</title>
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-21875603-1']);
-        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google
-        _gaq.push(['_trackPageview']);
-        _gaq.push(['_trackPageLoadTime']);
-        (function () {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-</head>
-<body>
-    <div class="container">
+﻿<div class="container">
         <header class="jumbotron subhead" id="overview"> 
 			<h1>Horaris</h1>
 		</header>
@@ -140,7 +103,7 @@
                 <div class="tt-time" data-time="1">
                     10<span class="hidden-phone">:00</span></div>
                 <div class="tt-time" data-time="2">
-                    11 - 11:30</div>
+                    11</div>
                 <div class="tt-time" data-time="3">
                     11:30</div>
                 <div class="tt-time" data-time="4">
@@ -156,7 +119,7 @@
                 <div class="tt-time" data-time="9">
                     17:30</div>
                 <div class="tt-time" data-time="10">
-                    18:30 - 19</div>
+                    18:30</div>
                 <div class="tt-time" data-time="11">
                     19<span class="hidden-phone">:00</span></div>
                 <div class="tt-time" data-time="12">
@@ -294,6 +257,4 @@
                 Creative Commons Attribution-NonCommercial-ShareAlike 2.0 UK: England &amp; Wales
                 License</a>.
         </div>
-    </div>
-</body>
-</html>
+</div>
