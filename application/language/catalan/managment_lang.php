@@ -15,6 +15,7 @@
 $lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
 $lang['select_data_source']   = 'Escolliu origen de les dades';
 $lang['users_in_group'] = 'Usuaris per grups';
+$lang['lessons'] = 'Lliçons | Classes';
 
 $lang['select_group']   = 'Escolliu un grup';
 $lang['statistics_checkings']   = 'Estadístiques. Comprovacions';
@@ -53,3 +54,20 @@ $lang['Ok'] = 'Correcte';
 
 $lang['all_groups']="Tots els grups";
 $lang['students_of_a_group']="Alumnes d'un grup";
+$lang['students_group']="Alumnes del grup";
+
+$lang['group']="Grup";
+
+$lang['print_only_students_with_all_data'] = "Imprimir només alumnes amb totes les dades";
+$lang['print_only_students_with_email'] = "Imprimir només alumnes amb correu personal";
+$lang['print_only_students_with_photo'] = "Imprimir només alumnes amb foto";
+$lang['print_only_students'] = "Imprimir tots els alumnes";
+$lang['change_and_print_passwords'] = "Canviar i Imprimir passwords";
+
+$lang['are_you_sure_change_and_print_passwords'] = "Esteu segurs que voleu imprimir i canviar les paraules de pas dels usuaris del grup";
+$lang['are_you_sure_change_and_print_passwords2'] = "Els usuaris ja no podran entrar al sistema fins que no els hi proporcioneu la nova paraula de pas";
+
+$lang['Copy'] = "Copiar";
+$lang['Print'] = "Imprimir";
+
+

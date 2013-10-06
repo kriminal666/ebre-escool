@@ -114,6 +114,9 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/css/jquery-ui.css'));		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));			
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -128,6 +131,9 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/js/jquery.tooltipster.min.js"));		
 			
 		$this->_load_html_header($header_data); 
 		
@@ -137,7 +143,12 @@ class managment extends skeleton_main {
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
 		$data['all_groups']=$all_groups->result();
-		$data['selected_group']="1AF";
+				
+		if (isset($group_code)) {
+			$data['selected_group']= urldecode($group_code);
+		}	else {
+			$data['selected_group']=$default_group_code;
+		}
 		
 		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
@@ -170,6 +181,10 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));		
+					
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -188,7 +203,9 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js"));	
-		
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/js/jquery.tooltipster.min.js"));	
 		
 		$organization = $this->config->item('organization','skeleton_auth');
 
@@ -197,7 +214,6 @@ class managment extends skeleton_main {
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
-		
 		
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
@@ -209,9 +225,17 @@ class managment extends skeleton_main {
 			$data['selected_group']=$default_group_code;
 		}
 		
-		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+		$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+		$default_group_dn=$students_base_dn;
 		
-		$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+		if ($data['selected_group']!="ALL_GROUPS")
+			$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+		
+		if ($data['selected_group']=="ALL_GROUPS")
+			$data['selected_group_names']= array ("",lang("all_students_table_title"));
+		else
+			$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+			
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
 		$this->load->view('managment/massive_change_password',$data);

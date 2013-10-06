@@ -11,6 +11,9 @@
 
 class ebre_escool_ldap  {
 	
+	private $all_groups_by_groupcode = array();
+	private $all_groups_by_groupdn = array();
+	
 	function __construct()
     {
         $this->ci =& get_instance();
@@ -307,12 +310,65 @@ class ebre_escool_ldap  {
 		return $allGroupStudentsDNs;
 	}
 	
+	protected function init_all_groups($basedn = null) {
+		//fill all_groups array
+		$groupdns_by_groupcode=array();
+		$groupdns_by_groupdn=array();
+		if ($basedn == null)
+			$basedn = $this->basedn;
+		if ($this->_bind()) {
+			$needed_attrs = array('physicalDeliveryOfficeName', 'cn','ou','description');
+			$filter = '(physicalDeliveryOfficeName=*)';
+			$search = ldap_search($this->ldapconn, $basedn, $filter,$needed_attrs);
+        	$allgroupdns = ldap_get_entries($this->ldapconn, $search);
+        	        	
+        	foreach ($allgroupdns as $group){
+				$group_code = $group['physicaldeliveryofficename'][0];
+				$groupobj = new stdClass;
+				$group_dn = $group['dn'];
+				$groupobj->dn = $group_dn;
+				$groupobj->code = $group_code;
+				$groupobj->name = (isset($group['ou'])) ? $group['ou'][0] : "";
+				$groupobj->description = (isset($group['description'])) ? $group['description'][0] : "";	
+				
+				$groupdns_by_groupcode[$group_code] = $groupobj;
+				$groupdns_by_groupdn[$group_dn] = $groupobj;
+			}
+		}
+		$this->all_groups_by_groupcode=$groupdns_by_groupcode;
+		$this->all_groups_by_groupdn=$groupdns_by_groupdn;
+	}
 	
+	protected function extractGroupNameFromDN($group_dn) {
+		if (array_key_exists($group_dn,$this->all_groups_by_groupdn))	{
+			return $this->all_groups_by_groupdn[$group_dn]->name;
+		} else {
+			return false;
+		}
+	}
+	
+	protected function extractGroupCodeFromDN($group_dn) {
+		if (array_key_exists($group_dn,$this->all_groups_by_groupdn))	{
+			return $this->all_groups_by_groupdn[$group_dn]->code;
+		} else {
+			return false;
+		}
+	}
+	
+	protected function obtainGroupDNfromUserDN($dn) {
+		$position_of_people=strpos($dn,"ou=people,");
+		
+		if (!$position_of_people) return false;
+		
+		$position=$position_of_people + 10;
+		return substr($dn,$position);
+	}
+
 	public function getAllGroupStudentsInfo($groupdn) {
 		$allGroupStudentsInfo=array();
 
 		if ($this->_bind()) {
-			$filter = '(objectClass=posixAccount)';		
+			$filter = '(&  (objectClass=posixAccount)(!(objectClass=gosaUserTemplate)))';		
 			$required_attributes= array("irisPersonalUniqueID","irisPersonalUniqueIDType","highSchoolTSI","highSchoolUserId","employeeNumber","sn","sn1","sn2",
 										"givenName","gender","homePostalAddress","l","postalCode","st","mobile","homePhone","dateOfBirth","uid","highSchoolPersonalEmail",
 										"jpegPhoto");
@@ -322,6 +378,9 @@ class ebre_escool_ldap  {
 			
 			$students = array();
 			$i=0;
+			
+			$this->init_all_groups();
+			
 			if (count($allGroupStudentsDNsentries) != 0) {
 				foreach ($allGroupStudentsDNsentries as $studententry){		
 					if ($i == 0) {
@@ -329,7 +388,17 @@ class ebre_escool_ldap  {
 						continue;
 					}
 					$student = new stdClass;
-						
+					
+					$dn=$studententry['dn'];
+					
+					$group_dn=$this->obtainGroupDNfromUserDN($dn);
+					
+					$group_name = $this->extractGroupNameFromDN($group_dn);
+					$group_code = $this->extractGroupCodeFromDN($group_dn);
+					
+					$student->dn = $dn;		
+					$student->group_code = $group_code;
+					$student->group_name = $group_name;
 					$student->irisPersonalUniqueID = (isset($studententry['irispersonaluniqueid'])) ? $studententry['irispersonaluniqueid'][0] : "";	
 					$student->irisPersonalUniqueIDType = (isset($studententry['irispersonaluniqueidtype'])) ? $studententry['irispersonaluniqueidtype'][0] : "";
 					$student->highSchoolTSI = (isset($studententry['highschooltsi'])) ? $studententry['highschooltsi'][0] : "";

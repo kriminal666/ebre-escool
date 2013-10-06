@@ -1,6 +1,8 @@
-<!-- http://jqueryui.com/datepicker/ -->
 <script>
 $(function(){
+	
+	$("[rel='tooltip']").tooltipster();	
+	
 	$(".chosen-select,.chosen-multiple-select").chosen({allow_single_deselect:true});	
 	
 	$('#group_code').chosen().change(function(event) {
@@ -10,40 +12,24 @@ $(function(){
 	
 	
 	$('#massive_password_change_form').submit(function(e) {
-		var r=confirm("Esteu segurs que voleu imprimir i canviar les paraules de pas dels usuaris del grup? <br/>Els usuaris ja no podran entrar al sistema fins que no els hi proporcioneu la nova paraula de pas.");
+		var r=confirm("<?php echo lang("are_you_sure_change_and_print_passwords"); ?>? <br/><?php echo lang("are_you_sure_change_and_print_passwords2");?>.");
 		if (r==true)	{
 			window.open('', 'formpopup', 'width=200,height=200,scrollbars=yes');
 			this.target = 'formpopup';
 		} else {
 			e.preventDefault();
 		}
-		/*
-		e.preventDefault();
-		alert("test:" + $(this).attr('action'));
-		$('<div/>', {'id':'dialog-message', 'title':'Descàrrega completada'})
-			.html($('<iframe/>', {
-				'src' : $(this).attr('action'),
-				'style' :'width:100%; height:100%;border:none;'
-			})).appendTo('body')
-			.dialog({
-				'width' : 400,
-				'height' :250,
-				buttons: [ { 
-                    text: "Close",
-                    click: function() { $( this ).dialog( "close" ); } 
-                } ]
-			});
-       */
     });
     
     $('#all_users_in_group').dataTable( {
 		"sDom": 'T<"clear">lfrtip',
+		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],
 		"oTableTools": {
             "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
 			"aButtons": [
 				{
 					"sExtends": "copy",
-					"sButtonText": "Copiar"
+					"sButtonText": "<?php echo lang("Copy");?>"
 				},
 				{
 					"sExtends": "csv",
@@ -56,13 +42,13 @@ $(function(){
 				{
 					"sExtends": "pdf",
 					"sPdfOrientation": "landscape",
-					"sPdfMessage": "Alumnes del grup",
+					"sPdfMessage": "<?php echo lang("students_group");?>",
 					"sTitle": "<?php echo $selected_group . ". " . $selected_group_names[1] . "( " . $selected_group_names[0] . ")" ;?>",
 					"sButtonText": "PDF"
 				},
 				{
 					"sExtends": "print",
-					"sButtonText": "Imprimir"
+					"sButtonText": "<?php echo lang("Print");?>"
 				},
 			]
 
@@ -125,10 +111,8 @@ $data_source_additional_parameters="";
 		<?php if ($data_source_key == $selected_datasource)	{
 			$data_source_additional_parameters='selected="selected"';
 		}
-		?>
-		
+		?>		
 		<option value="<?php echo $data_source_key?>" <?php echo $data_source_additional_parameters?>$><?php echo $data_source_value?></option>
-
 	 <?php endforeach; ?>
     </select>
   </div>
@@ -146,32 +130,44 @@ $data_source_additional_parameters="";
   <div class="span4"> </div>
   <div class="span4" style="padding:5px;">
    <select id="group_code" name="group_code" class="chosen-select" data-place_holder="<?php echo lang("select_group")?>" style="width:400px;">
+    <option value="ALL_GROUPS"><?php echo lang("all_groups");?></option>
 	<?php foreach ($all_groups as $group_key => $group) : ?>
 	    <?php $group_additional_parameters=""; ?>
 		<?php if ($group->groupCode == $selected_group)	{
 			$group_additional_parameters='selected="selected"';
 		}?>
-		<option value="<?php echo $group->groupCode;?>" <?php echo $group_additional_parameters?>$><?php echo $group->groupCode . " - " . $group->groupShortName?></option>
+		<option value="<?php echo $group->groupCode;?>" <?php echo $group_additional_parameters?>><?php echo $group->groupCode . " - " . $group->groupShortName?></option>
 
 	 <?php endforeach; ?>
    </select>
    <select name="only_students_with_all_data" class="chosen-select" data-place_holder="TODO" style="width:400px;">
-		 <option value="1" selected="selected">Imprimir només alumnes amb totes les dades</option>
-		 <option value="2">Imprimir només alumnes amb correu personal</option>
-		 <option value="3">Imprimir només alumnes amb foto</option>
-		 <option value="4">Imprimir tots els alumnes</option>
+		 <option value="1" selected="selected"><?php echo lang("print_only_students_with_all_data");?></option>
+		 <option value="2"><?php echo lang("print_only_students_with_email");?></option>
+		 <option value="3"><?php echo lang("print_only_students_with_photo");?></option>
+		 <option value="4"><?php echo lang("print_only_students");?></option>
    </select>
-   <button id="print_new_passwords" class="btn" type="submit">Canviar i Imprimir passwords</button>
+   <button id="print_new_passwords" class="btn" type="submit"><?php echo lang("change_and_print_passwords");?></button>
   </div>
 </div>
 </form>
 
+<?php
+$colspan_value=9;
+if ($selected_group == "ALL_GROUPS")	{
+	$colspan_value=10;
+}
+	  
+?>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_users_in_group">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="9" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
+    <td colspan="<?php echo $colspan_value;?>" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
   </tr>
   <tr>
+	 <?php if ($selected_group == "ALL_GROUPS"): ?>
+	  <th><font size="-4"><?php echo lang('group')?></font></th>	
+	 <?php endif;?>
      <th><font size="-4"><?php echo lang('externalID')?></font></th>
      <th><font size="-4"><?php echo lang('internalID')?></font></th>
      <th><font size="-4"><?php echo lang('sn1')?></font></th>
@@ -187,14 +183,22 @@ $data_source_additional_parameters="";
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_students_in_group as $student_key => $student) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><font size="-4"><?php echo $student->irisPersonalUniqueID;?></font></td>
-     <td><font size="-4"><?php echo $student->highSchoolUserId;?></font></td>
-     <td><font size="-4"><?php echo $student->sn1;?></font></td>
-     <td><font size="-4"><?php echo $student->sn2;?></font></td>
-     <td><font size="-4"><?php echo $student->givenName;?></font></td>
-     <td><font size="-4"><?php echo $student->uid;?></font></td>
-     <td><font size="-4"><?php echo $student->highSchoolPersonalEmail;?></font></td>
-     <td>
+	 <?php if ($selected_group == "ALL_GROUPS"): ?>
+	  <td><font size="-4">
+	  <?php
+	   echo $student->group_code . " ( " . str_replace(" ","_",$student->group_code) . " )";
+	  ?>
+	  
+	  </font></td>
+	 <?php endif;?>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo $student->irisPersonalUniqueID;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo $student->highSchoolUserId;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo ucfirst(strtolower($student->sn1));?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo ucfirst(strtolower($student->sn2));?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo ucfirst(strtolower($student->givenName));?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo $student->uid;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-4"><?php echo $student->highSchoolPersonalEmail;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>">
 	  <font size="-4">
 	   <?php if ($student->jpegPhoto !="") {
 				echo "S";
@@ -204,7 +208,7 @@ $data_source_additional_parameters="";
 		   }?>
 	  </font>	   
 	 </td>
-	 <td>
+	 <td rel='tooltip' title="<?php echo $student->dn;?>">
 	  <font size="-4">
 	   
 	   <?php if (($student->jpegPhoto !="") && ($student->highSchoolPersonalEmail !="")) {
@@ -215,7 +219,6 @@ $data_source_additional_parameters="";
 		   }?>
 	  </font>
 	 </td>
-     <!-- <?php echo $student->jpegPhoto;?> -->
    </tr>
   <?php endforeach; ?>
  </tbody>

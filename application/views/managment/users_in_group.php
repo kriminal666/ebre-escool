@@ -1,6 +1,10 @@
 <!-- http://jqueryui.com/datepicker/ -->
 <script>
 $(function(){
+	
+	$("[rel='tooltip']").tooltipster();	
+
+	
 	$(".chosen-select,.chosen-multiple-select").chosen({allow_single_deselect:true});	
 	
 	//$("#dialog-message").dialog("open");
@@ -128,48 +132,48 @@ $data_source_additional_parameters="";
     <td colspan="18" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo lang('selected_group')?></h4></td>
   </tr>
   <tr>
-     <th><font size="-4"><?php echo lang('externalID')?></font></th>
-     <th><font size="-4"><?php echo lang('irisPersonalUniqueIDType')?></font></th>
-     <th><font size="-4"><?php echo lang('TSI')?></font></th>
-     <th><font size="-4"><?php echo lang('internalID')?></font></th>
-     <th><font size="-4"><?php echo lang('employeeNumber')?></font></th>
-     <th><font size="-4"><?php echo lang('sn1')?></font></th>
-     <th><font size="-4"><?php echo lang('sn2')?></font></th>
-     <th><font size="-4"><?php echo lang('givenName')?></font></th>
-     <th><font size="-4"><?php echo lang('Gender')?></font></th>
-     <th><font size="-4"><?php echo lang('homePostalAddress')?></font></th>
-     <th><font size="-4"><?php echo lang('location')?></font></th>
-     <th><font size="-4"><?php echo lang('postalCode')?></font></th>
-     <th><font size="-4"><?php echo lang('mobile')?></font></th>
-     <th><font size="-4"><?php echo lang('homePhone')?></font></th>
-     <th><font size="-4"><?php echo lang('dateOfBirth')?></font></th>
-     <th><font size="-4"><?php echo lang('uid')?></font></th>
-     <th><font size="-4"><?php echo lang('personal_email')?></font></th>
-     <th><font size="-4"><?php echo lang('photo')?></font></th>
+     <th><font size="-6"><?php echo lang('externalID')?></font></th>
+     <th><font size="-6"><?php echo lang('irisPersonalUniqueIDType')?></font></th>
+     <th><font size="-6"><?php echo lang('TSI')?></font></th>
+     <th><font size="-6"><?php echo lang('internalID')?></font></th>
+     <th><font size="-6"><?php echo lang('employeeNumber')?></font></th>
+     <th><font size="-6"><?php echo lang('sn1')?></font></th>
+     <th><font size="-6"><?php echo lang('sn2')?></font></th>
+     <th><font size="-6"><?php echo lang('givenName')?></font></th>
+     <th><font size="-6"><?php echo lang('Gender')?></font></th>
+     <th><font size="-6"><?php echo lang('homePostalAddress')?></font></th>
+     <th><font size="-6"><?php echo lang('location')?></font></th>
+     <th><font size="-6"><?php echo lang('postalCode')?></font></th>
+     <th><font size="-6"><?php echo lang('mobile')?></font></th>
+     <th><font size="-6"><?php echo lang('homePhone')?></font></th>
+     <th><font size="-6"><?php echo lang('dateOfBirth')?></font></th>
+     <th><font size="-6"><?php echo lang('uid')?></font></th>
+     <th><font size="-6"><?php echo lang('personal_email')?></font></th>
+     <th><font size="-6"><?php echo lang('photo')?></font></th>
   </tr>
  </thead>
  <tbody>
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_students_in_group as $student_key => $student) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><font size="-4"><?php echo $student->irisPersonalUniqueID;?></font></td>
-     <td><font size="-4"><?php echo $student->irisPersonalUniqueIDType;?></font></td>
-     <td><font size="-4"><?php echo $student->highSchoolTSI;?></font></td>
-     <td><font size="-4"><?php echo $student->highSchoolUserId;?></font></td>
-     <td><font size="-4"><?php echo $student->employeeNumber;?></font></td>
-     <td><font size="-4"><?php echo $student->sn1;?></font></td>
-     <td><font size="-4"><?php echo $student->sn2;?></font></td>
-     <td><font size="-4"><?php echo $student->givenName;?></font></td>
-     <td><font size="-4"><?php echo $student->gender;?></font></td>
-     <td><font size="-4"><?php echo $student->homePostalAddress;?></font></td>
-     <td><font size="-4"><?php echo $student->location;?></font></td>
-     <td><font size="-4"><?php echo $student->postalCode;?></font></td>
-     <td><font size="-4"><?php echo $student->mobile;?></font></td>
-     <td><font size="-4"><?php echo $student->homePhone;?></font></td>
-     <td><font size="-4"><?php echo $student->dateOfBirth;?></font></td>
-     <td><font size="-4"><?php echo $student->uid;?></font></td>
-     <td><font size="-4"><?php echo $student->highSchoolPersonalEmail;?></font></td>
-     <td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->irisPersonalUniqueID;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->irisPersonalUniqueIDType;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->highSchoolTSI;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->highSchoolUserId;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->employeeNumber;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->sn1;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->sn2;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->givenName;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->gender;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->homePostalAddress;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->location;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->postalCode;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->mobile;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->homePhone;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->dateOfBirth;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->uid;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->highSchoolPersonalEmail;?></font></td>
+     <td rel='tooltip' title="<?php echo $student->dn;?>">
 	   <?php if ($student->jpegPhoto !="") {
 				echo "Sí";
 		   }
