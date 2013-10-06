@@ -28,7 +28,7 @@ $(function() {
 	});
 	
     //$('#groups_by_teacher_an_date1').dataTable();
-    console.log("HEY YOU1");
+    //console.log("HEY YOU1");
     
 	$.datepicker.regional['ca'] = {
 	                closeText: 'Tancar',

@@ -50,3 +50,6 @@ $lang['uid'] = 'Usuari';
 $lang['personal_email'] = 'Correu personal';
 $lang['photo'] = 'Foto';
 $lang['Ok'] = 'Correcte';
+
+$lang['all_groups']="Tots els grups";
+$lang['students_of_a_group']="Alumnes d'un grup";

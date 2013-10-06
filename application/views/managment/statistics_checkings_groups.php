@@ -27,38 +27,6 @@ $(function(){
 });
 </script>
 
-<?php
-/*
-$all_groups_table_title="Tots els grups";
-$all_groups=array();
-
-$all_groups['1AF']= new stdClass;
-$all_groups['1AF']->group_code="1AF";
-$all_groups['1AF']->group_name="1r Admin i finances";
-$all_groups['1AF']->mentor_code="17";
-$all_groups['1AF']->mentor_name="Pilar nuez";
-$all_groups['1AF']->ldap_cn="cn=prova";
-$all_groups['1AF']->total_students=20;
-
-$all_groups['1APD']= new stdClass;
-$all_groups['1APD']->group_code="1APD";
-$all_groups['1APD']->group_name="1r APD";
-$all_groups['1APD']->mentor_code="18";
-$all_groups['1APD']->mentor_name="Pepito Grillo";
-$all_groups['1APD']->ldap_cn="cn=prova1";
-$all_groups['1APD']->total_students=25;
-
-
-$all_groups['1DIE']= new stdClass;
-$all_groups['1DIE']->group_code="1DIE";
-$all_groups['1DIE']->group_name="DIE";
-$all_groups['1DIE']->mentor_code="19";
-$all_groups['1DIE']->mentor_name="Linus Torvalds";
-$all_groups['1DIE']->ldap_cn="cn=prova1";
-$all_groups['1DIE']->total_students=25;
-* */
-?>
-
 <div class="container">
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">

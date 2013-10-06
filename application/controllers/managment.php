@@ -8,9 +8,14 @@ class managment extends skeleton_main {
     {
         parent::__construct();
         
-        //$this->load->library('attendance');
         $this->load->model('attendance_model');
         $this->load->library('ebre_escool_ldap');
+        
+        // Load the language file
+        $this->lang->load('managment','catalan');
+        $this->load->helper('language');
+        
+        $this->config->load('managment');
         
 	}
 	
@@ -26,7 +31,9 @@ class managment extends skeleton_main {
 		
 		if ($group_code) {
 			//Obtain groupdn
-			$all_groups_dns= $this->ebre_escool_ldap->getAllGroupsDNs("ou=Alumnes,ou=All,dc=iesebre,dc=com");
+			$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+            $all_groups_dns= $this->ebre_escool_ldap->getAllGroupsDNs($students_base_dn);
+
 			$group_dn="";
 			if (array_key_exists($group_code,$all_groups_dns))	{
 				$group_dn=$all_groups_dns[$group_code];
@@ -140,14 +147,17 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 	}
 	
-	public function massive_change_password($group_code="1AF") {
-	
+	public function massive_change_password($group_code=null) {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+		$default_group_code = $this->config->item('default_group_code');
+		if ($group_code==null) {
+			$group_code=$default_group_code;
+		}
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
@@ -179,7 +189,10 @@ class managment extends skeleton_main {
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js"));	
 		
-		$header_data['header_title']="Alumnes d'un grup. Institut de l'Ebre";
+		
+		$organization = $this->config->item('organization','skeleton_auth');
+
+		$header_data['header_title']=lang("students_of_a_group") . ". " . $organization;
 				
 		$this->_load_html_header($header_data); 
 		
@@ -193,10 +206,11 @@ class managment extends skeleton_main {
 		if (isset($group_code)) {
 			$data['selected_group']= urldecode($group_code);
 		}	else {
-			$data['selected_group']="1AF";
+			$data['selected_group']=$default_group_code;
 		}
 		
 		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+		
 		$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
@@ -212,10 +226,7 @@ class managment extends skeleton_main {
 	
 	public function statistics_checkings_groups() {
 		
-		//TODO: only admin users
 		$skeleton_admin_group = $this->config->item('skeleton_admin_group','skeleton_auth');
-		//echo "test: " . !$this->skeleton_auth->in_group($skeleton_admin_group);
-		//		$this->skeleton_auth->in_group($skeleton_admin_group)
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
@@ -245,11 +256,20 @@ class managment extends skeleton_main {
 		
 		$this->_load_body_header();
 		
-		$data['all_groups_table_title']="Tots els grups";
+		$data['all_groups_table_title']=lang("all_groups");
 		
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
-		$data['all_groups']=$all_groups->result();
+		$data['all_groups']=array();
+		
+		if ($all_groups) {
+			$data['all_groups']=$all_groups->result();
+		}
+		else {
+			$this->load->view('managment/statistics_checkings_groups.php',$data);		
+			$this->_load_body_footer();	
+			return;
+		}
 		
 		$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
 		
