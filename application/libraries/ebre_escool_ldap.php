@@ -370,13 +370,13 @@ class ebre_escool_ldap  {
 		if ($this->_bind()) {
 			$filter = '(&  (objectClass=posixAccount)(!(objectClass=gosaUserTemplate)))';		
 			$required_attributes= array("irisPersonalUniqueID","irisPersonalUniqueIDType","highSchoolTSI","highSchoolUserId","employeeNumber","sn","sn1","sn2",
-										"givenName","gender","homePostalAddress","l","postalCode","st","mobile","homePhone","dateOfBirth","uid","highSchoolPersonalEmail",
-										"jpegPhoto");
+										"givenName","gender","homePostalAddress","l","postalCode","st","mobile","homePhone","dateOfBirth","uid","uidnumber","highSchoolPersonalEmail",
+										"jpegPhoto","gidNumber","homeDirectory","loginShell","sambaDomainName","sambaHomeDrive","sambaHomePath","sambaLogonScript","sambaSID","sambaPrimaryGroupSID");
 			$search = @ldap_search($this->ldapconn, $groupdn, $filter,$required_attributes);
         	$allGroupStudentsDNsentries = @ldap_get_entries($this->ldapconn, $search);
       		$this->ldap_multi_sort($allGroupStudentsDNsentries, array("sn","givenname"));
-			
-			$students = array();
+      		
+      		$students = array();
 			$i=0;
 			
 			$this->init_all_groups();
@@ -413,12 +413,24 @@ class ebre_escool_ldap  {
 					$student->location = (isset($studententry['l'])) ? $studententry['l'][0] : "";
 					$student->postalCode = (isset($studententry['postalcode'])) ? $studententry['postalcode'][0] : "";
 					$student->st = (isset($studententry['st'])) ? $studententry['st'][0] : "";
+					$student->state = (isset($studententry['st'])) ? $studententry['st'][0] : "";
 					$student->mobile = (isset($studententry['mobile'])) ? $studententry['mobile'][0] : "";
 					$student->homePhone = (isset($studententry['homephone'])) ? $studententry['homephone'][0] : "";
 					$student->dateOfBirth = (isset($studententry['dateofbirth'])) ? $studententry['dateofbirth'][0] : "";
 					$student->uid = (isset($studententry['uid'])) ? $studententry['uid'][0] : "";
+					$student->uidnumber = (isset($studententry['uidnumber'])) ? $studententry['uidnumber'][0] : "";
 					$student->highSchoolPersonalEmail = (isset($studententry['highschoolpersonalemail'])) ? $studententry['highschoolpersonalemail'][0] : "";
 					$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : "";
+					
+					$student->gidNumber = (isset($studententry['gidnumber'])) ? $studententry['gidnumber'][0] : "";
+					$student->homeDirectory = (isset($studententry['homedirectory'])) ? $studententry['homedirectory'][0] : "";
+					$student->loginShell = (isset($studententry['loginshell'])) ? $studententry['loginshell'][0] : "";
+					$student->sambaDomainName = (isset($studententry['sambadomainname'])) ? $studententry['sambadomainname'][0] : "";
+					$student->sambaHomeDrive = (isset($studententry['sambahomedrive'])) ? $studententry['sambahomedrive'][0] : "";
+					$student->sambaHomePath = (isset($studententry['sambahomepath'])) ? $studententry['sambahomepath'][0] : "";
+					$student->sambaLogonScript = (isset($studententry['sambalogonscript'])) ? $studententry['sambalogonscript'][0] : "";
+					$student->sambaSID = (isset($studententry['sambasid'])) ? $studententry['sambasid'][0] : "";
+					$student->sambaPrimaryGroupSID = (isset($studententry['sambaprimarygroupsid'])) ? $studententry['sambaprimarygroupsid'][0] : "";
 		
 					array_push($allGroupStudentsInfo,$student);
 				}

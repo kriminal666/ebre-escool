@@ -162,7 +162,7 @@ if ($selected_group == "ALL_GROUPS")	{
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_users_in_group">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="<?php echo $colspan_value;?>" style="text-align: center;"> <h4><?php echo lang('all_students_table_title')?>. Grup: <?php echo $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
+    <td colspan="<?php echo $colspan_value;?>" style="text-align: center;"> <h4><?php echo lang('all_students_table_title') . ". " . lang('group') . ": " . $selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
   </tr>
   <tr>
 	 <?php if ($selected_group == "ALL_GROUPS"): ?>

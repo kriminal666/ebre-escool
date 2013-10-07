@@ -98,11 +98,16 @@ class managment extends skeleton_main {
 		}
 	}
 	
-	public function users_in_group() {
+	public function users_in_group($group_code=null) {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$default_group_code = $this->config->item('default_group_code');
+		if ($group_code==null) {
+			$group_code=$default_group_code;
 		}
 		
 		$header_data= $this->add_css_to_html_header_data(
@@ -116,6 +121,9 @@ class managment extends skeleton_main {
 			base_url('assets/css/jquery-ui.css'));		
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
 			base_url('assets/css/tooltipster.css'));			
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
@@ -126,11 +134,13 @@ class managment extends skeleton_main {
 			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));			
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
-			
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");						
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js"));				
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/js/jquery.tooltipster.min.js"));		
@@ -150,7 +160,16 @@ class managment extends skeleton_main {
 			$data['selected_group']=$default_group_code;
 		}
 		
-		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+		$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+		$default_group_dn=$students_base_dn;
+		if ($data['selected_group']!="ALL_GROUPS")
+			$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+		
+		if ($data['selected_group']=="ALL_GROUPS")
+			$data['selected_group_names']= array (lang("all_students_table_title"),"");
+		else
+			$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+		
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
 		$this->load->view('managment/users_in_group',$data);
@@ -227,15 +246,14 @@ class managment extends skeleton_main {
 		
 		$students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
 		$default_group_dn=$students_base_dn;
-		
 		if ($data['selected_group']!="ALL_GROUPS")
 			$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
 		
 		if ($data['selected_group']=="ALL_GROUPS")
-			$data['selected_group_names']= array ("",lang("all_students_table_title"));
+			$data['selected_group_names']= array (lang("all_students_table_title"),"");
 		else
 			$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-			
+		
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
 		$this->load->view('managment/massive_change_password',$data);

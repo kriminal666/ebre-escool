@@ -66,6 +66,13 @@
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       <?php endif; ?>
+      
+      <li class="dropdown">
+       <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo "Inventari";?> <b class="caret"></b></a>
+       <ul class="dropdown-menu">
+         <li><a href="<?=base_url()?>index.php/inventory"><?php echo "Inventari";?></a></li>
+       </ul>                                                                                                                                                                                                                                                                                                                                      
+      </li>
 		 
       <?php if ($show_maintenace_menu): ?>                   
  
