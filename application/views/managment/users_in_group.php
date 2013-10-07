@@ -149,9 +149,18 @@ $data_source_additional_parameters="";
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_users_in_group">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="29" style="text-align: center;"> <h4><?php echo lang('all_students_table_title') . ". " . lang('group') . ": " .$selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
+	<?php
+	$colspan_value=29;
+	if ($selected_group == "ALL_GROUPS") {
+		$colspan_value=$colspan_value+1;
+	}
+	?>  
+    <td colspan="<?php echo $colspan_value;?>" style="text-align: center;"> <h4><?php echo lang('all_students_table_title') . ". " . lang('group') . ": " .$selected_group_names[1] . " (" . $selected_group_names[0] . ")"?></h4></td>
   </tr>
   <tr>
+	 <?php if ($selected_group == "ALL_GROUPS"): ?>
+	  <th><font size="-4"><?php echo lang('group')?></font></th>	
+	 <?php endif;?>
      <th><font size="-6"><?php echo lang('externalID')?></font></th>
      <th><font size="-6"><?php echo lang('irisPersonalUniqueIDType')?></font></th>
      <th><font size="-6"><?php echo lang('TSI')?></font></th>
@@ -187,6 +196,13 @@ $data_source_additional_parameters="";
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_students_in_group as $student_key => $student) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
+	 <?php if ($selected_group == "ALL_GROUPS"): ?>
+	  <td><font size="-4">
+	  <?php
+	   echo $student->group_code . " ( " . str_replace(" ","_",$student->group_code) . " )";
+	 ?>
+	 </font></td>
+	 <?php endif;?>
      <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->irisPersonalUniqueID;?></font></td>
      <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->irisPersonalUniqueIDType;?></font></td>
      <td rel='tooltip' title="<?php echo $student->dn;?>"><font size="-6"><?php echo $student->highSchoolTSI;?></font></td>
