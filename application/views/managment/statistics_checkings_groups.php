@@ -4,6 +4,37 @@
 $(function(){
 
 	$('#all_groups').dataTable( {
+		"aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, lang("All")]],
+			"oTableTools": {
+            "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
+			"aButtons": [
+				{
+					"sExtends": "copy",
+					"sButtonText": "<?php echo lang("Copy");?>"
+				},
+				{
+					"sExtends": "csv",
+					"sButtonText": "CSV"
+				},
+				{
+					"sExtends": "xls",
+					"sButtonText": "XLS"
+				},
+				{
+					"sExtends": "pdf",
+					"sPdfOrientation": "landscape",
+					"sPdfMessage": "<?php echo lang("students_group");?>",
+					"sTitle": "<?php echo $selected_group . ". " . $selected_group_names[1] . "( " . $selected_group_names[0] . ")" ;?>",
+					"sButtonText": "PDF"
+				},
+				{
+					"sExtends": "print",
+					"sButtonText": "<?php echo lang("Print");?>"
+				},
+			]
+
+        },
+        "iDisplayLength": 50,
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
