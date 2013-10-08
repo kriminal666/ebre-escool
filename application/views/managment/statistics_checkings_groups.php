@@ -23,8 +23,8 @@ $(function(){
 				{
 					"sExtends": "pdf",
 					"sPdfOrientation": "landscape",
-					"sPdfMessage": "<?php echo lang("students_group");?>",
-					"sTitle": "<?php echo $selected_group . ". " . $selected_group_names[1] . "( " . $selected_group_names[0] . ")" ;?>",
+					"sPdfMessage": "<?php echo lang("all_groups");?>",
+					"sTitle": "TODO",
 					"sButtonText": "PDF"
 				},
 				{
