@@ -81,4 +81,18 @@ $lang['are_you_sure_change_and_print_passwords2'] = "Els usuaris ja no podran en
 $lang['Copy'] = "Copiar";
 $lang['Print'] = "Imprimir";
 
+$lang['All'] = "Tots";
 
+$lang['students_group']="Alumnes del grup";
+$lang['lessons']="Lliçons";
+$lang['select_lesson']="Escolliu una lliçó";
+$lang['all_lessons']="Totes les lliçons/classes";
+
+$lang['lesson_id']="Id de la lliço";
+$lang['lesson_code']="Codi";
+$lang['classroom_group_code']="Codi del grup de classe";
+$lang['teacher_code']="Codi del professor";
+$lang['lesson_shortname']="Nom curt";
+$lang['classrom_code']="Codi del grup de classe";
+$lang['day_code']="Codi dia";
+$lang['hour_code']="Codi hora";

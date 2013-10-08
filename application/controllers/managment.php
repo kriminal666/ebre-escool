@@ -98,6 +98,71 @@ class managment extends skeleton_main {
 		}
 	}
 	
+	public function lessons($lesson_code=null) {
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/jquery-ui.css'));		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));			
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");						
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js"));				
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/js/jquery.tooltipster.min.js"));		
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+		
+		$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
+		
+		$default_lesson_code = $this->config->item('default_group_code');
+		if ($lesson_code==null) {
+			$lesson_code=$default_lesson_code;
+		}
+		
+		if (isset($lesson_code)) {
+			$data['selected_lesson']= urldecode($lesson_code);
+		}	else {
+			$data['selected_lesson']=$default_lesson_code;
+		}
+
+		$this->load->view('managment/lessons',$data);
+		
+		$this->_load_body_footer();
+	}
+	
+	
 	public function users_in_group($group_code=null) {
 		if (!$this->skeleton_auth->logged_in())
 		{

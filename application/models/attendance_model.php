@@ -27,6 +27,33 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 	
+	/*
+	function getAllLessonsWithGroupCodeShortNames($orderby="asc") {
+		$all_lessons=$this->getAllLessons();
+		
+		foreach ($all_lessons as $lesson_key => $lesson) {
+			$lesson->classroom_group_shortname="PROVA";
+		}
+		
+		return $all_lessons;
+	}*/
+	
+	function getAllLessons($orderby="asc") {
+		//classroom_group
+		$this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,classrom_code,day_code,hour_code');
+		$this->db->from('lesson');
+		$this->db->order_by('lesson_code', $orderby);
+		$this->db->join('classroom_group', 'classroom_group.groupCode = lesson.classroom_group_code', 'left');
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0)
+			return $query;
+		else
+			return false;
+		
+	}
+	
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
 		$this->db->select('groupId,groupCode,groupShortName,groupName,groupDescription,educationalLevelId,mentorId');
