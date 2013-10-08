@@ -34,7 +34,7 @@ $(function(){
 			]
 
         },
-        "iDisplayLength": 50,
+        "iDisplayLength": 100,
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
