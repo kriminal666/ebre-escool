@@ -1,4 +1,4 @@
-CREATE ALGORITHM = UNDEFINED VIEW classroom_group_view(
+CREATE ALGORITHM = UNDEFINED VIEW classroom_group(
 groupId,
 groupCode,
 groupShortName,
