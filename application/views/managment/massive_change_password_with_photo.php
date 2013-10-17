@@ -217,11 +217,8 @@ $data_source_additional_parameters="";
 		   }?>
 	  </font>
 	 </td>
-     <!-- <?php echo $student->jpegPhoto;?> -->
    </tr>
   <?php endforeach; ?>
  </tbody>
 </table>
-
-
 </div>
