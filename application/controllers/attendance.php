@@ -57,8 +57,16 @@ class attendance extends skeleton_main {
 
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);
+        $this->grocery_crud->set_subject(lang('ClassroomGroup'));
+
 
         $this->grocery_crud->display_as('groupCode',lang('GroupCode'));
+		$this->grocery_crud->display_as('groupShortName',lang('GroupShortName'));
+		$this->grocery_crud->display_as('groupName',lang('GroupName'));
+		$this->grocery_crud->display_as('groupDescription',lang('GroupDescription'));
+		$this->grocery_crud->display_as('educationalLevelId',lang('EducationalLevelId'));
+		$this->grocery_crud->display_as('mentorId',lang('MentorId'));
+
 
 		$output = $this->grocery_crud->render();
                         
