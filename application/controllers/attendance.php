@@ -57,8 +57,49 @@ class attendance extends skeleton_main {
 
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);
+
+        //ESTABLISH SUBJECT        
         $this->grocery_crud->set_subject(lang('ClassroomGroup'));
 
+		//Mandatory fields
+        $this->grocery_crud->required_fields('groupName','groupShortName','markedForDeletion');
+        
+        //express fields
+        $this->grocery_crud->express_fields('name','shortName','externalCode');
+
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_add_field('last_update',array($this,'add_field_callback_last_update'));
+      
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+   		$this->grocery_crud->unset_add_fields('last_update');
+        
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+
+        /*
+        $this->set_common_columns_name();
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        $this->grocery_crud->unset_add_fields('last_update');
+        
+        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+		*/
 
         $this->grocery_crud->display_as('groupCode',lang('GroupCode'));
 		$this->grocery_crud->display_as('groupShortName',lang('GroupShortName'));
@@ -165,6 +206,48 @@ class attendance extends skeleton_main {
 	public function index() {
 		$this->check_attendance();
 	}
-	
+	/*
+	function add_field_callback_entryDate(){  
+		  $data= date('d/m/Y H:i:s', time());
+		  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="entryDate" id="field-entryDate" readonly>';    
+	}
+
+	function edit_field_callback_entryDate($value, $primary_key){  
+		  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="entryDate" id="field-entryDate" readonly>';    
+	    }
+	    
+	function edit_callback_last_update($value, $primary_key){  
+		 return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'"  name="last_update" id="field-last_update" readonly>';
+	    }    	
+
+	function edit_field_callback_lastupdate($value, $primary_key){
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="entryDate" id="field-last_update" readonly>';    	
+	}
+
+	//UPDATE AUTOMATIC FIELDS BEFORE INSERT
+	function before_insert_user_preference_callback($post_array, $primary_key) {
+			//UPDATE LAST UPDATE FIELD
+			$data= date('d/m/Y H:i:s', time());
+			$post_array['last_update'] = $data;
+			
+			$user_id=$this->session->userdata('user_id');
+			$post_array['userId'] = $user_id;
+			$post_array['creationUserId'] = $user_id;
+			$post_array['lastupdateUserId'] = $user_id;
+			
+			
+			return $post_array;
+	}
+
+	//UPDATE AUTOMATIC FIELDS BEFORE UPDATE
+	function before_update_object_callback($post_array, $primary_key) {
+			//UPDATE LAST UPDATE FIELD
+			$data= date('d/m/Y H:i:s', time());
+			$post_array['last_update'] = $data;
+			
+			$post_array['lastupdateUserId'] = $this->session->userdata('user_id');
+			return $post_array;
+	}
+	*/
 	
 }
