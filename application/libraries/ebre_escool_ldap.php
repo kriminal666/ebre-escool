@@ -481,7 +481,7 @@ class ebre_escool_ldap  {
 	}
     
     public function getTeacherNameByEmployeeNumber ($employeeNumber) {
-		$basedn="ou=Profes,ou=All,dc=iesebre,dc=com";
+		$basedn="ou=Profes,ou=All,dc=iesdeltebre,dc=net";
 		return $this->getPersonNamebyEmployeeNumber($employeeNumber,$basedn);
 	}
 	

@@ -41,6 +41,7 @@ $(function(){
 			null,
 			null,
 			null,
+   		        <?php if ($exists_assignatures_table){ echo "null,"; }?>
 			null,
 			null,
 			null,
@@ -88,6 +89,10 @@ $(function(){
 	 <th><?php echo lang('classroom_group_code');?></th>	
 	 <th><?php echo lang('teacher_code');?></th>	
 	 <th><?php echo lang('lesson_shortname');?></th>	
+         <?php if ($exists_assignatures_table): ?>
+           <th><?php echo lang('lesson_name');?></th>
+         <?php endif;?>
+	                 
 	 <th><?php echo lang('classrom_code');?></th>	
 	 <th><?php echo lang('day_code');?></th>	
 	 <th><?php echo lang('hour_code')?></th>	
@@ -106,6 +111,14 @@ $(function(){
 	   </td>
 	   <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->teacher_code;?></td>
 	   <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->lesson_shortname;?></td>
+	   <?php if ($exists_assignatures_table): ?>
+	     <?php if ($lesson->nom_assignatura!=""):?>
+                        <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->nom_assignatura?></td>
+             <?php else: ?>
+                        <td rel='tooltip' title="<?php echo $lesson_title;?>"> </td>
+             <?php endif;?>             
+           <?php endif;?>
+	                          
 	   <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->classrom_code;?></td>
 	   <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->day_code;?></td>
 	   <td rel='tooltip' title="<?php echo $lesson_title;?>"><?php echo $lesson->hour_code;?></td>

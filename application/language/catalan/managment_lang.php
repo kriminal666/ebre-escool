@@ -93,6 +93,7 @@ $lang['lesson_code']="Codi";
 $lang['classroom_group_code']="Codi del grup de classe";
 $lang['teacher_code']="Codi del professor";
 $lang['lesson_shortname']="Nom curt";
+$lang['lesson_name']="Nom";
 $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";

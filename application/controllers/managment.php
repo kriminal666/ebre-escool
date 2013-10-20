@@ -143,8 +143,18 @@ class managment extends skeleton_main {
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
-		
-		$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
+
+		$data['all_lessons']=null;
+
+		$exists_assignatures_table=$this->config->item('exists_assignatures_table');		
+
+		$data['exists_assignatures_table']=false;
+		if ($exists_assignatures_table)		{
+			$data['all_lessons']= $this->attendance_model->getAllLessons(true)->result();
+			$data['exists_assignatures_table']=true;			                
+		}
+		else
+			$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
 		
 		$default_lesson_code = $this->config->item('default_group_code');
 		if ($lesson_code==null) {
