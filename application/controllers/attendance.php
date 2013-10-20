@@ -10,11 +10,66 @@ class attendance extends skeleton_main {
         
         //$this->load->library('attendance');
         $this->load->model('attendance_model');
+
+        //GROCERY CRUD
+		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
+        $this->load->library('grocery_CRUD');
+        $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
+		$this->load->library('image_CRUD');  
+
+		/* Set language */
+		$current_language=$this->session->userdata("current_language");
+		if ($current_language == "") {
+			$current_language= $this->config->item('default_language','skeleton_auth');
+		}
+		$this->grocery_crud->set_language($current_language);
+    	$this->lang->load('skeleton', $current_language);	       
+    	
+    	$this->lang->load('attendance', $current_language);	
+    	
+		$this->lang->load('managment', $current_language);        
         
 	}
 	
 	public function prova() {
 		$this->load->view('attendance/prova');
+	}
+
+	public function classroom_groups() {
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			
+		
+
+		$this->current_table="classroom_group";
+        $this->grocery_crud->set_table($this->current_table);
+
+        $this->grocery_crud->display_as('groupCode',lang('GroupCode'));
+
+		$output = $this->grocery_crud->render();
+                        
+        $this->_load_html_header($header_data,$output); 
+	    $this->_load_body_header();
+			
+        $this->load->view('attendance/classroom_groups_view.php',$output);     
+
+
+		$this->_load_body_footer();
+
 	}
 	
 	public function check_attendance() {

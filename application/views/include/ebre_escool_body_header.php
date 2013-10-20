@@ -81,6 +81,15 @@
        <ul class="dropdown-menu">
          <li><a href="<?=base_url()?>index.php/skeleton_main/organizational_unit"><?php echo lang('organizationalunit_menu');?></a></li>
          <li><a href="<?=base_url()?>index.php/skeleton_main/location"><?php echo lang('location_menu');?></a></li>
+
+         <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo "Gestió assistència";?></a>
+            <ul class="dropdown-menu">
+              <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
+              <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
+            </ul>
+         </li> 
+    
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       <?php endif; ?>

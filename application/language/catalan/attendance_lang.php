@@ -39,4 +39,4 @@ $lang['choose_date_string'] = 'Escolliu la data (format dd-mm-aaa)';
 $lang['timetables']='Horaris';
 $lang['my_timetables']='Els meus horaris';
 
-
+$lang['GroupCode']="Codi de grup";
