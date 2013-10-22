@@ -31,9 +31,24 @@ class attendance extends skeleton_main {
         
 	}
 	
-	public function prova() {
-		$this->load->view('attendance/prova');
+	public function pdf_exemple1() {
+		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
+		#$this->load->library('fpdf');
+		$this->load->library('pdf');
+		$pdf=new PDF();
+
+		
+		$pdf->AddPage();
+		$pdf->SetFont('Arial','B',16);
+		$pdf->Cell(0,10,utf8_decode('¡Hola, Món!'),1,2,'L');
+		#$this->fpdf->Ln();
+		$pdf->Cell(0,10,'Powered by FPDF.',1,2,'C');
+		$pdf->Cell(0,10,'Title',1,0,'R');
+		$pdf->Output();
 	}
+
+
+
 
 	public function classroom_groups() {
 		if (!$this->skeleton_auth->logged_in())
