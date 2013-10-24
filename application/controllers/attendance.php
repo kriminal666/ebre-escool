@@ -31,19 +31,16 @@ class attendance extends skeleton_main {
         
 	}
 	
-	public function pdf_exemple1() {
+	public function pdf_exemple() {
 		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
 		#$this->load->library('fpdf');
-		$this->load->library('pdf');
-		$pdf=new PDF();
-
+		$this->load->library('fpdf');
+		$pdf=new FPDF();
 		
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);
+		$pdf->Image('http://fpdf.org/logo.gif');
 		$pdf->Cell(0,10,utf8_decode('¡Hola, Món!'),1,2,'L');
-		#$this->fpdf->Ln();
-		$pdf->Cell(0,10,'Powered by FPDF.',1,2,'C');
-		$pdf->Cell(0,10,'Title',1,0,'R');
 		$pdf->Output();
 	}
 
@@ -51,6 +48,15 @@ class attendance extends skeleton_main {
 
 
 	public function classroom_groups() {
+		//Cargar la llibreria fpdf
+		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
+		#$this->load->library('fpdf');
+		$this->load->library('pdf');
+		$pdf=new PDF();
+
+
+
+
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
