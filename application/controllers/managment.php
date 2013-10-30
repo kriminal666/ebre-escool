@@ -326,7 +326,6 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 	}
 	
-	
 	public function index() {
 		$this->massive_change_password();
 	}
@@ -428,5 +427,162 @@ class managment extends skeleton_main {
 	public function statistics_checkings() {
 		$this->statistics_checkings_groups();
 	}
+
+/* Menú Manteniment -> Pla Estudis */
+
+	public function course() {
+
+		/* Grocery Crud */
+		$this->current_table="course";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('course'));                
+/*        
+        //Mandatory fields
+        $this->grocery_crud->required_fields('name','shortName','markedForDeletion');
+        
+        //Express fields
+        $this->grocery_crud->express_fields('name','shortName','parentLocation');
+        
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+        
+        //Relacions entre taules
+//        $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
+        
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+//        $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
+//        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+//        $this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
+//        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+        
+//        $this->grocery_crud->unset_dropdowndetails("creationUserId","lastupdateUserId","parentLocation");
+        
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'markedForDeletion','n');
+        */           
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+	   
+               $this->load->view('managment/course.php',$output);     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
+	public function studies() {
+		/* Grocery Crud */
+		$this->current_table="studies";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('studies'));          
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+	   
+               $this->load->view('managment/studies.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
+	public function cycle() {
+		/* Grocery Crud */
+		$this->current_table="cycle";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('cycle'));          
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header(); 
+        $this->load->view('managment/cycle.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}			
+
+	public function organizational_unit() {
+		/* Grocery Crud */
+		$this->current_table="organizational_unit";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('organizational_unit'));          
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+        $this->load->view('managment/organizational_unit.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
 	
 }

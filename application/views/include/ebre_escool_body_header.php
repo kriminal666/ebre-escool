@@ -88,7 +88,16 @@
               <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
               <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
             </ul>
-         </li> 
+         </li>
+         <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
+            <ul class="dropdown-menu">
+              <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
+            </ul>
+         </li>          
     
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
