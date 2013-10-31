@@ -95,7 +95,7 @@
               <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
-              <li><a href='<?=base_url()?>index.php/managment/organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
             </ul>
          </li>          
     
