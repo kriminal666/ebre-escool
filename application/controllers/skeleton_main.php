@@ -330,6 +330,7 @@ class skeleton_main extends CI_Controller {
 		
 		$default_values=$this->_get_default_values();
 		$default_values["table_name"]=$this->current_table;
+		$default_values["field_prefix"]='';
 		$this->load->view('defaultvalues_view.php',$default_values); 
 	    
         $this->load->view('organizational_unit_view.php',$output);     

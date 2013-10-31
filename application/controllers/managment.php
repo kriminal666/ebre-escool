@@ -472,14 +472,14 @@ class managment extends skeleton_main {
         $this->grocery_crud->required_fields('course_name','course_shortname','course_markedForDeletion');
 
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('course_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('course_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('course_last_update',array($this,'edit_field_callback_lastupdate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('course_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
         $this->grocery_crud->express_fields('course_name','course_shortname');
@@ -503,32 +503,32 @@ class managment extends skeleton_main {
 
 /*       
         //Relacions entre taules
-//        $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
-        
+        $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
+*/        
          //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('last_update');
+        $this->grocery_crud->unset_add_fields('course_last_update');
    		
    		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-//        $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
-//        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('course_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'course_creationUserId',$this->session->userdata('user_id'));
 
         //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-//        $this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
-//        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('course_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'course_lastupdateUserId',$this->session->userdata('user_id'));
         
-//        $this->grocery_crud->unset_dropdowndetails("creationUserId","lastupdateUserId","parentLocation");
-        
+        $this->grocery_crud->unset_dropdowndetails("course_creationUserId","course_lastupdateUserId");
+   
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
         //Default values:
-        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'markedForDeletion','n');
-        */           
+        $this->grocery_crud->set_default_value($this->current_table,'course_markedForDeletion','n');
+                   
         $output = $this->grocery_crud->render();
 
        /*******************
@@ -541,6 +541,11 @@ class managment extends skeleton_main {
 	   /******************/
 	   $this->_load_body_header();
 	   
+		$default_values=$this->_get_default_values();
+		$default_values["table_name"]=$this->current_table;
+		$default_values["field_prefix"]="course_";
+		$this->load->view('defaultvalues_view.php',$default_values); 
+
                $this->load->view('managment/course.php',$output);     
        
        /*******************
@@ -561,14 +566,14 @@ class managment extends skeleton_main {
         $this->grocery_crud->required_fields('studies_name','studies_shortname','studies_markedForDeletion');
 
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('studies_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('studies_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('studies_last_update',array($this,'edit_field_callback_lastupdate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('studies_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
         $this->grocery_crud->express_fields('studies_name','studies_shortname');
@@ -585,6 +590,30 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('studies_lastupdateUserId',lang('lastupdateUserId'));          
         $this->grocery_crud->display_as('studies_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('studies_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('studies_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('studies_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studies_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('studies_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studies_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("studies_creationUserId","studies_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'studies_markedForDeletion','n');
 
         $output = $this->grocery_crud->render();
 
@@ -618,14 +647,14 @@ class managment extends skeleton_main {
         $this->grocery_crud->required_fields('cycle_name','cycle_shortname','cycle_markedForDeletion');
 
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('cycle_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('cycle_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('cycle_last_update',array($this,'edit_field_callback_lastupdate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('cycle_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
         $this->grocery_crud->express_fields('cycle_name','cycle_shortname');
@@ -642,6 +671,30 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('cycle_lastupdateUserId',lang('lastupdateUserId'));          
         $this->grocery_crud->display_as('cycle_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('cycle_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('cycle_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('cycle_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('cycle_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("cycle_creationUserId","cycle_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_markedForDeletion','n');
 
         $output = $this->grocery_crud->render();
 
@@ -674,14 +727,14 @@ class managment extends skeleton_main {
         $this->grocery_crud->required_fields('studiesOU_name','studiesOU_shortname','studiesOU_markedForDeletion');
 
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('studiesOU_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('studiesOU_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
         $this->grocery_crud->express_fields('studiesOU_name','studiesOU_shortname');
@@ -699,6 +752,30 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('studiesOU_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('studiesOU_markedForDeletionDate',lang('markedForDeletionDate')); 
  
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('studiesOU_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('studiesOU_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('studiesOU_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("studiesOU_creationUserId","studiesOU_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_markedForDeletion','n');
+
         $output = $this->grocery_crud->render();
 
        /*******************
