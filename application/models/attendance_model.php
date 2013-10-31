@@ -38,12 +38,21 @@ class attendance_model  extends CI_Model  {
 		return $all_lessons;
 	}*/
 	
-	function getAllLessons($orderby="asc") {
+	function getAllLessons($exists_assignatures_table=false,$orderby="asc") {
 		//classroom_group
-		$this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,classrom_code,day_code,hour_code');
+                if (!$exists_assignatures_table) {
+                        $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,classrom_code,day_code,hour_code');
+                }
+                else {
+                        $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,assignatura.nom_assignatura,classrom_code,day_code,hour_code');
+                }
+                                                
 		$this->db->from('lesson');
 		$this->db->order_by('lesson_code', $orderby);
 		$this->db->join('classroom_group', 'classroom_group.groupCode = lesson.classroom_group_code', 'left');
+                if ($exists_assignatures_table) {
+                        $this->db->join('assignatura', 'lesson.lesson_shortname = assignatura.codi_assignatura', 'left');                                        
+                }
 		
 		$query = $this->db->get();
 		

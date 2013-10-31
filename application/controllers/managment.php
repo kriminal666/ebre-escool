@@ -104,7 +104,6 @@ class managment extends skeleton_main {
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-/* THIS CODE HAS BEEN MOVED TO $this->set_header_data();		
 
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
@@ -144,12 +143,18 @@ class managment extends skeleton_main {
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
-*/
 
-		//Load CSS & JS
-		$this->set_header_data();
+		$data['all_lessons']=null;
 
-		$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
+		$exists_assignatures_table=$this->config->item('exists_assignatures_table');		
+
+		$data['exists_assignatures_table']=false;
+		if ($exists_assignatures_table)		{
+			$data['all_lessons']= $this->attendance_model->getAllLessons(true)->result();
+			$data['exists_assignatures_table']=true;			                
+		}
+		else
+			$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
 		
 		$default_lesson_code = $this->config->item('default_group_code');
 		if ($lesson_code==null) {
