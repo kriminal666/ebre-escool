@@ -97,3 +97,12 @@ $lang['lesson_name']="Nom";
 $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
+
+/* Menú manteniments Plans Estudi */
+$lang['course']="Curs";
+    $lang['course_number']="Num. Curs";
+    $lang['course_cycle_id']="ID Cicle"; 
+    $lang['course_estudies_id']="ID Estudi";  
+$lang['studies']="Estudis";
+$lang['cycles']="Cicles";
+$lang['organizational_unit']="Unitat Organitzativa";

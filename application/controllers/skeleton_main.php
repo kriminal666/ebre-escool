@@ -1,6 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-
 class skeleton_main extends CI_Controller {
 	
 	function __construct()
@@ -92,7 +91,7 @@ class skeleton_main extends CI_Controller {
 		$data['body_header_app_name']="Skeleton";
 		$this->load->view('include/ebre_escool_body_header',$data);
 	}
-	
+
 	protected function _load_body() {
 		$data=array();
 		$this->load->view('include/body',$data);		
@@ -116,7 +115,6 @@ class skeleton_main extends CI_Controller {
 
 		$this->load->view('include/body_footer',$data);
 	}
-	
 	
 	public function index() {
 		if (!$this->skeleton_auth->logged_in())
@@ -216,7 +214,6 @@ class skeleton_main extends CI_Controller {
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
         $this->grocery_crud->unset_add_fields('last_update');
-        
    		
    		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
         $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
@@ -333,6 +330,7 @@ class skeleton_main extends CI_Controller {
 		
 		$default_values=$this->_get_default_values();
 		$default_values["table_name"]=$this->current_table;
+		$default_values["field_prefix"]='';
 		$this->load->view('defaultvalues_view.php',$default_values); 
 	    
         $this->load->view('organizational_unit_view.php',$output);     
@@ -363,7 +361,6 @@ class skeleton_main extends CI_Controller {
         $this->grocery_crud->add_fields('first_name','last_name','username','password','verify_password','mainOrganizationaUnitId','email','active','company','phone','groups','created_on','ip_address');
         $this->grocery_crud->edit_fields('first_name','last_name','username','password','verify_password','mainOrganizationaUnitId','email','active','company','phone','groups','last_login','ip_address');
         
-
         //CHECK IF STATE IS UPDATE o UPDATE_VALIDATION
         $state = $this->grocery_crud->getState();
         if ($state == "update" || $state == "update_validation" || $state == "edit") {
@@ -564,7 +561,6 @@ class skeleton_main extends CI_Controller {
 			
 		$skip_grocerycrud=false;		
 		$default_values2 = array();
-		
 		
 		//SKIP IS USER IS ADMIN	
 		if (!$this->skeleton_auth->in_group($skeleton_admin_group)) {

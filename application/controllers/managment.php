@@ -16,7 +16,7 @@ class managment extends skeleton_main {
         $this->load->helper('language');
         
         $this->config->load('managment');
-        
+
 	}
 	
 	protected function _getvar($name){
@@ -104,7 +104,7 @@ class managment extends skeleton_main {
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-		
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
@@ -184,7 +184,9 @@ class managment extends skeleton_main {
 		if ($group_code==null) {
 			$group_code=$default_group_code;
 		}
-		
+
+/* THIS CODE HAS BEEN MOVED TO $this->set_header_data();		
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
@@ -223,7 +225,10 @@ class managment extends skeleton_main {
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
-		
+*/
+
+		//Load CSS & JS
+		$this->set_header_data();		
 		
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
@@ -263,6 +268,13 @@ class managment extends skeleton_main {
 		if ($group_code==null) {
 			$group_code=$default_group_code;
 		}
+
+		$organization = $this->config->item('organization','skeleton_auth');
+
+		$header_data['header_title']=lang("students_of_a_group") . ". " . $organization;
+
+/* THIS CODE HAS BEEN MOVED TO $this->set_header_data();	
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
@@ -301,14 +313,18 @@ class managment extends skeleton_main {
 			$header_data,
 			base_url("assets/js/jquery.tooltipster.min.js"));	
 		
-		$organization = $this->config->item('organization','skeleton_auth');
+//		$organization = $this->config->item('organization','skeleton_auth');
 
-		$header_data['header_title']=lang("students_of_a_group") . ". " . $organization;
+//		$header_data['header_title']=lang("students_of_a_group") . ". " . $organization;
 				
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
-		
+*/
+
+		//Load CSS & JS
+		$this->set_header_data();
+
 		$all_groups = $this->attendance_model->get_all_classroom_groups();
 		
 		$data['all_groups']=$all_groups->result();
@@ -335,7 +351,6 @@ class managment extends skeleton_main {
 		
 		$this->_load_body_footer();	
 	}
-	
 	
 	public function index() {
 		$this->massive_change_password();
@@ -438,5 +453,394 @@ class managment extends skeleton_main {
 	public function statistics_checkings() {
 		$this->statistics_checkings_groups();
 	}
-	
+
+/* Menú Manteniment -> Pla Estudis */
+
+	public function course() {
+
+		/* Grocery Crud */
+		$this->current_table="course";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('course'));       
+
+        //Relació de Taules
+        $this->grocery_crud->set_relation('course_cycle_id','cycle','cycle_shortname'); 
+		$this->grocery_crud->set_relation('course_estudies_id','studies','studies_shortname');        
+
+	    //Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
+    	//Param 2: The relation table (cycle)
+    	//Param 3: The 'title' field that we want to use to recognize the relation (cycle_shortname)
+
+		//Mandatory fields
+        $this->grocery_crud->required_fields('course_name','course_shortname','course_markedForDeletion');
+
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('course_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('course_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('course_last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('course_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        $this->grocery_crud->express_fields('course_name','course_shortname');
+        //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('course_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('course_name',lang('name'));
+        $this->grocery_crud->display_as('course_number',lang('course_number'));
+        $this->grocery_crud->display_as('course_cycle_id',lang('course_cycle_id')); 
+        $this->grocery_crud->display_as('course_estudies_id',lang('course_estudies_id'));
+        $this->grocery_crud->display_as('course_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('course_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('course_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('course_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('course_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('course_markedForDeletionDate',lang('markedForDeletionDate'));              
+
+/*       
+        //Relacions entre taules
+        $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
+*/        
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('course_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('course_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'course_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('course_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'course_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("course_creationUserId","course_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'course_markedForDeletion','n');
+                   
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+	   
+		$default_values=$this->_get_default_values();
+		$default_values["table_name"]=$this->current_table;
+		$default_values["field_prefix"]="course_";
+		$this->load->view('defaultvalues_view.php',$default_values); 
+
+               $this->load->view('managment/course.php',$output);     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
+	public function studies() {
+		/* Grocery Crud */
+		$this->current_table="studies";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('studies'));          
+
+		//Mandatory fields
+        $this->grocery_crud->required_fields('studies_name','studies_shortname','studies_markedForDeletion');
+
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('studies_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('studies_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('studies_last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('studies_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        $this->grocery_crud->express_fields('studies_name','studies_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('studies_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('studies_name',lang('name'));
+        $this->grocery_crud->display_as('studies_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('studies_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('studies_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('studies_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('studies_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('studies_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('studies_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('studies_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studies_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('studies_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studies_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("studies_creationUserId","studies_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'studies_markedForDeletion','n');
+
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+	   
+               $this->load->view('managment/studies.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
+	public function cycle() {
+		/* Grocery Crud */
+		$this->current_table="cycle";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('cycle'));          
+
+		//Mandatory fields
+        $this->grocery_crud->required_fields('cycle_name','cycle_shortname','cycle_markedForDeletion');
+
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('cycle_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('cycle_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('cycle_last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('cycle_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        $this->grocery_crud->express_fields('cycle_name','cycle_shortname');
+        
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('cycle_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('cycle_name',lang('name'));
+        $this->grocery_crud->display_as('cycle_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('cycle_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('cycle_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('cycle_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('cycle_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('cycle_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('cycle_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('cycle_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('cycle_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("cycle_creationUserId","cycle_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'cycle_markedForDeletion','n');
+
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header(); 
+        $this->load->view('managment/cycle.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}			
+
+	public function studies_organizational_unit() {
+		/* Grocery Crud */
+		$this->current_table="studies_organizational_unit";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('organizational_unit'));          
+
+		//Mandatory fields
+        $this->grocery_crud->required_fields('studiesOU_name','studiesOU_shortname','studiesOU_markedForDeletion');
+
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field('studiesOU_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('studiesOU_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        $this->grocery_crud->express_fields('studiesOU_name','studiesOU_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('studiesOU_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('studiesOU_name',lang('name'));
+        $this->grocery_crud->display_as('studiesOU_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('studiesOU_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('studiesOU_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('studiesOU_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('studiesOU_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('studiesOU_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+         //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('studiesOU_last_update');
+   		
+   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('studiesOU_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('studiesOU_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("studiesOU_creationUserId","studiesOU_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_markedForDeletion','n');
+
+        $output = $this->grocery_crud->render();
+
+       /*******************
+	   /* HTML HEADER     *
+	   /******************/
+	   $this->_load_html_header($this->_get_html_header_data(),$output); 
+	   
+	   /*******************
+	   /*      BODY       *
+	   /******************/
+	   $this->_load_body_header();
+        $this->load->view('managment/studies_organizational_unit.php');     
+       
+       /*******************
+	   /*      FOOTER     *
+	   *******************/
+	   $this->_load_body_footer();	
+	}
+
+	private function set_header_data() {
+
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/jquery-ui.css'));		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));			
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");						
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js"));				
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/js/jquery.tooltipster.min.js"));		
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();		
+
+	}
+		
 }

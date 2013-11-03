@@ -47,20 +47,20 @@
           <li class="dropdown-submenu">
 			<a tabindex="-1" href="#"><?php echo lang('attendance'). ". " . lang('reports_educational_center_reports');?></a>
 			<ul class="dropdown-menu">
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_educational_center_reports_incidents_by_date');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_educational_center_reports_grup_mentors');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_educational_center_reports_student_emails');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_centre_d_h_1"><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_centre_di_df_1"><?php echo lang('reports_educational_center_reports_incidents_by_date');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_centre_ranking_di_df_1"><?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/Llistat_grup_tutor"><?php echo lang('reports_educational_center_reports_grup_mentors');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/mailing_list_report"><?php echo lang('reports_educational_center_reports_student_emails');?></a></li>
 			</ul>
 		  </li>	
 		  <li class="dropdown-submenu">
 			<a tabindex="-1" href="#"><?php echo lang('attendance'). ". " . lang('reports_group_reports');?></a>
 			<ul class="dropdown-menu">
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_group_reports_class_list');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_group_reports_student_sheet');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance/reports"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/class_list_report"><?php echo lang('reports_group_reports_class_list');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/class_sheet_report"><?php echo lang('reports_group_reports_student_sheet');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_di_df_1"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_faltes_mes_1"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
 			</ul>
 		  </li>	
        </ul>                                                                                                                                                                                                                                                                                                                                      
@@ -88,7 +88,16 @@
               <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
               <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
             </ul>
-         </li> 
+         </li>
+         <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
+            <ul class="dropdown-menu">
+              <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
+            </ul>
+         </li>          
     
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
