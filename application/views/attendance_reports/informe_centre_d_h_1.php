@@ -27,127 +27,6 @@ padding: 0.3em;
 }
 </style>
 
- <script>
-(function( $ ) {
-$.widget( "custom.combobox", {
-_create: function() {
-this.wrapper = $( "<span>" )
-.addClass( "custom-combobox" )
-.insertAfter( this.element );
-this.element.hide();
-this._createAutocomplete();
-this._createShowAllButton();
-},
-_createAutocomplete: function() {
-var selected = this.element.children( ":selected" ),
-value = selected.val() ? selected.text() : "";
-this.input = $( "<input>" )
-.appendTo( this.wrapper )
-.val( value )
-.attr( "title", "" )
-.addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
-.autocomplete({
-delay: 0,
-minLength: 0,
-source: $.proxy( this, "_source" )
-})
-.tooltip({
-tooltipClass: "ui-state-highlight"
-});
-this._on( this.input, {
-autocompleteselect: function( event, ui ) {
-ui.item.option.selected = true;
-this._trigger( "select", event, {
-item: ui.item.option
-});
-},
-autocompletechange: "_removeIfInvalid"
-});
-},
-_createShowAllButton: function() {
-var input = this.input,
-wasOpen = false;
-$( "<a>" )
-.attr( "tabIndex", -1 )
-.attr( "title", "Show All Items" )
-.tooltip()
-.appendTo( this.wrapper )
-.button({
-icons: {
-primary: "ui-icon-triangle-1-s"
-},
-text: false
-})
-.removeClass( "ui-corner-all" )
-.addClass( "custom-combobox-toggle ui-corner-right" )
-.mousedown(function() {
-wasOpen = input.autocomplete( "widget" ).is( ":visible" );
-})
-.click(function() {
-input.focus();
-// Close if already visible
-if ( wasOpen ) {
-return;
-}
-// Pass empty string as value to search for, displaying all results
-input.autocomplete( "search", "" );
-});
-},
-_source: function( request, response ) {
-var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-response( this.element.children( "option" ).map(function() {
-var text = $( this ).text();
-if ( this.value && ( !request.term || matcher.test(text) ) )
-return {
-label: text,
-value: text,
-option: this
-};
-}) );
-},
-_removeIfInvalid: function( event, ui ) {
-// Selected an item, nothing to do
-if ( ui.item ) {
-return;
-}
-// Search for a match (case-insensitive)
-var value = this.input.val(),
-valueLowerCase = value.toLowerCase(),
-valid = false;
-this.element.children( "option" ).each(function() {
-if ( $( this ).text().toLowerCase() === valueLowerCase ) {
-this.selected = valid = true;
-return false;
-}
-});
-// Found a match, nothing to do
-if ( valid ) {
-return;
-}
-// Remove invalid value
-this.input
-.val( "" )
-.attr( "title", value + " didn't match any item" )
-.tooltip( "open" );
-this.element.val( "" );
-this._delay(function() {
-this.input.tooltip( "close" ).attr( "title", "" );
-}, 2500 );
-this.input.data( "ui-autocomplete" ).term = "";
-},
-_destroy: function() {
-this.wrapper.remove();
-this.element.show();
-}
-});
-})( jQuery );
-$(function() {
-$( "#hora_informe" ).combobox();
-$( "#toggle" ).click(function() {
-$( "#hora_informe" ).toggle();
-});
-});
-</script>
 
 <!-- TITLE -->
 <div style='height:30px;'></div>
@@ -155,10 +34,9 @@ $( "#hora_informe" ).toggle();
 		<h2><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour'); ?></h2>
 	</div>    
 
-
 	<!-- FORM -->    
 	<div style="width:40%; margin:0px auto;">
-		<form method="post" action="#" class="form-horizontal" role="form">
+		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>
@@ -166,12 +44,12 @@ $( "#hora_informe" ).toggle();
 						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php echo date("d/m/Y")?>"/></td>
 					</tr>
 				</div>		
-				<div class="ui-widget">
+				<div class="form-group">
 					<tr>
 						<td><laber for="hora_informe">Select the time:</label></td>
-						<td><select class="selectpicker" id="hora_informe" name="hora">
+						<td><select class="chosen-select" id="hora_informe" name="hora">
 							<?php foreach ($hores as $key => $value) { ?>
-								<option value="<?php echo $key ?>" <?php if($key==1){?> selected <?php } ?> ><?php echo $value ?></option>
+								<option value="<?php echo $value ?>" <?php if($key==1){?> selected <?php } ?> ><?php echo $value ?></option>
 							<?php } ?>
 							</select>		
 						</td>
@@ -192,4 +70,35 @@ $( "#hora_informe" ).toggle();
 				<tr><td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td></tr>
 			</table>
 		</form>
+<!-- Proves datatables -->
+		<?php if($_POST){
+			//echo "<pre>";print_r($_POST);echo "</pre>";
+		} ?>
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+ <thead style="background-color: #d9edf7;">
+  <tr>
+    <td colspan="3" style="text-align: center;"> <h4><?php echo $informe_centre_d_h_1_table_title?></h4></td>
+  </tr>
+  <tr>
+     <th>Día</th>
+     <th>Hora</th>
+     <th>Faltes</th>
+  </tr>
+ </thead>
+ <tbody>
+  <!-- Iteration that shows teacher groups for selected day-->
+  <?php foreach ($teacher_groups_current_day as $key => $teacher_group) : ?>
+   <tr align="center" class="{cycle values='tr0,tr1'}">
+     <td><?php echo $teacher_group->time_interval;?></td>
+     <td><a href="<?php echo $teacher_group->group_url;?> "><?php echo $teacher_group->group_name;?></a></td>
+     <td><?php echo $teacher_group->group_code;?></td>
+   </tr>
+  <?php endforeach; ?>
+ </tbody>
+</table>
+
+
+
+<!-- Fi proves datatable -->
 	</div>

@@ -98,11 +98,24 @@ $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
 
+
+$lang['study_module_hoursPerWeek']="Hores Setmanals";
+$lang['study_module_teacher_id']="Codi Professor";
+$lang['study_module_initialDate']="Data inici";
+$lang['study_module_endDate']="Data fí";          
+$lang['type']="Tipus";   
+$lang['subtype']="Subtipus";     
+
 /* Menú manteniments Plans Estudi */
 $lang['course']="Curs";
     $lang['course_number']="Num. Curs";
     $lang['course_cycle_id']="ID Cicle"; 
     $lang['course_estudies_id']="ID Estudi";  
+$lang['classroom_group']="Group de Classe";
+	$lang['group_code']="Codi Grup";
+	$lang['group_EducationalLevelId']="Nivell Educatiu";
+$lang['study_module']="Assignatura | Mòdul Professional";	
+$lang['study_submodules']="Unitat Formativa";
 $lang['studies']="Estudis";
 $lang['cycles']="Cicle";
 $lang['organizational_unit']="Unitat Organitzativa";

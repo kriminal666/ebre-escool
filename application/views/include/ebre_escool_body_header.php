@@ -93,6 +93,9 @@
           <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
             <ul class="dropdown-menu">
               <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/classroom_group'><?php echo lang('classroom_group');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->
+              <li><a href='<?=base_url()?>index.php/managment/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
               <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>              

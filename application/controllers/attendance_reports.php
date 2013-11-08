@@ -23,10 +23,40 @@ class attendance_reports extends skeleton_main {
     /* ASSISTÈNCIA - INFORMES DE CENTRE */
 
     function informe_centre_d_h_1() {
+
+/* Prova DataTables */
+
+        $data= array();
+        $data['informe_centre_d_h_1_table_title']=lang('reports_educational_center_reports_incidents_by_day_and_hour');
+        $data['post'] = $_POST;
+
+        $prova ='';
+
+        foreach ($_POST as $key=>$val){
+            if($key!='data' and $key!='hora'){
+                $prova .= $key." ";
+            }
+        }
+
+        $teacher_groups_current_day=array();
+        
+        $group = new stdClass;
+        $group->time_interval=$_POST['data'];
+        $group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+        $group->group_name=$_POST['hora'];
+        $group->group_code=$prova;
+        
+        $teacher_groups_current_day['key1']= $group;
+        
+        $data['teacher_groups_current_day']=$teacher_groups_current_day;
+
+/* Fi prova datatables */
+
         $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
                                  5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
-                                 9 => '7:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+                                 9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
         $this->load_header();  
+
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
         $this->load_footer();
     }

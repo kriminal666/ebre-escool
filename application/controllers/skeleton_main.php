@@ -913,10 +913,28 @@ function add_field_callback_studiesOU_entryDate(){
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="studiesOU_entryDate" id="field-entryDate" readonly>';    
 }
 
+function add_field_callback_study_module_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="study_module_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_study_submodules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="study_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
 function edit_field_callback_entryDate($value, $primary_key){  
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="entryDate" id="field-entryDate" readonly>';    
-    }
-    
+}
+
+function edit_field_callback_study_module_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="stydy_module_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_study_submodules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="stydy_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
 function edit_callback_last_update($value, $primary_key){  
 	 return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'"  name="last_update" id="field-last_update" readonly>';
     }    
