@@ -923,6 +923,56 @@ function add_field_callback_study_submodules_entryDate(){
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="study_submodules_entryDate" id="field-entryDate" readonly>';    
 }
 
+/* ENROLLMENT */
+function add_field_callback_enrollment_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT STUDIES */
+function add_field_callback_enrollment_studies_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_studies_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_studies_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_studios_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT CLASS GROUP */
+function add_field_callback_enrollment_class_group_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_class_group_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_class_group_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_class_group_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT MODULES */
+function add_field_callback_enrollment_modules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_modules_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_modules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_modules_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT SUBMODULES */
+function add_field_callback_enrollment_submodules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_submodules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
 function edit_field_callback_entryDate($value, $primary_key){  
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="entryDate" id="field-entryDate" readonly>';    
 }

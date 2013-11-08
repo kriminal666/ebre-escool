@@ -98,7 +98,13 @@
               <li><a href='<?=base_url()?>index.php/managment/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
               <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
-              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>
+              <!-- Matrícules -->
+              <li><a href='<?=base_url()?>index.php/managment/enrollment'><?php echo lang('enrollment');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>
          </li>          
     

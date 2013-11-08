@@ -119,3 +119,14 @@ $lang['study_submodules']="Unitat Formativa";
 $lang['studies']="Estudis";
 $lang['cycles']="Cicle";
 $lang['organizational_unit']="Unitat Organitzativa";
+//Matrícules
+$lang['enrollment']="Matrícula";
+	$lang['enrollment_periodid']="Periode de Matrícula";
+	$lang['enrollment_personid']="Matrícula id Persona";
+$lang['enrollment_studies']="Estudis Matriculats";
+
+$lang['enrollment_class_group']="Matrícules de Grups de Classe";
+
+$lang['enrollment_modules']="Matrícules Mòduls";
+
+$lang['enrollment_submodules']="Matrícules Sub-Mòduls";
