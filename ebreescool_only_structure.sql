@@ -168,15 +168,23 @@ CREATE TABLE IF NOT EXISTS `location` (
 --
 
 CREATE TABLE IF NOT EXISTS `classroom_group` (
-  `groupId` int(11) NOT NULL AUTO_INCREMENT,
-  `groupCode` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `groupShortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `groupName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `groupDescription` text COLLATE utf8_unicode_ci NOT NULL,
-  `educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`groupId`),
-  UNIQUE KEY `groupCode` (`groupCode`)
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `group_course_id` int(11) NOT NULL,
+  `group_description` text COLLATE utf8_unicode_ci NOT NULL,
+  `group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `group_entryDate` datetime NOT NULL,
+  `group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `group_creationUserId` int(11) DEFAULT NULL,
+  `group_lastupdateUserId` int(11) DEFAULT NULL,
+  `group_parentLocation` int(11) DEFAULT NULL,
+  `group_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
+  `group_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`group_id`),
+  UNIQUE KEY `group_code` (`group_code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -290,3 +298,51 @@ CREATE TABLE IF NOT EXISTS `studies_organizational_unit` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- Dump completed on 2013-11-04  9:26:45
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module`
+--
+
+CREATE TABLE IF NOT EXISTS `study_module` (
+  `study_module_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_module_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `study_module_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_module_hoursPerWeek` int(3) NOT NULL,
+  `study_module_course_id` int(11) NOT NULL,
+  `study_module_teacher_id` int(11) NOT NULL,
+  `study_module_initialDate` datetime NOT NULL,
+  `study_module_endDate` datetime NOT NULL,
+  `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
+  `study_module_subtype` enum('Trimestral','Quadrimestral') NOT NULL,
+  `study_module_entryDate` datetime NOT NULL,
+  `study_module_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_creationUserId` int(11) DEFAULT NULL,
+  `study_module_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_submodules`
+--
+
+CREATE TABLE IF NOT EXISTS `study_submodules` (
+  `study_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_submodules_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `study_submodules_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_submodules_entryDate` datetime NOT NULL,
+  `study_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_submodules_creationUserId` int(11) DEFAULT NULL,
+  `study_submodules_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_submodules_markedForDeletion` enum('n','y') NOT NULL,
+  `study_submodules_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_submodules_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- Dump completed on 2013-09-13  7:33:11
+
+-- --------------------------------------------------------
