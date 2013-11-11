@@ -124,9 +124,24 @@ $lang['enrollment']="Matrícula";
 	$lang['enrollment_periodid']="Periode de Matrícula";
 	$lang['enrollment_personid']="Matrícula id Persona";
 $lang['enrollment_studies']="Estudis Matriculats";
-
+	$lang['enrollment_studies_periodid']="Id Periode";
+	$lang['enrollment_studies_personid']="Id Persona";
+	$lang['enrollment_studies_study_id']="Id estudi";
 $lang['enrollment_class_group']="Matrícules de Grups de Classe";
-
+	$lang['enrollment_class_group_periodid']="Id Periode";
+	$lang['enrollment_class_group_personid']="Id Persona";
+	$lang['enrollment_class_group_study_id']="Id estudi";
+	$lang['enrollment_class_group_group_id']="Id Grup";
 $lang['enrollment_modules']="Matrícules Mòduls";
-
+	$lang['enrollment_modules_periodid']="Id Periode";
+	$lang['enrollment_modules_personid']="Id Persona";
+	$lang['enrollment_modules_study_id']="Id estudi";
+	$lang['enrollment_modules_group_id']="Id Grup";
+	$lang['enrollment_modules_moduleid']="Id Mòdul";
 $lang['enrollment_submodules']="Matrícules Sub-Mòduls";
+	$lang['enrollment_submodules_periodid']="Id Periode";
+	$lang['enrollment_submodules_personid']="Id Persona";
+	$lang['enrollment_submodules_study_id']="Id estudi";
+	$lang['enrollment_submodules_group_id']="Id Grup";
+	$lang['enrollment_submodules_moduleid']="Id Mòdul";
+	$lang['enrollment_submodules_submoduleid']="Id Sub-Mòdul";

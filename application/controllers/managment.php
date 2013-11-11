@@ -1061,6 +1061,10 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('enrollment_studies_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('enrollment_studies_markedForDeletionDate',lang('markedForDeletionDate'));        		
 
+        $this->grocery_crud->display_as('enrollment_studies_periodid',lang('enrollment_studies_periodid'));          
+        $this->grocery_crud->display_as('enrollment_studies_personid',lang('enrollment_studies_personid'));   
+        $this->grocery_crud->display_as('enrollment_studies_study_id',lang('enrollment_studies_study_id'));        		
+
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
@@ -1160,6 +1164,11 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('enrollment_class_group_lastupdateUserId',lang('lastupdateUserId'));          
         $this->grocery_crud->display_as('enrollment_class_group_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('enrollment_class_group_markedForDeletionDate',lang('markedForDeletionDate'));        		
+
+        $this->grocery_crud->display_as('enrollment_class_group_periodid',lang('enrollment_class_group_periodid'));
+        $this->grocery_crud->display_as('enrollment_class_group_personid',lang('enrollment_class_group_personid'));          
+        $this->grocery_crud->display_as('enrollment_class_group_study_id',lang('enrollment_class_group_study_id'));   
+        $this->grocery_crud->display_as('enrollment_class_group_group_id',lang('enrollment_class_group_group_id'));        		
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -1261,6 +1270,12 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('enrollment_modules_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('enrollment_modules_markedForDeletionDate',lang('markedForDeletionDate'));        		
 
+        $this->grocery_crud->display_as('enrollment_modules_periodid',lang('enrollment_modules_periodid'));
+        $this->grocery_crud->display_as('enrollment_modules_personid',lang('enrollment_modules_personid'));
+        $this->grocery_crud->display_as('enrollment_modules_study_id',lang('enrollment_modules_study_id'));          
+        $this->grocery_crud->display_as('enrollment_modules_group_id',lang('enrollment_modules_group_id'));   
+        $this->grocery_crud->display_as('enrollment_modules_moduleid',lang('enrollment_modules_moduleid'));        		
+
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
@@ -1360,6 +1375,13 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('enrollment_submodules_lastupdateUserId',lang('lastupdateUserId'));          
         $this->grocery_crud->display_as('enrollment_submodules_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('enrollment_submodules_markedForDeletionDate',lang('markedForDeletionDate'));        		
+
+        $this->grocery_crud->display_as('enrollment_submodules_periodid',lang('enrollment_submodules_periodid'));
+        $this->grocery_crud->display_as('enrollment_submodules_personid',lang('enrollment_submodules_personid'));
+        $this->grocery_crud->display_as('enrollment_submodules_study_id',lang('enrollment_submodules_study_id'));          
+        $this->grocery_crud->display_as('enrollment_submodules_group_id',lang('enrollment_submodules_group_id'));   
+        $this->grocery_crud->display_as('enrollment_submodules_moduleid',lang('enrollment_submodules_moduleid'));        		
+		$this->grocery_crud->display_as('enrollment_submodules_submoduleid',lang('enrollment_submodules_submoduleid'));        		
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
