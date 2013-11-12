@@ -24,7 +24,9 @@ class attendance_reports extends skeleton_main {
 
     function informe_centre_d_h_1() {
 
-/* Prova DataTables */
+    /* Prova DataTables */
+
+        $this->load_datatables_data();
 
         $data= array();
         $data['informe_centre_d_h_1_table_title']=lang('reports_educational_center_reports_incidents_by_day_and_hour');
@@ -41,20 +43,30 @@ class attendance_reports extends skeleton_main {
         $teacher_groups_current_day=array();
         
         $group = new stdClass;
-        $group->time_interval=$_POST['data'];
+        if(isset($_POST['data'])){
+            $group->time_interval=$_POST['data'];
+        } else {
+            $group->time_interval='';
+        }
+        if(isset($_POST['hora'])){
+            $group->group_name=$_POST['hora'];            
+        } else {
+            $group->group_name='';
+        }
         $group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-        $group->group_name=$_POST['hora'];
+
         $group->group_code=$prova;
         
         $teacher_groups_current_day['key1']= $group;
         
         $data['teacher_groups_current_day']=$teacher_groups_current_day;
 
-/* Fi prova datatables */
+    /* Fi prova datatables */
 
         $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
                                  5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
                                  9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+
         $this->load_header();  
 
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
@@ -316,6 +328,48 @@ class attendance_reports extends skeleton_main {
     function load_footer() {
 
         $this->_load_body_footer();    
+
+    }
+
+    public function load_datatables_data() {
+
+        $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery-ui.css'));  
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));  
+        
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");                     
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js")); 
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));   
+
+        $this->_load_html_header($header_data);
+        $this->_load_html_header($header_data); 
+        
+        $this->_load_body_header();     
+
+    }
+
+    public function informeGuifi() {
+
+
+
+        $this->load_header();   
+        $this->load->view('attendance_reports/informe_guifi.php');     
+        $this->load_footer();
 
     }
 

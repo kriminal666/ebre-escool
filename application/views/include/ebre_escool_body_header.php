@@ -42,6 +42,7 @@
       <?php if ($reports): ?>                   
  
       <li class="dropdown">
+       <!-- Informes -->
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('reports');?> <b class="caret"></b></a>
        <ul class="dropdown-menu">
           <li class="dropdown-submenu">
@@ -62,8 +63,9 @@
 				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_di_df_1"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
 				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_faltes_mes_1"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
 			</ul>
-		  </li>	
-       </ul>                                                                                                                                                                                                                                                                                                                                      
+		  </li>
+          <li><a href="<?=base_url()?>index.php/attendance_reports/informeGuifi"><?php echo lang('reports_guifi');?></a></li>
+      </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       <?php endif; ?>
       
@@ -85,13 +87,14 @@
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Gestió assistència";?></a>
             <ul class="dropdown-menu">
-              <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
+               <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
               <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
             </ul>
          </li>
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
             <ul class="dropdown-menu">
+              <!-- Manteniments -->
               <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/classroom_group'><?php echo lang('classroom_group');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->

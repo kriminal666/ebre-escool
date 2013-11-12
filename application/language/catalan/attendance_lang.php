@@ -32,6 +32,8 @@ $lang['reports']   = 'Informes';
   $lang['reports_group_reports_incidents_by_date']   = "Resum d'incidències d'un grup entre una data inicial i una data final";
   $lang['reports_group_reports_monthly_report']   = "Informe mensual de faltes injustificades";
 
+  $lang['reports_guifi']   = "Informe Guifi";  
+
 //CHECK ATTENDANCE PAGE
 $lang['check_attendance_table_title'] = 'Passar llista';
 $lang['choose_date_string'] = 'Escolliu la data (format dd-mm-aaa)';

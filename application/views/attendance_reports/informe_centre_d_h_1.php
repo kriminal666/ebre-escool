@@ -1,8 +1,11 @@
 <!-- Date Picker -->
 <script>
 $(function() {
-$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
+
+	$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
+
 });
+
 </script>
 
 <!-- ComboBox -->

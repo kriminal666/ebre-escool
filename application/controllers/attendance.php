@@ -85,45 +85,45 @@ class attendance extends skeleton_main {
         $this->set_common_columns_name();
 
 		//Mandatory fields
-        $this->grocery_crud->required_fields('groupName','groupShortName','markedForDeletion');
+        $this->grocery_crud->required_fields('group_name','group_shortName','group_markedForDeletion');
         
         //express fields
         $this->grocery_crud->express_fields('name','shortName','externalCode');
 
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_add_field('last_update',array($this,'add_field_callback_last_update'));
+        $this->grocery_crud->callback_add_field('group_lastupdate',array($this,'add_field_callback_last_update'));
       
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('group_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('group_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_field_callback_lastupdate'));
         
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-   		$this->grocery_crud->unset_add_fields('last_update');
+   		$this->grocery_crud->unset_add_fields('group_lastupdate');
         
    		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('group_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'group_creationUserId',$this->session->userdata('user_id'));
 
         //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('group_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'group_lastupdateUserId',$this->session->userdata('user_id'));
         
-        $this->grocery_crud->unset_dropdowndetails("creationUserId","lastupdateUserId","parentLocation");
+        $this->grocery_crud->unset_dropdowndetails("group_creationUserId","group_lastupdateUserId","group_parentLocation");
         
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
         //Default values:
-        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        $this->grocery_crud->set_default_value($this->current_table,'group_parentLocation',1);
         
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,'group_markedForDeletion','n');
 
         $this->grocery_crud->display_as('groupCode',lang('GroupCode'));
 		$this->grocery_crud->display_as('groupShortName',lang('GroupShortName'));
@@ -133,13 +133,18 @@ class attendance extends skeleton_main {
 		$this->grocery_crud->display_as('mentorId',lang('MentorId'));
 
 		/* show only specified columns */
-		$this->grocery_crud->columns('groupId','groupCode','groupShortName','groupName','groupDescription','mentorId','entryDate','last_update','creationUserId','lastupdateUserId');
+		$this->grocery_crud->columns('group_id','group_code','group_shortName','group_name','group_description','group_mentorId','group_entryDate','group_lastupdate','group_creationUserId','group_lastupdateUserId');
 
 		$output = $this->grocery_crud->render();
                         
         $this->_load_html_header($header_data,$output); 
 	    $this->_load_body_header();
 			
+		$default_values=$this->_get_default_values();
+		$default_values["table_name"]=$this->current_table;
+		$default_values["field_prefix"]="group_";
+		$this->load->view('defaultvalues_view.php',$default_values); 
+
         $this->load->view('attendance/classroom_groups_view.php',$output);     
 
 

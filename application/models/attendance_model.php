@@ -62,12 +62,12 @@ class attendance_model  extends CI_Model  {
 			return false;
 		
 	}
-	
+
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
-		$this->db->select('groupId,groupCode,groupShortName,groupName,groupDescription,educationalLevelId,mentorId');
+		$this->db->select('group_id,group_code,group_shortName,group_name,group_description,group_educationalLevelId,group_mentorId');
 		$this->db->from('classroom_group');
-		$this->db->order_by('groupCode', $orderby);
+		$this->db->order_by('group_code', $orderby);
 		
 		$query = $this->db->get();
 		
@@ -79,9 +79,9 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupNameByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('groupName');
+		$this->db->select('group_name');
 		$this->db->from('classroom_group');
-		$this->db->where('groupCode', $group_code);
+		$this->db->where('group_code', $group_code);
 		
 		$query = $this->db->get();
 
@@ -95,9 +95,9 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupShortNameByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('groupShortName');
+		$this->db->select('group_shortName');
 		$this->db->from('classroom_group');
-		$this->db->where('groupCode', $group_code);
+		$this->db->where('group_code', $group_code);
 		
 		$query = $this->db->get();
 
@@ -111,9 +111,9 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupNamesByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('groupName,groupShortName');
+		$this->db->select('group_name,group_shortName');
 		$this->db->from('classroom_group');
-		$this->db->where('groupCode', $group_code);
+		$this->db->where('group_code', $group_code);
 		
 		$query = $this->db->get();
 
@@ -124,8 +124,7 @@ class attendance_model  extends CI_Model  {
 		else
 			return false;
 	}
-    
-   
+  
 	function get_group_by_teachercode_and_day($teacher_code,$day_code)	{
 	/* 
         SELECT assignatura.nom_assignatura, grup.nom_grup, grup.codi_grup,
