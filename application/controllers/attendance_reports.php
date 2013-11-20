@@ -8,7 +8,10 @@ class attendance_reports extends skeleton_main {
     {
         parent::__construct();
         
+        $this->load->model('attendance_model');
         $this->load->library('ebre_escool_ldap');
+        $this->config->load('managment');
+
         
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
         $this->load->library('pdf'); // Load library
@@ -16,6 +19,7 @@ class attendance_reports extends skeleton_main {
 		
 		// Load the language file
         $this->lang->load('ebre_escool_ldap','catalan');
+        $this->lang->load('managment','catalan');        
         $this->load->helper('language');
         
 	}
@@ -44,18 +48,17 @@ class attendance_reports extends skeleton_main {
         
         $group = new stdClass;
         if(isset($_POST['data'])){
-            $group->time_interval=$_POST['data'];
+            $group->data=$_POST['data'];
         } else {
-            $group->time_interval='';
+            $group->data='';
         }
         if(isset($_POST['hora'])){
-            $group->group_name=$_POST['hora'];            
+            $group->hora=$_POST['hora'];            
         } else {
-            $group->group_name='';
+            $group->hora='';
         }
-        $group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-
-        $group->group_code=$prova;
+        
+        $group->faltes=$prova;
         
         $teacher_groups_current_day['key1']= $group;
         
@@ -67,30 +70,156 @@ class attendance_reports extends skeleton_main {
                                  5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
                                  9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
 
-        $this->load_header();  
+        //$this->load_header();  
 
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
         $this->load_footer();
     }
 
     function informe_centre_di_df_1() {
-           
-        $this->load_header();   
-        $this->load->view('attendance_reports/informe_centre_di_df_1.php');     
+         
+    /* Prova DataTables */
+
+        $this->load_datatables_data();
+
+        $data= array();
+        $data['informe_centre_di_df_1']=lang('reports_educational_center_reports_incidents_by_date');
+        $data['post'] = $_POST;
+
+        $prova ='';
+
+        foreach ($_POST as $key=>$val){
+            if($key!='data_inicial' and $key!='data_final'){
+                $prova .= $key." ";
+            }
+        }
+
+        $teacher_groups_current_day=array();
+        
+        $group = new stdClass;
+        if(isset($_POST['data_inicial'])){
+            $group->data_ini=$_POST['data_inicial'];
+        } else {
+            $group->data_ini='';
+        }
+        if(isset($_POST['data_final'])){
+            $group->data_fi=$_POST['data_final'];
+        } else {
+            $group->data_fi='';
+        }
+        
+        $group->faltes=$prova;
+        
+        $teacher_groups_current_day['key1']= $group;
+        
+        $data['teacher_groups_current_day']=$teacher_groups_current_day;
+
+    /* Fi prova datatables */
+
+        //$this->load_header();   
+        $this->load->view('attendance_reports/informe_centre_di_df_1.php',$data);     
         $this->load_footer();
     }
 
     function informe_centre_ranking_di_df_1() {
 
-        $this->load_header();   
-        $this->load->view('attendance_reports/informe_centre_ranking_di_df_1.php');     
+/* Prova DataTables */
+
+        $this->load_datatables_data();
+
+        $data= array();
+        $data['informe_centre_ranking_di_df_1']=lang('reports_educational_center_reports_incidents_by_date_ranking');
+        $data['post'] = $_POST;
+
+        $top = '';
+
+        if(isset($_POST['top']))
+        {
+            $top = $_POST['top'];
+        }
+
+
+
+        $teacher_groups_current_day=array();
+        
+        $group = new stdClass;
+        if(isset($_POST['data_inicial'])){
+            $group->data_ini=$_POST['data_inicial'];
+        } else {
+            $group->data_ini='';
+        }
+        if(isset($_POST['data_final'])){
+            $group->data_fi=$_POST['data_final'];
+        } else {
+            $group->data_fi='';
+        }
+        
+        $group->top=$top;
+        
+        $teacher_groups_current_day['key1']= $group;
+        
+        $data['teacher_groups_current_day']=$teacher_groups_current_day;
+
+    /* Fi prova datatables */
+
+        //$this->load_header();   
+        $this->load->view('attendance_reports/informe_centre_ranking_di_df_1.php',$data);     
         $this->load_footer();    
     }
 
     function Llistat_grup_tutor() {
+/**/
+        $this->load_datatables_data();
 
-        $this->load_header();  
-        $this->load->view('attendance_reports/Llistat_grup_tutor.php');     
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+        
+        $default_group_code = $this->config->item('default_group_code');
+        $group_code=$default_group_code;
+        /*
+            if ($group_code==null) {
+                $group_code=$default_group_code;
+            }
+        */
+        $organization = $this->config->item('organization','skeleton_auth');
+
+        $header_data['header_title']=lang("all_teachers") . ". " . $organization;
+
+        //Load CSS & JS
+        //$this->set_header_data();
+
+        $all_groups = $this->attendance_model->get_all_classroom_groups();
+        $data['group_code']=$group_code;
+        $data['all_groups']=$all_groups->result();
+        
+        if (isset($group_code)) {
+            $data['selected_group']= urldecode($group_code);
+        }   else {
+            $data['selected_group']=$default_group_code;
+        }
+        
+        $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+        $default_group_dn=$students_base_dn;
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+        
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_teachers"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        
+        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        $data['all_teachers']= $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
+        //Total de professors
+        $data['count_teachers'] = count($data['all_teachers']);
+        $data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
+/**/
+        //$this->load_header();  
+        //$this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
+        $this->load->view('attendance_reports/informe_centre_professors_pdf.php',$data);     
         $this->load_footer();     
     }     
 
@@ -333,6 +462,7 @@ class attendance_reports extends skeleton_main {
 
     public function load_datatables_data() {
 
+        //CSS
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');
@@ -342,7 +472,7 @@ class attendance_reports extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));  
-        
+        //JS
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");                     
@@ -355,17 +485,15 @@ class attendance_reports extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));   
-
+        
         $this->_load_html_header($header_data);
-        $this->_load_html_header($header_data); 
+        //$this->_load_html_header($header_data); 
         
         $this->_load_body_header();     
 
     }
 
     public function informeGuifi() {
-
-
 
         $this->load_header();   
         $this->load->view('attendance_reports/informe_guifi.php');     

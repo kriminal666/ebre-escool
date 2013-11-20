@@ -1735,5 +1735,5 @@ class managment extends skeleton_main {
 		$this->_load_body_header();		
 
 	}
-		
+
 }

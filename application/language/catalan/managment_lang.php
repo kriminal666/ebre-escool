@@ -37,6 +37,7 @@ $lang['irisPersonalUniqueIDType'] = 'Tipus';
 $lang['TSI'] = 'Targeta sanitaria';
 $lang['internalID'] = 'Identificador intern';
 $lang['employeeNumber'] = 'Id alumne';
+$lang['teacherCode'] = 'ID Professor';
 $lang['sn1'] = 'Primer cognom';
 $lang['sn2'] = 'Segon cognom';
 $lang['givenName'] = 'Nom';
@@ -65,6 +66,7 @@ $lang['Ok'] = 'Correcte';
 
 $lang['all_groups']="Tots els grups";
 $lang['students_of_a_group']="Alumnes d'un grup";
+$lang['all_teachers']="Tots els professors";
 $lang['students_group']="Alumnes del grup";
 
 $lang['group']="Grup";
