@@ -5,8 +5,8 @@
 	$teachers_sn2=array();
 	$teachers_codes=array();
 
-	//echo $count;
-	
+	ksort($all_teachers);
+
 foreach($all_teachers as $key => $value) {
     if(strlen($value)>0) {
 	 	$teacher = explode(" ",$value);
@@ -30,7 +30,7 @@ $pdf->AddPage();
 $x=7;//10
 $y=15;//24
 
-//$pdf->Image(_BASE_PATH."/imatges/logo_iesebre_2010_11.jpg",$x+2,5,40,15);
+$pdf->Image(base_url()."application/views/attendance_reports/logo_iesebre_2010_11.jpg",$x+2,5,40,15);
 //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
 $pdf->SetFont('Arial','B',15);
 //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)

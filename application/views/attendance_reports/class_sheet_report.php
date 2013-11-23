@@ -6,7 +6,7 @@
 
 	<!-- FORM -->    
 	<div style="width:40%; margin:0px auto;">
-		<form method="post" action="#" class="form-horizontal" role="form">
+		<form method="post" action="" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group ui-widget">
 					<tr>
@@ -25,4 +25,4 @@
 					</tr>
 			</table>
 		</form>
-	</div>		
+	</div>	
