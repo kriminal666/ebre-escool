@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class skeleton_main extends CI_Controller {
+class skeleton_main extends MX_Controller {
 	
 	function __construct()
     {
