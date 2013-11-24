@@ -426,14 +426,14 @@ class managment extends skeleton_main {
 			
 		foreach ($data['all_groups'] as $group_key => $group) {
 			$personname="";
-			if (array_key_exists($group->mentorId,$all_teachers))	{
-				$personname=$all_teachers[$group->mentorId];
+			if (array_key_exists($group->group_mentorId,$all_teachers))	{
+				$personname=$all_teachers[$group->group_mentorId];
 			}		
 			$group->mentor_name=$personname;
 			
 			$group_dn="";
-			if (array_key_exists($group->groupCode,$all_groups_dns))	{
-				$group_dn=$all_groups_dns[$group->groupCode];
+			if (array_key_exists($group->group_code,$all_groups_dns))	{
+				$group_dn=$all_groups_dns[$group->group_code];
 			}
 			$group->ldap_dn=$group_dn;
 			
