@@ -23,7 +23,7 @@ $(function(){
     
     $('#all_users_in_group').dataTable( {
 		"sDom": 'T<"clear">lfrtip',
-		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],
+		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "<?php echo lang('All'); ?>"]],
 		"oTableTools": {
             "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
 			"aButtons": [
