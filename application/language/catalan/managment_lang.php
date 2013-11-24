@@ -37,6 +37,7 @@ $lang['irisPersonalUniqueIDType'] = 'Tipus';
 $lang['TSI'] = 'Targeta sanitaria';
 $lang['internalID'] = 'Identificador intern';
 $lang['employeeNumber'] = 'Id alumne';
+$lang['teacherCode'] = 'ID Professor';
 $lang['sn1'] = 'Primer cognom';
 $lang['sn2'] = 'Segon cognom';
 $lang['givenName'] = 'Nom';
@@ -65,6 +66,7 @@ $lang['Ok'] = 'Correcte';
 
 $lang['all_groups']="Tots els grups";
 $lang['students_of_a_group']="Alumnes d'un grup";
+$lang['all_teachers']="Tots els professors";
 $lang['students_group']="Alumnes del grup";
 
 $lang['group']="Grup";
@@ -98,11 +100,50 @@ $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
 
+
+$lang['study_module_hoursPerWeek']="Hores Setmanals";
+$lang['study_module_teacher_id']="Codi Professor";
+$lang['study_module_initialDate']="Data inici";
+$lang['study_module_endDate']="Data fí";          
+$lang['type']="Tipus";   
+$lang['subtype']="Subtipus";     
+
 /* Menú manteniments Plans Estudi */
 $lang['course']="Curs";
     $lang['course_number']="Num. Curs";
     $lang['course_cycle_id']="ID Cicle"; 
     $lang['course_estudies_id']="ID Estudi";  
+$lang['classroom_group']="Group de Classe";
+	$lang['group_code']="Codi Grup";
+	$lang['group_EducationalLevelId']="Nivell Educatiu";
+$lang['study_module']="Assignatura | Mòdul Professional";	
+$lang['study_submodules']="Unitat Formativa";
 $lang['studies']="Estudis";
-$lang['cycles']="Cicles";
+$lang['cycles']="Cicle";
 $lang['organizational_unit']="Unitat Organitzativa";
+//Matrícules
+$lang['enrollment']="Matrícula";
+	$lang['enrollment_periodid']="Periode de Matrícula";
+	$lang['enrollment_personid']="Matrícula id Persona";
+$lang['enrollment_studies']="Estudis Matriculats";
+	$lang['enrollment_studies_periodid']="Id Periode";
+	$lang['enrollment_studies_personid']="Id Persona";
+	$lang['enrollment_studies_study_id']="Id estudi";
+$lang['enrollment_class_group']="Matrícules de Grups de Classe";
+	$lang['enrollment_class_group_periodid']="Id Periode";
+	$lang['enrollment_class_group_personid']="Id Persona";
+	$lang['enrollment_class_group_study_id']="Id estudi";
+	$lang['enrollment_class_group_group_id']="Id Grup";
+$lang['enrollment_modules']="Matrícules Mòduls";
+	$lang['enrollment_modules_periodid']="Id Periode";
+	$lang['enrollment_modules_personid']="Id Persona";
+	$lang['enrollment_modules_study_id']="Id estudi";
+	$lang['enrollment_modules_group_id']="Id Grup";
+	$lang['enrollment_modules_moduleid']="Id Mòdul";
+$lang['enrollment_submodules']="Matrícules Sub-Mòduls";
+	$lang['enrollment_submodules_periodid']="Id Periode";
+	$lang['enrollment_submodules_personid']="Id Persona";
+	$lang['enrollment_submodules_study_id']="Id estudi";
+	$lang['enrollment_submodules_group_id']="Id Grup";
+	$lang['enrollment_submodules_moduleid']="Id Mòdul";
+	$lang['enrollment_submodules_submoduleid']="Id Sub-Mòdul";

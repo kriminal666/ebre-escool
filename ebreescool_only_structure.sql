@@ -168,15 +168,23 @@ CREATE TABLE IF NOT EXISTS `location` (
 --
 
 CREATE TABLE IF NOT EXISTS `classroom_group` (
-  `groupId` int(11) NOT NULL AUTO_INCREMENT,
-  `groupCode` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `groupShortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `groupName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `groupDescription` text COLLATE utf8_unicode_ci NOT NULL,
-  `educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`groupId`),
-  UNIQUE KEY `groupCode` (`groupCode`)
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `group_course_id` int(11) NOT NULL,
+  `group_description` text COLLATE utf8_unicode_ci NOT NULL,
+  `group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `group_entryDate` datetime NOT NULL,
+  `group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `group_creationUserId` int(11) DEFAULT NULL,
+  `group_lastupdateUserId` int(11) DEFAULT NULL,
+  `group_parentLocation` int(11) DEFAULT NULL,
+  `group_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
+  `group_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`group_id`),
+  UNIQUE KEY `group_code` (`group_code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -187,3 +195,154 @@ ALTER TABLE `users_groups`
   ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- Dump completed on 2013-09-13  7:33:11
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `course`
+--
+
+CREATE TABLE IF NOT EXISTS `course` (
+  `course_id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `course_name` varchar(150) CHARACTER SET utf8 NOT NULL,
+  `course_number` int(11) NOT NULL,
+  `course_cycle_id` int(11) NOT NULL,
+  `course_estudies_id` int(11) NOT NULL,
+  `course_entryDate` datetime NOT NULL,
+  `course_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `course_creationUserId` int(11) DEFAULT NULL,
+  `course_lastupdateUserId` int(11) DEFAULT NULL,
+  `course_markedForDeletion` enum('n','y') NOT NULL,
+  `course_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`course_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `cycle`
+--
+
+CREATE TABLE IF NOT EXISTS `cycle` (
+  `cycle_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cycle_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `cycle_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `cycle_entryDate` datetime NOT NULL,
+  `cycle_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `cycle_creationUserId` int(11) DEFAULT NULL,
+  `cycle_lastupdateUserId` int(11) DEFAULT NULL,
+  `cycle_markedForDeletion` enum('n','y') NOT NULL,
+  `cycle_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`cycle_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `department`
+--
+
+CREATE TABLE IF NOT EXISTS `department` (
+  `department_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id',
+  `department_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `department_name` varchar(150) CHARACTER SET utf8 NOT NULL,
+  `department_parent_department_id` int(11) NOT NULL,
+  `department_entryDate` datetime NOT NULL,
+  `department_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `department_creationUserId` int(11) DEFAULT NULL,
+  `department_lastupdateUserId` int(11) DEFAULT NULL,
+  `department_markedForDeletion` enum('n','y') NOT NULL,
+  `department_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`department_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `studies`
+--
+
+CREATE TABLE IF NOT EXISTS `studies` (
+  `studies_id` int(11) NOT NULL AUTO_INCREMENT,
+  `studies_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `studies_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `studies_entryDate` datetime NOT NULL,
+  `studies_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `studies_creationUserId` int(11) DEFAULT NULL,
+  `studies_lastupdateUserId` int(11) DEFAULT NULL,
+  `studies_markedForDeletion` enum('n','y') NOT NULL,
+  `studies_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`studies_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `studies_organizational_unit`
+--
+
+CREATE TABLE IF NOT EXISTS `studies_organizational_unit` (
+  `studiesOU_id` int(11) NOT NULL AUTO_INCREMENT,
+  `studiesOU_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `studiesOU_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `studiesOU_entryDate` datetime NOT NULL,
+  `studiesOU_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `studiesOU_creationUserId` int(11) DEFAULT NULL,
+  `studiesOU_lastupdateUserId` int(11) DEFAULT NULL,
+  `studiesOU_markedForDeletion` enum('n','y') NOT NULL,
+  `studiesOU_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`studiesOU_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- Dump completed on 2013-11-04  9:26:45
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module`
+--
+
+CREATE TABLE IF NOT EXISTS `study_module` (
+  `study_module_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_module_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `study_module_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_module_hoursPerWeek` int(3) NOT NULL,
+  `study_module_course_id` int(11) NOT NULL,
+  `study_module_teacher_id` int(11) NOT NULL,
+  `study_module_initialDate` datetime NOT NULL,
+  `study_module_endDate` datetime NOT NULL,
+  `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
+  `study_module_subtype` enum('Trimestral','Quadrimestral') NOT NULL,
+  `study_module_entryDate` datetime NOT NULL,
+  `study_module_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_creationUserId` int(11) DEFAULT NULL,
+  `study_module_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_submodules`
+--
+
+CREATE TABLE IF NOT EXISTS `study_submodules` (
+  `study_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_submodules_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `study_submodules_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_submodules_entryDate` datetime NOT NULL,
+  `study_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_submodules_creationUserId` int(11) DEFAULT NULL,
+  `study_submodules_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_submodules_markedForDeletion` enum('n','y') NOT NULL,
+  `study_submodules_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_submodules_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- Dump completed on 2013-09-13  7:33:11
+
+-- --------------------------------------------------------

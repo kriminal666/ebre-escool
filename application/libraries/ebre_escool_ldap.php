@@ -99,6 +99,7 @@ class ebre_escool_ldap  {
     
        
     public function getAllTeachers($basedn = null) {
+		//$basedn="ou=Profes,ou=All,dc=iesebre,dc=com";
 		$teachernames=array();
 		if ($basedn == null)
 			$basedn = $this->basedn;
@@ -119,7 +120,7 @@ class ebre_escool_ldap  {
 	
 	public function getEmailAndPhotoData ($user_dn) {
 		$enrollment_data="";
-		
+
 		$required_attributes=array('highSchoolPersonalEmail','jpegPhoto');
 		
 		if ($this->_bind()) {
@@ -140,7 +141,8 @@ class ebre_escool_ldap  {
 		$required_attributes=array('givenname','highSchoolUserId','employeeNumber','irisPersonalUniqueID','highSchoolPersonalEmail','email','uid','sn1','sn2');
 		
 		if ($this->_bind()) {
-			$filter = '(objectClass=posixAccount)';		
+			//$filter = '(objectClass=posixAccount)';		
+			$filter = "(&(employeeNumber=*)(objectClass=inetOrgPerson))";
 			$search = ldap_search($this->ldapconn, $user_dn, $filter,$required_attributes);
         	$enrollment_data = ldap_get_entries($this->ldapconn, $search);
         	

@@ -21,7 +21,7 @@
       <?php endif; ?>
       
        <?php if ($mentoring): ?>                   
- 
+
       <li class="dropdown">
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('mentoring');?> <b class="caret"></b></a>
        <ul class="dropdown-menu">
@@ -30,18 +30,19 @@
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       <?php endif; ?>
-      
+
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('timetables');?> <b class="caret"></b></a>
          <ul class="dropdown-menu">
           <li><a href="<?=base_url()?>index.php/timetables/mytymetables"><?php echo lang('my_timetables');?></a></li>
          </ul>
       </li>
-                                                   
+                                          
       
       <?php if ($reports): ?>                   
  
       <li class="dropdown">
+       <!-- Informes -->
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('reports');?> <b class="caret"></b></a>
        <ul class="dropdown-menu">
           <li class="dropdown-submenu">
@@ -62,8 +63,9 @@
 				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_di_df_1"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
 				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_faltes_mes_1"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
 			</ul>
-		  </li>	
-       </ul>                                                                                                                                                                                                                                                                                                                                      
+		  </li>
+          <li><a href="<?=base_url()?>index.php/attendance_reports/informeGuifi"><?php echo lang('reports_guifi');?></a></li>
+      </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       <?php endif; ?>
       
@@ -85,17 +87,27 @@
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Gestió assistència";?></a>
             <ul class="dropdown-menu">
-              <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
+               <li><a href="<?=base_url()?>index.php/attendance/classroom_groups"><?php echo "Grups de classe"?></a></li>
               <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
             </ul>
          </li>
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
             <ul class="dropdown-menu">
+              <!-- Manteniments -->
               <li><a href='<?=base_url()?>index.php/managment/course'><?php echo lang('course');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/classroom_group'><?php echo lang('classroom_group');?></a></li>
+              <li><a href='<?=base_url()?>index.php/managment/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->
+              <li><a href='<?=base_url()?>index.php/managment/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
               <li><a href='<?=base_url()?>index.php/managment/studies'><?php echo lang('studies');?></a></li>
               <li><a href='<?=base_url()?>index.php/managment/cycle'><?php echo lang('cycles');?></a></li>
-              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/studies_organizational_unit'><?php echo lang('organizational_unit');?></a></li>
+              <!-- Matrícules -->
+              <li><a href='<?=base_url()?>index.php/managment/enrollment'><?php echo lang('enrollment');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/managment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>
          </li>          
     
@@ -107,19 +119,19 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo lang('managment');?> <b class="caret"></b></a>
           <ul class="dropdown-menu">
 			  <?php if ($show_managment_menu): ?>
-            <li><a href='<?=base_url()?>index.php/skeleton_main/users')?><?php echo lang('users');?></a></li>
-            <li><a href='<?=base_url()?>index.php/skeleton_main/groups')?><?php echo lang('groups');?></a></li>
-            <li><a href='<?=base_url()?>index.php/managment/massive_change_password')?><?php echo lang('massive_change_password');?></a></li>
+            <li><a href='<?=base_url()?>index.php/skeleton_main/users'><?php echo lang('users');?></a></li>
+            <li><a href='<?=base_url()?>index.php/skeleton_main/groups'><?php echo lang('groups');?></a></li>
+            <li><a href='<?=base_url()?>index.php/managment/massive_change_password'><?php echo lang('massive_change_password');?></a></li>
             <li class="dropdown-submenu">
-				<a tabindex="-1" href="#"><?php echo lang('statistics_checkings');?></a>
+				<a tabindex="-1" href="#"><?php echo lang('statistics_checkings')?></a>
 					<ul class="dropdown-menu">
-						<li><a href='<?=base_url()?>index.php/managment/statistics_checkings_groups')?><?php echo lang('statistics_checkings_groups');?></a></li>
-						<li><a href='<?=base_url()?>index.php/managment/users_in_group')?><?php echo lang('users_in_group');?></a></li>
-						<li><a href='<?=base_url()?>index.php/managment/lessons')?><?php echo lang('lessons');?></a></li>
+						<li><a href='<?=base_url()?>index.php/managment/statistics_checkings_groups'><?php echo lang('statistics_checkings_groups');?></a></li>
+						<li><a href='<?=base_url()?>index.php/managment/users_in_group'><?php echo lang('users_in_group');?></a></li>
+						<li><a href='<?=base_url()?>index.php/managment/lessons'><?php echo lang('lessons');?></a></li>
 					</ul>
 			</li>
 			  <?php endif; ?>
-            <li><a href='<?=base_url()?>index.php/skeleton_main/preferences')?><?php echo lang('preferences');?></a></li>                                            
+            <li><a href='<?=base_url()?>index.php/skeleton_main/preferences'><?php echo lang('preferences');?></a></li>                                            
           </ul>
       </li>
       

@@ -1,11 +1,19 @@
 Plans d'estudi
 --------------
 
+<<<<<<< HEAD
 -Curs. Examples 1ESOA | 2SMX  ---> Tutor, locations: Aula/Aules. Pertany a un estudi
 --Grup Classe: 1 Grup té una relació 1-1 amb un curs. De fet solen compartir nom
   Un alumne pot pertanyer a diversos cursos si està matrículat a 2 o més
   estudis
   Un alumne repetidor té assignatures d'un curs (primer) i d'un altre (2n) 
+=======
+-Curs. Examples 1ESOA | 2SMX ---> Tutor, locations: Aula/Aules. Pertany a un estudi
+--Grup Classe: 1 Grup té una relació 1-1 amb un curs. De fet solen compartir nom
+  Un alumne pot pertanyer a diversos cursos si està matrículat a 2 o més
+  estudis
+  Un alumne repetidor té assignatures d'un curs (primer) i d'un altre (2n)
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
   però pertany a només un grup principal: decisió del centre
   El que si és cert és que a nivell d'assignatures està matrículat
 
@@ -47,7 +55,11 @@ Assignatura:
 Nom taula: study_module
   
 Són parts en les que es divideix un pla d'estudis o el que és el mateix un
+<<<<<<< HEAD
 estudi. 
+=======
+estudi.
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 
 Estan associadea un i nomes un curs principal normalment
 Es poden dividir en més trossets: cas assignatures optatives, o el cas de
@@ -74,7 +86,11 @@ Facilitar l'alta del pla d'estudis:
 
 - A les troncals van tots els alumnes del grup
 - A les optatives es divideixen:
+<<<<<<< HEAD
 -- Optatives: 
+=======
+-- Optatives:
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 
 ESO: són 30 hores setmanals
 
@@ -88,7 +104,11 @@ ESO: Assignatures optatives
 
 
 MATRÍCULA (enrollment):
+<<<<<<< HEAD
 ---------------------- 
+=======
+----------------------
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 
 Matrícula: normalment és anual però no tancar-nos:
 Manteniment de períodes:
@@ -127,8 +147,13 @@ Taules:
 
 
 enrollment:
+<<<<<<< HEAD
 - periodid 
 - personid 
+=======
+- periodid
+- personid
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 
 enrolment_studies
 - periodid
@@ -139,20 +164,32 @@ enrollment_class_group
 - periodid
 - personid
 - study_id
+<<<<<<< HEAD
 - groupid 
+=======
+- groupid
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 
 enrollment_modules
 - periodid
 - personid
 - study_id
+<<<<<<< HEAD
 - groupid 
+=======
+- groupid
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 - moduleid
 
 enrollment_submodules
 - periodid
 - personid
 - study_id
+<<<<<<< HEAD
 - groupid 
+=======
+- groupid
+>>>>>>> 84ee2cfabe23dc2233481d2ae82a897900ecc35d
 - moduleid
 - submoduleid
 
@@ -206,7 +243,6 @@ FOR -> PER CADA ESTUDI {
  5) Alta de submòduls: unitats formatives | optatives. Permetre no definir
     res que serà equivalent a que fa totes les unitats formatives o que les
     optatives estan per definir
-} 
   
 Taula
 -----

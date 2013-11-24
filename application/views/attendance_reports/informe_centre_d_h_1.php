@@ -1,9 +1,75 @@
 <!-- Date Picker -->
 <script>
 $(function() {
-$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
+
+	$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
+
 });
+
 </script>
+<!-- Data Table -->
+<script>
+$(document).ready( function () {
+
+	$('#groups_by_teacher_an_date').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"sDom": 'T<"clear">lfrtip',
+		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],		
+		"oTableTools": {
+			"sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
+				"aButtons": [
+					{
+						"sExtends": "copy",
+						"sButtonText": "<?php echo lang("Copy");?>"
+					},
+					{
+						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sExtends": "csv",
+						"sButtonText": "CSV"
+					},
+					{
+						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sExtends": "xls",
+						"sButtonText": "XLS"
+					},
+					{
+						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sExtends": "pdf",
+						"sPdfOrientation": "landscape",
+						"sButtonText": "PDF"
+					},
+					{
+						"sExtends": "print",
+						"sButtonText": "<?php echo lang("Print");?>"
+					},
+				]
+},
+        "iDisplayLength": 50,
+        "aaSorting": [[ 5, "asc" ],[ 6, "asc" ],[ 7, "asc" ]],
+		"oLanguage": {
+			"sProcessing":   "Processant...",
+			"sLengthMenu":   "Mostra _MENU_ registres",
+			"sZeroRecords":  "No s'han trobat registres.",
+			"sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+			"sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+			"sInfoFiltered": "(filtrat de _MAX_ total registres)",
+			"sInfoPostFix":  "",
+			"sSearch":       "Filtrar:",
+			"sUrl":          "",
+			"oPaginate": {
+				"sFirst":    "Primer",
+				"sPrevious": "Anterior",
+				"sNext":     "Següent",
+				"sLast":     "Últim"
+			}
+	    }
+		
+	});
+} );
+
+</script>
+
 
 <!-- ComboBox -->
  <style>
@@ -27,138 +93,15 @@ padding: 0.3em;
 }
 </style>
 
- <script>
-(function( $ ) {
-$.widget( "custom.combobox", {
-_create: function() {
-this.wrapper = $( "<span>" )
-.addClass( "custom-combobox" )
-.insertAfter( this.element );
-this.element.hide();
-this._createAutocomplete();
-this._createShowAllButton();
-},
-_createAutocomplete: function() {
-var selected = this.element.children( ":selected" ),
-value = selected.val() ? selected.text() : "";
-this.input = $( "<input>" )
-.appendTo( this.wrapper )
-.val( value )
-.attr( "title", "" )
-.addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
-.autocomplete({
-delay: 0,
-minLength: 0,
-source: $.proxy( this, "_source" )
-})
-.tooltip({
-tooltipClass: "ui-state-highlight"
-});
-this._on( this.input, {
-autocompleteselect: function( event, ui ) {
-ui.item.option.selected = true;
-this._trigger( "select", event, {
-item: ui.item.option
-});
-},
-autocompletechange: "_removeIfInvalid"
-});
-},
-_createShowAllButton: function() {
-var input = this.input,
-wasOpen = false;
-$( "<a>" )
-.attr( "tabIndex", -1 )
-.attr( "title", "Show All Items" )
-.tooltip()
-.appendTo( this.wrapper )
-.button({
-icons: {
-primary: "ui-icon-triangle-1-s"
-},
-text: false
-})
-.removeClass( "ui-corner-all" )
-.addClass( "custom-combobox-toggle ui-corner-right" )
-.mousedown(function() {
-wasOpen = input.autocomplete( "widget" ).is( ":visible" );
-})
-.click(function() {
-input.focus();
-// Close if already visible
-if ( wasOpen ) {
-return;
-}
-// Pass empty string as value to search for, displaying all results
-input.autocomplete( "search", "" );
-});
-},
-_source: function( request, response ) {
-var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-response( this.element.children( "option" ).map(function() {
-var text = $( this ).text();
-if ( this.value && ( !request.term || matcher.test(text) ) )
-return {
-label: text,
-value: text,
-option: this
-};
-}) );
-},
-_removeIfInvalid: function( event, ui ) {
-// Selected an item, nothing to do
-if ( ui.item ) {
-return;
-}
-// Search for a match (case-insensitive)
-var value = this.input.val(),
-valueLowerCase = value.toLowerCase(),
-valid = false;
-this.element.children( "option" ).each(function() {
-if ( $( this ).text().toLowerCase() === valueLowerCase ) {
-this.selected = valid = true;
-return false;
-}
-});
-// Found a match, nothing to do
-if ( valid ) {
-return;
-}
-// Remove invalid value
-this.input
-.val( "" )
-.attr( "title", value + " didn't match any item" )
-.tooltip( "open" );
-this.element.val( "" );
-this._delay(function() {
-this.input.tooltip( "close" ).attr( "title", "" );
-}, 2500 );
-this.input.data( "ui-autocomplete" ).term = "";
-},
-_destroy: function() {
-this.wrapper.remove();
-this.element.show();
-}
-});
-})( jQuery );
-$(function() {
-$( "#hora_informe" ).combobox();
-$( "#toggle" ).click(function() {
-$( "#hora_informe" ).toggle();
-});
-});
-</script>
 
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
 		<h2><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour'); ?></h2>
 	</div>    
-
-
 	<!-- FORM -->    
-	<div style="width:40%; margin:0px auto;">
-		<form method="post" action="#" class="form-horizontal" role="form">
+	<div style="width:50%; margin:0px auto;">
+		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>
@@ -166,12 +109,12 @@ $( "#hora_informe" ).toggle();
 						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php echo date("d/m/Y")?>"/></td>
 					</tr>
 				</div>		
-				<div class="ui-widget">
+				<div class="form-group">
 					<tr>
 						<td><laber for="hora_informe">Select the time:</label></td>
-						<td><select class="selectpicker" id="hora_informe" name="hora">
+						<td><select class="chosen-select" id="hora_informe" name="hora">
 							<?php foreach ($hores as $key => $value) { ?>
-								<option value="<?php echo $key ?>" <?php if($key==1){?> selected <?php } ?> ><?php echo $value ?></option>
+								<option value="<?php echo $value ?>" <?php if(isset($_POST['hora']) && $value == $_POST['hora']){ ?> selected <?php } else {if($key==1){?> selected <?php }} ?> ><?php echo $value ?></option>
 							<?php } ?>
 							</select>		
 						</td>
@@ -181,15 +124,41 @@ $( "#hora_informe" ).toggle();
 					<tr>
 						<td valign="top"><label for="incident">Select the type of incident:</label></td>
 						<td>
-							<input type="checkbox" name="F" value="1" checked> F</input><br />
-							<input type="checkbox" name="FJ" value="2" checked> FJ</input><br />
-							<input type="checkbox" name="R" value="3" checked> R</input><br />
-							<input type="checkbox" name="RJ" value="4" checked> RJ</input><br />
-							<input type="checkbox" name="E" value="5" checked> E</input>
+							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F</input><br />
+							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ</input><br />
+							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?> > R</input><br />
+							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?> > RJ</input><br />
+							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?> > E</input>
 						</td>
 					</tr>	
 				</div>
 				<tr><td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td></tr>
 			</table>
 		</form>
+<!-- Proves datatables -->
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+ <thead style="background-color: #d9edf7;">
+  <tr>
+    <td colspan="3" style="text-align: center;"> <h4><?php echo $informe_centre_d_h_1_table_title?></h4></td>
+  </tr>
+  <tr>
+     <th>Día</th>
+     <th>Hora</th>
+     <th>Faltes</th>
+  </tr>
+ </thead>
+ <tbody>
+  <!-- Iteration that shows teacher groups for selected day-->
+  <?php foreach ($teacher_groups_current_day as $key => $teacher_group) : ?>
+   <tr align="center" class="{cycle values='tr0,tr1'}">
+     <td><?php echo $teacher_group->data;?></td>
+     <td><?php echo $teacher_group->hora;?></td>
+     <td><?php echo $teacher_group->faltes;?></td>
+   </tr>
+  <?php endforeach; ?>
+ </tbody>
+</table>
+
+<!-- Fi proves datatable -->
 	</div>

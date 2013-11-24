@@ -893,10 +893,98 @@ function add_field_callback_entryDate(){
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="entryDate" id="field-entryDate" readonly>';    
 }
 
+function add_field_callback_course_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="course_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_cycle_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="cycle_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_studies_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="studies_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_studiesOU_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="studiesOU_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_study_module_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="study_module_entryDate" id="field-entryDate" readonly>';    
+}
+
+function add_field_callback_study_submodules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="study_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT */
+function add_field_callback_enrollment_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT STUDIES */
+function add_field_callback_enrollment_studies_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_studies_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_studies_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_studios_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT CLASS GROUP */
+function add_field_callback_enrollment_class_group_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_class_group_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_class_group_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_class_group_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT MODULES */
+function add_field_callback_enrollment_modules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_modules_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_modules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_modules_entryDate" id="field-entryDate" readonly>';    
+}
+
+/* ENROLLMENT SUBMODULES */
+function add_field_callback_enrollment_submodules_entryDate(){  
+	  $data= date('d/m/Y H:i:s', time());
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="enrollment_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_enrollment_submodules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="enrollment_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
 function edit_field_callback_entryDate($value, $primary_key){  
 	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="entryDate" id="field-entryDate" readonly>';    
-    }
-    
+}
+
+function edit_field_callback_study_module_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="stydy_module_entryDate" id="field-entryDate" readonly>';    
+}
+
+function edit_field_callback_study_submodules_entryDate($value, $primary_key){  
+	  return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="stydy_submodules_entryDate" id="field-entryDate" readonly>';    
+}
+
 function edit_callback_last_update($value, $primary_key){  
 	 return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'"  name="last_update" id="field-last_update" readonly>';
     }    
@@ -925,7 +1013,7 @@ function before_update_object_callback($post_array, $primary_key) {
 		$post_array['lastupdateUserId'] = $this->session->userdata('user_id');
 		return $post_array;
 }
-    
+
 //UPDATE AUTOMATIC FIELDS BEFORE UPDATE
 // ONLY CALLED BY USERS NOT ADMINS!
 function before_update_user_preference_callback($post_array, $primary_key) {
@@ -1122,5 +1210,7 @@ public function defaultvalues_view($table_name) {
 
 	return $post_array;
 }
+
+
 
 }
