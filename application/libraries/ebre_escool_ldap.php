@@ -99,23 +99,96 @@ class ebre_escool_ldap  {
     
        
     public function getAllTeachers($basedn = null) {
-		//$basedn="ou=Profes,ou=All,dc=iesebre,dc=com";
+
 		$teachernames=array();
+		$professor = array();
+
+		$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
+		//$imgData = base64_encode(file_get_contents($img_file));
+		$imgData = file_get_contents($img_file);
+		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
+
 		if ($basedn == null)
 			$basedn = $this->basedn;
 		if ($this->_bind()) {
-			//$needed_attrs = array('dn', 'cn', $this->login_attribute);
+
 			$filter = '(employeeNumber=*)';
 			
-			$search = ldap_search($this->ldapconn, $basedn, $filter,array("employeeNumber","cn"));
+			$search = ldap_search($this->ldapconn, $basedn, $filter,array("employeeNumber","cn","jpegPhoto"));
         	$allteachernames = ldap_get_entries($this->ldapconn, $search);
+/*
+echo "<pre>";
+print_r($allteachernames[0]);
+echo "</pre>";
+*/
+//echo '<img src="data:image/jpeg;base64,'.base64_encode($allteachernames[0]['jpegphoto'][0]).'">';
+        	$contador = 0;
+
+
+        	foreach ($allteachernames as $teacher){
+        		//if($teacher['employeenumber'][0]!=''){
+        			if($contador>0){
+						$professor[$contador]['code'] = $teacher['employeenumber'][0];
+						$professor[$contador]['name'] = $teacher['cn'][0];
+						//$contador++;
+			        	if(isset($teacher['jpegphoto'][0])){
+			        		$professor[$contador]['photo']=$teacher['jpegphoto'][0];
+			        	} else {
+							//echo '<img src="',$src,'">';
+			        		$professor[$contador]['photo']=$imgData;
+							//echo '<img src="'.$src.'">';		        		
+			        	}
+			        }
+					//}
+
+					//echo '<img src="data:image/jpeg;base64,'.base64_encode($professor[$contador]['photo']).'">';
+					//echo "<br/>".$professor[$contador]['code']. "-" .$professor[$contador]['name']."<br/>";
+				$contador++;
+			}
+				
+		}
+		sort($professor);
+/*
+for($k=0;$k<($contador-1);$k++){
+	echo '<img src="data:image/jpeg;base64,'.base64_encode($professor[$k]['photo']).'">';
+	echo "<br/>".$professor[$k]['code']. "-" .$professor[$k]['name']."<br/>";
+}
+*/
+
+
+		/*
+        	echo "<pre>";
+        	print_r($professor);
+        	echo "</pre>";		
+		*/
+		return $professor;
+
+
+
+
+
+/*
+		$teachernames=array();
+
+		if ($basedn == null)
+			$basedn = $this->basedn;
+		if ($this->_bind()) {
+
+			$filter = '(employeeNumber=*)';
+			
+			$search = ldap_search($this->ldapconn, $basedn, $filter,array("employeeNumber","cn","jpegPhoto"));
+        	$allteachernames = ldap_get_entries($this->ldapconn, $search);
+        	
+
         	foreach ($allteachernames as $teacher_key => $teacher){
 				$teacher_code = $teacher['employeenumber'][0];
 				$teacher_name = $teacher['cn'][0];
 				$teachernames[$teacher_code] = $teacher_name;
-			}	
+			}
+				
 		}
 		return $teachernames;
+*/
 	}
 	
 	public function getEmailAndPhotoData ($user_dn) {

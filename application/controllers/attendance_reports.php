@@ -208,6 +208,8 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
         
        // $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        
+
         $data['all_teachers']= $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
         //Total de professors
         $data['count_teachers'] = count($data['all_teachers']);
