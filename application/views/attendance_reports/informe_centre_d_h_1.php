@@ -2,7 +2,7 @@
 <script>
 $(function() {
 
-	$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
+	$( "#data_informe" ).datepicker({ dateFormat: 'dd/mm/yy' });
 
 });
 
@@ -24,19 +24,19 @@ $(document).ready( function () {
 						"sButtonText": "<?php echo lang("Copy");?>"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
 						"sExtends": "csv",
 						"sButtonText": "CSV"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
 						"sExtends": "xls",
 						"sButtonText": "XLS"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
 						"sExtends": "pdf",
-						"sPdfOrientation": "landscape",
+						"sPdfOrientation": "portrait",
 						"sButtonText": "PDF"
 					},
 					{
@@ -92,7 +92,50 @@ margin: 0;
 padding: 0.3em;
 }
 </style>
+<?php
+$incidencia = array(
+	array(
+	'grup' => '1AF',
+	'dia'  => '28/11/2013',
+	'hora' => '8:00-9:00',
+	'estudiant' => 'Patricia Favà Marti',
+	'incidencia' => 'FJ',
+	'credit' => 'M1',
+	'professor' => 'Ferran Sabaté Borras'
+	),
+	array(
+	'grup' => '1APD',
+	'dia'  => '28/11/2013',
+	'hora' => '8:00-9:00',
+	'estudiant' => 'Ignacio Bel Rodriguez',
+	'incidencia' => 'F',
+	'credit' => 'M4',
+	'professor' => 'Ricard Gonzàlez Castelló'
+	),	
+	array(
+	'grup' => '2ASIX',
+	'dia'  => '28/11/2013',
+	'hora' => '8:00-9:00',
+	'estudiant' => 'Oscar Adán Valls',
+	'incidencia' => 'R',
+	'credit' => 'M6',
+	'professor' => 'David Caminero Baubí'
+	),
+	array(
+	'grup' => '1APD',
+	'dia'  => '28/11/2013',
+	'hora' => '8:00-9:00',
+	'estudiant' => 'Ignacio Bel Rodriguez',
+	'incidencia' => 'F',
+	'credit' => 'M4',
+	'professor' => 'Ricard Gonzàlez Castelló'
+	)
 
+	);
+
+
+
+?>
 
 <!-- TITLE -->
 <div style='height:30px;'></div>
@@ -100,7 +143,7 @@ padding: 0.3em;
 		<h2><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour'); ?></h2>
 	</div>    
 	<!-- FORM -->    
-	<div style="width:50%; margin:0px auto;">
+	<div style="width:50%; margin:20px auto;">
 		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
@@ -137,28 +180,64 @@ padding: 0.3em;
 		</form>
 <!-- Proves datatables -->
 
+<?php 
+//print_r($_POST);
+//echo "<br />";
+
+$contador = count($_POST);
+//echo $contador;
+if($_POST){  
+	$i=0;
+	foreach($incidencia as $falta):
+		//print_r($falta);
+if($_POST['data']==$falta['dia'] && $_POST['hora']==$falta['hora'] && array_key_exists($falta['incidencia'], $_POST)){
+if($i==0){
+	echo "<h4><center>".lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora']."</center></h4>";
+
+?>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
  <thead style="background-color: #d9edf7;">
+  <!--
   <tr>
-    <td colspan="3" style="text-align: center;"> <h4><?php echo $informe_centre_d_h_1_table_title?></h4></td>
+    <td colspan="4" style="text-align: center;"> <h4>GRUP: <?php echo strtoupper($falta['grup']);?></h4></td>
   </tr>
+
   <tr>
-     <th>Día</th>
-     <th>Hora</th>
-     <th>Faltes</th>
+    <td colspan="4" style="text-align: center;"> <p>Dia: <?php echo $falta['dia'];?> Hora: <?php echo $falta['hora'];?></p></td>
+  </tr>
+  -->   
+  <tr>
+     <th>Grup</th>
+     <th>Alumne</th>
+     <th>Incidència</th>
+     <th>Crèdit</th>
+     <th>Professor</th>
   </tr>
  </thead>
  <tbody>
   <!-- Iteration that shows teacher groups for selected day-->
-  <?php foreach ($teacher_groups_current_day as $key => $teacher_group) : ?>
+  <?php // foreach ($teacher_groups_current_day as $key => $teacher_group) :
+	$i++;
+}
+
+   ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><?php echo $teacher_group->data;?></td>
-     <td><?php echo $teacher_group->hora;?></td>
-     <td><?php echo $teacher_group->faltes;?></td>
+	 <td><?php echo $falta['grup'];?></td>     
+     <td><?php echo $falta['estudiant'];?></td>
+     <td><?php echo $falta['incidencia'];?></td>
+     <td><?php echo $falta['credit'];?></td>
+     <td><?php echo $falta['professor'];?></td>
    </tr>
-  <?php endforeach; ?>
+  <?php //endforeach; 
+  if($i==$contador){
+
+  ?>
  </tbody>
 </table>
+<?php $i++; }};
+endforeach;
+} ?>
 
 <!-- Fi proves datatable -->
 	</div>
