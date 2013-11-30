@@ -68,3 +68,23 @@ $lang['managment'] = 'Gestió';
  $lang['groups'] = 'Grups';
  $lang['preferences'] = 'Preferències';
 
+ /* Menú manteniments Plans Estudi */
+$lang['course']="Curs";
+    $lang['course_number']="Num. Curs";
+    $lang['course_cycle_id']="ID Cicle"; 
+    $lang['course_estudies_id']="ID Estudi";  
+$lang['classroom_group']="Grup de Classe";
+	$lang['group_code']="Codi Grup";
+	$lang['group_EducationalLevelId']="Nivell Educatiu";
+$lang['study_module']="Assignatura | Mòdul Professional";	
+$lang['study_submodules']="Unitat Formativa";
+$lang['studies']="Estudis";
+$lang['cycles']="Cicle";
+$lang['organizational_unit']="Unitat Organitzativa";
+
+//Matrícules
+$lang['enrollment']="Matrícula";
+$lang['enrollment_studies']="Estudis Matriculats";
+$lang['enrollment_class_group']="Matrícules de Grups de Classe";
+$lang['enrollment_modules']="Matrícules Mòduls";
+$lang['enrollment_submodules']="Matrícules Sub-Mòduls";
