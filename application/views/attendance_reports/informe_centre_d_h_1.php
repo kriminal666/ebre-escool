@@ -96,7 +96,7 @@ padding: 0.3em;
 $incidencia = array(
 	array(
 	'grup' => '1AF',
-	'dia'  => '28/11/2013',
+	'dia'  => '26/11/2013',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Patricia Favà Marti',
 	'incidencia' => 'FJ',
@@ -105,7 +105,7 @@ $incidencia = array(
 	),
 	array(
 	'grup' => '1APD',
-	'dia'  => '28/11/2013',
+	'dia'  => '28/11/2012',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Ignacio Bel Rodriguez',
 	'incidencia' => 'F',
@@ -114,7 +114,7 @@ $incidencia = array(
 	),	
 	array(
 	'grup' => '2ASIX',
-	'dia'  => '28/11/2013',
+	'dia'  => '27/11/2013',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Oscar Adán Valls',
 	'incidencia' => 'R',
@@ -149,7 +149,7 @@ $incidencia = array(
 				<div class="form-group">
 					<tr>
 						<td><label for="data_informe">Write Date:</label></td>
-						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php echo date("d/m/Y")?>"/></td>
+						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d/m/Y'); } ?>"/></td>
 					</tr>
 				</div>		
 				<div class="form-group">
@@ -181,12 +181,9 @@ $incidencia = array(
 <!-- Proves datatables -->
 
 <?php 
-//print_r($_POST);
-//echo "<br />";
 
-$contador = count($_POST);
-//echo $contador;
 if($_POST){  
+	$contador = count($_POST);	
 	$i=0;
 	foreach($incidencia as $falta):
 		//print_r($falta);
@@ -198,15 +195,6 @@ if($i==0){
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
  <thead style="background-color: #d9edf7;">
-  <!--
-  <tr>
-    <td colspan="4" style="text-align: center;"> <h4>GRUP: <?php echo strtoupper($falta['grup']);?></h4></td>
-  </tr>
-
-  <tr>
-    <td colspan="4" style="text-align: center;"> <p>Dia: <?php echo $falta['dia'];?> Hora: <?php echo $falta['hora'];?></p></td>
-  </tr>
-  -->   
   <tr>
      <th>Grup</th>
      <th>Alumne</th>

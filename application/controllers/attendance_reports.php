@@ -289,8 +289,67 @@ class attendance_reports extends skeleton_main {
                                 "SE" => "SE - Secretariat (S) - CF"
             );
 
-        $this->load_header();  
-        $this->load->view('attendance_reports/class_list_report.php',$data);     
+/**/
+        $this->load_datatables_data();
+
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+        
+        $default_group_code = $this->config->item('default_group_code');
+        $group_code=$default_group_code;
+
+        $organization = $this->config->item('organization','skeleton_auth');
+
+        $header_data['header_title']=lang("all_students") . ". " . $organization;
+
+        //Load CSS & JS
+        //$this->set_header_data();
+        $all_groups = $this->attendance_model->get_all_classroom_groups();
+
+        $data['group_code']=$group_code;
+
+        $data['all_groups']=$all_groups->result();
+
+        $data['all_groups']=$all_groups->result();
+        $data['photo'] = false;
+        if ($_POST) {
+            $data['selected_group']= urldecode($_POST['grup']);
+            if ($_POST['foto']){
+                $data['photo'] = true;
+            }
+        }   else {
+            $data['selected_group']=$default_group_code;
+        }
+       // echo $data['selected_group'];
+       // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+       // $default_group_dn=$students_base_dn;
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+        
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_tstudents"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        
+       $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+       
+        //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
+        //Total de professors
+        $data['count_alumnes'] = count($data['all_students_in_group']);
+        //$data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
+
+/**/
+
+
+//        $this->load_header();  
+        if(!$_POST){
+            $this->load->view('attendance_reports/class_list_report.php', $data); 
+        } else {
+            $this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
+        } 
         $this->load_footer();      
     }
 
@@ -382,6 +441,9 @@ class attendance_reports extends skeleton_main {
         }   else {
             $data['selected_group']=$default_group_code;
         }
+
+        
+
        // echo $data['selected_group'];
        // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
        // $default_group_dn=$students_base_dn;
@@ -403,7 +465,7 @@ class attendance_reports extends skeleton_main {
 /**/
 
 
-        $this->load_header();
+        //$this->load_header();
         if(!$_POST){
             $this->load->view('attendance_reports/class_sheet_report.php', $data); 
         } else {

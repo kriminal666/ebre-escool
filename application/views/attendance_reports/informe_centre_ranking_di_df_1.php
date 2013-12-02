@@ -19,32 +19,44 @@ $(document).ready( function () {
 				"aButtons": [
 					{
 						"sExtends": "copy",
-						"sButtonText": "<?php echo lang("Copy");?>"
+						"sButtonText": "<?php echo lang("Copy");?>",
+						"mColumns": "visible"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>",
+						"sTitle": "<?php echo lang('ranking_incidents_by_date_1').$_POST['data_inicial'].lang('incidents_by_date_2').$_POST['data_final'];?>",
 						"sExtends": "csv",
-						"sButtonText": "CSV"
+						"sButtonText": "CSV",
+						"mColumns": "visible"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>",
+						"sTitle": "<?php echo lang('ranking_incidents_by_date_1').$_POST['data_inicial'].lang('incidents_by_date_2').$_POST['data_final'];?>",
 						"sExtends": "xls",
-						"sButtonText": "XLS"
+						"sButtonText": "XLS",
+						"mColumns": "visible"
 					},
 					{
-						"sTitle": "<?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>",
+						"sTitle": "<?php echo lang('ranking_incidents_by_date_1').$_POST['data_inicial'].lang('incidents_by_date_2').$_POST['data_final'];?>",
 						"sExtends": "pdf",
-						"sPdfOrientation": "landscape",
-						"sButtonText": "PDF"
+						"sPdfOrientation": "portrait",
+						"sButtonText": "PDF",
+						"mColumns": "visible"
 					},
 					{
 						"sExtends": "print",
-						"sButtonText": "<?php echo lang("Print");?>"
+						"sButtonText": "<?php echo lang("Print");?>",
+						"mColumns": "visible"
 					},
 				]
 },
         "iDisplayLength": 50,
-        "aaSorting": [[ 5, "asc" ],[ 6, "asc" ],[ 7, "asc" ]],
+        "aaSorting": [[ 4, "desc" ]],
+	    "aoColumns": [
+	    { "bVisible": false },
+	    null,
+	    null,
+	    null,
+	    null
+	  ],        
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
@@ -79,6 +91,70 @@ $(document).ready( function () {
 	} else {
 		$top = 10;
 	}	
+
+	$faltes = array(
+	array(
+	'data' => strtotime('10-11-2013'),
+	'estudiant'  => 'Ramón Rodriguez Murillo',
+	'grup' => '1GAD',
+	'total' => 82,
+	),
+	array(
+	'data' => strtotime('10-11-2013'),		
+	'estudiant'  => 'Cristina Lizana Roche',
+	'grup' => '1LDC',
+	'total' => 80,
+	),
+	array(
+	'data' => strtotime('11-11-2013'),		
+	'estudiant'  => 'Cristina Oleinic',
+	'grup' => '1DIE',
+	'total' => 79,
+	),	
+	array(
+	'data' => strtotime('8-10-2013'),		
+	'estudiant'  => 'Monika Aleknaite',
+	'grup' => '1DIE',
+	'total' => 74,
+	),
+	array(
+	'data' => strtotime('20-10-2013'),		
+	'estudiant'  => 'Saboora Kabir',
+	'grup' => '1FAR',
+	'total' => 73,
+	),
+	array(
+	'data' => strtotime('01-12-2013'),		
+	'estudiant'  => 'Aycha Nafaa Rubio',
+	'grup' => '1GAD',
+	'total' => 67,
+	),
+	array(
+	'data' => strtotime('10-11-2013'),		
+	'estudiant'  => 'Sira Sowe',
+	'grup' => '2DIE',
+	'total' => 65,
+	),
+	array(
+	'data' => strtotime('08-10-2012'),		
+	'estudiant'  => 'Nerea Pellicer Montesó',
+	'grup' => '1LDC',
+	'total' => 63,
+	),
+	array(
+	'data' => strtotime('5-11-2013'),		
+	'estudiant'  => 'Aura Peris Aldea',
+	'grup' => '1FAR',
+	'total' => 63,
+	),
+	array(
+	'data' => strtotime('30-11-2013'),		
+	'estudiant'  => 'Venecia Sotillo Diaz',
+	'grup' => '1AF',
+	'total' => 63
+	)
+	);	
+
 ?>
 
 <!-- TITLE -->
@@ -118,27 +194,31 @@ $(document).ready( function () {
 		</form>
 
 <!-- Proves datatables -->
-
+<h4><?php if($_POST){ echo lang('ranking_incidents_by_date_1').$_POST['data_inicial'].lang('incidents_by_date_2').$_POST['data_final']; ?></h4>
+<?php $posicio = 1; ?>
 <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="3" style="text-align: center;"> <h4><?php echo $informe_centre_ranking_di_df_1?></h4></td>
-  </tr>
-  <tr>
-     <th>Data Inicial</th>
-     <th>Data Final</th>
-     <th>Ranking (top <?php echo $top; ?>)</th>
+  	 <th>Data</th>
+     <th>Posició</th>
+     <th>Alumne</th>
+     <th>Grup</th>
+     <th>Total faltes No Justificades</th>     
   </tr>
  </thead>
  <tbody>
   <!-- Iteration that shows teacher groups for selected day-->
-  <?php foreach ($teacher_groups_current_day as $key => $teacher_group) : ?>
+  <?php foreach ($faltes as $falta) : ?>
+  <?php if(/*($falta >= $data_ini) && ($falta <= $data_fi) &&*/ ($posicio <= $top)){ ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><?php echo $teacher_group->data_ini;?></td>
-     <td><?php echo $teacher_group->data_fi;?></td>
-     <td><?php echo $teacher_group->top;?></td>
+   	 <td><?php echo $falta['data'];?></td>
+     <td><?php echo $posicio; $posicio++;?></td>
+     <td><?php echo $falta['estudiant'];?></td>
+     <td><?php echo $falta['grup'];?></td>     
+     <td><?php echo $falta['total'];?></td>
    </tr>
-  <?php endforeach; ?>
+   <?php } ?>
+  <?php endforeach; }?>
  </tbody>
 </table>
 
