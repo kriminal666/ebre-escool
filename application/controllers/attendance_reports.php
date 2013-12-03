@@ -335,7 +335,7 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
         
        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-       
+        //print_r($data['all_students_in_group']);       
         //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
         //Total de professors
         $data['count_alumnes'] = count($data['all_students_in_group']);
@@ -533,7 +533,42 @@ class attendance_reports extends skeleton_main {
                                 "SE" => "SE"
             );
 
-        $this->load_header(); 
+        $this->load_datatables_data();
+
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+        
+        $default_group_code = $this->config->item('default_group_code');
+        $group_code=$default_group_code;
+
+        $organization = $this->config->item('organization','skeleton_auth');
+
+        $all_groups = $this->attendance_model->get_all_classroom_groups();
+
+        $data['group_code']=$group_code;
+        $data['all_groups']=$all_groups->result();
+        if ($_POST) {
+            $data['selected_group']= urldecode($_POST['grup']);
+        } else {
+            $data['selected_group']=$default_group_code;
+        }
+
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_tstudents"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        
+        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        $data['count_alumnes'] = count($data['all_students_in_group']);
+
+
+//        $this->load_header(); 
         $this->load->view('attendance_reports/informe_resum_grup_di_df_1.php',$data);     
         $this->load_footer();    
     }

@@ -2,7 +2,7 @@
 <script>
 $(function() {
 
-	$( "#data_informe" ).datepicker({ dateFormat: 'dd/mm/yy' });
+	$( "#data_informe" ).datepicker({ dateFormat: 'dd-mm-yy' });
 
 });
 
@@ -96,7 +96,7 @@ padding: 0.3em;
 $incidencia = array(
 	array(
 	'grup' => '1AF',
-	'dia'  => '26/11/2013',
+	'dia'  => '26-11-2013',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Patricia Favà Marti',
 	'incidencia' => 'FJ',
@@ -105,7 +105,7 @@ $incidencia = array(
 	),
 	array(
 	'grup' => '1APD',
-	'dia'  => '28/11/2012',
+	'dia'  => '28-11-2012',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Ignacio Bel Rodriguez',
 	'incidencia' => 'F',
@@ -114,7 +114,7 @@ $incidencia = array(
 	),	
 	array(
 	'grup' => '2ASIX',
-	'dia'  => '27/11/2013',
+	'dia'  => '27-11-2013',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Oscar Adán Valls',
 	'incidencia' => 'R',
@@ -123,7 +123,7 @@ $incidencia = array(
 	),
 	array(
 	'grup' => '1APD',
-	'dia'  => '28/11/2013',
+	'dia'  => '28-11-2013',
 	'hora' => '8:00-9:00',
 	'estudiant' => 'Ignacio Bel Rodriguez',
 	'incidencia' => 'F',
@@ -149,7 +149,7 @@ $incidencia = array(
 				<div class="form-group">
 					<tr>
 						<td><label for="data_informe">Write Date:</label></td>
-						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d/m/Y'); } ?>"/></td>
+						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d-m-Y'); } ?>"/></td>
 					</tr>
 				</div>		
 				<div class="form-group">

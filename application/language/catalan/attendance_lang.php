@@ -29,6 +29,10 @@ $lang['reports']   = 'Informes';
   $lang['ranking_incidents_by_date_1']   = "Ranking Incidències del centre entre el "; 
   $lang['incidents_by_date_2']   = " i el ";  
 
+  $lang['group_incidents_summary']   = "Resum incidències del grup "; 
+  $lang['group_incidents_summary_between']   = " entre el ";  
+
+
   $lang['reports_educational_center_reports_incidents_by_date']   = "Incidències del centre entre una data inicial i una data final";
   $lang['reports_educational_center_reports_incidents_by_date_ranking']   =  "Rànquing incidències del centre entre una data inicial i una data final";
   $lang['reports_educational_center_reports_grup_mentors']   = 'Tutors de grup';

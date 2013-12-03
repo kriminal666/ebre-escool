@@ -103,8 +103,8 @@ class ebre_escool_ldap  {
 		$teachernames=array();
 		$professor = array();
 
+		// Imatge Genèrica en cas que el professor no tingui foto o estigui danyada
 		$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
-		//$imgData = base64_encode(file_get_contents($img_file));
 		$imgData = file_get_contents($img_file);
 		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
 
@@ -116,51 +116,32 @@ class ebre_escool_ldap  {
 			
 			$search = ldap_search($this->ldapconn, $basedn, $filter,array("employeeNumber","cn","jpegPhoto"));
         	$allteachernames = ldap_get_entries($this->ldapconn, $search);
-/*
-echo "<pre>";
-print_r($allteachernames[0]);
-echo "</pre>";
-*/
-//echo '<img src="data:image/jpeg;base64,'.base64_encode($allteachernames[0]['jpegphoto'][0]).'">';
+
+
         	$contador = 0;
-
-
         	foreach ($allteachernames as $teacher){
-        		//if($teacher['employeenumber'][0]!=''){
+
         			if($contador>0){
+        				// Guardo les dades dels professors en un array
 						$professor[$contador]['code'] = $teacher['employeenumber'][0];
 						$professor[$contador]['name'] = $teacher['cn'][0];
-						//$contador++;
+
+						// Si el professor te foto, la guardo, sino, li assigno la foto genèrica
 			        	if(isset($teacher['jpegphoto'][0])){
 			        		$professor[$contador]['photo']=$teacher['jpegphoto'][0];
 			        	} else {
-							//echo '<img src="',$src,'">';
+
 			        		$professor[$contador]['photo']=$imgData;
-							//echo '<img src="'.$src.'">';		        		
+
 			        	}
 			        }
-					//}
-
-					//echo '<img src="data:image/jpeg;base64,'.base64_encode($professor[$contador]['photo']).'">';
-					//echo "<br/>".$professor[$contador]['code']. "-" .$professor[$contador]['name']."<br/>";
 				$contador++;
 			}
 				
 		}
+		// Ordeno l'array de professors
 		sort($professor);
-/*
-for($k=0;$k<($contador-1);$k++){
-	echo '<img src="data:image/jpeg;base64,'.base64_encode($professor[$k]['photo']).'">';
-	echo "<br/>".$professor[$k]['code']. "-" .$professor[$k]['name']."<br/>";
-}
-*/
 
-
-		/*
-        	echo "<pre>";
-        	print_r($professor);
-        	echo "</pre>";		
-		*/
 		return $professor;
 
 
@@ -442,6 +423,12 @@ for($k=0;$k<($contador-1);$k++){
 	public function getAllGroupStudentsInfo($groupdn) {
 		$allGroupStudentsInfo=array();
 
+		// Imatge Genèrica
+		$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
+		$imgData = file_get_contents($img_file);
+		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
+
+
 		if ($this->_bind()) {
 			$filter = '(&  (objectClass=posixAccount)(!(objectClass=gosaUserTemplate)))';		
 			$required_attributes= array("irisPersonalUniqueID","irisPersonalUniqueIDType","highSchoolTSI","highSchoolUserId","employeeNumber","sn","sn1","sn2",
@@ -495,8 +482,9 @@ for($k=0;$k<($contador-1);$k++){
 					$student->uid = (isset($studententry['uid'])) ? $studententry['uid'][0] : "";
 					$student->uidnumber = (isset($studententry['uidnumber'])) ? $studententry['uidnumber'][0] : "";
 					$student->highSchoolPersonalEmail = (isset($studententry['highschoolpersonalemail'])) ? $studententry['highschoolpersonalemail'][0] : "";
-					$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : "";
-					
+					//$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : "";
+					$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : $imgData;
+
 					$student->gidNumber = (isset($studententry['gidnumber'])) ? $studententry['gidnumber'][0] : "";
 					$student->homeDirectory = (isset($studententry['homedirectory'])) ? $studententry['homedirectory'][0] : "";
 					$student->loginShell = (isset($studententry['loginshell'])) ? $studententry['loginshell'][0] : "";
