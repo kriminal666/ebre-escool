@@ -575,8 +575,122 @@ class attendance_reports extends skeleton_main {
 
     function informe_resum_grup_faltes_mes_1() {
 
-        $this->load_header();  
-        $this->load->view('attendance_reports/informe_resum_grup_faltes_mes_1.php');     
+        $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
+                                "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
+                                "1ASIX-DAM" => "1ASIX-DAM - *1r Inform. superior (S)L - CF",
+                                "1DIE" => "1DIE - 1r Diet - CF",
+                                "1EE" => "1EE - *1r Efic. Energ.(S) L - CF",
+                                "1EIN" => "1EIN - *1r Educaci - CF",
+                                "1ES" => "1ES - *1r Emerg. Sanit.(M)L - CF",
+                                "1FAR" => "1FAR - *1r Farm - CF",
+                                "1GAD" => "1GAD - *Gesti - CF",
+                                "1IEA" => "1IEA - *1r Ins.Elec. Autom(M)L - CF",
+                                "1IME" => "1IME - *1r Ins. Mant. Elec.(M) - CF",
+                                "1INS A" => "1INS A - *1r Int.Soc.(S)L - CF",
+                                "1INS B" => "1INS B - 1r Int. Soc.(S)L - CF",
+                                "1LDC" => "1LDC - *1r Lab. Diagnosi C (S). - CF",
+                                "1MEC" => "1MEC - *1r Mecanitzaci - CF",
+                                "1PM" => "1PM - *1r Prod. Mecanitza(S)L. - CF",
+                                "1PRO" => "1PRO - *1r D. A. Projec. C (S) L - CF",
+                                "1PRP" => "1PRP - 1r Prev. Riscos Prof.(S) - CF",
+                                "1SEA" => "1SEA - i automa (S) - CF",
+                                "1SMX A" => "1SMX A - *1r Inform Mitj - CF",
+                                "1SMX B" => "1SMX B - *1r Inform. mitj - CF",
+                                "1STI" => "1STI - 1r Sis. Teleco. Infor (S) - CF",
+                                "2AF" => "2AF - 2n Ad. Finan (S) - CF",
+                                "2APD" => "2APD - 2n Atenc. Persones Dep.M) - CF",
+                                "2ASIX" => "2ASIX - 2n Adm Sist Inf xarxa(S)L - CF",
+                                "2DAM" => "2DAM - 2n Desenv Aplic Mult (S)L - CF",
+                                "2DIE" => "2DIE - 2n Diet - CF",
+                                "2EE" => "2EE - 2 Efic.Energ.(S) L - CF",
+                                "2EIN" => "2EIN - 2n Educaci - CF",
+                                "2ES" => "2ES - 2n Emerg. Sanit.(M) - CF",
+                                "2FAR" => "2FAR - 2n Farm - CF",
+                                "2GAD" => "2GAD - 2n Gest. Adm. (M)L - CF",
+                                "2IEA" => "2IEA - *2n Ins.Elec,Autom(M)L - CF",
+                                "2IME" => "2IME - 2n Ins. Mant. Elec.(M) - CF",
+                                "2INS A" => "2INS A - 2n Integraci - CF",
+                                "2INS B" => "2INS B - 2n Integraci - CF",
+                                "2LDC" => "2LDC - 2n Lab. Diagnosi C(S) - CF",
+                                "2MEC" => "2MEC - 2n Mecanitzaci - CF",
+                                "2PM" => "2PM - *2n Prod. Mecanitza.(S) L - CF",
+                                "2PRO" => "2PRO - 2n D. A. Projec. C (S) - CF",
+                                "2PRP" => "2PRP - 2n Prev. Riscos Prof.(S) - CF",
+                                "2SEA" => "2SEA - *2n Sist. Electri i automa (S) - CF",
+                                "2SIC" => "2SIC - 2n Soldadura i caldereria (M)  - CF",
+                                "2SMX" => "2SMX - 2n Inform. Mitj - CF",
+                                "2STI" => "2STI - 2n Sis. teleco. Infor (S) - CF",
+                                "CAIA" => "CAIA - *Cures Auxiliar Inf(M) - CF",
+                                "CAIB" => "CAIB - *Cures Auxiliar Inf(M) - CF",
+                                "CAIC" => "CAIC - Cures Auxiliar Inf(M) - CF",
+                                "CAM" => "CAM - *Curs Acc - CF",
+                                "CAS A" => "CAS A - *Curs Acc - CF",
+                                "CAS B" => "CAS B - *Curs Acc - CF",
+                                "CAS C" => "CAS C - Curs Acc - CF",
+                                "COM" => "COM - *Comer - CF",
+                                "GCM" => "GCM - Ges. Comer. Mar.(S) - CF",
+                                "SE" => "SE - Secretariat (S) - CF"
+            );
+
+            $data['mes'] = array( "1" => "Gener",
+                                  "2" => "Febrer",
+                                  "3" => "Març",
+                                  "4" => "Abril",
+                                  "5" => "Maig",
+                                  "6" => "Juny",
+                                  "7" => "Juliol",
+                                  "8" => "Agost",
+                                  "9" => "Setembre",
+                                  "10" => "Octubre",
+                                  "11" => "Novembre",
+                                  "12" => "Desembre"
+            );
+
+            $data['any'] = array( "2013" => "2013",
+                                  "2012" => "2012",
+                                  "2011" => "2011",
+                                  "2010" => "2010",
+                                  "2009" => "2009",
+                                  "2008" => "2008"
+            );
+
+        $this->load_datatables_data();
+
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+        
+        $default_group_code = $this->config->item('default_group_code');
+        $group_code=$default_group_code;
+
+        $organization = $this->config->item('organization','skeleton_auth');
+
+        $all_groups = $this->attendance_model->get_all_classroom_groups();
+
+        $data['group_code']=$group_code;
+        $data['all_groups']=$all_groups->result();
+        if ($_POST) {
+            $data['selected_group']= urldecode($_POST['grup']);
+        } else {
+            $data['selected_group']=$default_group_code;
+        }
+
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_tstudents"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        
+        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        $data['count_alumnes'] = count($data['all_students_in_group']);
+
+
+//        $this->load_header(); 
+        $this->load->view('attendance_reports/informe_resum_grup_faltes_mes_1.php',$data);     
         $this->load_footer();    
     }
 
