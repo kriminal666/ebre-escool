@@ -1,8 +1,94 @@
 <?php
 
 $contador = 0;
-$professor =array();
+$professor = array();
+$conserge = array();
+$secretaria = array();
+/*
+echo "<pre>";
+print_r($all_secretaria);
+echo "</pre>";
+*/
+/* CONSERGES */
+foreach($all_conserges as $cons) {
 
+	$nom = explode(" ",rtrim($cons['name']));
+	$conserge[$contador]['name']=$nom[0];
+	$conserge[$contador]['sn']=$nom[1];
+	$conserge[$contador]['photo']=$cons['photo'];
+
+	$tipus = substr($conserge[$contador]['photo'],0,10);
+
+	if(strlen($tipus)==8){
+		$extensio = "cap";
+	} else {
+		$isJPG  = strpos($tipus, 'JFIF');
+		if($isJPG){
+			$extensio = ".jpg";
+		} else {
+			$isPNG = strpos($tipus, 'PNG');
+			if($isPNG){
+			$extensio = ".png";
+			}
+		}
+	}
+
+	$jpeg_filename="/tmp/".$conserge[$contador]['name'].$conserge[$contador]['sn'].$extensio;
+	$jpeg_file_cons[$contador]="/tmp/".$conserge[$contador]['name'].$conserge[$contador]['sn'].$extensio;
+
+	$outjpeg = fopen($jpeg_filename, "wb");
+	fwrite($outjpeg, $conserge[$contador]['photo']);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $jpeg_filename );
+
+	$contador++;
+}
+/*
+echo "<pre>";
+print_r($conserge);
+echo "</pre>";
+*/
+$contador = 0;
+
+/* SECRETARIES */
+foreach($all_secretaria as $secr) {
+
+	$nom = explode(" ",rtrim($secr['name']));
+
+	$secretaria[$contador]['name']=$nom[0];
+	$secretaria[$contador]['sn']=$nom[1];
+	$secretaria[$contador]['photo']=$secr['photo'];
+
+	$tipus = substr($secretaria[$contador]['photo'],0,10);
+
+	if(strlen($tipus)==8){
+		$extensio = "cap";
+	} else {
+		$isJPG  = strpos($tipus, 'JFIF');
+		if($isJPG){
+			$extensio = ".jpg";
+		} else {
+			$isPNG = strpos($tipus, 'PNG');
+			if($isPNG){
+			$extensio = ".png";
+			}
+		}
+	}
+
+	$jpeg_filename="/tmp/".$secretaria[$contador]['name'].$secretaria[$contador]['sn'].$extensio;
+	$jpeg_file_secr[$contador]="/tmp/".$secretaria[$contador]['name'].$secretaria[$contador]['sn'].$extensio;
+
+	$outjpeg = fopen($jpeg_filename, "wb");
+	fwrite($outjpeg, $secretaria[$contador]['photo']);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $jpeg_filename );
+
+	$contador++;
+}
+
+$contador = 0;
+
+/* PROFESSORS */
 // Guardo les dades dels professors en un array
 foreach($all_teachers as $teacher) {
 
@@ -51,12 +137,11 @@ $pdf = new FPDF();
 $pdf->SetMargins(10,10,10);
 //Obro una pàgina
 $pdf->AddPage();
+		$pdf->Image($jpeg_file_cons[0],166,222,10);        
 //$pdf->AddPage("P","A3");
 //Es la posicio exacta on comença a escriure
 $x=7;//10
 $y=15;//24
-
-
 
 //Logo
 $pdf->Image(base_url()."application/views/attendance_reports/logo_iesebre_2010_11.jpg",$x+2,5,40,15);
@@ -124,22 +209,59 @@ $page_one=true;
 	        
 	$pdf->SetFont('Arial','B',8);
 	$pdf->Text($initial_x_personal+3,$initial_y_personal-2,utf8_decode("CONSERGES"));                
+	$pdf->SetFont('Arial','',5); 	
+	
+	$x_personal=$initial_x_personal;
+	$y_personal=$initial_y_personal;
+	for($cont=0;$cont<count($conserge);$cont++){
+
+		$pdf->Image($jpeg_file_cons[$cont],$x_personal,$y_personal,$width_personal_foto); 
+		$pdf->Text($x_personal,$y_personal+15,utf8_decode($conserge[$cont]['name']));                
+		$pdf->Text($x_personal,$y_personal+17,utf8_decode($conserge[$cont]['sn']));   
+		$x_personal=$x_personal+14;
+		if(($cont+1)%3==0){
+			$x_personal=$initial_x_personal;
+			$y_personal=$initial_y_personal+40;			
+		}		
+	}	
+
+	$pdf->SetFont('Arial','B',8);   
+	$pdf->Text($initial_x_personal+3,$initial_y_personal+22,utf8_decode("SECRETÀRIES"));	
+	$pdf->SetFont('Arial','',5); 
+
+	$x_personal=$initial_x_personal;
+	$y_personal=$initial_y_personal+24;
+	for($cont=0;$cont<count($secretaria);$cont++){
+
+		$pdf->Image($jpeg_file_secr[$cont],$x_personal,$y_personal,$width_personal_foto); 
+		$pdf->Text($x_personal,$y_personal+15,utf8_decode(ucfirst($secretaria[$cont]['name'])));                
+		$pdf->Text($x_personal,$y_personal+17,utf8_decode(ucfirst($secretaria[$cont]['sn'])));   
+		$x_personal=$x_personal+14;
+		if(($cont+1)%3==0){
+			$x_personal=$initial_x_personal;
+			$y_personal=$initial_y_personal+42;			
+		}
+	}	
+
+/*	
 	//Foto                
-	$pdf->Image(base_url()."application/views/attendance_reports/foto.jpg",$initial_x_personal,$initial_y_personal,$width_personal_foto);                
+	$pdf->Image($jpeg_file_cons[0],$initial_x_personal,$initial_y_personal,$width_personal_foto);                
 	$pdf->SetFont('Arial','',5);                
 	//Nom                
-	$pdf->Text($initial_x_personal+1,$initial_y_personal+14,utf8_decode("Jordi"));                
+	$pdf->Text($initial_x_personal+1,$initial_y_personal+15,utf8_decode($conserge[0]['name']));                
 	//Cognom                
-	$pdf->Text($initial_x_personal+1,$initial_y_personal+16,utf8_decode("Caudet"));                
-	$pdf->Image(base_url()."application/views/attendance_reports/foto.jpg",$initial_x_personal+14,$initial_y_personal,$width_personal_foto);                
-	$pdf->Text($initial_x_personal+15,$initial_y_personal+14,utf8_decode("Leonor"));                  
-	$pdf->Text($initial_x_personal+15,$initial_y_personal+16,utf8_decode("Agramunt"));                
-	$pdf->Image(base_url()."application/views/attendance_reports/foto.jpg",$initial_x_personal+28,$initial_y_personal,$width_personal_foto);                
-	$pdf->Text($initial_x_personal+30,$initial_y_personal+14,utf8_decode("Jaume"));                
-	$pdf->Text($initial_x_personal+30,$initial_y_personal+16,utf8_decode("Benaiges"));                
-
+	$pdf->Text($initial_x_personal+1,$initial_y_personal+17,utf8_decode($conserge[0]['sn']));                
+	$pdf->Image($jpeg_file_cons[1],$initial_x_personal+14,$initial_y_personal,$width_personal_foto);                
+	$pdf->Text($initial_x_personal+15,$initial_y_personal+14,utf8_decode($conserge[1]['name']));                  
+	$pdf->Text($initial_x_personal+15,$initial_y_personal+16,utf8_decode($conserge[1]['sn']));                
+	$pdf->Image($jpeg_file_cons[2],$initial_x_personal+28,$initial_y_personal,$width_personal_foto);                
+	$pdf->Text($initial_x_personal+30,$initial_y_personal+14,utf8_decode($conserge[2]['name']));                
+	$pdf->Text($initial_x_personal+30,$initial_y_personal+16,utf8_decode($conserge[2]['sn']));                
+*/
+	/*
 	$pdf->SetFont('Arial','B',8);                
 	$pdf->Text($initial_x_personal+3,$initial_y_personal+21,utf8_decode("SECRETÀRIES"));                
+
 	$pdf->Image(base_url()."application/views/attendance_reports/foto.jpg",$initial_x_personal,$initial_y_personal+22,$width_personal_foto);                
 	$pdf->SetFont('Arial','',5);                
 	$pdf->Text($initial_x_personal+1,$initial_y_personal+36,utf8_decode("Cinta"));                
@@ -153,7 +275,7 @@ $page_one=true;
 	$pdf->Image(base_url()."application/views/attendance_reports/foto.jpg",$initial_x_personal,$initial_y_personal+40,$width_personal_foto);
 	$pdf->Text($initial_x_personal,$initial_y_personal+54,utf8_decode("Sònia"));
 	$pdf->Text($initial_x_personal,$initial_y_personal+56,utf8_decode("Alegria"));
-
+*/
 //Si escrivim per la sortida aleshores no es podrà utilitzar PDF (headers already sent...)
 //echo "prova!";
 

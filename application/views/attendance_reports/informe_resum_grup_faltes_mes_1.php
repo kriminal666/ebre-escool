@@ -81,11 +81,11 @@ $alumne[$contador]['any']= $year;
 $alumne[$contador]['faltes']= $faults;
 $contador++;
 }
-
+/*
 echo "<pre>";
 print_r($alumne);
 echo "</pre>";
-
+*/
 ?>
 
 <!-- TITLE -->

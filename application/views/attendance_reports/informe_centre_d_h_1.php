@@ -11,7 +11,7 @@ $(function() {
 <script>
 $(document).ready( function () {
 
-	$('#groups_by_teacher_an_date').dataTable( {
+	$('#date_d_hour_h').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
 		"sDom": 'T<"clear">lfrtip',
@@ -92,55 +92,11 @@ margin: 0;
 padding: 0.3em;
 }
 </style>
-<?php
-$incidencia = array(
-	array(
-	'grup' => '1AF',
-	'dia'  => '26-11-2013',
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Patricia Favà Marti',
-	'incidencia' => 'FJ',
-	'credit' => 'M1',
-	'professor' => 'Ferran Sabaté Borras'
-	),
-	array(
-	'grup' => '1APD',
-	'dia'  => '28-11-2012',
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Ignacio Bel Rodriguez',
-	'incidencia' => 'F',
-	'credit' => 'M4',
-	'professor' => 'Ricard Gonzàlez Castelló'
-	),	
-	array(
-	'grup' => '2ASIX',
-	'dia'  => '27-11-2013',
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Oscar Adán Valls',
-	'incidencia' => 'R',
-	'credit' => 'M6',
-	'professor' => 'David Caminero Baubí'
-	),
-	array(
-	'grup' => '1APD',
-	'dia'  => '28-11-2013',
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Ignacio Bel Rodriguez',
-	'incidencia' => 'F',
-	'credit' => 'M4',
-	'professor' => 'Ricard Gonzàlez Castelló'
-	)
-
-	);
-
-
-
-?>
 
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
-		<h2><?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour'); ?></h2>
+		<h2><?php echo $title; ?></h2>
 	</div>    
 	<!-- FORM -->    
 	<div style="width:50%; margin:20px auto;">
@@ -148,13 +104,13 @@ $incidencia = array(
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>
-						<td><label for="data_informe">Write Date:</label></td>
+						<td><label for="data_informe"><?php echo lang('select_date');?></label></td>
 						<td><input class="form-control" id="data_informe" type="text" name="data" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d-m-Y'); } ?>"/></td>
 					</tr>
 				</div>		
 				<div class="form-group">
 					<tr>
-						<td><laber for="hora_informe">Select the time:</label></td>
+						<td><laber for="hora_informe"><?php echo lang('select_time');?></label></td>
 						<td><select class="chosen-select" id="hora_informe" name="hora">
 							<?php foreach ($hores as $key => $value) { ?>
 								<option value="<?php echo $value ?>" <?php if(isset($_POST['hora']) && $value == $_POST['hora']){ ?> selected <?php } else {if($key==1){?> selected <?php }} ?> ><?php echo $value ?></option>
@@ -165,7 +121,7 @@ $incidencia = array(
 				</div>
 				<div class="form-group">
 					<tr>
-						<td valign="top"><label for="incident">Select the type of incident:</label></td>
+						<td valign="top"><label for="incident"><?php echo lang('select_type_of_incident');?></label></td>
 						<td>
 							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F</input><br />
 							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ</input><br />
@@ -178,22 +134,25 @@ $incidencia = array(
 				<tr><td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td></tr>
 			</table>
 		</form>
-<!-- Proves datatables -->
 
+<!-- DATATABLE -->
 <?php 
 
 if($_POST){  
 	$contador = count($_POST);	
 	$i=0;
 	foreach($incidencia as $falta):
-		//print_r($falta);
-if($_POST['data']==$falta['dia'] && $_POST['hora']==$falta['hora'] && array_key_exists($falta['incidencia'], $_POST)){
-if($i==0){
-	echo "<h4><center>".lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora']."</center></h4>";
+		// Si la data, hora i tipus d'incidència sel·leccionades coincideixen amb alguna de les incidències
+		if($_POST['data']==$falta['dia'] && $_POST['hora']==$falta['hora'] && array_key_exists($falta['incidencia'], $_POST)){
+			// La primera iteració mostrem el títol i les capçaleres de la taula
+			if($i==0){
+				echo "<h4><center>".lang('incidents_by_day_and_hour_1').$_POST['data'].
+					lang('incidents_by_day_and_hour_2').$_POST['hora']."</center></h4>";
 
+// Mostrem la taula amb els resultats
 ?>
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+<table class="table table-striped table-bordered table-hover table-condensed" id="date_d_hour_h">
  <thead style="background-color: #d9edf7;">
   <tr>
      <th>Grup</th>
@@ -204,11 +163,9 @@ if($i==0){
   </tr>
  </thead>
  <tbody>
-  <!-- Iteration that shows teacher groups for selected day-->
-  <?php // foreach ($teacher_groups_current_day as $key => $teacher_group) :
+  <?php 
 	$i++;
-}
-
+			} // if($i==0)
    ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
 	 <td><?php echo $falta['grup'];?></td>     
@@ -217,15 +174,17 @@ if($i==0){
      <td><?php echo $falta['credit'];?></td>
      <td><?php echo $falta['professor'];?></td>
    </tr>
-  <?php //endforeach; 
-  if($i==$contador){
-
+  <?php 
+  	// mirem si hem arribat al últim element
+  	if($i==$contador){
   ?>
  </tbody>
 </table>
-<?php $i++; }};
-endforeach;
+<?php $i++; 
+	} // últim element
+} // Hi ha incidències;
+	endforeach;
+if($i==0) { echo "No hi ha incidències per a aquesta data i hora."; }
 } ?>
 
-<!-- Fi proves datatable -->
-	</div>
+</div>

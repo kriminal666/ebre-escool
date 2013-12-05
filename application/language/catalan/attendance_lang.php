@@ -24,14 +24,20 @@ $lang['reports']   = 'Informes';
   $lang['reports_educational_center_reports_incidents_by_day_and_hour']   = "Incidències del centre del dia d a l'hora h";
   $lang['incidents_by_day_and_hour_1']   = "Incidències del centre del dia ";
   $lang['incidents_by_day_and_hour_2']   = " a les ";  
+  $lang['select_date']   = "Sel·lecciona la data: ";
+  $lang['select_time']   = "Sel·lecciona l'hora: ";
+  $lang['select_type_of_incident']   = "Sel·lecciona el tipus d'incident: ";  
 
   $lang['incidents_by_date_1']   = "Incidències del centre entre el ";
   $lang['ranking_incidents_by_date_1']   = "Ranking Incidències del centre entre el "; 
   $lang['incidents_by_date_2']   = " i el ";  
+  $lang['select_initial_date']   = "Sel·lecciona la data inicial: ";
+  $lang['select_end_date']   = "Sel·lecciona la data final: ";  
+
+  $lang['write_max_results']   = "Número elements a mostrar: ";  
 
   $lang['group_incidents_summary']   = "Resum incidències del grup "; 
   $lang['group_incidents_summary_between']   = " entre el ";  
-
 
   $lang['reports_educational_center_reports_incidents_by_date']   = "Incidències del centre entre una data inicial i una data final";
   $lang['reports_educational_center_reports_incidents_by_date_ranking']   =  "Rànquing incidències del centre entre una data inicial i una data final";

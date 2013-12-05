@@ -1,20 +1,22 @@
 <!-- Date Picker -->
 <script>
 $(function() {
-$( "#data_inicial" ).datepicker({ dateFormat: 'dd/mm/yy' });
-$( "#data_final" ).datepicker({ dateFormat: 'dd/mm/yy' });
+	$( "#data_inicial" ).datepicker({ dateFormat: 'dd-mm-yy' });
+	$( "#data_final" ).datepicker({ dateFormat: 'dd-mm-yy' });
 });
 </script>
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
 
-	$('#groups_by_teacher_an_date').dataTable( {
+	$('#initial_date_end_date').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
 		"sDom": 'T<"clear">lfrtip',
 		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],
-
+	
+	// El primer element de la taula l'utilitzem per a ordenar la taula, però no es visualitza.
+	// Si no ho fem així la taula no s'ordena correctament
     "aoColumns": [
     { "bVisible": false },
     null,
@@ -60,7 +62,7 @@ $(document).ready( function () {
 				]
 },
         "iDisplayLength": 50,
-        "aaSorting": [[ 2, "asc" ],[ 0, "asc" ],[ 5, "asc" ],[ 6, "asc" ],[ 7, "asc" ]],
+        "aaSorting": [[ 0, "asc" ],[ 2, "asc" ],[ 5, "asc" ],[ 6, "asc" ],[ 7, "asc" ]],
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
@@ -84,77 +86,20 @@ $(document).ready( function () {
 
 </script>
 <?php 
-	if(isset($_POST['data_inicial'])){
 
-		$data_ini=str_replace("/","-",$_POST['data_inicial']);
-		$data_ini = strtotime($data_ini);
-		//$data_ini = date('d-m-Y',$data_ini);
-		//$data_ini=$_POST['data_inicial'];
+	// Guardem la data amb format UNIX per a poder fer les comparacions
+	if(isset($_POST['data_inicial'])){
+		$data_ini = strtotime($_POST['data_inicial']);
 	}
 	if(isset($_POST['data_final'])){
-
-		$data_fi=str_replace("/","-",$_POST['data_final']);
-		$data_fi = strtotime($data_fi);
-		//$data_fi = date('d-m-Y',$data_fi);
-		//$data_fi=$_POST['data_final'];
+		$data_fi = strtotime($_POST['data_final']);
 	}	
-?>
-<?php
-$incidencia = array(
-	array(
-	'grup' => '1AF',
-	'dia'  => strtotime('26-11-2013'),
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Patricia Favà Marti',
-	'incidencia' => 'FJ',
-	'credit' => 'M1',
-	'professor' => 'Ferran Sabaté Borras'
-	),
-	array(
-	'grup' => '1APD',
-	'dia'  => strtotime('28-11-2012'),
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Ignacio Bel Rodriguez',
-	'incidencia' => 'F',
-	'credit' => 'M4',
-	'professor' => 'Ricard Gonzàlez Castelló'
-	),	
-	array(
-	'grup' => '2ASIX',
-	'dia'  => strtotime('27-11-2013'),
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Oscar Adán Valls',
-	'incidencia' => 'R',
-	'credit' => 'M6',
-	'professor' => 'David Caminero Baubí'
-	),
-	array(
-	'grup' => '1APD',
-	'dia'  => strtotime('28-11-2013'),
-	'hora' => '8:00-9:00',
-	'estudiant' => 'Ramón Bel Rodriguez',
-	'incidencia' => 'F',
-	'credit' => 'M4',
-	'professor' => 'Ricard Gonzàlez Castelló'
-	)
-
-	);
-/*
-echo "<pre>";
-print_r($incidencia);
-echo "</pre>";
-asort($incidencia);
-echo "<pre>";
-print_r($incidencia);
-echo "</pre>";
-*/
-
 ?>
 
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
-		<h2><?php echo lang('reports_educational_center_reports_incidents_by_date'); ?></h2>
+		<h2><?php echo $title; ?></h2>
 	</div> 
 	<!-- FORM -->    
 	<div style="width:60%; margin:20px auto;">
@@ -162,21 +107,21 @@ echo "</pre>";
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>
-						<td><label for="data_inicial">Write the initial Date:</label></td>
-						<td><input class="form-control" id="data_inicial" type="text" name="data_inicial" value="<?php if(isset($data_ini)){ echo date('d-m-Y',$data_ini); } else { echo date('d/m/Y'); } ?>"/></td>
+						<td><label for="data_inicial"><?php echo lang('select_initial_date');?></label></td>
+						<td><input class="form-control" id="data_inicial" type="text" name="data_inicial" value="<?php if(isset($data_ini)){ echo date('d-m-Y',$data_ini); } else { echo date('d-m-Y'); } ?>"/></td>
 					</tr>
 				</div>		
 
 				<div class="form-group">
 					<tr>
-						<td><label for="data_final">Write the end Date:</label></td>
-						<td><input class="form-control" id="data_final" type="text" name="data_final" value="<?php if(isset($data_fi)){ echo date('d-m-Y',$data_fi); } else { echo date('d/m/Y'); } ?>"/></td>
+						<td><label for="data_final"><?php echo lang('select_end_date');?></label></td>
+						<td><input class="form-control" id="data_final" type="text" name="data_final" value="<?php if(isset($data_fi)){ echo date('d-m-Y',$data_fi); } else { echo date('d-m-Y'); } ?>"/></td>
 					</tr>
 				</div>
 
 				<div class="form-group">
 					<tr>
-						<td valign="top"><label for="incident">Select the type of incident:</label></td>
+						<td valign="top"><label for="incident"><?php echo lang('select_type_of_incident');?></label></td>
 						<td>
 							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F</input><br />
 							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ</input><br />
@@ -190,50 +135,25 @@ echo "</pre>";
 			</table>
 		</form>
 
-<!-- Proves datatables -->
+<!-- DATATABLES -->
 
 <?php
-/*
-$test = str_replace("/","-",$incidencia[0]['dia']);
-echo $test."<br/>";
-$time = strtotime($test);
-echo $time."<br />";
-$newformat = date('d-m-Y',$time);
-echo $newformat;
-*/
-
-/*^*/
 
 if($_POST){  
 	$contador = count($_POST);	
 	$i=0;
 	foreach($incidencia as $falta):
-/**/
-/*
-$falta['dia'] =str_replace("/","-",$falta['dia']);
-$falta['dia'] = strtotime($falta['dia']);
-*/
-//$falta['dia'] = date('d-m-Y',$falta['dia']);
-/*
-echo $data_ini."<br />";
-echo $data_fi."<br />";
-echo $falta['dia']." - ";
 
-if($data_ini<$falta['dia']){
-	echo "$data_ini < ".$falta['dia']."<br />";
-} else {
-	echo "$data_ini > ".$falta['dia']."<br />";
-}
-*/
-/*^*/
+		// Si hi ha incidències entre les dates indicades
+		if( ($falta['dia'] >= $data_ini) && ($falta['dia'] <= $data_fi) && array_key_exists($falta['incidencia'], $_POST)){
+			// La primera iteració mostrem el títol i les capçaleres de la taula
+			if($i==0){
+				echo "<h4><center>".$title."</center></h4>";
 
-if( ($falta['dia'] >= $data_ini) && ($falta['dia'] <= $data_fi) && array_key_exists($falta['incidencia'], $_POST)){
-if($i==0){
-	echo "<h4><center>".$informe_centre_di_df_1."</center></h4>";
-
+// mostrem la taula
 ?>
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+<table class="table table-striped table-bordered table-hover table-condensed" id="initial_date_end_date">
  <thead style="background-color: #d9edf7;">
   <tr>
      <th>datetime</th>   	
@@ -246,10 +166,10 @@ if($i==0){
   </tr>
  </thead>
  <tbody>
-  <!-- Iteration that shows teacher groups for selected day-->
-  <?php // foreach ($teacher_groups_current_day as $key => $teacher_group) :
+
+  <?php 
 	$i++;
-}
+			} // if($i==0)
 
    ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
@@ -261,17 +181,17 @@ if($i==0){
      <td><?php echo $falta['credit'];?></td>
      <td><?php echo $falta['professor'];?></td>
    </tr>
-  <?php //endforeach; 
-  if($i==$contador){
-
+  <?php 
+  	// mirem si hem arribat al últim element  
+  	if($i==$contador){
   ?>
  </tbody>
 </table>
-<?php $i++; }};
+<?php $i++; 
+	} // Ultim element
+} // Hi ha incidències
 endforeach;
+if($i==0) { echo "No hi ha incidències per a aquest rang de dades."; }
 } ?>
 
-<!-- Fi proves datatable -->
-
-
-	</div>	
+</div>	
