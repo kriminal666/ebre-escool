@@ -1,4 +1,3 @@
-		<?php //require_once 'informe_centre_professors_pdf.php'; ?>
 <!-- Data Table -->
 <script>
 $(document).ready( function () {

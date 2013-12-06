@@ -4,7 +4,6 @@
 		<h2><?php echo lang('reports_group_reports_class_list'); ?></h2>
 	</div>	
 
-
 	<!-- FORM -->    
 	<div style="width:40%; margin:0px auto;">
 		<form method="post" action="#" class="form-horizontal" role="form">
@@ -22,12 +21,11 @@
 				</div>
 				<div class="form-group">
 					<tr>
-						<td colspan="2" style="text-align:center;"><input type="checkbox" name="incident" value="foto" checked> Amb foto</input></td>
+						<td colspan="2" style="text-align:center;"><input type="checkbox" name="foto" value="foto" checked> Amb foto</input></td>
 					</tr>					
 					<tr>
 						<td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td>
 					</tr>
 			</table>
 		</form>
-
 	</div>	
