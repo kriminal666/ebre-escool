@@ -4,12 +4,6 @@ include "application/third_party/skeleton/application/controllers/skeleton_main.
 
 
 class attendance_reports extends skeleton_main {
-
-
-    public $body_header_view ='include/ebre_escool_body_header.php' ;
-
-    public $body_header_lang_file ='ebre_escool_body_header' ;
-
 	
 	function __construct()
     {
@@ -23,19 +17,10 @@ class attendance_reports extends skeleton_main {
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
         $this->load->library('pdf'); // Load library
 		$this->pdf->fontpath = 'font/'; // Specify font folder
-
-        /* Set language */
-        $current_language=$this->session->userdata("current_language");
-        if ($current_language == "") {
-            $current_language= $this->config->item('default_language');
-        }
-        
-
-        $this->lang->load('ebre_escool_ldap', $current_language);
-        $this->lang->load('attendance',$current_language);        
-
-        
-        //LANGUAGE HELPER:
+		
+		// Load the language file
+        $this->lang->load('ebre_escool_ldap','catalan');
+        $this->lang->load('managment','catalan');        
         $this->load->helper('language');
         
 	}

@@ -52,13 +52,13 @@
 		  <li class="dropdown-submenu">
 			<a tabindex="-1" href="#"><?php echo lang('attendance'). ". " . lang('reports_group_reports');?></a>
 			<ul class="dropdown-menu">
-				<li><a href="<?=base_url()?>index.php/attendance_reports/class_list_report"><?php echo lang('reports_group_reports_class_list');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance_reports/class_sheet_report"><?php echo lang('reports_group_reports_student_sheet');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_di_df_1"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
-				<li><a href="<?=base_url()?>index.php/attendance_reports/informe_resum_grup_faltes_mes_1"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance/attendance_reports/class_list_report"><?php echo lang('reports_group_reports_class_list');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance/attendance_reports/class_sheet_report"><?php echo lang('reports_group_reports_student_sheet');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance/attendance_reports/informe_resum_grup_di_df_1"><?php echo lang('reports_group_reports_incidents_by_date');?></a></li>
+				<li><a href="<?=base_url()?>index.php/attendance/attendance_reports/informe_resum_grup_faltes_mes_1"><?php echo lang('reports_group_reports_monthly_report');?></a></li>
 			</ul>
 		  </li>
-          <li><a href="<?=base_url()?>index.php/attendance_reports/informeGuifi"><?php echo lang('reports_guifi');?></a></li>
+          <li><a href="<?=base_url()?>index.php/attendance/attendance_reports/informeGuifi"><?php echo lang('reports_guifi');?></a></li>
       </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
       
