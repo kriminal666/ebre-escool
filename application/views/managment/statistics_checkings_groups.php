@@ -78,9 +78,9 @@ $(function(){
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_groups as $group_key => $group) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><?php echo $group->groupCode;?></td>
-     <td><?php echo $group->groupShortName;?></td>
-     <td><?php echo $group->mentorId;?></td>
+     <td><?php echo $group->group_code;?></td>
+     <td><?php echo $group->group_shortName;?></td>
+     <td><?php echo $group->group_mentorId;?></td>
      <td><?php echo $group->mentor_name;?></td>
      <td><font size="-3"><?php echo $group->ldap_dn;?></font></td>
      <td><?php echo $group->total_students;?></td>

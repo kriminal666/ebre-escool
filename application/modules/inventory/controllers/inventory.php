@@ -1,15 +1,37 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-$path = FCPATH;
-$path .= "/application/controllers/skeleton_main.php";
+include "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
-include_once($path);
 
 class inventory extends skeleton_main {
+
+	public $body_header_view ='include/ebre_escool_body_header.php' ;
+
+	public $body_header_lang_file ='ebre_escool_body_header' ;
+
 
 
 function __construct()	{
 		parent::__construct();
+
+		//GROCERY CRUD
+		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
+        $this->load->library('grocery_CRUD');
+        $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
+		$this->load->library('image_CRUD');  
+
+		/* Set language */
+		$current_language=$this->session->userdata("current_language");
+		if ($current_language == "") {
+			$current_language= $this->config->item('default_language');
+		}
+		
+
+		$this->lang->load('inventory', $current_language);
+
+		
+        //LANGUAGE HELPER:
+        $this->load->helper('language');
 
 	}	
 
@@ -20,25 +42,14 @@ public function index()	{
 		redirect($this->skeleton_auth->login_page, 'refresh');
 	}
 
-	$header_data= $this->add_css_to_html_header_data(
-		$this->_get_html_header_data(),
-		"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-	//JS
-	$header_data= $this->add_javascript_to_html_header_data(
-		$header_data,
-		"http://code.jquery.com/jquery-1.9.1.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-		$header_data,
-		"http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-	
 	$output = array();
 	
-	$this->_load_html_header($header_data,$output); 
+	$this->_load_html_header($this->_get_html_header_data(),$output); 
 	$this->_load_body_header();
-			
-    $this->load->view('inventory',$output);
-
-
+	
+	
+	$this->load->view('inventory',$output); 
+                
 	$this->_load_body_footer();
 
 	}

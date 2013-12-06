@@ -16,11 +16,8 @@
             
      <ul class="nav">
 		 
-	  <?php if ($check_attendance): ?>                   
        <li class="active"> <a href='<?=base_url()?>index.php/attendance/check_attendance'><?php echo lang('check_attendance');?></a> </li>
-      <?php endif; ?>
       
-       <?php if ($mentoring): ?>                   
 
       <li class="dropdown">
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('mentoring');?> <b class="caret"></b></a>
@@ -29,7 +26,6 @@
          <li><a href="<?=base_url()?>index.php/attendance/mentoring_attendance_by_student"><?php echo lang('mentoring_attendance_by_student');?></a></li>
        </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
-      <?php endif; ?>
 
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('timetables');?> <b class="caret"></b></a>
@@ -39,8 +35,6 @@
       </li>
                                           
       
-      <?php if ($reports): ?>                   
- 
       <li class="dropdown">
        <!-- Informes -->
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('reports');?> <b class="caret"></b></a>
@@ -67,7 +61,6 @@
           <li><a href="<?=base_url()?>index.php/attendance_reports/informeGuifi"><?php echo lang('reports_guifi');?></a></li>
       </ul>                                                                                                                                                                                                                                                                                                                                      
       </li>
-      <?php endif; ?>
       
       <li class="dropdown">
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo "Inventari";?> <b class="caret"></b></a>
@@ -110,9 +103,19 @@
               <li><a href='<?=base_url()?>index.php/managment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>
          </li>          
-    
-       </ul>                                                                                                                                                                                                                                                                                                                                      
-      </li>
+
+        <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo "Inventari";?></a>
+            <ul class="dropdown-menu">
+              <li><a href='<?php echo site_url('main/externalIDType')?>'><?php echo lang('externalid_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/material')?>'><?php echo lang('material_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/brand')?>'><?php echo lang('brand_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/model')?>'><?php echo lang('model_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/provider')?>'><?php echo lang('provider_menu');?></a></li>    
+              <li><a href='<?php echo site_url('main/money_source')?>'><?php echo lang('money_source_menu');?></a></li>              
+              <li><a href='<?php echo site_url('main/barcode')?>'><?php echo lang('barcode_menu');?></a></li>
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+        </li>
       <?php endif; ?>
       
       <li class="dropdown">

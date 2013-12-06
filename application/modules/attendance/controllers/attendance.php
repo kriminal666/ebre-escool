@@ -1,8 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-include "skeleton_main.php";
+include "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
 class attendance extends skeleton_main {
+
+	public $body_header_view ='include/ebre_escool_body_header.php' ;
+
+	public $body_header_lang_file ='ebre_escool_body_header' ;
 	
 	function __construct()
     {
@@ -29,6 +33,50 @@ class attendance extends skeleton_main {
     	
 		$this->lang->load('managment', $current_language);        
         
+	}
+
+	public function mentoring_groups () {
+
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+		
+		echo "TODO";	
+
+		$this->_load_body_footer();		
+
+	}
+
+	public function mentoring_attendance_by_student () {
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+		
+		echo "TODO";	
+
+		$this->_load_body_footer();		
 	}
 	
 	public function pdf_exemple() {
