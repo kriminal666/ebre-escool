@@ -1,9 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-include "skeleton_main.php";
+include "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
 class timetables extends skeleton_main {
 	
+    public $body_header_view ='include/ebre_escool_body_header.php' ;
+    public $body_header_lang_file ='ebre_escool_body_header' ;
+
 	function __construct()
     {
         parent::__construct();
@@ -29,7 +32,6 @@ class timetables extends skeleton_main {
             //<link href="css/docs.css" rel="stylesheet" />
             //<link href="css/tribal-bootstrap.css" rel="stylesheet" />
 			//<link href="css/tribal-timetable.css" rel="stylesheet" />        
-                    
             //JS
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
@@ -60,22 +62,10 @@ class timetables extends skeleton_main {
                     $header_data,
                     base_url('assets/js/tribal-timetable.js'));
 			
-			
-			
-			
-    //<script type="text/javascript" src="js/jquery.ba-resize.js"></script>
-    //<script type="text/javascript" src="js/bootstrap-tooltip.js"></script>
-    //<script type="text/javascript" src="js/bootstrap-collapse.js"></script>
-    //<script type="text/javascript" src="js/tribal.js"></script>
-    //<script type="text/javascript" src="js/tribal-shared.js"></script>
-    //<script type="text/javascript" src="js/tribal-timetable.js"></script>
-                    
-                    
-
             $this->_load_html_header($header_data);
             $this->_load_body_header();                           
                                                                                 
-    	    $this->load->view('timetables/mytimetables');
+            $this->load->view('timetables/mytimetables');
     	    
             $this->_load_body_footer();       
     	                    

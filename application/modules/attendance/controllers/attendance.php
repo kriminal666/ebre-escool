@@ -35,6 +35,19 @@ class attendance extends skeleton_main {
         
 	}
 
+	public function prova () {
+		//CSS
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+			
+		$this->_load_html_header($header_data); 
+		$this->_load_body_header();
+
+        $this->load->view('attendance/prova.php');    
+		$this->_load_body_footer();	
+	}
+
 	public function mentoring_groups () {
 
 		$header_data= $this->add_css_to_html_header_data(

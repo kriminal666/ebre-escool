@@ -51,6 +51,9 @@ $lang['reports']   = 'Informes';
 
   $lang['reports_guifi']   = "Informe Guifi";  
 
+$lang['Copy'] = "Copiar";
+$lang['Print'] = "Imp";
+
 //CHECK ATTENDANCE PAGE
 $lang['check_attendance_table_title'] = 'Passar llista';
 $lang['choose_date_string'] = 'Escolliu la data (format dd-mm-aaa)';

@@ -71,7 +71,7 @@ $pdf->AddPage();
 //Es la posicio exacta on comença a escriure
 $x=7;//10
 $y=15;//24
-$pdf->Image(base_url()."application/views/attendance_reports/logo_iesebre_2010_11.jpg",$x+2,5,40,15);
+$pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
 //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
 $pdf->SetFont('Arial','',10);
 //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
