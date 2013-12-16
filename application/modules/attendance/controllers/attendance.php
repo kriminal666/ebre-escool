@@ -36,6 +36,7 @@ class attendance extends skeleton_main {
 	}
 
 	public function prova () {
+
 		//CSS
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
@@ -43,7 +44,6 @@ class attendance extends skeleton_main {
 			
 		$this->_load_html_header($header_data); 
 		$this->_load_body_header();
-
         $this->load->view('attendance/prova.php');    
 		$this->_load_body_footer();	
 	}
