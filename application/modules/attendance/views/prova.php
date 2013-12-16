@@ -1,5 +1,15 @@
 <?php 
-	$url = base_url('application/modules/attendance/controllers/prova_ajax.php/index');
+	//Consultar dades
+	$url = ('http://localhost/ebre-escool/index.php/attendance/read');
+	
+	//Insertar dades
+	//$url = ('http://localhost/ebre-escool/index.php/attendance/insert');	
+
+	//Actualitzar dades
+	//$url = ('http://localhost/ebre-escool/index.php/attendance/update');	
+
+	//Esborrar dades
+	//$url = ('http://localhost/ebre-escool/index.php/attendance/delete');	
 ?>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -15,29 +25,19 @@ jQuery.ajax({
 	}).done(
 		function (data) 
 		{
-			//$("#resultat").html("");
+			$("#resultat").html("");
 			$.each(data, function(k,v)
 			{
-				$("#resultat").append("<br />" + k + " - " + v);
+				$("#resultat").append("<br />" + k + " | " + v);
 			});	
+			alert("La consulta s'ha realitzat correctament");
 		}
 	).fail(
 		function() 
 		{
-			//alert( "No s'ha pogut obtenir cap valor" );
+			alert( "No s'ha pogut obtenir cap valor" );
 		});
 </script>
 <div id="resultat">
-<?php
 
-	$query = $this->db->get('course');
-	$resultat = array();
-
-	foreach ($query->result() as $row)
-	{
-	    $resultat[] = $row->course_shortname;
-	}
-	print_r(json_encode($resultat));
-
-?>
 </div>

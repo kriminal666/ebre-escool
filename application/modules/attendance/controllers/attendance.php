@@ -35,6 +35,8 @@ class attendance extends skeleton_main {
         
 	}
 
+/* proves ajax, json */
+
 	public function prova () {
 
 		//CSS
@@ -47,6 +49,56 @@ class attendance extends skeleton_main {
         $this->load->view('attendance/prova.php');    
 		$this->_load_body_footer();	
 	}
+
+	public function read(){
+
+		$this->db->select('cycle_id, cycle_shortname, cycle_name');
+		$query = $this->db->get('cycle');
+		$resultat = array();
+		$resultat[] = "ID  - Shortname - Name";
+
+		foreach ($query->result() as $row)
+		{
+		    $resultat[] = $row->cycle_id ." - ".$row->cycle_shortname." - ".$row->cycle_name;
+		}
+		print_r(json_encode($resultat));
+	}	
+
+	public function insert(){
+
+		$data = array(
+		   'cycle_shortname' => 'cic_prv_4' ,
+		   'cycle_name' => 'Cicle prova 4' ,
+		   'cycle_entryDate' => date("Y-m-d H:i:s")
+		);
+
+		$this->db->insert('cycle', $data); 
+		print_r(json_encode($data));
+	}		
+
+	public function update(){
+
+		$data = array(
+           'cycle_shortname' => 'cic mod 1',
+           'cycle_name' => 'cicle modificat 1',
+           'cycle_entryDate' => date("Y-m-d H:i:s")
+        );
+
+		$this->db->where('cycle_id', '6');
+		$this->db->update('cycle', $data); 
+		print_r(json_encode($data));
+	}	
+
+	public function delete(){
+		$data = array(
+			'Esborrat' => 'id 8'		
+		);
+		$this->db->where('cycle_id', '8');
+		$this->db->delete('cycle'); 
+		print_r(json_encode($data));
+	}	
+
+/* fi proves ajax json */	
 
 	public function mentoring_groups () {
 
