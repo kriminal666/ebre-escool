@@ -1,36 +1,61 @@
-<!-- http://jqueryui.com/datepicker/ -->
-<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<!-- jquery -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<!-- x-editable-->
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js"></script>
+
+<!--
+	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+-->
 <script>
+
 $(function() {
 
-	$('#groups_by_teacher_an_date').dataTable( {
-		"oLanguage": {
-			"sProcessing":   "Processant...",
-			"sLengthMenu":   "Mostra _MENU_ registres",
-			"sZeroRecords":  "No s'han trobat registres.",
-			"sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
-			"sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
-			"sInfoFiltered": "(filtrat de _MAX_ total registres)",
-			"sInfoPostFix":  "",
-			"sSearch":       "Filtrar:",
-			"sUrl":          "",
-			"oPaginate": {
-				"sFirst":    "Primer",
-				"sPrevious": "Anterior",
-				"sNext":     "Següent",
-				"sLast":     "Últim"
-			}
-	    },
-		"bPaginate": false,
-		"bFilter": false,
-        "bInfo": false,
-	});
-	
+	//toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';     
+    
+    //make username editable
+    $('.obs_').editable();
+
+//Datatable
+//TODO
+
+//Obtenir les dades corresponents al dropdown escollit (alumne, hora i incidència) i insertar-los a la BD
+
+
+$("select").change(function(){
+	var fila = null;
+	var columna = null;
+	var hora = null;
+	var alumne = null;
+	var observacions = null;	
+	var incidencia = $("option:selected", this).val();
+	var id = $(this).attr('id');
+
+		//obtenir la fila i columna a partir de l'identificador
+	 	text = id.split("-");
+	 	fila = text[1];
+	 	columna = text[0];
+	 	//hora = $(".hora_"+columna).text();
+	 	hora= get_hour(columna);
+	 	//alumne = $("#nom_"+fila).text();
+	 	alumne = get_student(fila);
+	 	insert_value(alumne,hora,incidencia);
+	 	//read_value(alumne,hora);
+	 });
+
     //$('#groups_by_teacher_an_date1').dataTable();
     //console.log("HEY YOU1");
-    
+	
+	//Datepicker
+	var data;
 	$.datepicker.regional['ca'] = {
+					onSelect: function(date) {
+			            data = date;
+			        },
 	                closeText: 'Tancar',
 	                prevText: '&#x3c;Ant',
 	                nextText: 'Seg&#x3e;',
@@ -48,23 +73,200 @@ $(function() {
 	                isRTL: false,
 	                showMonthAfterYear: false,
 	                yearSuffix: ''};
-$( "#datepicker" ).datepicker($.datepicker.regional['ca']);
-});
 
-//DATATABLES:
+	data = $( "#datepicker" ).datepicker($.datepicker.regional['ca']);
+	//alert("la data es: "+data.val());
+});
 
 </script>
 
+<?php 
+
+	/* Urls per a fer el Insertar, Editar, Llegir i Esborrar */
+	$url_insert = ('http://localhost/ebre-escool/index.php/attendance/insert/prova_incidencies');
+	$url_read = ('http://localhost/ebre-escool/index.php/attendance/read/prova_incidencies');
+	$url_update = ('http://localhost/ebre-escool/index.php/attendance/update/prova_incidencies');
+	$url_delete = ('http://localhost/ebre-escool/index.php/attendance/delete/prova_incidencies');
+?>
+
+<script type="text/javascript">
+
+function get_student(fila){
+	alumne = $("#nom_"+fila).text();
+	return alumne;
+}
+
+function get_hour(columna){
+	hora = $(".hora_"+columna).text();
+	return hora;
+}
+
+function insert_value(alumne,hora,incidencia){
+	jQuery.ajax({
+		url:'<?php echo $url_insert;?>',
+		data: {
+				alumne: alumne,
+				incidencia: incidencia,
+				hora: hora
+			},
+			type: 'post',
+			dataType: 'json'
+		}).done(
+			function (data) 
+			{
+				alert("S'ha insertat " + data + " fila.");
+			}
+		).fail(
+			function() 
+			{
+				alert( "No s'ha pogut obtenir cap valor" );
+			});
+}	
+
+function read_value(alumne,hora){
+	jQuery.ajax({
+		url:'<?php echo $url_read;?>',
+		data: {
+				alumne: alumne,
+				hora: hora
+			},
+			type: 'post',
+			dataType: 'json'
+		}).done(
+			function (data) 
+			{
+				alert("S'ha llegit " + data + ".");
+			}
+		).fail(
+			function() 
+			{
+				alert( "No s'ha pogut obtenir cap valor" );
+			});
+}
+</script>
+
+<?php
+
+
+/* Fi insertar dades */
+/* Obtenir foto */
+/*
+	echo "<pre>";
+	print_r($all_students_in_group[1]);
+	echo "</pre>";
+*/
+$number_returned = $count_alumnes;
+$contador=0;
+//print_r($all_students_in_group[1]);
+$alumne =array();
+
+foreach($all_students_in_group as $student){
+if($photo){
+	/* Detectar tipus d'imatge (PNG o JPG) */
+	$tipus = substr($student->jpegPhoto,0,10);
+
+	$isJPG  = strpos($tipus, 'JFIF');
+	if($isJPG){
+		$extensio = ".jpg";
+	} else {
+		$isPNG  = strpos($tipus, 'PNG');
+		if($isPNG){
+		$extensio = ".png";
+		}
+	}
+?>
+	<!--<img src='data:image/jpeg;base64,<?php echo $student->jpegPhoto;?>'>-->
+<?php
+	$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$jpeg_file[$contador]=$student->irisPersonalUniqueID.$extensio;
+	$alumne[$contador]['jpegPhoto']="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$outjpeg = fopen($jpeg_filename, "wb");
+	fwrite($outjpeg, $student->jpegPhoto);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $jpeg_filename );
+
+	if( $jpeg_data_size < 6 ) {
+		$jpeg_file[$contador]='foto.png';
+		$alumne[$contador]['jpegPhoto']='/tmp/foto.png';
+		?>
+		<img src="<?php echo $alumne[$contador]['jpegPhoto']; ?>" />
+		<?php
+	}
+
+}
+$alumne[$contador]['givenName']=$student->givenName;
+$alumne[$contador]['sn1']=$student->sn1;
+$alumne[$contador]['sn2']=$student->sn2;
+$alumne[$contador]['uidnumber']=$student->uidnumber;
+$contador++;
+}
+/* fí Obtenir foto */
+
+?>
+
 <div class="container">
+<?php 
+
+	if(isset($grup)) { 
+		
+?>
+	<center>
+		    
+	<table class="table table-striped table-bordered table-hover table-condensed" id="selected_group">
+	 <thead style="background-color: #d9edf7;">
+	  <tr>
+	    <td colspan="7" style="text-align: center;"> <h4 class="title"><?php echo $check_attendance_table_title?> | Dia: <span class="dia"></span></h4></td>
+	  </tr>
+	  <tr>
+	     <th>Alumnes:</th>
+	     <th class="hora_0"><?php echo $hores[0]; ?></th>
+	     <th class="hora_1"><?php echo $hores[1]; ?></th>
+	     <th class="hora_2"><?php echo $hores[2]; ?></th>
+	     <th class="hora_3"><?php echo $hores[3]; ?></th>
+	     <th class="hora_4"><?php echo $hores[4]; ?></th>
+	     <th class="hora_5"><?php echo $hores[5]; ?></th>
+	  </tr>
+	 </thead>
+	 <tbody>
+	  <!-- Iteration that shows teacher groups for select ed day-->
+	  <?php for($fila=0; $fila<$contador; $fila++){ ?>
+	   <tr align="center" class="{cycle values='tr0,tr1'}">
+	     <td id="nom_<?php echo $fila; ?>"><img src="<?php echo $alumne[$fila]['jpegPhoto']?>"/>
+	     <?php $nom = $alumne[$fila]['sn1']." ".$alumne[$fila]['sn2'].", ".$alumne[$fila]['givenName']." (".$alumne[$fila]['uidnumber'].")";?>	
+	     <?php echo "<br />".$nom;?></td>
+	     <?php for($col=0; $col<count($hores);$col++){
+	     	?><td style='width:110px;'>
+			     	<select style="width:50px;" id="<?php echo $col.'-'.$fila; ?>">
+			     		<option value="0" selected ></option>
+					    <option value="1">F</option>
+						<option value="2">FJ</option>
+						<option value="3">R</option>
+						<option value="4">RJ</option>
+						<option value="5">E</option>
+					</select>
+					<a href="" class="obs_" data-placeholder="Escriu una observació" data-type="text" data-pk="1" data-url="/post" data-title="Introdueix una observació per a <?php echo $alumne[$fila]['sn1']." ".$alumne[$fila]['sn2'].", ".$alumne[$fila]['givenName'];?>">Observ.</a>
+	     		</td>
+	     <?php } ?>
+
+	   </tr>
+	  <?php } ?>
+	 </tbody>
+	</table>
+
+	</center>
+
+<?php
+	} else {
+?>
 
 <center>
- <?php echo $choose_date_string?> : <input type="text" id="datepicker" class=""/>	
+ <!--<?php echo $choose_date_string?> : -->
 
 	
 <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="3" style="text-align: center;"> <h4><?php echo $check_attendance_table_title?> | Dia: <?php echo $check_attendance_day?></h4></td>
+    <td colspan="3" style="text-align: center;"> <h4 class="title"><?php echo $check_attendance_table_title?> | Dia: <input type="text" id="datepicker" class="" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d/m/Y'); } ?>"/></h4></td>
   </tr>
   <tr>
      <th>Column 1</th>
@@ -85,5 +287,6 @@ $( "#datepicker" ).datepicker($.datepicker.regional['ca']);
 </table>
 
 </center>
+<?php } //if !(isset($grup)) ?>
 
 </div>
