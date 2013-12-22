@@ -1,21 +1,30 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-include "skeleton_main.php";
+//include "skeleton_main.php";
+include "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
 class managment extends skeleton_main {
 	
+    public $body_header_view ='include/ebre_escool_body_header.php' ;
+    public $body_header_lang_file ='ebre_escool_body_header' ;
+
 	function __construct()
     {
         parent::__construct();
         
         $this->load->model('attendance_model');
         $this->load->library('ebre_escool_ldap');
+        $this->config->load('managment');        
+        
+        /* Set language */
+        $current_language=$this->session->userdata("current_language");
+        if ($current_language == "") {
+            $current_language= $this->config->item('default_language');
+        }
         
         // Load the language file
-        $this->lang->load('managment','catalan');
+        $this->lang->load('managment',$current_language);
         $this->load->helper('language');
-        
-        $this->config->load('managment');
 
 	}
 	

@@ -386,7 +386,7 @@ class attendance_reports extends skeleton_main {
 /**/
         //$this->load_header();  
         //$this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
-        $this->load->view('attendance_reports/informe_centre_professors_pdf.php',$data);     
+        $this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
         $this->load_footer();     
     }     
 

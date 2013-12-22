@@ -14,6 +14,7 @@ class attendance extends skeleton_main {
         
         //$this->load->library('attendance');
         $this->load->model('attendance_model');
+        $this->load->library('ebre_escool_ldap');
 
         //GROCERY CRUD
 		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
@@ -34,6 +35,71 @@ class attendance extends skeleton_main {
 		$this->lang->load('managment', $current_language);        
         
 	}
+
+/* proves ajax, json */
+
+	public function prova () {
+
+		//CSS
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+			
+		$this->_load_html_header($header_data); 
+		$this->_load_body_header();
+        $this->load->view('attendance/prova.php');    
+		$this->_load_body_footer();	
+	}
+
+	public function read($table=null){
+
+		$this->db->select('alumne, incidencia, data, hora');
+		$this->db->where('alumne', $_POST['alumne']); 
+		$this->db->where('hora', $_POST['hora']);
+		$query = $this->db->get($table);
+		$resultat = array();
+		$resultat[] = "Alumne  - Incidencia - Data - Hora";
+
+		foreach ($query->result() as $row)
+		{
+		    $resultat[] = $row->alumne ." - ".$row->incidencia." - ".$row->data." - ".$row->hora;
+		}
+		print_r(json_encode($resultat));
+	}	
+
+	public function insert($table=null){
+
+		//echo $table;
+		$this->db->insert($table, $_POST); 
+		$rows = $this->db->affected_rows();
+		print_r(json_encode($this->db->affected_rows()));
+		//$this->db->insert($table, $data); 
+		//print_r(json_encode($data));
+	}		
+
+	public function update(){
+
+		$data = array(
+           'cycle_shortname' => 'cic mod 1',
+           'cycle_name' => 'cicle modificat 1',
+           'cycle_entryDate' => date("Y-m-d H:i:s")
+        );
+
+		$this->db->where('cycle_id', '6');
+		$this->db->update('cycle', $data); 
+		print_r(json_encode($data));
+	}	
+
+	public function delete(){
+		$data = array(
+			'Esborrat' => 'id 8'		
+		);
+		$this->db->where('cycle_id', '8');
+		$this->db->delete('cycle'); 
+		print_r(json_encode($data));
+	}	
+
+/* fi proves ajax json */	
 
 	public function mentoring_groups () {
 
@@ -200,7 +266,8 @@ class attendance extends skeleton_main {
 
 	}
 	
-	public function check_attendance() {
+	public function check_attendance($grup = null) {
+
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
@@ -238,33 +305,53 @@ class attendance extends skeleton_main {
 		
 		
 		$data= array();
+
+		if(isset($grup)){
+			$data['grup'] = $grup;	
+		}
+
 		$data['check_attendance_day']="TODO";
 		$data['check_attendance_table_title']=lang('check_attendance_table_title');
 		$data['choose_date_string']=lang('choose_date_string');
 		$data['today']=date('d-m-Y');
-		
+
 		$teacher_groups_current_day=array();
+		$hores = array(
+				"15:30",
+				"16:30",
+				"17:30",
+				"19:00",
+				"20:00",
+				"21:00"
+			);
+
+		$data['hores']=$hores;		
 		
 		$group = new stdClass;
-		$group->time_interval="8:00 - 9:00";
-		$group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-		$group->group_name="i automa (S)";
-		$group->group_code="M 1";
+		$group->time_interval="16:30 - 17:30";
+		//$group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+		//$group->group_name="i automa (S)";
+		$group->group_code="M 7";
+		$group->group_url=base_url("index.php?/attendance/check_attendance/2ASIX");
+		$group->group_name="2ASIX";
 		
 		$teacher_groups_current_day['key1']= $group;
 		
 		$group1 = new stdClass;
-		$group1->time_interval="9:00 - 1:00";
-		$group1->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-		$group1->group_name="GRUP MPROVA";
+		$group1->time_interval="15:30 - 16:30";
+		//$group1->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+		//$group1->group_name="GRUP MPROVA";
 		$group1->group_code="M 8";
-		
+		$group1->group_url=base_url("index.php?/attendance/check_attendance/2DAM");
+		$group1->group_name="2DAM";
+
 		$group2 = new stdClass;
 		$group2->time_interval="11:00 - 12:00";
-		$group2->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
-		$group2->group_name="GRUP M9";
+		//$group2->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
+		//$group2->group_name="GRUP M9";
 		$group2->group_code="M 9";
-		
+		$group2->group_url=base_url("index.php?/attendance/check_attendance/1AF");
+		$group2->group_name="1AF";		
 		
 		$teacher_groups_current_day['key2']=$group;
 		$teacher_groups_current_day['key3']=$group1;
@@ -273,6 +360,50 @@ class attendance extends skeleton_main {
 		
 		$data['teacher_groups_current_day']=$teacher_groups_current_day;
 		
+/* Llista alumnes grup */
+
+        $default_group_code = $grup;
+        $group_code=$default_group_code;
+
+        $organization = $this->config->item('organization','skeleton_auth');
+
+        $header_data['header_title']=lang("all_students") . ". " . $organization;
+
+        //Load CSS & JS
+        //$this->set_header_data();
+        $all_groups = $this->attendance_model->get_all_classroom_groups();
+
+        $data['group_code']=$group_code;
+
+        $data['all_groups']=$all_groups->result();
+
+        $data['all_groups']=$all_groups->result();
+        $data['photo'] = false;
+        if ($grup) {
+            $data['selected_group']= urldecode($grup);
+                $data['photo'] = true;
+        }   else {
+            $data['selected_group']=$default_group_code;
+        }
+       // echo $data['selected_group'];
+       // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+       // $default_group_dn=$students_base_dn;
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+        
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_tstudents"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        
+       $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        //print_r($data['all_students_in_group']);       
+        //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
+        //Total de professors
+        $data['count_alumnes'] = count($data['all_students_in_group']);
+
+
+/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance',$data);
 		
 		 
@@ -285,5 +416,38 @@ class attendance extends skeleton_main {
 	public function index() {
 		$this->check_attendance();
 	}
+
+    public function load_datatables_data() {
+
+        //CSS
+        $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery-ui.css'));  
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));  
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");                     
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js")); 
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));   
+        
+        $this->_load_html_header($header_data);
+        //$this->_load_html_header($header_data); 
+        
+        $this->_load_body_header();     
+
+    }	
 	
 }

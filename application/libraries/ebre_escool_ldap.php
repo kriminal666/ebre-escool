@@ -104,7 +104,8 @@ class ebre_escool_ldap  {
 		$professor = array();
 
 		// Imatge Genèrica en cas que el professor no tingui foto o estigui danyada
-		$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
+		//$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
+		$img_file = APPPATH.'third_party/skeleton/assets/img/foto.png';
 		$imgData = file_get_contents($img_file);
 		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
 
@@ -424,7 +425,7 @@ class ebre_escool_ldap  {
 		$allGroupStudentsInfo=array();
 
 		// Imatge Genèrica
-		$img_file = "/usr/share/ebre-escool/application/views/attendance_reports/foto.png";
+		$img_file = APPPATH.'third_party/skeleton/assets/img/foto.png';
 		$imgData = file_get_contents($img_file);
 		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
 
