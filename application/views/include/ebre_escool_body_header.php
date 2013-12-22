@@ -74,6 +74,18 @@
       <li class="dropdown">
        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('maintenances');?> <b class="caret"></b></a>
        <ul class="dropdown-menu">
+         
+         <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo lang('persons');?></a>
+            <ul class="dropdown-menu">
+               <li><a href="<?=base_url()?>index.php/persons"><?php echo lang('persons');?></a></li>
+               <li><a href="<?=base_url()?>index.php/persons/person_official_id_type"><?php echo "Tipus identificador personal";?></a></li>
+               <li><a href="<?=base_url()?>index.php/persons/localities"><?php echo "Poblacions";?></a></li>
+               <li><a href="<?=base_url()?>index.php/persons/states"><?php echo "Províncies";?></a></li>
+            </ul>
+         </li>
+
+         
          <li><a href="<?=base_url()?>index.php/skeleton_main/organizational_unit"><?php echo lang('organizationalunit_menu');?></a></li>
          <li><a href="<?=base_url()?>index.php/skeleton_main/location"><?php echo lang('location_menu');?></a></li>
 
@@ -84,6 +96,7 @@
               <li><a href="<?=base_url()?>index.php/attendance/todo"><?php echo "TODO"?></a></li>
             </ul>
          </li>
+         
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Plans Estudi";?></a>
             <ul class="dropdown-menu">
@@ -104,7 +117,7 @@
             </ul>
          </li>          
 
-        <li class="dropdown-submenu">
+         <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Inventari";?></a>
             <ul class="dropdown-menu">
               <li><a href='<?php echo site_url('main/externalIDType')?>'><?php echo lang('externalid_menu');?></a></li>
@@ -115,7 +128,19 @@
               <li><a href='<?php echo site_url('main/money_source')?>'><?php echo lang('money_source_menu');?></a></li>              
               <li><a href='<?php echo site_url('main/barcode')?>'><?php echo lang('barcode_menu');?></a></li>
             </ul>                                                                                                                                                                                                                                                                                                                                      
-        </li>
+         </li>
+
+         <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo "Dades bancàries";?></a>
+           <ul class="dropdown-menu">
+            <li><a href='<?=base_url()?>index.php/banks/bank_account')?><?php echo "Comptes";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank')?><?php echo "Bancs";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_office')?><?php echo "Oficines";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_account_type')?><?php echo "Tipus de compte";?></a></li>
+           </ul>
+         </li>
+      </ul>  
+    </li>
       <?php endif; ?>
       
       <li class="dropdown">

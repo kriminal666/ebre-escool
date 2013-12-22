@@ -49,6 +49,7 @@ $lang['devices'] = 'Dispositius';
  $lang['others'] = 'Altres';
 
 $lang['maintenances'] = 'Manteniments';
+ $lang['persons'] = 'Persones';
  $lang['externalid_menu'] = 'Tipus Identificadors externs';
  $lang['organizationalunit_menu'] = 'Unitats Organitzatives';
  $lang['location_menu'] = 'Espais';
@@ -88,3 +89,4 @@ $lang['enrollment_studies']="Estudis Matriculats";
 $lang['enrollment_class_group']="Matrícules de Grups de Classe";
 $lang['enrollment_modules']="Matrícules Mòduls";
 $lang['enrollment_submodules']="Matrícules Sub-Mòduls";
+

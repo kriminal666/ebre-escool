@@ -5,7 +5,9 @@ include "application/third_party/skeleton/application/controllers/skeleton_main.
 
 class persons extends skeleton_main {
 	
-	public $body_header_view ='include/intranet_body_header' ;
+	public $body_header_view ='include/ebre_escool_body_header.php' ;
+
+  public $body_header_lang_file ='ebre_escool_body_header' ;
 	
 	function __construct()
     {
