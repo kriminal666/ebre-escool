@@ -66,7 +66,6 @@ class curriculum extends skeleton_main {
 		$this->grocery_crud->set_relation('lesson_teacher_id','teacher','{teacher_code} - ({teacher_id})');        
 		$this->grocery_crud->set_relation('lesson_location_id','location','locationId');
 		$this->grocery_crud->set_relation('lesson_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time} ({time_slot_id})');
-        $this->grocery_crud->set_relation('lesson_study_module_id','study_module','{study_module_shortname} - {study_module_name} ({study_module_id})');
 
 		//Mandatory fields
         $this->grocery_crud->required_fields('lesson_code','lesson_classroom_group_id','lesson_teacher_id','lesson_day','lesson_time_slot_id');
