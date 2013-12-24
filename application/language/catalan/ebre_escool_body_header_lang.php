@@ -49,7 +49,6 @@ $lang['devices'] = 'Dispositius';
  $lang['others'] = 'Altres';
 
 $lang['maintenances'] = 'Manteniments';
- $lang['teachers'] = 'Professors';
  $lang['persons'] = 'Persones';
  $lang['externalid_menu'] = 'Tipus Identificadors externs';
  $lang['organizationalunit_menu'] = 'Unitats Organitzatives';
@@ -61,11 +60,6 @@ $lang['maintenances'] = 'Manteniments';
  $lang['money_source_menu'] = 'Origen Diners';
  $lang['barcode_menu'] = 'Codis de barres';
 
-$lang['attendance_managment'] = 'Gestió assistència';
- $lang['classroom_groups'] = 'Grups de classe';
- $lang['classroom_groups'] = 'Grups de classe';
- $lang['time_slots'] = 'Franjes horàries';
-
 $lang['reports'] = 'Informes';
  $lang['global_reports'] = 'Informes globals';
  $lang['reports_by_organizationalunit'] = 'Informes per unitat organitzativa';
@@ -75,12 +69,7 @@ $lang['managment'] = 'Gestió';
  $lang['groups'] = 'Grups';
  $lang['preferences'] = 'Preferències';
 
-
  /* Menú manteniments Plans Estudi */
-$lang['curriculum']="Pla d'estudis"; 
-$lang['organizational_unit_studies']="Unitat Organitzativa. Estudis";
-$lang['studies']="Estudis";
-$lang['cycles']="Cicles";
 $lang['course']="Curs";
     $lang['course_number']="Num. Curs";
     $lang['course_cycle_id']="ID Cicle"; 
@@ -90,7 +79,9 @@ $lang['classroom_group']="Grup de Classe";
 	$lang['group_EducationalLevelId']="Nivell Educatiu";
 $lang['study_module']="Assignatura | Mòdul Professional";	
 $lang['study_submodules']="Unitat Formativa";
-$lang['lessons']="Lliçons";
+$lang['studies']="Estudis";
+$lang['cycles']="Cicle";
+$lang['organizational_unit']="Unitat Organitzativa";
 
 //Matrícules
 $lang['enrollment']="Matrícula";

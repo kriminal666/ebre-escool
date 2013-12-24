@@ -27,31 +27,6 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 	
-
-	function get_all_teachers_ids_and_names() {
-
-		$this->db->from('teacher');
-        $this->db->select('teacher_code,person_sn1,person_sn2,person_givenName,person_id,person_official_id');
-
-		//$this->db->order_by('lesson_code', $orderby);
-		
-		$this->db->join('person', 'person.person_id = teacher.teacher_person_id');
-        
-        $query = $this->db->get();
-		
-		if ($query->num_rows() > 0) {
-
-			$teachers_array = array();
-
-			foreach ($query->result_array() as $row)	{
-   				$teachers_array[$row['teacher_code']] = $row['teacher_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
-			}
-			return $teachers_array;
-		}			
-		else
-			return false;
-	}
-
 	/*
 	function getAllLessonsWithGroupCodeShortNames($orderby="asc") {
 		$all_lessons=$this->getAllLessons();
@@ -62,29 +37,15 @@ class attendance_model  extends CI_Model  {
 		
 		return $all_lessons;
 	}*/
-
-	function getAllTimeSlots($orderby="asc") {
-		
-		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective');
-		$this->db->from('time_slot');
-		$this->db->order_by('time_slot_order', $orderby);
-
-		$query = $this->db->get();
-
-		if ($query->num_rows() > 0)
-			return $query;
-		else
-			return false;
-	}
 	
 	function getAllLessons($exists_assignatures_table=false,$orderby="asc") {
 		//classroom_group
-        if (!$exists_assignatures_table) {
-            $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,classrom_code,day_code,hour_code');
-        }
-        else {
-            $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,assignatura.nom_assignatura,classrom_code,day_code,hour_code');
-        }
+                if (!$exists_assignatures_table) {
+                        $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,classrom_code,day_code,hour_code');
+                }
+                else {
+                        $this->db->select('lesson_id,lesson_code,classroom_group.groupShortName,classroom_group_code,teacher_code,lesson_shortname,assignatura.nom_assignatura,classrom_code,day_code,hour_code');
+                }
                                                 
 		$this->db->from('lesson');
 		$this->db->order_by('lesson_code', $orderby);
