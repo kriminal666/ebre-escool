@@ -1394,3 +1394,38 @@ CREATE TABLE IF NOT EXISTS `bank_office` (
   `markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_office_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `time_slot` (
+  `time_slot_id` int(11) NOT NULL AUTO_INCREMENT,
+  `time_slot_start_time` varchar(5) CHARACTER SET utf8 NOT NULL,
+  `time_slot_end_time` varchar(5) CHARACTER SET utf8 NOT NULL,
+  `time_slot_entryDate` datetime NOT NULL,
+  `time_slot_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time_slot_creationUserId` int(11) DEFAULT NULL,
+  `time_slot_lastupdateUserId` int(11) DEFAULT NULL,
+  `time_slot_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `time_slot_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`time_slot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Estructura de la taula `lesson`
+--
+
+CREATE TABLE IF NOT EXISTS `lesson` (
+  `lesson_id` int(11) NOT NULL AUTO_INCREMENT,
+  `lesson_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `lesson_classroom_group_id` int(11) NOT NULL,
+  `lesson_teacher_id` int(11) NOT NULL,
+  `lesson_study_module_id` int(11) NOT NULL,
+  `lesson_location_id` int(11) NOT NULL,
+  `lesson_day` int(5) NOT NULL,
+  `lesson_time_slot_id` int(11) NOT NULL,
+  `lesson_entryDate` datetime NOT NULL,
+  `lesson_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lesson_creationUserId` int(11) DEFAULT NULL,
+  `lesson_lastupdateUserId` int(11) DEFAULT NULL,
+  `lesson_markedForDeletion` enum('n','y') NOT NULL,
+  `lesson_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`lesson_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

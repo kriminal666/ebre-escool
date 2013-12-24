@@ -69,3 +69,17 @@ $lang['GroupName']="Nom del Grup";
 $lang['GroupDescription']="Descripció";
 $lang['EducationalLevelId']="Nivell Educacional";
 $lang['MentorId']="Tutor";
+
+$lang['time_slot']="Franja horària";
+
+$lang['time_slot_id']="Id";
+$lang['time_slot_start_time']="Hora inici";
+$lang['time_slot_end_time']="Hora finalització";
+$lang['time_slot_entryDate']="Data de creació";
+$lang['time_slot_last_update']="Data última modificació";
+$lang['time_slot_creationUserId']="Usuari de creació";
+$lang['time_slot_lastupdateUserId']="Usuari última modificació";
+$lang['time_slot_markedForDeletion']="Baixa?";
+$lang['time_slot_markedForDeletionDate']="Data de baixa";
+
+$lang['attendances_actions']="Accions";
