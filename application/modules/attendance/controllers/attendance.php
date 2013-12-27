@@ -36,6 +36,42 @@ class attendance extends skeleton_main {
         
 	}
 
+	public function time_slots () {
+
+		$table_name="time_slot";
+        $this->grocery_crud->set_table($table_name);  
+		
+		//Establish subject:
+        $this->grocery_crud->set_subject(lang("time_slot"));
+
+        //RELATIONS
+        //$this->grocery_crud->set_relation('person_official_id_type','person_official_id_type','{person_official_id_type_shortname} - {person_official_id_type_id}',null,null,"persons");
+        
+
+        $this->grocery_crud->display_as('time_slot_id',lang('time_slot_id'));
+       	$this->grocery_crud->display_as('time_slot_start_time',lang('time_slot_start_time'));       
+       	$this->grocery_crud->display_as('time_slot_end_time',lang('time_slot_end_time'));       
+       	$this->grocery_crud->display_as('time_slot_entryDate',lang('time_slot_entryDate'));
+       	$this->grocery_crud->display_as('time_slot_last_update',lang('time_slot_last_update'));
+       	$this->grocery_crud->display_as('time_slot_creationUserId',lang('time_slot_creationUserId'));
+       	$this->grocery_crud->display_as('time_slot_lastupdateUserId',lang('time_slot_lastupdateUserId'));
+       	$this->grocery_crud->display_as('time_slot_markedForDeletion',lang('time_slot_markedForDeletion'));
+       	$this->grocery_crud->display_as('time_slot_markedForDeletionDate',lang('time_slot_markedForDeletionDate'));
+
+        //$this->grocery_crud->set_default_value($table_name,'person_creationUserId','TODO');
+        $this->grocery_crud->set_default_value($table_name,'person_markedForDeletion','n');
+
+
+        $output = $this->grocery_crud->render();
+		
+		$this->_load_html_header($this->_get_html_header_data(),$output); 
+		$this->_load_body_header();
+	
+		$this->load->view('time_slots',$output); 
+                
+		$this->_load_body_footer();	 	
+	}
+
 /* proves ajax, json */
 
 	public function prova () {
@@ -265,8 +301,8 @@ class attendance extends skeleton_main {
 		$this->_load_body_footer();
 
 	}
-	
-	public function check_attendance($grup = null) {
+
+	public function check_attendance($teacher_code = null,$group_code = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -277,6 +313,22 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
+		$header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css'));  
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            base_url('assets/css/tribal-timetable.css')); 
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
+
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -284,7 +336,40 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
-			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.ca.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.es.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-tooltip.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-collapse.js'));                
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-shared.js'));        
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-timetable.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+        
 		$this->_load_html_header($header_data); 
 		
 		/*******************
@@ -292,23 +377,58 @@ class attendance extends skeleton_main {
 		/******************/
 		$this->_load_body_header();
 		
+		//TODO: select current user (sessions user as default teacher)
+	    if ($teacher_code == null) {
+	    	$teacher_code = 43;
+	    }
+		
+		//Load teachers from Model
+		$teachers_array = $this->attendance_model->get_all_teachers_ids_and_names();
+
+		$data['teachers'] = $teachers_array;
+
+		//TODO: select current user (sessions user as default teacher)
+	    $data['default_teacher'] = $teacher_code;
+
+	    $data['check_attendance_date'] = date('d/m/Y');
+
+	    //Obtain Time Slots
+	    $time_slots = $this->attendance_model->getAllTimeSlots();
+		
+	    $time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
+
+	    $data['time_slots_array'] = $time_slots_array;
+
+	    //print_r($time_slots_array);
+
+	    
+
+	    $teacher_groups_current_day=array();
+	    
+	    foreach ($time_slots_array as $time_slot)	{
+   			$time_slot_data = new stdClass;
+			$time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
+			$time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
+
+			//Obtain lesson for this teacher date and time slot
+
+			//$time_slots_array = $this->attendance_model->getLesson($teacher_code,$time_slot['time_slot_id'])->result_array();
+
+			$time_slot_data->group_code="M 8 TODO";
+			$time_slot_data->group_url=base_url("index.php?/attendance/check_attendance/2DAMTODO");
+			$time_slot_data->group_name="2DAM TODO";
+
+   			$all_time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+		}
+		
+		$data['all_time_slots']=$all_time_slots;
+		
 		//Obtain all teacher groups for selected date
 		
-		//$teacher_code = $_SESSION['codi_professor'];
-		
-		//$teacher_code = $_SESSION['codi_professor'];
-		
-		$teacher_code = 41;
-		
-		//teacher: teacher_code:
-		//day
-		
-		
-		$data= array();
 
-		if(isset($grup)){
-			$data['grup'] = $grup;	
-		}
+		if(isset($group_code)){
+			$data['$group_code'] = $group_code;	
+		}	
 
 		$data['check_attendance_day']="TODO";
 		$data['check_attendance_table_title']=lang('check_attendance_table_title');
@@ -327,6 +447,7 @@ class attendance extends skeleton_main {
 
 		$data['hores']=$hores;		
 		
+		/*
 		$group = new stdClass;
 		$group->time_interval="16:30 - 17:30";
 		//$group->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
@@ -337,7 +458,7 @@ class attendance extends skeleton_main {
 		
 		$teacher_groups_current_day['key1']= $group;
 		
-		$group1 = new stdClass;
+		$time_slot = new stdClass;
 		$group1->time_interval="15:30 - 16:30";
 		//$group1->group_url=base_url("attendance/select_student/codi_dia=1&codi_hora=1&codi_grup=1SEA&codi_ass=M%201&time_interval=8:00%20-%209:00&optativa=0");
 		//$group1->group_name="GRUP MPROVA";
@@ -357,12 +478,13 @@ class attendance extends skeleton_main {
 		$teacher_groups_current_day['key3']=$group1;
 		$teacher_groups_current_day['key4']=$group;
 		$teacher_groups_current_day['key4']=$group2;
+		*/
 		
-		$data['teacher_groups_current_day']=$teacher_groups_current_day;
 		
-/* Llista alumnes grup */
+		
+		/* Llista alumnes grup */
 
-        $default_group_code = $grup;
+        $default_group_code = $group_code;
         $group_code=$default_group_code;
 
         $organization = $this->config->item('organization','skeleton_auth');
@@ -379,8 +501,8 @@ class attendance extends skeleton_main {
 
         $data['all_groups']=$all_groups->result();
         $data['photo'] = false;
-        if ($grup) {
-            $data['selected_group']= urldecode($grup);
+        if ($group_code) {
+            $data['selected_group']= urldecode($group_code);
                 $data['photo'] = true;
         }   else {
             $data['selected_group']=$default_group_code;
@@ -388,6 +510,7 @@ class attendance extends skeleton_main {
        // echo $data['selected_group'];
        // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
        // $default_group_dn=$students_base_dn;
+        /*
         if ($data['selected_group']!="ALL_GROUPS")
             $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
         
@@ -395,23 +518,36 @@ class attendance extends skeleton_main {
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+        */
+        //$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
         
-       $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
         //print_r($data['all_students_in_group']);       
         //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
         //Total de professors
-        $data['count_alumnes'] = count($data['all_students_in_group']);
+       
+        //$data['count_alumnes'] = count($data['all_students_in_group']);
 
 
-/* fi llista alumnes grup */
+		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance',$data);
-		
+
+
+
+
+
+
+
+
+
+
 		 
 		/*******************
 		/*      FOOTER     *
 		*******************/
 		$this->_load_body_footer();		
 	}
+
+
 	
 	public function index() {
 		$this->check_attendance();

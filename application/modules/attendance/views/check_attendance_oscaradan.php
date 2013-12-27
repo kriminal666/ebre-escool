@@ -193,88 +193,207 @@ function read_value(alumne,hora){
 }
 </script>
 
+<?php
 
+
+/* Fi insertar dades */
+/* Obtenir foto */
+/*
+	echo "<pre>";
+	print_r($all_students_in_group[1]);
+	echo "</pre>";
+*/
+$number_returned = $count_alumnes;
+$contador=0;
+//print_r($all_students_in_group[1]);
+$alumne =array();
+
+foreach($all_students_in_group as $student){
+if($photo){
+	/* Detectar tipus d'imatge (PNG o JPG) */
+	$tipus = substr($student->jpegPhoto,0,10);
+
+	$isJPG  = strpos($tipus, 'JFIF');
+	if($isJPG){
+		$extensio = ".jpg";
+	} else {
+		$isPNG  = strpos($tipus, 'PNG');
+		if($isPNG){
+		$extensio = ".png";
+		}
+	}
+?>
+	<!--<img src='data:image/jpeg;base64,<?php echo $student->jpegPhoto;?>'>-->
+<?php
+	$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$jpeg_file[$contador]=$student->irisPersonalUniqueID.$extensio;
+	$alumne[$contador]['jpegPhoto']="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$outjpeg = fopen($jpeg_filename, "wb");
+	fwrite($outjpeg, $student->jpegPhoto);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $jpeg_filename );
+
+	if( $jpeg_data_size < 6 ) {
+		$jpeg_file[$contador]='foto.png';
+		$alumne[$contador]['jpegPhoto']='/tmp/foto.png';
+		?>
+		<img src="<?php echo $alumne[$contador]['jpegPhoto']; ?>" />
+		<?php
+	}
+
+}
+$alumne[$contador]['givenName']=$student->givenName;
+$alumne[$contador]['sn1']=$student->sn1;
+$alumne[$contador]['sn2']=$student->sn2;
+$alumne[$contador]['uidnumber']=$student->uidnumber;
+$contador++;
+}
+/* fí Obtenir foto */
+
+?>
+
+/* Fi insertar dades */
+/* Obtenir foto */
+/*
+	echo "<pre>";
+	print_r($all_students_in_group[1]);
+	echo "</pre>";
+*/
+$number_returned = $count_alumnes;
+$contador=0;
+//print_r($all_students_in_group[1]);
+$alumne =array();
+
+foreach($all_students_in_group as $student){
+if($photo){
+	/* Detectar tipus d'imatge (PNG o JPG) */
+	$tipus = substr($student->jpegPhoto,0,10);
+
+	$isJPG  = strpos($tipus, 'JFIF');
+	if($isJPG){
+		$extensio = ".jpg";
+	} else {
+		$isPNG  = strpos($tipus, 'PNG');
+		if($isPNG){
+		$extensio = ".png";
+		}
+	}
+?>
+	<!--<img src='data:image/jpeg;base64,<?php echo $student->jpegPhoto;?>'>-->
+<?php
+	$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$jpeg_file[$contador]=$student->irisPersonalUniqueID.$extensio;
+	$alumne[$contador]['jpegPhoto']="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$outjpeg = fopen($jpeg_filename, "wb");
+	fwrite($outjpeg, $student->jpegPhoto);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $jpeg_filename );
+
+	if( $jpeg_data_size < 6 ) {
+		$jpeg_file[$contador]='foto.png';
+		$alumne[$contador]['jpegPhoto']='/tmp/foto.png';
+		?>
+		<img src="<?php echo $alumne[$contador]['jpegPhoto']; ?>" />
+		<?php
+	}
+
+}
+$alumne[$contador]['givenName']=$student->givenName;
+$alumne[$contador]['sn1']=$student->sn1;
+$alumne[$contador]['sn2']=$student->sn2;
+$alumne[$contador]['uidnumber']=$student->uidnumber;
+$contador++;
+}
+/* fí Obtenir foto */
+
+?>
 
 <div class="container">
+<?php 
 
- <center>
-  <select id="teachers" style="width: 400px">
-  		   <option></option>
-   <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
-		   <?php if( $teacher_id == $default_teacher): ?>
-            <option value="<?php echo $teacher_id; ?>" selected="selected"><?php echo $teacher_name; ?></option>
-           <?php else: ?> 
-            <option value="<?php echo $teacher_id; ?>" ><?php echo $teacher_name; ?></option>
-           <?php endif; ?> 
-   <?php endforeach; ?>	
-  </select> 
-  <br/><br/>
-      <div class="input-append date">
-    	<input type="text" class="span2" value="<?php echo $check_attendance_date;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
-      </div>
- </center>
+	if(isset($grup)) { 
+		
+?>
+	<center>
+		    
+	<table class="table table-striped table-bordered table-hover table-condensed" id="selected_group">
+	 <thead style="background-color: #d9edf7;">
+	  <tr>
+	    <td colspan="7" style="text-align: center;"> <h4 class="title"><?php echo $check_attendance_table_title?> | Dia: <span class="dia"></span></h4></td>
+	  </tr>
+	  <tr>
+	     <th>Alumnes:</th>
+	     <th class="hora_0"><?php echo $hores[0]; ?></th>
+	     <th class="hora_1"><?php echo $hores[1]; ?></th>
+	     <th class="hora_2"><?php echo $hores[2]; ?></th>
+	     <th class="hora_3"><?php echo $hores[3]; ?></th>
+	     <th class="hora_4"><?php echo $hores[4]; ?></th>
+	     <th class="hora_5"><?php echo $hores[5]; ?></th>
+	  </tr>
+	 </thead>
+	 <tbody>
+	  <!-- Iteration that shows teacher groups for select ed day-->
+	  <?php for($fila=0; $fila<$contador; $fila++){ ?>
+	   <tr align="center" class="{cycle values='tr0,tr1'}">
+	     <td id="nom_<?php echo $fila; ?>"><img src="<?php echo $alumne[$fila]['jpegPhoto']?>"/>
+	     <?php $nom = $alumne[$fila]['sn1']." ".$alumne[$fila]['sn2'].", ".$alumne[$fila]['givenName']." (".$alumne[$fila]['uidnumber'].")";?>	
+	     <?php echo "<br />".$nom;?></td>
+	     <?php for($col=0; $col<count($hores);$col++){
+	     	?><td style='width:110px;'>
+			     	<select style="width:50px;" id="<?php echo $col.'-'.$fila; ?>">
+			     		<option value="0" selected ></option>
+					    <option value="1">F</option>
+						<option value="2">FJ</option>
+						<option value="3">R</option>
+						<option value="4">RJ</option>
+						<option value="5">E</option>
+					</select>
+					<a href="" class="obs_" data-placeholder="Escriu una observació" data-type="text" data-pk="1" data-url="/post" data-title="Introdueix una observació per a <?php echo $alumne[$fila]['sn1']." ".$alumne[$fila]['sn2'].", ".$alumne[$fila]['givenName'];?>">Observ.</a>
+	     		</td>
+	     <?php } ?>
 
- <div id ="check_attendance_table" style="visibility: visible">
- 
- <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+	   </tr>
+	  <?php } ?>
+	 </tbody>
+	</table>
+
+	</center>
+
+<?php
+	} else {
+?>
+
+<center>
+ <!--<?php echo $choose_date_string?> : -->
+
+	
+<table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="4" style="text-align: center;"> <h4><?php echo $check_attendance_table_title?> | Dia: <?php echo $check_attendance_date?></h4></td>
+    <td colspan="3" style="text-align: center;"> <h4 class="title"><?php echo $check_attendance_table_title?> | Dia: <input type="text" id="datepicker" class="" value="<?php if(isset($_POST['data'])){ echo $_POST['data']; } else { echo date('d/m/Y'); } ?>"/></h4></td>
   </tr>
   <tr>
-     <th><?php echo lang("time_slot");?></th>
-     <th><?php echo lang("ClassroomGroup");?></th>
-     <th>TODO Mòdul Profesional</th>
-     <th><?php echo lang("attendances_actions");?></th>
+     <th>Column 1</th>
+     <th>Column 2</th>
+     <th>Column 3</th>
   </tr>
  </thead>
  <tbody>
   <!-- Iteration that shows teacher groups for selected day-->
-  <?php foreach ($all_time_slots as $key => $time_slot) : ?>
-   
-   <tr align="center" class="{cycle values='tr0,tr1'}" id="tr_<?php echo $key;?>">
-     <td><?php echo $time_slot->time_interval;?></td>
-     <td>
-		<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event btn-warning" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
-           		<a href="<?php echo $time_slot->group_url;?> "><?php echo $time_slot->group_name;?></a><br />
-            	20.2<br />
-        	</li>
-		<?php else: ?>
-			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
-           		DESCANS<br/>
-           		&nbsp;<br />
-        	</li>
-		<?php endif; ?>
-     </td>
-
-     <td>
-     	<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event btn-default" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
-           		<?php echo $time_slot->group_code;?><br />
-            	20.2<br />
-        	</li>
-		<?php else: ?>
-			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
-           		DESCANS<br/>
-           		&nbsp;<br />
-        	</li>
-		<?php endif; ?>
-
-	 </td>
-	 <td>
-	 	<button type="button" class="btn btn-primary">
-  			<i class="icon-bell icon-white"></i> Passar llista
-		</button>
-	 </td>
+  <?php foreach ($teacher_groups_current_day as $key => $teacher_group) : ?>
+   <tr align="center" class="{cycle values='tr0,tr1'}">
+     <td><?php echo $teacher_group->time_interval;?></td>
+     <td><a href="<?php echo $teacher_group->group_url;?> "><?php echo $teacher_group->group_name;?></a></td>
+     <td><?php echo $teacher_group->group_code;?></td>
    </tr>
   <?php endforeach; ?>
  </tbody>
 </table>
 
-</div>
+</center>
+<?php } //if !(isset($grup)) ?>
 
-
+<<<<<<< HEAD
  <div class="timetable" data-days="5" data-hours="15" style="visibility: hidden">
             <ul class="tt-events">
 				<li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="4" data-duration="1">
@@ -412,4 +531,6 @@ function read_value(alumne,hora){
                     Dv.</div>
             </div>
         </div>
+=======
+>>>>>>> parent of 46147af... Multiple changes: New module curriculum with curriculum maintenances menu before this menus where at managment module
 </div>
