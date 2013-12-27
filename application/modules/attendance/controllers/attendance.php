@@ -137,11 +137,34 @@ class attendance extends skeleton_main {
 
 /* fi proves ajax json */	
 
-	public function mentoring_groups () {
+	
+	public function mentoring_groups ( $class_room_group_id = null ) {
 
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
+		$header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css'));  
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            base_url('assets/css/tribal-timetable.css')); 
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
+
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -149,12 +172,59 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
-			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.ca.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.es.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-tooltip.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-collapse.js'));                
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-shared.js'));        
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-timetable.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+	
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
+
+		//Check if user is manager -> Show all groups
+
+		// IF USER IS NOT MANAGER -> IS MENTOR? -> SHOW GROUPS user is mentor
+
+		$data = array();
+		$data['default_classroom_group_id'] = 2;
+
+		if ( $class_room_group_id != null ) {
+			$data['default_classroom_group_id'] = $class_room_group_id;			
+		}
+
 		
-		echo "TODO";	
+		$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
+
+		$this->load->view('mentoring_groups',$data);	
 
 		$this->_load_body_footer();		
 
