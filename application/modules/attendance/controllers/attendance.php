@@ -12,7 +12,6 @@ class attendance extends skeleton_main {
     {
         parent::__construct();
         
-        //$this->load->library('attendance');
         $this->load->model('attendance_model');
         $this->load->library('ebre_escool_ldap');
 
@@ -216,6 +215,8 @@ class attendance extends skeleton_main {
 
 		$data = array();
 		$data['default_classroom_group_id'] = 2;
+
+		$data['check_attendance_date'] = date('d/m/Y');
 
 		if ( $class_room_group_id != null ) {
 			$data['default_classroom_group_id'] = $class_room_group_id;			
@@ -463,15 +464,11 @@ class attendance extends skeleton_main {
 	    $data['check_attendance_date'] = date('d/m/Y');
 
 	    //Obtain Time Slots
-	    $time_slots = $this->attendance_model->getAllTimeSlots();
-		
 	    $time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
 
 	    $data['time_slots_array'] = $time_slots_array;
 
 	    //print_r($time_slots_array);
-
-	    
 
 	    $teacher_groups_current_day=array();
 	    

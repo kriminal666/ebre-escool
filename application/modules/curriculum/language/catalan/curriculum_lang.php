@@ -15,6 +15,20 @@
 $lang['curriculum']   = "Pla d'estudis";
 
 
+$lang['department']   = "Departament/Família";
+
+$lang['department_shortname']   = "Nom curt";
+$lang['department_name']   = "Nom";
+$lang['department_parent_department_id']   = "Departament/Família pare";
+$lang['department_entryDate']   = "Data de creació";
+$lang['department_last_update']   = "Data última modificació";
+$lang['department_creationUserId']   = "Usuari de creació";
+$lang['department_lastupdateUserId']   = "Usuari última modificació";
+$lang['department_markedForDeletion']   = "Baixa?";
+$lang['department_markedForDeletionDate']   = "Data de baixa";
+
+
+
 //FIELD NAMES
 $lang['lesson_code']   = "Codi";
 $lang['lesson_classroom_group_id']   = "Grup classe";

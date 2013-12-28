@@ -31,6 +31,8 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('timetables');?> <b class="caret"></b></a>
          <ul class="dropdown-menu">
           <li><a href="<?=base_url()?>index.php/timetables/mytymetables"><?php echo lang('my_timetables');?></a></li>
+          <li><a href="<?=base_url()?>index.php/timetables/allteacherstimetables"><?php echo lang('all_teachers_timetables');?></a></li>
+          <li><a href="<?=base_url()?>index.php/timetables/allgroupstimetables"><?php echo lang('all_groups_timetables');?></a></li>
          </ul>
       </li>
                                           
@@ -104,6 +106,7 @@
             <ul class="dropdown-menu">
               <!-- Manteniments -->
               <li><a href='<?=base_url()?>index.php/curriculum/studies_organizational_unit'><?php echo lang('organizational_unit_studies');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/departments_families'><?php echo lang('departments_families');?></a></li>
               <li><a href='<?=base_url()?>index.php/curriculum/studies'><?php echo lang('studies');?></a></li>
               <li><a href='<?=base_url()?>index.php/curriculum/cycle'><?php echo lang('cycles');?></a></li>
               <li><a href='<?=base_url()?>index.php/curriculum/course'><?php echo lang('course');?></a></li>
