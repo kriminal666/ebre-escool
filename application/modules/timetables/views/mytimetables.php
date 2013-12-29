@@ -1,145 +1,104 @@
 ﻿<div class="container">
         <header class="jumbotron subhead" id="overview"> 
-			<h1>Horaris</h1>
+			<h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
+            " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3>
 		</header>
-        <p>Horari del professor Sergi Tur (Codi: 41)</p>
+        
         <div class="timetable" data-days="5" data-hours="15">
             <ul class="tt-events">
-				<li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="4" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="7" data-duration="1">
-                    MIGDIA
-                </li>
-				<li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="11" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-success" data-id="10" data-day="0" data-start="12" data-duration="1">
-                    2 DAM M9<br />
-                    20.2<br />
-                </li>
-                <li class="tt-event btn-warning" data-id="10" data-day="0" data-start="13" data-duration="2">
-                    2 ASIX M16<br />
-                    20.4<br />
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="4" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="7" data-duration="1">
-                    MIGDIA
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="11" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-danger" data-id="10" data-day="1" data-start="13" data-duration="2">
-                    2 DAM M8<br />
-                    20.2<br />
-                </li>
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="4" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="7" data-duration="1">
-                    MIGDIA
-                </li>
-                <li class="tt-event btn-info" data-id="10" data-day="2" data-start="9" data-duration="2">
-                    2 ASIX M7<br />
-                    20.4<br />
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="11" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-success" data-id="10" data-day="2" data-start="12" data-duration="2">
-                    2 DAM M9<br />
-                    20.2<br />
-                </li>
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="4" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="7" data-duration="1">
-                    MIGDIA
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="11" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-info" data-id="10" data-day="3" data-start="12" data-duration="2">
-                    2 ASIX M7<br />
-                    20.4<br />
-                </li>
-                <li class="tt-event btn-primary	" data-id="10" data-day="3" data-start="14" data-duration="1">
-                    2 ASIX M11<br />
-                    20.4<br />
-                </li>
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="4" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="7" data-duration="1">
-                    MIGDIA
-                </li>
-                <li class="tt-event btn-primary" data-id="10" data-day="4" data-start="8" data-duration="1">
-                    2 ASIX M11<br />
-                    20.4<br />
-                </li>
-                <li class="tt-event btn-danger" data-id="10" data-day="4" data-start="9" data-duration="2">
-                    2 DAM M8<br />
-                    20.2<br />
-                </li>
-                <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="11" data-duration="1">
-                    DESCANS
-                </li>
-                <li class="tt-event btn-primary" data-id="10" data-day="4" data-start="12" data-duration="2">
-                    2 ASIX M11<br />
-                    20.4<br />
-                </li>
+                
+                <?php $day_index = 0; ;?>
+                <?php foreach ($days as $day) : ?>
+                    
+                    <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
+                        <?php foreach ( $day_lessons as $day_lesson) : ?>
+                            <?php 
+                            if ($day_lesson->time_slot_lective) {
+                                $bootstrap_button_colour = "btn-inverse";
+                            } else {
+                                $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
+                            }
+
+                            ?> 
+                            <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
+                                data-start="<?php echo $day_lesson->time_slot_order - 1 ;?>" 
+                                data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
+                                <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
+                                <?php echo $day_lesson->location_code;?>
+                            </li>
+                        <?php endforeach; ?>
+
+
+
+                    <?php endforeach; ?> 
+                    
+                    <?php $day_index++;?> 
+
+                <?php endforeach; ?>
 
             </ul>
             <div class="tt-times">
-				<div class="tt-time" data-time="0">
-                    08<span class="hidden-phone">:00</span></div>
-                <div class="tt-time" data-time="0">
-                    09<span class="hidden-phone">:00</span></div>
-                <div class="tt-time" data-time="1">
-                    10<span class="hidden-phone">:00</span></div>
-                <div class="tt-time" data-time="2">
-                    11</div>
-                <div class="tt-time" data-time="3">
-                    11:30</div>
-                <div class="tt-time" data-time="4">
-                    12:30</div>
-                <div class="tt-time" data-time="5">
-                    13:30</div>
-                <div class="tt-time" data-time="6">
-                    14:30</div>
-                <div class="tt-time" data-time="7">
-                    15:30</div>
-                <div class="tt-time" data-time="8">
-                    16:30</div>
-                <div class="tt-time" data-time="9">
-                    17:30</div>
-                <div class="tt-time" data-time="10">
-                    18:30</div>
-                <div class="tt-time" data-time="11">
-                    19<span class="hidden-phone">:00</span></div>
-                <div class="tt-time" data-time="12">
-                    20<span class="hidden-phone">:00</span></div>    
-                <div class="tt-time" data-time="13">
-                    21<span class="hidden-phone">:00</span></div>    
+                <?php $time_slot_index = 0; ;?>
+                <?php foreach ($all_time_slots as $time_slot_key => $time_slot) : ?>
+                    <?php
+                    list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot->time_slot_start_time);
+                    ;?>
+
+                    <div class="tt-time" data-time="<?php echo $time_slot_index;?>">
+                        <?php echo $time_slot_start_time1;?><span class="hidden-phone">:<?php echo $time_slot_start_time2;?></span></div>
+                    <?php $time_slot_index++;?>    
+                <?php endforeach; ?>
+
             </div>
             <div class="tt-days">
-                <div class="tt-day" data-day="0">
-                    Dl.</div>
-                <div class="tt-day" data-day="1">
-                    Dt.</div>
-                <div class="tt-day" data-day="2">
-                    Dc.</div>
-                <div class="tt-day" data-day="3">
-                    Dj.</div>
-                <div class="tt-day" data-day="4">
-                    Dv.</div>
+                <?php $day_index = 0; ;?>
+                <?php foreach ($days as $day) : ?>
+                    <div class="tt-day" data-day="<?php echo $day_index;?>">
+                        <?php echo $day->day_shortname;?>.</div>
+                    <?php $day_index++;?>    
+                <?php endforeach; ?>
             </div>
         </div>
+
+        <div id="study_modules_legend">
+            <center>
+            <table class="table table-striped table-bordered table-hover table-condensed" id="TODO" style="width:50%;">
+                <thead style="background-color: #d9edf7;">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            <h4><?php echo "Llegenda";?></h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php echo "Grup";?></th>
+                        <th><?php echo "Codi assignatura";?></th>
+                        <th><?php echo "Nom";?></th>
+                        <th><?php echo "Hores setmanals";?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($all_teacher_study_modules as $study_module) : ?>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "TODO";?>
+                            </td>
+                            <td>
+                                <?php echo $study_module->study_module_shortname;?>
+                            </td>
+                            <td>
+                                <?php echo $study_module->study_module_name;?>
+                            </td>
+                            <td>
+                                <?php echo $study_module->study_module_hoursPerWeek;?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    
+                </tbody>
+            </table>
+            </center>
+        </div>
+        
         
         Horaris dels grups:<br/>
         

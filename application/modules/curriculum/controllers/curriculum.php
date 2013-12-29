@@ -416,7 +416,10 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('group_markedForDeletionDate',lang('markedForDeletionDate'));		
 
 //      RELACIONS
-        $this->grocery_crud->set_relation('group_course_id','course','course_shortname'); 
+        $this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})');
+
+        //$this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})',array('status' => 'active'));
+
 /*		$this->grocery_crud->set_relation('course_estudies_id','studies','studies_shortname');        
         $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
@@ -536,6 +539,7 @@ class curriculum extends skeleton_main {
 
         //RELACIONS
         $this->grocery_crud->set_relation('study_module_course_id','course','course_shortname'); 
+        $this->grocery_crud->set_relation('study_module_teacher_id','teacher','({teacher_code} - {teacher_id})');
 /*
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
     	Param 2: The relation table (cycle)
@@ -720,12 +724,19 @@ class curriculum extends skeleton_main {
         //Express fields
         $this->grocery_crud->express_fields('studies_name','studies_shortname');
 
+        //RELATIONS
+        $this->grocery_crud->set_relation_n_n('studies_departments', 'study_department', 'department', 'study_id', 'department_id', 'department_name');
+
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
+
+        $this->grocery_crud->fields('studies_shortname', 'studies_name', 'studies_departments' ,  'studies_entryDate' ,'studies_last_update', 'studies_creationUserId', 
+            'studies_lastupdateUserId', 'studies_markedForDeletion', 'studies_markedForDeletionDate');
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('studies_shortname',lang('shortName'));
         $this->grocery_crud->display_as('studies_name',lang('name'));
+        $this->grocery_crud->display_as('studies_departments',lang('studies_departments'));
         $this->grocery_crud->display_as('studies_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('studies_last_update',lang('last_update'));
         $this->grocery_crud->display_as('studies_creationUserId',lang('creationUserId'));
