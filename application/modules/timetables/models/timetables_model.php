@@ -71,7 +71,10 @@ class timetables_model  extends CI_Model  {
 
 			$all_lessonsfortimetablebyteacherid = array();
 
-			$previous_day=null;
+			$previous_day = null;
+
+			$previous_lesson_code = null;
+
 			foreach ($query->result_array() as $row)	{
 				
 				$day=$row['lesson_day'];
@@ -91,32 +94,41 @@ class timetables_model  extends CI_Model  {
 					$lesson_by_day = array();
 				}
 
-				$lesson_data = new stdClass;
+				//detect consecutive lessons and aggrupate in on event with more duration
+				if ( $previous_lesson_code == $lesson_code ) {
+					//Change previous lesson duration (++) and skip this one
+					@$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
+					$previous_time_slot_start_time = $previous_time_slot_start_time;
+				} else {
+					$lesson_data = new stdClass;
 
-				$lesson_data->lesson_id= $lesson_id;
-				$lesson_data->lesson_code= $lesson_code;
-				$lesson_data->time_slot_order= $time_slot_order;
-				$lesson_data->study_module_id= $study_module_id;
-				$lesson_data->study_module_shortname= $study_module_shortname;
-				$lesson_data->study_module_shortname= $study_module_shortname;
-				$lesson_data->study_module_name= $study_module_name;
-				$lesson_data->group_code= $group_code;
-				$lesson_data->group_shortName= $group_shortName;
-				$lesson_data->group_name= $group_name;
-				$lesson_data->time_slot_lective=false;
-				$lesson_data->location_code="20.2";
-	
-				$lesson_data->duration= 1;
+					$lesson_data->lesson_id= $lesson_id;
+					$lesson_data->lesson_code= $lesson_code;
+					$lesson_data->time_slot_order= $time_slot_order;
+					$lesson_data->study_module_id= $study_module_id;
+					$lesson_data->study_module_shortname= $study_module_shortname;
+					$lesson_data->study_module_shortname= $study_module_shortname;
+					$lesson_data->study_module_name= $study_module_name;
+					$lesson_data->group_code= $group_code;
+					$lesson_data->group_shortName= $group_shortName;
+					$lesson_data->group_name= $group_name;
+					$lesson_data->time_slot_lective=false;
+					$lesson_data->location_code="20.2";
+					
+					$lesson_data->duration= 1;
 
-				$lesson_by_day[$time_slot_start_time] = $lesson_data;
+					$lesson_by_day[$time_slot_start_time] = $lesson_data;
 
 								
-				$day_lessons->lesson_by_day = $lesson_by_day;
+					$day_lessons->lesson_by_day = $lesson_by_day;
 
-   				$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
+   					$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
+   					$previous_time_slot_start_time = $time_slot_start_time;
+   				}
 
    				$previous_day=$day;
-			}
+   				$previous_lesson_code = $lesson_code;
+   			}
 			return $all_lessonsfortimetablebyteacherid;
 		}			
 		else

@@ -219,7 +219,10 @@ class timetables extends skeleton_main {
                     "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
             $header_data= $this->add_css_to_html_header_data(
 				$header_data,
-                    base_url('assets/css/tribal-timetable.css'));        
+                    base_url('assets/css/tribal-timetable.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css");                 
             
             //<link href="css/docs.css" rel="stylesheet" />
             //<link href="css/tribal-bootstrap.css" rel="stylesheet" />
@@ -253,6 +256,9 @@ class timetables extends skeleton_main {
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/tribal-timetable.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
 			
             $this->_load_html_header($header_data);
             $this->_load_body_header();     

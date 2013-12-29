@@ -1,4 +1,75 @@
-﻿<div class="container">
+﻿<script type="text/javascript">
+
+$(function() {
+
+
+
+    $.fn.showHide = function (options) {
+ 
+    //default vars for the plugin
+        var defaults = {
+            speed: 1000,
+            easing: '',
+            changeText: 0,
+            showText: 'Show',
+            hideText: 'Hide'
+ 
+        };
+        var options = $.extend(defaults, options);
+ 
+        $(this).click(function () {
+// optionally add the class .toggleDiv to each div you want to automatically close
+                      $('.toggleDiv').slideUp(options.speed, options.easing);
+             // this var stores which button you've clicked
+             var toggleClick = $(this);
+             // this reads the rel attribute of the button to determine which div id to toggle
+             var toggleDiv = $(this).attr('rel');
+             // here we toggle show/hide the correct div at the right speed and using which easing effect
+             $(toggleDiv).slideToggle(options.speed, options.easing, function() {
+             // this only fires once the animation is completed
+             if(options.changeText==1){
+             $(toggleDiv).is(":visible") ? toggleClick.text(options.hideText) : toggleClick.text(options.showText);
+             }
+              });
+ 
+          return false;
+ 
+        });
+ 
+    };
+
+    //***************************
+    //* CHECK ATTENDANCE TABLE **
+    //***************************
+
+     $('#study_modules_legend_table').dataTable( {
+                "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+                "bPaginate": false,
+                "bFilter": false,
+        "bInfo": false,
+        });
+
+});
+
+</script>
+
+<div class="container">
         <header class="jumbotron subhead" id="overview"> 
 			<h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
             " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3>
@@ -62,7 +133,7 @@
 
         <div id="study_modules_legend">
             <center>
-            <table class="table table-striped table-bordered table-hover table-condensed" id="TODO" style="width:50%;">
+            <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_legend_table" style="width:50%;">
                 <thead style="background-color: #d9edf7;">
                     <tr>
                         <td colspan="4" style="text-align: center;">
