@@ -35,6 +35,21 @@ class timetables_model  extends CI_Model  {
 		return false;
 	}
 
+	function get_all_group_study_modules($group_id) {
+		$this->db->from('study_module');
+        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
+
+		$this->db->where('nom_grup',"1PRP");
+        
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			return $query;
+		}			
+		else
+			return false;
+	}
+
 	function get_all_teacher_study_modules($teacher_id) {
 		$this->db->from('study_module');
         $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
@@ -48,6 +63,91 @@ class timetables_model  extends CI_Model  {
 		}			
 		else
 			return false;
+	}
+
+	function get_all_lessonsfortimetablebygroupid($group_id)	{
+
+		$this->db->from('lesson');
+        $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
+        	group_code,group_shortName,group_name');
+
+		$this->db->order_by('lesson_day,time_slot_order', "asc");
+		
+		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
+		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.group_id','left');
+
+		$this->db->where('lesson.lesson_classroom_group_id',$group_id);
+        
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$all_lessonsfortimetablebygroupid = array();
+
+			$previous_day = null;
+
+			$previous_lesson_code = null;
+
+			foreach ($query->result_array() as $row)	{
+				
+				$day=$row['lesson_day'];
+				$time_slot_start_time = $row['time_slot_start_time'];
+				$lesson_id = $row['lesson_id'];
+				$lesson_code = $row['lesson_code'];
+				$time_slot_order = $row['time_slot_order'];
+				$study_module_id = $row['study_module_id'];
+				$study_module_shortname = $row['study_module_shortname'];
+				$study_module_name = $row['study_module_name'];
+				$group_code = $row['group_code'];
+				$group_shortName = $row['group_shortName'];
+				$group_name = $row['group_name'];
+			
+				if ($previous_day == null || $day != $previous_day) {
+					$day_lessons = new stdClass;	
+					$lesson_by_day = array();
+				}
+
+				//detect consecutive lessons and aggrupate in on event with more duration
+				if ( $previous_lesson_code == $lesson_code ) {
+					//Change previous lesson duration (++) and skip this one
+					@$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
+					$previous_time_slot_start_time = $previous_time_slot_start_time;
+				} else {
+					$lesson_data = new stdClass;
+
+					$lesson_data->lesson_id= $lesson_id;
+					$lesson_data->lesson_code= $lesson_code;
+					$lesson_data->time_slot_order= $time_slot_order;
+					$lesson_data->study_module_id= $study_module_id;
+					$lesson_data->study_module_shortname= $study_module_shortname;
+					$lesson_data->study_module_shortname= $study_module_shortname;
+					$lesson_data->study_module_name= $study_module_name;
+					$lesson_data->group_code= $group_code;
+					$lesson_data->group_shortName= $group_shortName;
+					$lesson_data->group_name= $group_name;
+					$lesson_data->time_slot_lective=false;
+					$lesson_data->location_code="20.2";
+					
+					$lesson_data->duration= 1;
+
+					$lesson_by_day[$time_slot_start_time] = $lesson_data;
+
+								
+					$day_lessons->lesson_by_day = $lesson_by_day;
+
+   					$all_lessonsfortimetablebygroupid[$day] = $day_lessons;
+   					$previous_time_slot_start_time = $time_slot_start_time;
+   				}
+
+   				$previous_day=$day;
+   				$previous_lesson_code = $lesson_code;
+   			}
+			return $all_lessonsfortimetablebygroupid;
+		}			
+		else
+			return false;
+
 	}
 
 	function get_all_lessonsfortimetablebyteacherid($teacher_id) {
@@ -212,17 +312,80 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
+	function getMaxTimeSlotOrderForTeacher($teacher_id) {
+	
+		$this->db->select_max('time_slot_order','max_time_slot_order');
+		$this->db->from('lesson');
+		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
+		
+		$this->db->where('lesson.lesson_teacher_id',$teacher_id);
+
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0)	{
+			$row = $query->row();
+			return $row->max_time_slot_order;
+   		}
+   		else
+			return false;
+	}
+
+	function getMinTimeSlotOrderForTeacher($teacher_id) {
+	
+		$this->db->select_min('time_slot_order','max_time_slot_order');
+		$this->db->from('lesson');
+		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
+		
+		$this->db->where('lesson.lesson_teacher_id',$teacher_id);
+
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0)	{
+			$row = $query->row();
+			return $row->max_time_slot_order;
+   		}
+   		else
+			return false;
+	}
+
+	function get_teacher_id_from_teacher_code($teacher_code) {
+
+		$this->db->select('teacher_id');
+		$this->db->from('teacher');
+		$this->db->where('teacher.teacher_code',$teacher_code);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->teacher_id;
+		}
+		else
+			return false;
+	}
+
+
 	function getCompactTimeSlots($teacher_id,$orderby="asc") {
+
+		$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
+		$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);		
+
+		//echo "MIN: " . $min_time_slot_order;
+		//echo "MAX: " . $max_time_slot_order;
+
+		$min_time_slot_order=1;
+		$max_time_slot_order=15;
 
 		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
 		$this->db->from('time_slot');
 		$this->db->order_by('time_slot_order', $orderby);
 		
-		$max_time_slot_order=14;
-		$min_time_slot_order=2;
-		
-		$this->db->where('time_slot_order <=',$max_time_slot_order);
 		$this->db->where('time_slot_order >=',$min_time_slot_order);
+		$this->db->where('time_slot_order <=',$max_time_slot_order);		
 
 		$query = $this->db->get();
 

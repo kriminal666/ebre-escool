@@ -125,7 +125,7 @@ $(function() {
         <div id="teacher_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
             <ul class="tt-events">
                 
-                <?php $day_index = 0; ;?>
+                <?php $day_index = 0; $iii=0;?>
                 <?php foreach ($days as $day) : ?>
                     
                     <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
@@ -137,13 +137,17 @@ $(function() {
                                 $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
                             }
 
+                            $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_order;
+                            
                             ?> 
+
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
-                                data-start="<?php echo $day_lesson->time_slot_order - 1 ;?>" 
+                                data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
                                 <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
                                 <?php echo $day_lesson->location_code;?>
                             </li>
+                        <?php $iii++;?>  
                         <?php endforeach; ?>
 
 
