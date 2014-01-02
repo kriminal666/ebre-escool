@@ -2,41 +2,33 @@
 
 $(function() {
 
+    $('#hide_show_legend').bootstrapSwitch({});
 
+    $('#show_compact_timetable').bootstrapSwitch({});
 
-    $.fn.showHide = function (options) {
- 
-    //default vars for the plugin
-        var defaults = {
-            speed: 1000,
-            easing: '',
-            changeText: 0,
-            showText: 'Show',
-            hideText: 'Hide'
- 
-        };
-        var options = $.extend(defaults, options);
- 
-        $(this).click(function () {
-// optionally add the class .toggleDiv to each div you want to automatically close
-                      $('.toggleDiv').slideUp(options.speed, options.easing);
-             // this var stores which button you've clicked
-             var toggleClick = $(this);
-             // this reads the rel attribute of the button to determine which div id to toggle
-             var toggleDiv = $(this).attr('rel');
-             // here we toggle show/hide the correct div at the right speed and using which easing effect
-             $(toggleDiv).slideToggle(options.speed, options.easing, function() {
-             // this only fires once the animation is completed
-             if(options.changeText==1){
-             $(toggleDiv).is(":visible") ? toggleClick.text(options.hideText) : toggleClick.text(options.showText);
-             }
-              });
- 
-          return false;
- 
-        });
- 
-    };
+    $('#hide_show_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#study_modules_legend").slideToggle();
+    });
+
+    $('#show_compact_timetable').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+
+        selectedValue = "";
+        console.log(value);
+        if (value) {
+            selectedValue = "compact";
+        }
+        alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+    });
 
     //***************************
     //* CHECK ATTENDANCE TABLE **
@@ -74,64 +66,22 @@ $(function() {
 			<h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
             " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3>
 		</header>
-        
-        <div class="timetable" data-days="5" data-hours="15">
-            <ul class="tt-events">
-                
-                <?php $day_index = 0; ;?>
-                <?php foreach ($days as $day) : ?>
-                    
-                    <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
-                        <?php foreach ( $day_lessons as $day_lesson) : ?>
-                            <?php 
-                            if ($day_lesson->time_slot_lective) {
-                                $bootstrap_button_colour = "btn-inverse";
-                            } else {
-                                $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
-                            }
+        <center>
+            Mostrar horari complet
+            <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
+            data-label-icon="icon-eye-open" 
+            data-on-label="<i class='icon-ok'></i>" 
+            data-off-label="<i class='icon-remove'></i>"
+            data-off="danger">
+            Mostrar llegenda: <input id="hide_show_legend" type="checkbox" class="switch-small" 
+            data-label-icon="icon-eye-open" 
+            data-on-label="<i class='icon-ok'></i>" 
+            data-off-label="<i class='icon-remove'></i>"
+            data-off="danger">
+        </center>
+        <div style="height: 10px;"></div>
 
-                            ?> 
-                            <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
-                                data-start="<?php echo $day_lesson->time_slot_order - 1 ;?>" 
-                                data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
-                                <?php echo $day_lesson->location_code;?>
-                            </li>
-                        <?php endforeach; ?>
-
-
-
-                    <?php endforeach; ?> 
-                    
-                    <?php $day_index++;?> 
-
-                <?php endforeach; ?>
-
-            </ul>
-            <div class="tt-times">
-                <?php $time_slot_index = 0; ;?>
-                <?php foreach ($all_time_slots as $time_slot_key => $time_slot) : ?>
-                    <?php
-                    list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot->time_slot_start_time);
-                    ;?>
-
-                    <div class="tt-time" data-time="<?php echo $time_slot_index;?>">
-                        <?php echo $time_slot_start_time1;?><span class="hidden-phone">:<?php echo $time_slot_start_time2;?></span></div>
-                    <?php $time_slot_index++;?>    
-                <?php endforeach; ?>
-
-            </div>
-            <div class="tt-days">
-                <?php $day_index = 0; ;?>
-                <?php foreach ($days as $day) : ?>
-                    <div class="tt-day" data-day="<?php echo $day_index;?>">
-                        <?php echo $day->day_shortname;?>.</div>
-                    <?php $day_index++;?>    
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <div id="study_modules_legend">
+        <div id="study_modules_legend" style="display: none;">
             <center>
             <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_legend_table" style="width:50%;">
                 <thead style="background-color: #d9edf7;">
@@ -169,6 +119,67 @@ $(function() {
             </table>
             </center>
         </div>
+
+        <div style="height: 10px;"></div>
+
+        <div id="teacher_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
+            <ul class="tt-events">
+                
+                <?php $day_index = 0; ;?>
+                <?php foreach ($days as $day) : ?>
+                    
+                    <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
+                        <?php foreach ( $day_lessons as $day_lesson) : ?>
+                            <?php 
+                            if ($day_lesson->time_slot_lective) {
+                                $bootstrap_button_colour = "btn-inverse";
+                            } else {
+                                $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
+                            }
+
+                            ?> 
+                            <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
+                                data-start="<?php echo $day_lesson->time_slot_order - 1 ;?>" 
+                                data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
+                                <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
+                                <?php echo $day_lesson->location_code;?>
+                            </li>
+                        <?php endforeach; ?>
+
+
+
+                    <?php endforeach; ?> 
+                    
+                    <?php $day_index++;?> 
+
+                <?php endforeach; ?>
+
+            </ul>
+            <div class="tt-times">
+                <?php $time_slot_index = 0; ;?>
+                <?php foreach ($time_slots as $time_slot_key => $time_slot) : ?>
+                    <?php
+                    list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot->time_slot_start_time);
+                    ;?>
+
+                    <div class="tt-time" data-time="<?php echo $time_slot_index;?>">
+                        <?php echo $time_slot_start_time1;?><span class="hidden-phone">:<?php echo $time_slot_start_time2;?></span></div>
+                    <?php $time_slot_index++;?>    
+                <?php endforeach; ?>
+
+            </div>
+            <div class="tt-days">
+                <?php $day_index = 0; ;?>
+                <?php foreach ($days as $day) : ?>
+                    <div class="tt-day" data-day="<?php echo $day_index;?>">
+                        <?php echo $day->day_shortname;?>.</div>
+                    <?php $day_index++;?>    
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <br/>
+        
         
         
         Horaris dels grups:<br/>

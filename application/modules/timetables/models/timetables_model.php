@@ -200,9 +200,29 @@ class timetables_model  extends CI_Model  {
 
 	function getAllTimeSlots($orderby="asc") {
 		
-		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective');
+		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
 		$this->db->from('time_slot');
 		$this->db->order_by('time_slot_order', $orderby);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0)
+			return $query;
+		else
+			return false;
+	}
+
+	function getCompactTimeSlots($teacher_id,$orderby="asc") {
+
+		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
+		$this->db->from('time_slot');
+		$this->db->order_by('time_slot_order', $orderby);
+		
+		$max_time_slot_order=14;
+		$min_time_slot_order=2;
+		
+		$this->db->where('time_slot_order <=',$max_time_slot_order);
+		$this->db->where('time_slot_order >=',$min_time_slot_order);
 
 		$query = $this->db->get();
 

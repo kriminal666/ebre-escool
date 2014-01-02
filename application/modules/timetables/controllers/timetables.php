@@ -207,7 +207,15 @@ class timetables extends skeleton_main {
             $this->_load_body_footer();   
     }
 	
-	public function mytymetables() {
+	public function mytymetables($compact = "") {
+
+        /*
+        if ($compact == "compact") {
+            echo "compact: TRUE";
+        } else {
+            echo "compact: FALSE";
+        }*/
+
 	    if (!$this->skeleton_auth->logged_in())
 	        {
 	        //redirect them to the login page
@@ -223,7 +231,9 @@ class timetables extends skeleton_main {
             $header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css");                 
-            
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap-switch.min.css'));
             //<link href="css/docs.css" rel="stylesheet" />
             //<link href="css/tribal-bootstrap.css" rel="stylesheet" />
 			//<link href="css/tribal-timetable.css" rel="stylesheet" />        
@@ -259,14 +269,28 @@ class timetables extends skeleton_main {
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
-			
+			$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-switch.min.js'));
+
             $this->_load_html_header($header_data);
             $this->_load_body_header();     
 
             $data["teacher_full_name"] = "Tur Badenas, Sergi";
-            $data["teacher_code"] = 41;
 
-            $time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            //TODO: set teacher codes by session values (current session user)
+
+            $teacher_code=41;
+            $teacher_id=39;
+
+            $data["teacher_code"] = $teacher_code;
+            $data["teacher_id"] = $teacher_id;
+
+            if ($compact) {
+                $time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            } else {
+                $time_slots_array = $this->timetables_model->getCompactTimeSlots($teacher_id)->result_array();
+            }
 
             $data['time_slots_array'] = $time_slots_array;
 
@@ -276,22 +300,17 @@ class timetables extends skeleton_main {
                 $time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
                 $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
 
-                //Obtain lesson for this teacher date and time slot
-
-                //$time_slots_array = $this->attendance_model->getLesson($teacher_code,$time_slot['time_slot_id'])->result_array();
-
-                $all_time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
             }
 
-            $data['all_time_slots']=$all_time_slots;
-
-            
+            $data['time_slots']=$time_slots;
+            $data['time_slots_count']=count($time_slots);
 
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
 
-            $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid(39);
+            $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
 
             $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid);
 
@@ -299,16 +318,18 @@ class timetables extends skeleton_main {
 
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
-            $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules(39)->result();
+            $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
 
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
 
             $data['study_modules_colours']= $study_modules_colours;
+
+            $data['compact']= $compact;
                                                                                 
             $this->load->view('timetables/mytimetables',$data);
-    	    
+
             $this->_load_body_footer();       
     	                    
 	}
