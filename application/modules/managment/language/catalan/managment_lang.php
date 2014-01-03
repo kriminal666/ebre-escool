@@ -100,14 +100,6 @@ $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
 
-
-$lang['study_module_hoursPerWeek']="Hores Setmanals";
-$lang['study_module_teacher_id']="Codi Professor";
-$lang['study_module_initialDate']="Data inici";
-$lang['study_module_endDate']="Data fí";          
-$lang['type']="Tipus";   
-$lang['subtype']="Subtipus";     
-
 //Matrícules
 	$lang['enrollment_periodid']="Periode de Matrícula";
 	$lang['enrollment_personid']="Matrícula id Persona";

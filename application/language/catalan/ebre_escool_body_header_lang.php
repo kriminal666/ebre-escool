@@ -41,9 +41,10 @@ $lang['reports']   = 'Informes';
 $lang['attendance']   = 'Assistència';  
 
 $lang['timetables']='Horaris';
-$lang['my_timetables']='Els meus horaris'; 
-
-
+ $lang['my_timetables']='Els meus horaris'; 
+ $lang['all_teachers_timetables']='Horaris de tots els professors'; 
+ $lang['all_groups_timetables']='Tots els horaris de grups'; 
+      
 $lang['devices'] = 'Dispositius';
  $lang['computers'] = 'Ordinadors';
  $lang['others'] = 'Altres';
@@ -78,6 +79,7 @@ $lang['managment'] = 'Gestió';
  /* Menú manteniments Plans Estudi */
 $lang['curriculum']="Pla d'estudis"; 
 $lang['organizational_unit_studies']="Unitat Organitzativa. Estudis";
+$lang['departments_families']="Departaments/Famílies";
 $lang['studies']="Estudis";
 $lang['cycles']="Cicles";
 $lang['course']="Curs";

@@ -36,10 +36,110 @@ class curriculum extends skeleton_main {
 	public function index() {
 		$this->lessons();
 	}
+
+    
+
+    public function departments_families() {
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+        $readonly_group = $this->config->item('readonly_group');
+        if ($this->skeleton_auth->in_group($readonly_group)) {
+            $this->grocery_crud->unset_add();
+            $this->grocery_crud->unset_edit();
+            $this->grocery_crud->unset_delete();
+        }
+
+        /* Grocery Crud */
+        $this->current_table="department";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('department'));       
+
+        //Relació de Taules
+        $this->grocery_crud->set_relation('department_parent_department_id','department','{department_shortname} - {department_name} ({department_id})'); 
+        
+
+        //Mandatory fields
+        //$this->grocery_crud->required_fields('department_code','department_classroom_group_id','department_teacher_id','department_day','department_time_slot_id');
+
+        //CALLBACKS        
+        //$this->grocery_crud->callback_add_field('department_entryDate',array($this,'add_field_callback_department_entryDate'));
+        //$this->grocery_crud->callback_edit_field('department_entryDate',array($this,'edit_field_callback_department_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field('department_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        //$this->grocery_crud->express_fields('department_code','department_day');
+
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('department_shortname',lang('department_shortname'));
+        $this->grocery_crud->display_as('department_name',lang('department_name'));
+        $this->grocery_crud->display_as('department_parent_department_id',lang('department_parent_department_id'));
+        $this->grocery_crud->display_as('department_entryDate',lang('department_entryDate'));
+        $this->grocery_crud->display_as('department_last_update',lang('department_last_update'));
+        $this->grocery_crud->display_as('department_creationUserId',lang('department_creationUserId'));          
+        $this->grocery_crud->display_as('department_lastupdateUserId',lang('department_lastupdateUserId'));   
+        $this->grocery_crud->display_as('department_markedForDeletion',lang('department_markedForDeletion'));       
+        $this->grocery_crud->display_as('department_markedForDeletionDate',lang('department_markedForDeletionDate'));       
+
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('department_last_update');
+        
+        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+        $this->grocery_crud->set_relation('department_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'department_creationUserId',$this->session->userdata('user_id'));
+
+        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+        $this->grocery_crud->set_relation('department_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'department_lastupdateUserId',$this->session->userdata('user_id'));
+        
+        $this->grocery_crud->unset_dropdowndetails("department_creationUserId","department_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+        $this->grocery_crud->set_default_value($this->current_table,'department_markedForDeletion','n');
+                   
+        $output = $this->grocery_crud->render();
+
+       /*******************
+       /* HTML HEADER     *
+       /******************/
+       $this->_load_html_header($this->_get_html_header_data(),$output); 
+       
+       /*******************
+       /*      BODY       *
+       /******************/
+       $this->_load_body_header();
+       
+        $default_values=$this->_get_default_values();
+        $default_values["table_name"]=$this->current_table;
+        $default_values["field_prefix"]="course_";
+        $this->load->view('defaultvalues_view.php',$default_values); 
+
+        $this->load->view('course.php',$output);     
+       
+       /*******************
+       /*      FOOTER     *
+       *******************/
+       $this->_load_body_footer();  
+
+    }
 	
 	/* Menú Managment -> Curricul | Manteniment -> Pla Estudis */
 
-	public function lessons($lesson_code=null) {
+	public function lessons($department_code=null) {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
@@ -316,7 +416,10 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('group_markedForDeletionDate',lang('markedForDeletionDate'));		
 
 //      RELACIONS
-        $this->grocery_crud->set_relation('group_course_id','course','course_shortname'); 
+        $this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})');
+
+        //$this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})',array('status' => 'active'));
+
 /*		$this->grocery_crud->set_relation('course_estudies_id','studies','studies_shortname');        
         $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
@@ -436,6 +539,7 @@ class curriculum extends skeleton_main {
 
         //RELACIONS
         $this->grocery_crud->set_relation('study_module_course_id','course','course_shortname'); 
+        $this->grocery_crud->set_relation('study_module_teacher_id','teacher','({teacher_code} - {teacher_id})');
 /*
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
     	Param 2: The relation table (cycle)
@@ -620,12 +724,19 @@ class curriculum extends skeleton_main {
         //Express fields
         $this->grocery_crud->express_fields('studies_name','studies_shortname');
 
+        //RELATIONS
+        $this->grocery_crud->set_relation_n_n('studies_departments', 'study_department', 'department', 'study_id', 'department_id', 'department_name');
+
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
+
+        $this->grocery_crud->fields('studies_shortname', 'studies_name', 'studies_departments' ,  'studies_entryDate' ,'studies_last_update', 'studies_creationUserId', 
+            'studies_lastupdateUserId', 'studies_markedForDeletion', 'studies_markedForDeletionDate');
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('studies_shortname',lang('shortName'));
         $this->grocery_crud->display_as('studies_name',lang('name'));
+        $this->grocery_crud->display_as('studies_departments',lang('studies_departments'));
         $this->grocery_crud->display_as('studies_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('studies_last_update',lang('last_update'));
         $this->grocery_crud->display_as('studies_creationUserId',lang('creationUserId'));

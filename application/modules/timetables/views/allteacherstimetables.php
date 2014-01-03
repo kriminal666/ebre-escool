@@ -1,6 +1,23 @@
-﻿<script type="text/javascript">
+﻿<script>
 
 $(function() {
+
+    //*****************************
+    //* CLASSROOMGROUP DROPDOWN  **
+    //*****************************
+
+    //Jquery select plugin: http://ivaynberg.github.io/select2/
+    $("#teachers").select2(); 
+
+    $('#teachers').on("change", function(e) {   
+        selectedValue = $("#teachers").select2("val");
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+
+    });
 
     $('#hide_show_legend').bootstrapSwitch({});
 
@@ -30,11 +47,8 @@ $(function() {
         window.location.href = baseURL + "/" + selectedValue;
     });
 
-    //***************************
-    //* CHECK ATTENDANCE TABLE **
-    //***************************
 
-     $('#study_modules_legend_table').dataTable( {
+    $('#study_modules_legend_table').dataTable( {
                 "oLanguage": {
                         "sProcessing":   "Processant...",
                         "sLengthMenu":   "Mostra _MENU_ registres",
@@ -62,11 +76,20 @@ $(function() {
 </script>
 
 <div class="container">
-        <header class="jumbotron subhead" id="overview"> 
-			<h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
-            " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3>
-		</header>
-        <center>
+    <center>
+        <select id="teachers" style="width: 400px">
+            <option></option>
+            <?php foreach( (array) $teachers as $teacher_id => $teacher): ?>
+            <?php if( $teacher_id == $default_teacher): ?>
+            <option value="<?php echo $teacher_id; ?>" selected="selected"><?php echo $teacher; ?></option>
+            <?php else: ?> 
+            <option value="<?php echo $teacher_id; ?>" ><?php echo $teacher; ?></option>
+           <?php endif; ?> 
+        <?php endforeach; ?> 
+        </select> 
+    </center>
+    <div style="height: 10px;"></div>
+    <center>
             Mostrar horari complet
             <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
@@ -181,118 +204,9 @@ $(function() {
                 <?php endforeach; ?>
             </div>
         </div>
+        
 
-        <br/>
-        
-        
-        
-        Horaris dels grups:<br/>
-        
-        <div class="row">
-			
-            <div class="span6">
-				<b>2 ASIX (exemple fals grup matí):</b>
-                <div class="timetable" data-days="5" data-hours="7">
-                    <ul class="tt-events">
-                     <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                    </ul>
-                    <div class="tt-times">
-                        <div class="tt-time" data-time="0">
-                            8</div>
-                        <div class="tt-time" data-time="1">
-                            9</div>
-                        <div class="tt-time" data-time="2">
-                            10</div>
-                        <div class="tt-time" data-time="3">
-                            11</div>
-                        <div class="tt-time" data-time="4">
-                            11:30</div>    
-                        <div class="tt-time" data-time="5">
-                            12:30</div>
-                        <div class="tt-time" data-time="6">
-                            13:30</div>
-                    </div>
-                    <div class="tt-days">
-                        <div class="tt-day" data-day="0">
-							Dl.</div>
-						<div class="tt-day" data-day="1">
-							Dt.</div>
-						<div class="tt-day" data-day="2">
-							Dc.</div>
-						<div class="tt-day" data-day="3">
-							Dj.</div>
-						<div class="tt-day" data-day="4">
-							Dv.</div>
-						</div>
-                </div>
-            </div>
-            
-            <div class="span6">
-				<b>2 DAW:</b>
-                <div class="timetable" data-days="5" data-hours="7">
-                    <ul class="tt-events">
-                     <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                    </ul>
-                    <div class="tt-times">
-                        <div class="tt-time" data-time="0">
-                            15:30</div>
-                        <div class="tt-time" data-time="1">
-                            16:30</div>
-                        <div class="tt-time" data-time="2">
-                            17:30</div>
-                        <div class="tt-time" data-time="3">
-                            18:30</div>
-                        <div class="tt-time" data-time="4">
-                            19:00</div>    
-                        <div class="tt-time" data-time="5">
-                            20:00</div>
-                        <div class="tt-time" data-time="6">
-                            21:00</div>
-                    </div>
-                    <div class="tt-days">
-                        <div class="tt-day" data-day="0">
-							Dl.</div>
-						<div class="tt-day" data-day="1">
-							Dt.</div>
-						<div class="tt-day" data-day="2">
-							Dc.</div>
-						<div class="tt-day" data-day="3">
-							Dj.</div>
-						<div class="tt-day" data-day="4">
-							Dv.</div>
-						</div>
-                </div>
-            </div>
-        </div>    
-            
+
             
         <div class="well">
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">

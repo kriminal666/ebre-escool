@@ -21,6 +21,19 @@ $(function() {
 
 });
 
+//***********************
+  //* Datepicker         **
+  //***********************
+  $('.input-append.date').datepicker({
+      format: "dd/mm/yyyy",
+      weekStart: 1,
+      todayBtn: true,
+      language: "ca",
+      daysOfWeekDisabled: "0,6",
+      autoclose: true,
+      todayHighlight: true
+    });
+
 </script>
 
 <div class="container">
@@ -37,10 +50,9 @@ $(function() {
    <?php endforeach; ?>	
   </select> 
   <br/><br/>
-  TODO: Date picker
-  <div>
-    TODO: afegir aquí la llista d'alumnes del grup
-  </div>
+      <div class="input-append date">
+        <input type="text" class="span2" value="<?php echo $check_attendance_date;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
+      </div>
  </center>
 
 </div>
