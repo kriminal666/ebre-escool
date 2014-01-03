@@ -36,6 +36,11 @@ $(function() {
            <?php endif; ?> 
    <?php endforeach; ?>	
   </select> 
+  <br/><br/>
+  TODO: Date picker
+  <div>
+    TODO: afegir aquí la llista d'alumnes del grup
+  </div>
  </center>
 
 </div>
