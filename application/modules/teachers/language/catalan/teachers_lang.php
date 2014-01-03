@@ -15,3 +15,5 @@
 // TODO
 
 $lang['teacher'] = 'Professor';
+$lang['teacher_person_id'] = 'ID Persona';
+$lang['teacher_code'] = 'Codi Professor';
