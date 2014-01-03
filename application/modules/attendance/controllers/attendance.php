@@ -223,7 +223,8 @@ class attendance extends skeleton_main {
 		}
 
 		
-		$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
+		//$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
+		$data['classroom_groups'] = $this->attendance_model->get_all_groups();
 
 		$this->load->view('mentoring_groups',$data);	
 
@@ -299,6 +300,8 @@ class attendance extends skeleton_main {
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);
 
+
+
         //ESTABLISH SUBJECT        
         $this->grocery_crud->set_subject(lang('ClassroomGroup'));
 
@@ -319,7 +322,7 @@ class attendance extends skeleton_main {
         $this->grocery_crud->callback_edit_field('group_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_callback_last_update'));
         
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
