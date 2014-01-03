@@ -6,12 +6,22 @@ $(function() {
 
     $('#show_compact_timetable').bootstrapSwitch({});
 
+    $('#hide_show_teacher_legend').bootstrapSwitch({});
+
     $('#hide_show_legend').on('switch-change', function (e, data) {
         var $element = $(data.el),
         value = data.value;
         //console.log(e, $element, value);
         $("#study_modules_legend").slideToggle();
     });
+
+    $('#hide_show_teacher_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#teacher_legend").slideToggle();
+    });
+    
 
     $('#show_compact_timetable').on('switch-change', function (e, data) {
         var $element = $(data.el),
@@ -63,8 +73,8 @@ $(function() {
 
 <div class="container">
         <header class="jumbotron subhead" id="overview"> 
-			<h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
-            " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3>
+			<center><h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
+            " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3></center>
 		</header>
         <center>
             Mostrar horari complet
@@ -181,17 +191,105 @@ $(function() {
                 <?php endforeach; ?>
             </div>
         </div>
+        
+        <?php //echo var_dump($all_teacher_groups);?>
 
-        <br/>
+        <?php //echo $all_teacher_groups_count;?>
+
+        <div style="height: px;"></div>
+         
+         <center>
+            Mostrar dades professor: <input id="hide_show_teacher_legend" type="checkbox" class="switch-small" 
+            data-label-icon="icon-eye-open" 
+            data-on-label="<i class='icon-ok'></i>" 
+            data-off-label="<i class='icon-remove'></i>"
+            data-off="danger">
+         </center>
         
+        <div style="height: 10px;"></div>
         
+        <div id="teacher_legend" style="display: none;">
+            <center>
+            <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_legend_table" style="width:50%;">
+                <thead style="background-color: #d9edf7;">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            <h4><?php echo "Dades del professor";?></h4>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Número hores setmanals";?>
+                            </td>
+                            <td>
+                                <?php echo $total_week_hours;?>
+                            </td>
+                        </tr>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Hores Matí";?>
+                            </td>
+                            <td>
+                                <?php echo $total_morning_week_hours;?>
+                            </td>
+                        </tr>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Hores tarda";?>
+                            </td>
+                            <td>
+                                <?php echo $total_afternoon_week_hours;?>
+                            </td>
+                        </tr>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Número total de grups";?>
+                            </td>
+                            <td>
+                                <?php echo $all_teacher_groups_count;?>
+                            </td>
+                        </tr>
+
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Grups";?>
+                            </td>
+                            <td>
+                                <?php echo $all_teacher_groups_list;?>
+                            </td>
+                        </tr>
+
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Número total de mòduls";?>
+                            </td>
+                            <td>
+                                <?php echo $all_teacher_study_modules_count;?>
+                            </td>
+                        </tr>
+
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <td>
+                                <?php echo "Mòduls";?>
+                            </td>
+                            <td>
+                                <?php echo $all_teacher_study_modules_list;?>
+                            </td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+            </center>
+        </div>
         
-        Horaris dels grups:<br/>
+        <center><h3>Horaris dels grups:</h3></center>
         
         <div class="row">
-			
-            <div class="span6">
-				<b>2 ASIX (exemple fals grup matí):</b>
+			 <?php foreach ($all_teacher_groups as $teacher_group) : ?>
+                <div class="span6">
+                <b><center><?php echo $teacher_group['group_code'] . " ( " . $teacher_group['group_shortName']. " )" ;?>:</center></b>
                 <div class="timetable" data-days="5" data-hours="7">
                     <ul class="tt-events">
                      <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="3" data-duration="1">
@@ -211,86 +309,30 @@ $(function() {
                      </li>
                     </ul>
                     <div class="tt-times">
-                        <div class="tt-time" data-time="0">
-                            8</div>
-                        <div class="tt-time" data-time="1">
-                            9</div>
-                        <div class="tt-time" data-time="2">
-                            10</div>
-                        <div class="tt-time" data-time="3">
-                            11</div>
-                        <div class="tt-time" data-time="4">
-                            11:30</div>    
-                        <div class="tt-time" data-time="5">
-                            12:30</div>
-                        <div class="tt-time" data-time="6">
-                            13:30</div>
+                        
+                        <?php $time_slot_index = 0; ;?>
+                        <?php foreach ($time_slots as $time_slot_key => $time_slot) : ?>
+                            <?php
+                                list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot->time_slot_start_time);
+                            ;?>
+
+                            <div class="tt-time" data-time="<?php echo $time_slot_index;?>">
+                                <?php echo $time_slot_start_time1;?><span class="hidden-phone">:<?php echo $time_slot_start_time2;?></span></div>
+                            <?php $time_slot_index++;?>    
+                        <?php endforeach; ?>
+
                     </div>
                     <div class="tt-days">
-                        <div class="tt-day" data-day="0">
-							Dl.</div>
-						<div class="tt-day" data-day="1">
-							Dt.</div>
-						<div class="tt-day" data-day="2">
-							Dc.</div>
-						<div class="tt-day" data-day="3">
-							Dj.</div>
-						<div class="tt-day" data-day="4">
-							Dv.</div>
-						</div>
-                </div>
-            </div>
-            
-            <div class="span6">
-				<b>2 DAW:</b>
-                <div class="timetable" data-days="5" data-hours="7">
-                    <ul class="tt-events">
-                     <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                    </ul>
-                    <div class="tt-times">
-                        <div class="tt-time" data-time="0">
-                            15:30</div>
-                        <div class="tt-time" data-time="1">
-                            16:30</div>
-                        <div class="tt-time" data-time="2">
-                            17:30</div>
-                        <div class="tt-time" data-time="3">
-                            18:30</div>
-                        <div class="tt-time" data-time="4">
-                            19:00</div>    
-                        <div class="tt-time" data-time="5">
-                            20:00</div>
-                        <div class="tt-time" data-time="6">
-                            21:00</div>
+                        <?php $day_index = 0; ;?>
+                            <?php foreach ($days as $day) : ?>
+                                <div class="tt-day" data-day="<?php echo $day_index;?>">
+                                <?php echo $day->day_shortname;?>.</div>
+                                <?php $day_index++;?>    
+                            <?php endforeach; ?>    
                     </div>
-                    <div class="tt-days">
-                        <div class="tt-day" data-day="0">
-							Dl.</div>
-						<div class="tt-day" data-day="1">
-							Dt.</div>
-						<div class="tt-day" data-day="2">
-							Dc.</div>
-						<div class="tt-day" data-day="3">
-							Dj.</div>
-						<div class="tt-day" data-day="4">
-							Dv.</div>
-						</div>
                 </div>
             </div>
+             <?php endforeach; ?>
         </div>    
             
             

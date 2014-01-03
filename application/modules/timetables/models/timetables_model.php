@@ -35,6 +35,37 @@ class timetables_model  extends CI_Model  {
 		return false;
 	}
 
+	function get_all_groups_byteacherid($teacher_id, $orderby = "asc") {
+
+		/*
+		SELECT DISTINCT group_code,group_shortName,group_name
+		FROM `lesson` 
+		INNER JOIN classroom_group ON `lesson`.`lesson_classroom_group_id`  = classroom_group.group_id
+		WHERE lesson_teacher_id=39
+		*/
+
+		$this->db->from('lesson');
+		$this->db->distinct();
+        $this->db->select('group_id,group_code,group_shortName,group_name');
+
+		$this->db->order_by('group_code', $orderby);
+		
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.group_id');
+
+		$this->db->where('lesson.lesson_teacher_id',$teacher_id);
+        
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0)
+			return $query->result_array();
+		else
+			return false;
+
+		
+	}
+
+	
+
 	function get_all_group_study_modules($group_id) {
 		$this->db->from('study_module');
         $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');

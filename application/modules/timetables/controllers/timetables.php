@@ -440,15 +440,47 @@ class timetables extends skeleton_main {
 
             $data['study_modules_colours']= $study_modules_colours;
 
-
-
             $data['compact']= $compact;
+
+            $all_teacher_groups = $this->timetables_model->get_all_groups_byteacherid($teacher_id);
+
+            $data['all_teacher_groups']= $all_teacher_groups;
+
+            $all_teacher_groups_list = "Grup1, Grup2, Grup3";
+
+            $data['all_teacher_groups_list']= $all_teacher_groups_list;
+
+            $data['all_teacher_groups_count']= count($all_teacher_groups);
+
+            $total_week_hours = 15;
+
+            $data['total_week_hours'] = $total_week_hours;
+
+            $all_teacher_study_modules_count = 11;
+
+            $total_morning_week_hours = "TODO";
+            $total_afternoon_week_hours = "TODO";
+
+            $data['total_morning_week_hours']= $total_morning_week_hours;
+            $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
+
+            $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
+
+            $all_teacher_study_modules_list = "M7, M8, M9";
+
+            $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
+
+            
                                                                                 
             $this->load->view('timetables/mytimetables',$data);
 
             $this->_load_body_footer();       
     	                    
 	}
+
+    protected function _assign_colours_to_study_modules($study_modules) {    
+
+    }
 
     protected function _assign_colours_to_study_modules($study_modules) {
         $study_modules_colours = array();
