@@ -26,7 +26,27 @@ class attendance_model  extends CI_Model  {
 		} 	
 		return false;
 	}
-	
+
+	function get_all_groups($orderby="asc") {
+		$this->db->from('classroom_group');
+        $this->db->select('group_id,group_code,group_shortName,group_name');
+
+		$this->db->order_by('group_code', $orderby);
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['group_id']] = $row['group_code'] . " - " . $row['group_name'] . "( " . $row['group_shortName'] . " )";
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}	
 
 	function get_all_teachers_ids_and_names() {
 

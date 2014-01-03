@@ -223,7 +223,8 @@ class attendance extends skeleton_main {
 		}
 
 		
-		$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
+		//$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
+		$data['classroom_groups'] = $this->attendance_model->get_all_groups();
 
 		$this->load->view('mentoring_groups',$data);	
 
