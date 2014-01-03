@@ -612,7 +612,7 @@ class managment extends skeleton_main {
         $this->grocery_crud->callback_edit_field('group_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_callback_last_update'));
 
         //Express fields
         $this->grocery_crud->express_fields('group_name','group_shortname');

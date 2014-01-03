@@ -29,3 +29,12 @@ $lang['lesson_creationUserId']   = "Usuari de creació";
 $lang['lesson_lastupdateUserId']   = "Usuari última modificació";
 $lang['lesson_markedForDeletion']   = "Baixa?";
 $lang['lesson_markedForDeletionDate']   = "Data de baixa";
+
+$lang['study_module_hoursPerWeek']="Hores Setmanals";
+$lang['study_module_teacher_id']="Codi Professor";
+$lang['study_module_initialDate']="Data inici";
+$lang['study_module_endDate']="Data fí";          
+$lang['type']="Tipus";   
+$lang['subtype']="Subtipus"; 
+
+$lang['mentor_code']="Codi Tutor"; 
