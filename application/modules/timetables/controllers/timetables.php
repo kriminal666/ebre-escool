@@ -117,7 +117,7 @@ class timetables extends skeleton_main {
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
             } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlots($teacher_id)->result_array();
+                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
 
             //Get first and last time slot order
@@ -259,7 +259,8 @@ class timetables extends skeleton_main {
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
             } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlots($group_id)->result_array();
+                //TODO
+                //$time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($group_id)->result_array();
             }
 
             //Get first and last time slot order
@@ -393,7 +394,7 @@ class timetables extends skeleton_main {
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
             } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlots($teacher_id)->result_array();
+                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
 
             //Get first and last time slot order
@@ -446,6 +447,19 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_groups']= $all_teacher_groups;
 
+            $array_all_teacher_groups_time_slots = array();
+            foreach ($all_teacher_groups as $teacher_group) {
+                # code...
+                $shift = 1;
+                $group_id = $teacher_group['group_id'];
+                $shift = $this->timetables_model->get_group_shift($group_id);
+                $array_all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+            }
+                //$morning_shift_time_slots = $this->timetables_model->get_time_slots_byShift(1);
+                //$afternoon_shift_time_slots = $this->timetables_model->get_time_slots_byShift(2);
+
+            $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
+
             $all_teacher_groups_list = "Grup1, Grup2, Grup3";
 
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
@@ -470,17 +484,11 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
 
-            
-                                                                                
             $this->load->view('timetables/mytimetables',$data);
 
             $this->_load_body_footer();       
     	                    
 	}
-
-    protected function _assign_colours_to_study_modules($study_modules) {    
-
-    }
 
     protected function _assign_colours_to_study_modules($study_modules) {
         $study_modules_colours = array();

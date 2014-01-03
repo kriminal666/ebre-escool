@@ -290,37 +290,23 @@ $(function() {
 			 <?php foreach ($all_teacher_groups as $teacher_group) : ?>
                 <div class="span6">
                 <b><center><?php echo $teacher_group['group_code'] . " ( " . $teacher_group['group_shortName']. " )" ;?>:</center></b>
-                <div class="timetable" data-days="5" data-hours="7">
+                <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['group_id']]);?>">
                     <ul class="tt-events">
-                     <li class="tt-event btn-inverse" data-id="10" data-day="0" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="1" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="2" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="3" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
-                     <li class="tt-event btn-inverse" data-id="10" data-day="4" data-start="3" data-duration="1">
-                      DESCANS
-                     </li>
+                     
                     </ul>
                     <div class="tt-times">
                         
-                        <?php $time_slot_index = 0; ;?>
-                        <?php foreach ($time_slots as $time_slot_key => $time_slot) : ?>
+                        <?php $time_slot_index = 0; ?>
+                        
+                        <?php foreach ($array_all_teacher_groups_time_slots[$teacher_group['group_id']] as $time_slot_key => $time_slot) : ?>
                             <?php
-                                list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot->time_slot_start_time);
+                                list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot['time_slot_start_time']);
                             ;?>
 
                             <div class="tt-time" data-time="<?php echo $time_slot_index;?>">
                                 <?php echo $time_slot_start_time1;?><span class="hidden-phone">:<?php echo $time_slot_start_time2;?></span></div>
                             <?php $time_slot_index++;?>    
                         <?php endforeach; ?>
-
                     </div>
                     <div class="tt-days">
                         <?php $day_index = 0; ;?>

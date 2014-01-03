@@ -327,6 +327,19 @@ class timetables_model  extends CI_Model  {
         return array ($monday, $tuesday, $wednesday, $thursday, $friday );
     }
 
+    public function get_time_slots_byShift($shift = 1) {   
+
+       	switch ($shift) {
+       		//Morning
+    		case 1:
+	        	return $this->getTimeSlots("asc",1,8);
+	        	break;
+	       	//Afternoon
+    		case 2:
+        		return $this->getTimeSlots("asc",9,15);
+        		break;
+    	} 
+    }
 
 
 	function getAllTimeSlots($orderby="asc") {
@@ -340,6 +353,56 @@ class timetables_model  extends CI_Model  {
 		if ($query->num_rows() > 0)
 			return $query;
 		else
+			return false;
+	}
+
+	function getMinTimeSlotOrderForGroup($group_id) {
+
+		/*
+		SELECT min( time_slot_order )
+		FROM `lesson`
+		INNER JOIN classroom_group ON classroom_group.group_id = `lesson`.lesson_classroom_group_id
+		INNER JOIN time_slot ON time_slot.time_slot_id = `lesson`.lesson_time_slot_id
+		WHERE classroom_group.group_id =25
+		*/
+	
+		$this->db->select_min('time_slot_order','min_time_slot_order');
+		$this->db->from('lesson');
+		$this->db->join('classroom_group', 'classroom_group.group_id = lesson.lesson_classroom_group_id');
+		$this->db->join('time_slot', 'time_slot.time_slot_id = lesson.lesson_time_slot_id');
+		
+		$this->db->where('classroom_group.group_id',$group_id);
+
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0)	{
+			$row = $query->row();
+			return $row->min_time_slot_order;
+   		}
+   		else
+			return false;
+	}
+
+	function getMaxTimeSlotOrderForGroup($group_id) {
+
+		$this->db->select_min('time_slot_order','max_time_slot_order');
+		$this->db->from('lesson');
+		$this->db->join('classroom_group', 'classroom_group.group_id = lesson.lesson_classroom_group_id');
+		$this->db->join('time_slot', 'time_slot.time_slot_id = lesson.lesson_time_slot_id');
+		
+		$this->db->where('classroom_group.group_id',$group_id);
+
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0)	{
+			$row = $query->row();
+			return $row->max_time_slot_order;
+   		}
+   		else
 			return false;
 	}
 
@@ -399,17 +462,55 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
+	function get_group_shift($group_id) {
 
-	function getCompactTimeSlots($teacher_id,$orderby="asc") {
+		$this->db->select('group_shift');
+		$this->db->from('classroom_group');
+		$this->db->where('classroom_group.group_id',$group_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			if ($row->group_shift!=0)
+				return $row->group_shift;
+			else {
+				$mintimeslotorder = $this->getMinTimeSlotOrderForGroup($group_id);
+				if ($mintimeslotorder > 6)
+					return 2;
+				else
+					return 1;
+			}
+		}
+		else
+			return false;
+	}
+
+	function getTimeSlots($orderby="asc",$min_time_slot_order=1,$max_time_slot_order=15) {
+
+		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
+		$this->db->from('time_slot');
+		$this->db->order_by('time_slot_order', $orderby);
+		
+		$this->db->where('time_slot_order >=',$min_time_slot_order);
+		$this->db->where('time_slot_order <=',$max_time_slot_order);		
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0)
+			return $query;
+		else
+			return false;
+	}
+
+
+	function getCompactTimeSlotsForTeacher($teacher_id,$orderby="asc",$min_time_slot_order=1,$max_time_slot_order=15) {
 
 		$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
 		$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);		
 
 		//echo "MIN: " . $min_time_slot_order;
 		//echo "MAX: " . $max_time_slot_order;
-
-		$min_time_slot_order=1;
-		$max_time_slot_order=15;
 
 		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
 		$this->db->from('time_slot');
