@@ -221,6 +221,8 @@ class timetables_model  extends CI_Model  {
 		$this->db->where('teacher.teacher_id',$teacher_id);
         
         $query = $this->db->get();
+
+        //echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0) {
 
@@ -471,6 +473,43 @@ class timetables_model  extends CI_Model  {
    		else
 			return false;
 	}
+
+	function get_teacher_fullname_from_teacher_id($teacher_id) {
+		$this->db->select('teacher_code,person_givenName,person_sn1,person_sn2');
+		$this->db->from('teacher');
+
+		$this->db->join('person','teacher.teacher_person_id = person.person_id');
+		
+
+		$this->db->where('teacher.teacher_id',$teacher_id);
+
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->person_sn1 .  " " . $row->person_sn2 . ", " . $row->person_givenName;
+		}
+		else
+			return "";
+	}
+
+
+	function get_teacher_code_from_teacher_id($teacher_id) {
+		$this->db->select('teacher_code');
+		$this->db->from('teacher');
+		$this->db->where('teacher.teacher_id',$teacher_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->teacher_code;
+		}
+		else
+			return false;
+	}
+
 
 	function get_teacher_id_from_teacher_code($teacher_code) {
 

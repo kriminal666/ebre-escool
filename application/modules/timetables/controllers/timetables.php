@@ -166,6 +166,61 @@ class timetables extends skeleton_main {
 
 
             $data['compact']= $compact;
+
+            $all_teacher_groups = $this->timetables_model->get_all_groups_byteacherid($teacher_id);
+
+            $data['all_teacher_groups']= $all_teacher_groups;
+
+            $array_all_teacher_groups_time_slots = array();
+            $lessonsfortimetablebygroupid = array();
+            foreach ($all_teacher_groups as $teacher_group) {
+                # code...
+                $group_id = $teacher_group['group_id'];
+                $shift = $this->timetables_model->get_group_shift($group_id);
+                $array_all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+
+                //TODO: Pametritzar time slot orders defineixen mati tarda
+                if ($shift == 2) {
+                    $shift_first_time_slot_order = 9;
+                    $shift_last_time_slot_order = 15;
+                }
+                else {
+                    $shift_first_time_slot_order = 1;
+                    $shift_last_time_slot_order = 7;
+                }
+                
+                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+
+                $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
+
+            }
+  
+            $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
+            $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
+
+            $all_teacher_groups_list = "Grup1, Grup2, Grup3";
+
+            $data['all_teacher_groups_list']= $all_teacher_groups_list;
+
+            $data['all_teacher_groups_count']= count($all_teacher_groups);
+
+            $total_week_hours = 15;
+
+            $data['total_week_hours'] = $total_week_hours;
+
+            $all_teacher_study_modules_count = 11;
+
+            $total_morning_week_hours = "TODO";
+            $total_afternoon_week_hours = "TODO";
+
+            $data['total_morning_week_hours']= $total_morning_week_hours;
+            $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
+
+            $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
+
+            $all_teacher_study_modules_list = "M7, M8, M9";
+
+            $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
             
 
             $days = $this->timetables_model->getAllLectiveDays();
@@ -249,8 +304,6 @@ class timetables extends skeleton_main {
 
             //TODO
             $data['default_classroom_group'] = 1;                           
-            
-
 
             $group_id = 40;
 
@@ -312,6 +365,8 @@ class timetables extends skeleton_main {
             $data['days']=$days;
 
             $data['compact']= $compact;
+
+
 
             $this->load->view('timetables/allgroupstimetables',$data);
             
@@ -382,16 +437,18 @@ class timetables extends skeleton_main {
             $this->_load_html_header($header_data);
             $this->_load_body_header();     
 
-            $data["teacher_full_name"] = "Tur Badenas, Sergi";
+            //TODO: set teacher id by session values (current session user)
+            $teacher_id=22;
 
-            //TODO: set teacher codes by session values (current session user)
-
-            $teacher_code=40;
+            $teacher_code = $this->timetables_model->get_teacher_code_from_teacher_id($teacher_id);            
+            $teacher_full_name = $this->timetables_model->get_teacher_fullname_from_teacher_id($teacher_id);
             
-            $teacher_id=39;
 
             $data["teacher_code"] = $teacher_code;
             $data["teacher_id"] = $teacher_id;
+            $data["teacher_full_name"] = $teacher_full_name;
+
+            //echo "Teacher code: $teacher_code | teacher_id: $teacher_id | teacher_full_name: $teacher_full_name";
 
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
@@ -555,9 +612,14 @@ class timetables extends skeleton_main {
         foreach ($days as $day) {
             $day_number = $day->day_number;
             //echo $day->day_shortname . " : " . print_r($lessons[$day_number]) . "<br/><br/>";
-            $day_lessons = $lessons[$day_number]->lesson_by_day;
 
-            
+            if (!array_key_exists ( $day_number , $lessons ))    {
+                $day_lessons = array();
+            } else {
+                $day_lessons = $lessons[$day_number]->lesson_by_day;    
+            }
+                
+
             foreach ($not_lective_time_slots_array as $not_lective_time_slot)   {
                 $time_slot_start_time = $not_lective_time_slot['time_slot_start_time'];
                 

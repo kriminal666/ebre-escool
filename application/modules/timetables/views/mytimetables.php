@@ -138,6 +138,7 @@ $(function() {
                 <?php $day_index = 0; $iii=0;?>
                 <?php foreach ($days as $day) : ?>
                     
+                    
                     <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
                         <?php foreach ( $day_lessons as $day_lesson) : ?>
                             <?php 
@@ -304,7 +305,7 @@ $(function() {
                                         if (array_key_exists($day_lesson->study_module_id, $study_modules_colours)) {
                                             $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
                                         } else {
-                                            $bootstrap_button_colour = "btn-purple";
+                                            $bootstrap_button_colour = "btn-beige";
                                         }
                                         
                                         //$bootstrap_button_colour = "btn-warning";
