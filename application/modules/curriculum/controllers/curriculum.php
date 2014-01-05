@@ -78,15 +78,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('department_last_update');
         
         $this->userCreation_userModification($this->current_table);
-        /*
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('department_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'department_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('department_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'department_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("department_creationUserId","department_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -95,29 +87,7 @@ class curriculum extends skeleton_main {
         //Default values:
         $this->grocery_crud->set_default_value($this->current_table,'department_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-       /* HTML HEADER     *
-       /******************/
-       $this->_load_html_header($this->_get_html_header_data(),$output); 
-       
-       /*******************
-       /*      BODY       *
-       /******************/
-       $this->_load_body_header();
-       
-        $default_values=$this->_get_default_values();
-        $default_values["table_name"]=$this->current_table;
-        $default_values["field_prefix"]=$this->current_table."_";
-        $this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-       /*      FOOTER     *
-       *******************/
-       $this->_load_body_footer();  
+        $this->renderitzar($this->current_table);
 
     }
 	
@@ -137,7 +107,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_subject(lang('lesson'));       
 
         //Relació de Taules
-        $this->grocery_crud->set_relation('lesson_classroom_group_id','classroom_group','{group_code} - {group_shortName} ({group_id})'); 
+        $this->grocery_crud->set_relation('lesson_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName} ({classroom_group_id})'); 
 		$this->grocery_crud->set_relation('lesson_teacher_id','teacher','{teacher_code} - ({teacher_id})');        
 		$this->grocery_crud->set_relation('lesson_location_id','location','locationId');
 		$this->grocery_crud->set_relation('lesson_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time} ({time_slot_id})');
@@ -152,6 +122,9 @@ class curriculum extends skeleton_main {
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('lesson_code',lang('lesson_code'));
+        $this->grocery_crud->display_as('lesson_codi_assignatura',lang('lesson_codi_assignatura'));        
+        $this->grocery_crud->display_as('lesson_codi_grup',lang('lesson_codi_grup'));           
+        $this->grocery_crud->display_as('lesson_codi_professor',lang('lesson_codi_professor')); 
         $this->grocery_crud->display_as('lesson_classroom_group_id',lang('lesson_classroom_group_id'));
         $this->grocery_crud->display_as('lesson_teacher_id',lang('lesson_teacher_id'));
         $this->grocery_crud->display_as('lesson_study_module_id',lang('lesson_study_module_id'));
@@ -172,15 +145,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('lesson_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*        
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('lesson_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lesson_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('lesson_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lesson_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("lesson_creationUserId","lesson_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -188,31 +153,9 @@ class curriculum extends skeleton_main {
         
         //Default values:
         $this->grocery_crud->set_default_value($this->current_table,'lesson_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-        $default_values["field_prefix"]=$this->current_table."_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
-
 	}
 
 	public function course() {
@@ -272,15 +215,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('course_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('course_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'course_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('course_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'course_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("course_creationUserId","course_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -290,30 +225,9 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'course_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="course_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* GRUP */
@@ -347,10 +261,10 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('classroom_group_shortName',lang('shortName'));
         $this->grocery_crud->display_as('classroom_group_name',lang('name'));
         $this->grocery_crud->display_as('classroom_group_code',lang('group_code'));  
-        $this->grocery_crud->display_as('classroom_group_lastupdate',lang('last_update'));        
+        $this->grocery_crud->display_as('classroom_group_last_update',lang('last_update'));        
 		$this->grocery_crud->display_as('classroom_group_description',lang('description'));
         $this->grocery_crud->display_as('classroom_group_creationUserId',lang('creationUserId'));	
-        $this->grocery_crud->display_as('classroom_group_last_updateUserId',lang('lastupdateUserId')); 
+        $this->grocery_crud->display_as('classroom_group_lastupdateUserId',lang('lastupdateUserId')); 
 		$this->grocery_crud->display_as('classroom_group_entryDate',lang('entryDate'));   
 		$this->grocery_crud->display_as('classroom_group_educationalLevelId',lang('group_EducationalLevelId')); 
 		$this->grocery_crud->display_as('classroom_group_parentLocation',lang('parentLocation')); 		
@@ -377,15 +291,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('classroom_group_last_update');
 
         $this->userCreation_userModification($this->current_table);   		
-   		/*
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('group_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('group_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("classroom_group_creationUserId","classroom_group_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -395,30 +301,9 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'classroom_group_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="classroom_group_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('classroom_group.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI GRUP */
@@ -453,6 +338,7 @@ class curriculum extends skeleton_main {
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('study_module_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('study_module_external_code',lang('study_module_external_code'));
 		$this->grocery_crud->display_as('study_module_name',lang('name'));
         $this->grocery_crud->display_as('study_module_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('study_module_last_update',lang('last_update'));
@@ -483,15 +369,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('study_module_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('study_module_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_module_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('study_module_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_module_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("study_module_creationUserId","study_module_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -501,30 +379,9 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'study_module_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="study_module_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('study_module.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI ASSIGNATURA */
@@ -572,15 +429,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('study_submodules_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*        
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('study_submodules_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_submodules_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('study_submodules_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_submodules_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("study_submodules_creationUserId","study_submodules_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -590,30 +439,9 @@ class curriculum extends skeleton_main {
 //      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'study_submodules_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="study_submodules_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('study_submodules.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI UNITATS FORMATIVES */
@@ -670,15 +498,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('studies_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('studies_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studies_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('studies_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studies_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("studies_creationUserId","studies_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -689,29 +509,8 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'studies_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="studies_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-	   
-        $this->load->view('studies.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 	public function cycle() {
@@ -755,15 +554,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('cycle_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('cycle_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'cycle_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('cycle_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'cycle_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("cycle_creationUserId","cycle_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -774,29 +565,8 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'cycle_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header(); 
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="cycle_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('cycle.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}			
 
 	public function studies_organizational_unit() {
@@ -843,15 +613,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->unset_add_fields('studies_organizational_unit_last_update');
    		
         $this->userCreation_userModification($this->current_table);
-        /*
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('studiesOU_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('studiesOU_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_lastupdateUserId',$this->session->userdata('user_id'));
-        */
         $this->grocery_crud->unset_dropdowndetails("studies_organizational_unit_creationUserId","studies_organizational_unit_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -862,29 +624,8 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'studies_organizational_unit_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="studies_organizational_unit_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('studies_organizational_unit.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 //<--
@@ -968,4 +709,29 @@ function userCreation_userModification($table_name)
     $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
     $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
 }
+
+function renderitzar($table_name)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($this->_get_html_header_data(),$output); 
+       
+       //      BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       $this->load->view('course.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
+
 }
