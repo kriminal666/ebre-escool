@@ -292,7 +292,39 @@ $(function() {
                 <b><center><?php echo $teacher_group['group_code'] . " ( " . $teacher_group['group_shortName']. " )" ;?>:</center></b>
                 <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['group_id']]);?>">
                     <ul class="tt-events">
-                     
+                        <?php $day_index = 0; $iii=0;?>
+                        <?php foreach ($days as $day) : ?>
+                            <?php foreach ( $lessonsfortimetablebygroupid[$teacher_group['group_id']][$day->day_number] as $day_lessons) : ?>
+                                <?php foreach ( $day_lessons as $day_lesson) : ?>
+                                    <?php 
+                                    if ($day_lesson->time_slot_lective) {
+                                        $bootstrap_button_colour = "btn-inverse";
+                                    } else {
+                                        //TODO not enough colours
+                                        if (array_key_exists($day_lesson->study_module_id, $study_modules_colours)) {
+                                            $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
+                                        } else {
+                                            $bootstrap_button_colour = "btn-purple";
+                                        }
+                                        
+                                        //$bootstrap_button_colour = "btn-warning";
+                                    }
+
+                                    $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_order;
+                          
+                                    ?> 
+                                    <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
+                                        data-start="<?php echo $time_slot_current_position;?>" 
+                                        data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
+                                        <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
+                                        <?php echo $day_lesson->location_code;?>
+                                    </li>
+                                    <?php $iii++;?>  
+                                <?php endforeach; ?>
+                            <?php endforeach; ?> 
+                           <?php $day_index++;?> 
+                        <?php endforeach; ?>
+
                     </ul>
                     <div class="tt-times">
                         

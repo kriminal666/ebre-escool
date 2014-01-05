@@ -30,7 +30,7 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-toogle="tab"><?php echo lang('timetables');?> <b class="caret"></b></a>
          <ul class="dropdown-menu">
-          <li><a href="<?=base_url()?>index.php/timetables/mytymetables"><?php echo lang('my_timetables');?></a></li>
+          <li><a href="<?=base_url()?>index.php/timetables/mytimetables"><?php echo lang('my_timetables');?></a></li>
           <li><a href="<?=base_url()?>index.php/timetables/allteacherstimetables"><?php echo lang('all_teachers_timetables');?></a></li>
           <li><a href="<?=base_url()?>index.php/timetables/allgroupstimetables"><?php echo lang('all_groups_timetables');?></a></li>
          </ul>

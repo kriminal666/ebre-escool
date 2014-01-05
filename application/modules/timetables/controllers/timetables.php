@@ -318,7 +318,7 @@ class timetables extends skeleton_main {
             $this->_load_body_footer();   
     }
 	
-	public function mytymetables($compact = "") {
+	public function mytimetables($compact = "") {
 
 	    if (!$this->skeleton_auth->logged_in())
 	        {
@@ -338,7 +338,11 @@ class timetables extends skeleton_main {
             $header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     base_url('assets/css/bootstrap-switch.min.css'));
-  
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap.min.extracolours.css'));
+
+
             //JS
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
@@ -382,7 +386,7 @@ class timetables extends skeleton_main {
 
             //TODO: set teacher codes by session values (current session user)
 
-            $teacher_code=41;
+            $teacher_code=40;
             
             $teacher_id=39;
 
@@ -448,17 +452,31 @@ class timetables extends skeleton_main {
             $data['all_teacher_groups']= $all_teacher_groups;
 
             $array_all_teacher_groups_time_slots = array();
+            $lessonsfortimetablebygroupid = array();
             foreach ($all_teacher_groups as $teacher_group) {
                 # code...
-                $shift = 1;
                 $group_id = $teacher_group['group_id'];
                 $shift = $this->timetables_model->get_group_shift($group_id);
                 $array_all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
-            }
-                //$morning_shift_time_slots = $this->timetables_model->get_time_slots_byShift(1);
-                //$afternoon_shift_time_slots = $this->timetables_model->get_time_slots_byShift(2);
 
+                //TODO: Pametritzar time slot orders defineixen mati tarda
+                if ($shift == 2) {
+                    $shift_first_time_slot_order = 9;
+                    $shift_last_time_slot_order = 15;
+                }
+                else {
+                    $shift_first_time_slot_order = 1;
+                    $shift_last_time_slot_order = 7;
+                }
+                
+                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+
+                $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
+
+            }
+  
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
+            $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
 
             $all_teacher_groups_list = "Grup1, Grup2, Grup3";
 
@@ -494,11 +512,26 @@ class timetables extends skeleton_main {
         $study_modules_colours = array();
         $bootstrap_button_colours = 
             array( 1 => "btn-primary" ,
-                   2 => "btn-info" ,
+                   2 => "btn-info"    ,
                    3 => "btn-warning" ,
                    4 => "btn-success" ,
-                   5 => "btn-danger" ,
-                   6 => "btn-default");
+                   5 => "btn-danger"  ,
+                   6 => "btn-default" ,
+                   7 => "btn-purple" ,
+                   8 => "btn-gold" ,
+                   9 => "btn-palegreen" ,
+                   10 => "btn-lightgray" ,
+                   11 => "btn-yellow" ,
+                   12 => "btn-crimson",
+                   13 => "btn-chocolate",
+                   14 => "btn-coral",
+                   15 => "btn-yellowgreen",
+                   16 => "btn-mignightblue",
+                   17 => "btn-darkred",
+                   18 => "btn-sadlebrown",
+                   19 => "btn-olivedrab",
+                   20 => "btn-darkslategray"
+                   );
         $index=1;
         foreach ($study_modules as $study_module) {
             $study_modules_colours[$study_module->study_module_id] = $bootstrap_button_colours[$index];
@@ -507,6 +540,8 @@ class timetables extends skeleton_main {
             
         return $study_modules_colours;
     }
+
+
 
     public function add_breaks($lessons,$first_time_slot_order,$last_time_slot_order) {
         

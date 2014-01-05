@@ -111,6 +111,8 @@ class timetables_model  extends CI_Model  {
 		$this->db->where('lesson.lesson_classroom_group_id',$group_id);
         
         $query = $this->db->get();
+
+        //echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0) {
 
@@ -133,14 +135,14 @@ class timetables_model  extends CI_Model  {
 				$group_code = $row['group_code'];
 				$group_shortName = $row['group_shortName'];
 				$group_name = $row['group_name'];
-			
+
 				if ($previous_day == null || $day != $previous_day) {
 					$day_lessons = new stdClass;	
 					$lesson_by_day = array();
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code ) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) ) {
 					//Change previous lesson duration (++) and skip this one
 					@$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -174,17 +176,39 @@ class timetables_model  extends CI_Model  {
    				$previous_day=$day;
    				$previous_lesson_code = $lesson_code;
    			}
-			return $all_lessonsfortimetablebygroupid;
+
+   			return $all_lessonsfortimetablebygroupid;
+
 		}			
 		else
 			return false;
 
 	}
 
+	function is_time_slot_lective_by_time_slot_order( $time_slot_order ) {
+		$this->db->from('time_slot');
+        $this->db->select('time_slot_lective');
+
+		$this->db->where('time_slot.time_slot_order',$time_slot_order);
+        
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			if ($row->time_slot_lective == 1)
+				return true;
+			else
+				return false;
+		}
+
+		return false;
+	}
+
+
 	function get_all_lessonsfortimetablebyteacherid($teacher_id) {
 
 		$this->db->from('lesson');
-        $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
+        $this->db->select('lesson_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
         	group_code,group_shortName,group_name');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
@@ -209,6 +233,7 @@ class timetables_model  extends CI_Model  {
 			foreach ($query->result_array() as $row)	{
 				
 				$day=$row['lesson_day'];
+				$lesson_time_slot_id = $row['lesson_time_slot_id'];
 				$time_slot_start_time = $row['time_slot_start_time'];
 				$lesson_id = $row['lesson_id'];
 				$lesson_code = $row['lesson_code'];
@@ -226,7 +251,7 @@ class timetables_model  extends CI_Model  {
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code ) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1)) {
 					//Change previous lesson duration (++) and skip this one
 					@$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -255,6 +280,7 @@ class timetables_model  extends CI_Model  {
 
    					$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
    					$previous_time_slot_start_time = $time_slot_start_time;
+   					$previous_lesson_time_slot_id = $lesson_time_slot_id;
    				}
 
    				$previous_day=$day;
@@ -332,7 +358,7 @@ class timetables_model  extends CI_Model  {
        	switch ($shift) {
        		//Morning
     		case 1:
-	        	return $this->getTimeSlots("asc",1,8);
+	        	return $this->getTimeSlots("asc",1,7);
 	        	break;
 	       	//Afternoon
     		case 2:
