@@ -173,6 +173,7 @@ class timetables extends skeleton_main {
 
             $array_all_teacher_groups_time_slots = array();
             $lessonsfortimetablebygroupid = array();
+            $first_time_slot_orderbygroupid = array();
             foreach ($all_teacher_groups as $teacher_group) {
                 # code...
                 $group_id = $teacher_group['group_id'];
@@ -192,12 +193,14 @@ class timetables extends skeleton_main {
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
 
                 $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
+                $first_time_slot_orderbygroupid[$group_id] = $shift_first_time_slot_order;
 
             }
   
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
             $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
-
+            $data['first_time_slot_orderbygroupid'] = $first_time_slot_orderbygroupid;
+            
             $all_teacher_groups_list = "Grup1, Grup2, Grup3";
 
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
@@ -438,7 +441,7 @@ class timetables extends skeleton_main {
             $this->_load_body_header();     
 
             //TODO: set teacher id by session values (current session user)
-            $teacher_id=22;
+            $teacher_id=40;
 
             $teacher_code = $this->timetables_model->get_teacher_code_from_teacher_id($teacher_id);            
             $teacher_full_name = $this->timetables_model->get_teacher_fullname_from_teacher_id($teacher_id);
@@ -510,6 +513,7 @@ class timetables extends skeleton_main {
 
             $array_all_teacher_groups_time_slots = array();
             $lessonsfortimetablebygroupid = array();
+            $first_time_slot_orderbygroupid = array();
             foreach ($all_teacher_groups as $teacher_group) {
                 # code...
                 $group_id = $teacher_group['group_id'];
@@ -529,11 +533,12 @@ class timetables extends skeleton_main {
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
 
                 $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
-
+                $first_time_slot_orderbygroupid[$group_id] = $shift_first_time_slot_order;
             }
-  
+
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
             $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
+            $data['first_time_slot_orderbygroupid'] = $first_time_slot_orderbygroupid;
 
             $all_teacher_groups_list = "Grup1, Grup2, Grup3";
 

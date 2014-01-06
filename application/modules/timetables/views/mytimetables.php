@@ -311,7 +311,7 @@ $(function() {
                                         //$bootstrap_button_colour = "btn-warning";
                                     }
 
-                                    $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_order;
+                                    $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_orderbygroupid[$teacher_group['group_id']];
                           
                                     ?> 
                                     <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
