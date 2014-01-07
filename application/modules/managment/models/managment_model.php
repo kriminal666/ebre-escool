@@ -8,7 +8,7 @@
  * @version    	1.0
  * @link		http://www.acacha.com/index.php/ebre-escool
  */
-class attendance_model  extends CI_Model  {
+class managment_model  extends CI_Model  {
 	
 	function __construct()
     {
@@ -26,7 +26,7 @@ class attendance_model  extends CI_Model  {
 		} 	
 		return false;
 	}
-
+/*
 	function get_all_groups($orderby="asc") {
 		$this->db->from('classroom_group');
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
@@ -82,7 +82,7 @@ class attendance_model  extends CI_Model  {
 		
 		return $all_lessons;
 	}*/
-
+/*
 	function getAllTimeSlots($orderby="asc") {
 		
 		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective');
@@ -196,6 +196,7 @@ class attendance_model  extends CI_Model  {
                   AND  classe.codi_dia = '{$VALS['day_of_week']}'
                   ORDER BY classe.codi_hora, grup.nom_grup
 	 */
+/*
 		$this->db->select('assignatura.nom_assignatura, classroom_group.nom_grup, classroom_group.codi_grup,
                    classe.codi_dia, classe.codi_hora, classe.codi_assignatura,
                    interval_horari.hora_inici, interval_horari.hora_final, optativa');
@@ -215,5 +216,5 @@ class attendance_model  extends CI_Model  {
 		else
 			return false;
 	}
-	
+*/	
 }

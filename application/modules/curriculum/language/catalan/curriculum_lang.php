@@ -14,7 +14,6 @@
  
 $lang['curriculum']   = "Pla d'estudis";
 
-
 $lang['department']   = "Departament/Família";
 
 $lang['department_shortname']   = "Nom curt";
@@ -27,10 +26,11 @@ $lang['department_lastupdateUserId']   = "Usuari última modificació";
 $lang['department_markedForDeletion']   = "Baixa?";
 $lang['department_markedForDeletionDate']   = "Data de baixa";
 
-
-
 //FIELD NAMES
 $lang['lesson_code']   = "Codi";
+$lang['lesson_codi_assignatura']   = "Codi assignatura";
+$lang['lesson_codi_grup']   = "Codi grup";
+$lang['lesson_codi_professor']   = "Codi professor";
 $lang['lesson_classroom_group_id']   = "Grup classe";
 $lang['lesson_teacher_id']   = "Professor";
 $lang['lesson_study_module_id']   = "Mòdul professional";
@@ -46,16 +46,13 @@ $lang['lesson_markedForDeletionDate']   = "Data de baixa";
 
 $lang['studies_departments']   = "Departaments";
 
-
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 $lang['study_module_teacher_id']="Codi Professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          
+$lang['study_module_external_code']="Codi extern";          
 $lang['type']="Tipus";   
 $lang['subtype']="Subtipus";   
-
-
-
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 $lang['study_module_teacher_id']="Codi Professor";

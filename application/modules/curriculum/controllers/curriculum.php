@@ -37,26 +37,14 @@ class curriculum extends skeleton_main {
 		$this->lessons();
 	}
 
-    
-
     public function departments_families() {
-        if (!$this->skeleton_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-        }
 
-        //CHECK IF USER IS READONLY --> unset add, edit & delete actions
-        $readonly_group = $this->config->item('readonly_group');
-        if ($this->skeleton_auth->in_group($readonly_group)) {
-            $this->grocery_crud->unset_add();
-            $this->grocery_crud->unset_edit();
-            $this->grocery_crud->unset_delete();
-        }
+        $this->check_logged_user(); 
 
         /* Grocery Crud */
         $this->current_table="department";
         $this->grocery_crud->set_table($this->current_table);
+        $this->session->set_flashdata('table_name', $this->current_table); 
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('department'));       
@@ -64,16 +52,10 @@ class curriculum extends skeleton_main {
         //Relació de Taules
         $this->grocery_crud->set_relation('department_parent_department_id','department','{department_shortname} - {department_name} ({department_id})'); 
         
-
         //Mandatory fields
         //$this->grocery_crud->required_fields('department_code','department_classroom_group_id','department_teacher_id','department_day','department_time_slot_id');
 
-        //CALLBACKS        
-        //$this->grocery_crud->callback_add_field('department_entryDate',array($this,'add_field_callback_department_entryDate'));
-        //$this->grocery_crud->callback_edit_field('department_entryDate',array($this,'edit_field_callback_department_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('department_last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         //$this->grocery_crud->express_fields('department_code','department_day');
@@ -95,14 +77,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('department_last_update');
         
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('department_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'department_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('department_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'department_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("department_creationUserId","department_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -111,60 +87,27 @@ class curriculum extends skeleton_main {
         //Default values:
         $this->grocery_crud->set_default_value($this->current_table,'department_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-       /* HTML HEADER     *
-       /******************/
-       $this->_load_html_header($this->_get_html_header_data(),$output); 
-       
-       /*******************
-       /*      BODY       *
-       /******************/
-       $this->_load_body_header();
-       
-        $default_values=$this->_get_default_values();
-        $default_values["table_name"]=$this->current_table;
-        $default_values["field_prefix"]="course_";
-        $this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-       /*      FOOTER     *
-       *******************/
-       $this->_load_body_footer();  
+        $this->renderitzar($this->current_table);
 
     }
 	
 	/* Menú Managment -> Curricul | Manteniment -> Pla Estudis */
 
 	public function lessons($department_code=null) {
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
+		
+        $this->check_logged_user(); 
 
 		/* Grocery Crud */
 		$this->current_table="lesson";
         $this->grocery_crud->set_table($this->current_table);
         
-        $this->session->set_flashdata('table_name', $this->current_table.'_'); 
+        $this->session->set_flashdata('table_name', $this->current_table); 
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('lesson'));       
 
         //Relació de Taules
-        $this->grocery_crud->set_relation('lesson_classroom_group_id','classroom_group','{group_code} - {group_shortName} ({group_id})'); 
+        $this->grocery_crud->set_relation('lesson_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName} ({classroom_group_id})'); 
 		$this->grocery_crud->set_relation('lesson_teacher_id','teacher','{teacher_code} - ({teacher_id})');        
 		$this->grocery_crud->set_relation('lesson_location_id','location','locationId');
 		$this->grocery_crud->set_relation('lesson_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time} ({time_slot_id})');
@@ -172,18 +115,16 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields('lesson_code','lesson_classroom_group_id','lesson_teacher_id','lesson_day','lesson_time_slot_id');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('lesson_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('lesson_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('lesson_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         //$this->grocery_crud->express_fields('lesson_code','lesson_day');
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('lesson_code',lang('lesson_code'));
+        $this->grocery_crud->display_as('lesson_codi_assignatura',lang('lesson_codi_assignatura'));        
+        $this->grocery_crud->display_as('lesson_codi_grup',lang('lesson_codi_grup'));           
+        $this->grocery_crud->display_as('lesson_codi_professor',lang('lesson_codi_professor')); 
         $this->grocery_crud->display_as('lesson_classroom_group_id',lang('lesson_classroom_group_id'));
         $this->grocery_crud->display_as('lesson_teacher_id',lang('lesson_teacher_id'));
         $this->grocery_crud->display_as('lesson_study_module_id',lang('lesson_study_module_id'));
@@ -203,14 +144,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('lesson_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('lesson_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lesson_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('lesson_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lesson_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("lesson_creationUserId","lesson_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -218,54 +153,20 @@ class curriculum extends skeleton_main {
         
         //Default values:
         $this->grocery_crud->set_default_value($this->current_table,'lesson_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="course_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
-
 	}
 
 	public function course() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
+        $this->check_logged_user(); 
 
 		/* Grocery Crud */
 		$this->current_table="course";
         $this->grocery_crud->set_table($this->current_table);
         
-        $this->session->set_flashdata('table_name', $this->current_table.'_'); 
+        $this->session->set_flashdata('table_name', $this->current_table); 
 
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('course'));       
@@ -281,12 +182,7 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields('course_name','course_shortname','course_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('course_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('course_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('course_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         $this->grocery_crud->express_fields('course_name','course_shortname');
@@ -318,14 +214,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('course_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('course_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'course_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('course_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'course_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("course_creationUserId","course_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -335,94 +225,56 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'course_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="course_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('course.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* GRUP */
 
 	public function classroom_group() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
+        $this->check_logged_user(); 
 
 		/* Grocery Crud */
 		$this->current_table="classroom_group";
-        $this->grocery_crud->set_table($this->current_table);
+        $this->grocery_crud->set_table("classroom_group");
         
-        $this->session->set_flashdata('table_name', 'group_'); 
+        $this->session->set_flashdata('table_name', $this->current_table); 
 
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('classroom_group'));       
 
 		//Mandatory fields
-        $this->grocery_crud->required_fields('group_name','group_shortsame','group_markedForDeletion');
+        $this->grocery_crud->required_fields('classroom_group_name','classroom_group_shortsame','classroom_group_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('group_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('group_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('group_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
-        $this->grocery_crud->express_fields('group_name','group_shortname');
+        $this->grocery_crud->express_fields('classroom_group_name','classroom_group_shortname');
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('group_shortName',lang('shortName'));
-        $this->grocery_crud->display_as('group_name',lang('name'));
-        $this->grocery_crud->display_as('group_code',lang('group_code'));  
-        $this->grocery_crud->display_as('group_lastupdate',lang('last_update'));        
-		$this->grocery_crud->display_as('group_description',lang('description'));
-        $this->grocery_crud->display_as('group_creationUserId',lang('creationUserId'));	
-        $this->grocery_crud->display_as('group_last_updateUserId',lang('lastupdateUserId')); 
-		$this->grocery_crud->display_as('group_entryDate',lang('entryDate'));   
-		$this->grocery_crud->display_as('group_educationalLevelId',lang('group_EducationalLevelId')); 
-		$this->grocery_crud->display_as('group_parentLocation',lang('parentLocation')); 		
-		$this->grocery_crud->display_as('group_mentorId',lang('mentor_code')); 
-		$this->grocery_crud->display_as('group_course_id',lang('course')); 
-        $this->grocery_crud->display_as('group_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('group_markedForDeletionDate',lang('markedForDeletionDate'));		
+        $this->grocery_crud->display_as('classroom_group_shortName',lang('shortName'));
+        $this->grocery_crud->display_as('classroom_group_name',lang('name'));
+        $this->grocery_crud->display_as('classroom_group_code',lang('group_code'));  
+        $this->grocery_crud->display_as('classroom_group_last_update',lang('last_update'));        
+		$this->grocery_crud->display_as('classroom_group_description',lang('description'));
+        $this->grocery_crud->display_as('classroom_group_creationUserId',lang('creationUserId'));	
+        $this->grocery_crud->display_as('classroom_group_lastupdateUserId',lang('lastupdateUserId')); 
+		$this->grocery_crud->display_as('classroom_group_entryDate',lang('entryDate'));   
+		$this->grocery_crud->display_as('classroom_group_educationalLevelId',lang('group_EducationalLevelId')); 
+		$this->grocery_crud->display_as('classroom_group_parentLocation',lang('parentLocation')); 		
+		$this->grocery_crud->display_as('classroom_group_mentorId',lang('mentor_code')); 
+		$this->grocery_crud->display_as('classroom_group_course_id',lang('course')); 
+        $this->grocery_crud->display_as('classroom_group_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('classroom_group_markedForDeletionDate',lang('markedForDeletionDate'));		
 
 //      RELACIONS
-        $this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})');
+        $this->grocery_crud->set_relation('classroom_group_course_id','course','{course_name} ({course_shortname} - {course_id})');
 
         //$this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})',array('status' => 'active'));
 
@@ -436,17 +288,11 @@ class curriculum extends skeleton_main {
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('group_last_update');
-   		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('group_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->unset_add_fields('classroom_group_last_update');
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('group_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("group_creationUserId","group_lastupdateUserId");
+        $this->userCreation_userModification($this->current_table);   		
+
+        $this->grocery_crud->unset_dropdowndetails("classroom_group_creationUserId","classroom_group_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
@@ -454,31 +300,10 @@ class curriculum extends skeleton_main {
         //Default values:
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'group_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,'classroom_group_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="group_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('classroom_group.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI GRUP */
@@ -488,25 +313,13 @@ class curriculum extends skeleton_main {
 
 	public function study_module() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
+        $this->check_logged_user(); 
 
 		/* Grocery Crud */
 		$this->current_table="study_module";
         $this->grocery_crud->set_table($this->current_table);
         
-        $this->session->set_flashdata('table_name', $this->current_table.'_'); 
+        $this->session->set_flashdata('table_name', $this->current_table); 
 
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('study_module'));       
@@ -514,12 +327,7 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields('study_module_name','study_module_shortname','study_module_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('study_module_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('study_module_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('study_module_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         $this->grocery_crud->express_fields('study_module_name','study_module_shortname');
@@ -530,6 +338,7 @@ class curriculum extends skeleton_main {
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('study_module_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('study_module_external_code',lang('study_module_external_code'));
 		$this->grocery_crud->display_as('study_module_name',lang('name'));
         $this->grocery_crud->display_as('study_module_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('study_module_last_update',lang('last_update'));
@@ -559,14 +368,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('study_module_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('study_module_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_module_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('study_module_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_module_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("study_module_creationUserId","study_module_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -576,30 +379,9 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'study_module_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="study_module_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('study_module.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI ASSIGNATURA */
@@ -608,37 +390,20 @@ class curriculum extends skeleton_main {
 
 	public function study_submodules() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
+        $this->check_logged_user(); 
 
 		/* Grocery Crud */
 		$this->current_table="study_submodules";
         $this->grocery_crud->set_table($this->current_table);
 
-        $this->session->set_flashdata('table_name', $this->current_table.'_');        
+        $this->session->set_flashdata('table_name', $this->current_table);        
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('study_submodules'));       
 
 		//Mandatory fields
         $this->grocery_crud->required_fields('study_submodules_name','study_submodules_shortname','study_submodules_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('study_submodules_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('study_submodules_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('study_submodules_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         $this->grocery_crud->express_fields('study_submodules_name','study_submodules_shortname');
@@ -663,14 +428,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('study_submodules_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('study_submodules_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_submodules_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('study_submodules_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'study_submodules_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("study_submodules_creationUserId","study_submodules_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -680,41 +439,23 @@ class curriculum extends skeleton_main {
 //      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'study_submodules_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="study_submodules_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('study_submodules.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI UNITATS FORMATIVES */
 
 
 	public function studies() {
+
+        $this->check_logged_user(); 
+
 		/* Grocery Crud */
 		$this->current_table="studies";
         $this->grocery_crud->set_table($this->current_table);
         
-        $this->session->set_flashdata('table_name', $this->current_table.'_');
+        $this->session->set_flashdata('table_name', $this->current_table);
 
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('studies'));          
@@ -722,13 +463,8 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields('studies_name','studies_shortname','studies_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('studies_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('studies_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('studies_last_update',array($this,'edit_callback_last_update'));
-        
+        $this->common_callbacks($this->current_table);
+    
         //Express fields
         $this->grocery_crud->express_fields('studies_name','studies_shortname');
 
@@ -738,7 +474,10 @@ class curriculum extends skeleton_main {
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
 
-        $this->grocery_crud->fields('studies_shortname', 'studies_name', 'studies_departments' ,  'studies_entryDate' ,'studies_last_update', 'studies_creationUserId', 
+        $this->grocery_crud->add_fields('studies_shortname', 'studies_name', 'studies_departments' ,  'studies_entryDate', 'studies_creationUserId', 
+            'studies_lastupdateUserId', 'studies_markedForDeletion', 'studies_markedForDeletionDate');
+
+        $this->grocery_crud->edit_fields('studies_shortname', 'studies_name', 'studies_departments' ,  'studies_entryDate',  'studies_last_update', 'studies_creationUserId', 
             'studies_lastupdateUserId', 'studies_markedForDeletion', 'studies_markedForDeletionDate');
 
          //SPECIFIC COLUMNS
@@ -758,14 +497,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('studies_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('studies_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studies_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('studies_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studies_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("studies_creationUserId","studies_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -776,37 +509,19 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'studies_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="studies_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-	   
-        $this->load->view('studies.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 	public function cycle() {
+
+        $this->check_logged_user(); 
+
 		/* Grocery Crud */
 		$this->current_table="cycle";
         $this->grocery_crud->set_table($this->current_table);
 
-        $this->session->set_flashdata('table_name', $this->current_table.'_');
+        $this->session->set_flashdata('table_name', $this->current_table);
 
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('cycles'));          
@@ -814,12 +529,7 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields('cycle_name','cycle_shortname','cycle_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('cycle_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('cycle_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('cycle_last_update',array($this,'edit_callback_last_update'));
+        $this->common_callbacks($this->current_table);
 
         //Express fields
         $this->grocery_crud->express_fields('cycle_name','cycle_shortname');
@@ -843,14 +553,8 @@ class curriculum extends skeleton_main {
         
         $this->grocery_crud->unset_add_fields('cycle_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('cycle_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'cycle_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('cycle_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'cycle_lastupdateUserId',$this->session->userdata('user_id'));
-        
         $this->grocery_crud->unset_dropdowndetails("cycle_creationUserId","cycle_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
@@ -861,85 +565,56 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'cycle_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header(); 
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="cycle_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('cycle.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}			
 
 	public function studies_organizational_unit() {
+
+        $this->check_logged_user(); 
+
 		/* Grocery Crud */
 		$this->current_table="studies_organizational_unit";
-        $this->grocery_crud->set_table($this->current_table);
+        $this->grocery_crud->set_table("studies_organizational_unit");
         //$_SESSION['table_name'] = 'studiesOU_';
-        $this->session->set_flashdata('table_name', 'studiesOU_');
+        $this->session->set_flashdata('table_name', $this->current_table);
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('organizational_unit'));          
 
 		//Mandatory fields
-        $this->grocery_crud->required_fields('studiesOU_name','studiesOU_shortname','studiesOU_markedForDeletion');
+        $this->grocery_crud->required_fields('studies_organizational_unit_name','studies_organizational_unit_shortname','studies_organizational_unit_markedForDeletion');
 
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('studiesOU_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('studiesOU_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_callback_last_update'));
-        
+        $this->common_callbacks($this->current_table);
+       
         //Camps last update no editable i automàtic        
         //$this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
-        $this->grocery_crud->express_fields('studiesOU_name','studiesOU_shortname');
+        $this->grocery_crud->express_fields('studies_organizational_unit_name','studies_organizational_unit_shortname');
 
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
 
          //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('studiesOU_shortname',lang('shortName'));
-        $this->grocery_crud->display_as('studiesOU_name',lang('name'));
-        $this->grocery_crud->display_as('studiesOU_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('studiesOU_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('studiesOU_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('studiesOU_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('studiesOU_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('studiesOU_markedForDeletionDate',lang('markedForDeletionDate')); 
+        $this->grocery_crud->display_as('studies_organizational_unit_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('studies_organizational_unit_name',lang('name'));
+        $this->grocery_crud->display_as('studies_organizational_unit_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('studies_organizational_unit_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('studies_organizational_unit_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('studies_organizational_unit_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('studies_organizational_unit_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('studies_organizational_unit_markedForDeletionDate',lang('markedForDeletionDate')); 
  
          //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('studiesOU_last_update');
+        $this->grocery_crud->unset_add_fields('studies_organizational_unit_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('studiesOU_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_creationUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('studiesOU_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("studiesOU_creationUserId","studiesOU_lastupdateUserId");
+        $this->grocery_crud->unset_dropdowndetails("studies_organizational_unit_creationUserId","studies_organizational_unit_lastupdateUserId");
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
@@ -947,53 +622,32 @@ class curriculum extends skeleton_main {
         //Default values:
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'studiesOU_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,'studies_organizational_unit_markedForDeletion','n');
 
-        $output = $this->grocery_crud->render();
+        $this->renderitzar($this->current_table);
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="studiesOU_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('studies_organizational_unit.php');     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 //<--
 
 public function add_callback_last_update(){  
-    //echo $_SESSION['table_name'];
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'last_update" id="field-last_update" readonly>';
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
 }
 
 public function add_field_callback_entryDate(){  
       $data= date('d/m/Y H:i:s', time());
-      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
 }
 
 public function edit_field_callback_entryDate($value, $primary_key){  
     //$this->session->flashdata('table_name');
-      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
     }
     
-function edit_callback_last_update($value, $primary_key){ 
+public function edit_callback_last_update($value, $primary_key){ 
     //$this->session->flashdata('table_name'); 
-     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'last_update" id="field-last_update" readonly>';
+     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
     }    
 
 //UPDATE AUTOMATIC FIELDS BEFORE INSERT
@@ -1018,5 +672,66 @@ function before_update_object_callback($post_array, $primary_key) {
     
 //-->
 
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
+
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
+function renderitzar($table_name)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($this->_get_html_header_data(),$output); 
+       
+       //      BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       $this->load->view('course.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
 
 }
