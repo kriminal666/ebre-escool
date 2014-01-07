@@ -29,9 +29,9 @@ class attendance_model  extends CI_Model  {
 
 	function get_all_groups($orderby="asc") {
 		$this->db->from('classroom_group');
-        $this->db->select('group_id,group_code,group_shortName,group_name');
+        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
-		$this->db->order_by('group_code', $orderby);
+		$this->db->order_by('classroom_group_code', $orderby);
 		       
         $query = $this->db->get();
 		
@@ -40,7 +40,7 @@ class attendance_model  extends CI_Model  {
 			$groups_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$groups_array[$row['group_id']] = $row['group_code'] . " - " . $row['group_name'] . "( " . $row['group_shortName'] . " )";
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
 			}
 			return $groups_array;
 		}			
@@ -124,9 +124,9 @@ class attendance_model  extends CI_Model  {
 
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
-		$this->db->select('group_id,group_code,group_shortName,group_name,group_description,group_educationalLevelId,group_mentorId');
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_educationalLevelId,classroom_group_mentorId');
 		$this->db->from('classroom_group');
-		$this->db->order_by('group_code', $orderby);
+		$this->db->order_by('classroom_group_code', $orderby);
 		
 		$query = $this->db->get();
 		
@@ -138,9 +138,9 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupNameByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('group_name');
+		$this->db->select('classroom_group_name');
 		$this->db->from('classroom_group');
-		$this->db->where('group_code', $group_code);
+		$this->db->where('classroom_group_code', $group_code);
 		
 		$query = $this->db->get();
 
@@ -154,9 +154,9 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupShortNameByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('group_shortName');
+		$this->db->select('classroom_group_shortName');
 		$this->db->from('classroom_group');
-		$this->db->where('group_code', $group_code);
+		$this->db->where('classroom_group_code', $group_code);
 		
 		$query = $this->db->get();
 
@@ -170,15 +170,15 @@ class attendance_model  extends CI_Model  {
 	
 	function getGroupNamesByGroupCode($group_code) {
 		//classroom_group
-		$this->db->select('group_name,group_shortName');
+		$this->db->select('classroom_group_name,classroom_group_shortName');
 		$this->db->from('classroom_group');
-		$this->db->where('group_code', $group_code);
+		$this->db->where('classroom_group_code', $group_code);
 		
 		$query = $this->db->get();
 
 		if ($query->num_rows() == 1) {
 			$row = $query->row(); 
-			return array($row->group_shortName,$row->group_name);
+			return array($row->classroom_group_shortName,$row->classroom_group_name);
 		}
 		else
 			return false;
@@ -196,17 +196,17 @@ class attendance_model  extends CI_Model  {
                   AND  classe.codi_dia = '{$VALS['day_of_week']}'
                   ORDER BY classe.codi_hora, grup.nom_grup
 	 */
-		$this->db->select('assignatura.nom_assignatura, grup.nom_grup, grup.codi_grup,
+		$this->db->select('assignatura.nom_assignatura, classroom_group.nom_grup, classroom_group.codi_grup,
                    classe.codi_dia, classe.codi_hora, classe.codi_assignatura,
                    interval_horari.hora_inici, interval_horari.hora_final, optativa');
 		$this->db->from('assignatura');
 		$this->db->join('classe', 'barcode.barcodeId = externalIDType.barcodeId','inner');
-		$this->db->join('grup', 'barcode.barcodeId = externalIDType.barcodeId','inner');
+		$this->db->join('classroom_group', 'barcode.barcodeId = externalIDType.barcodeId','inner');
 		$this->db->join('interval_horari', 'barcode.barcodeId = externalIDType.barcodeId','inner');
 		$this->db->where('classe.codi_professor',$teacher_code);
 		$this->db->where('classe.codi_dia',$day_code);
 		$this->db->order_by('classe.codi_hora', 'asc');
-		$this->db->order_by('grup.nom_grup', 'asc'); 
+		$this->db->order_by('classroom_group.nom_grup', 'asc'); 
 		
 		$query = $this->db->get();
 

@@ -168,23 +168,23 @@ CREATE TABLE IF NOT EXISTS `location` (
 --
 
 CREATE TABLE IF NOT EXISTS `classroom_group` (
-  `group_id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `group_course_id` int(11) NOT NULL,
-  `group_description` text COLLATE utf8_unicode_ci NOT NULL,
-  `group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `group_entryDate` datetime NOT NULL,
-  `group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `group_creationUserId` int(11) DEFAULT NULL,
-  `group_lastupdateUserId` int(11) DEFAULT NULL,
-  `group_parentLocation` int(11) DEFAULT NULL,
-  `group_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
-  `group_markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`group_id`),
-  UNIQUE KEY `group_code` (`group_code`)
+  `classroom_group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `classroom_group_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_course_id` int(11) NOT NULL,
+  `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `classroom_group_entryDate` datetime NOT NULL,
+  `classroom_group_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `classroom_group_creationUserId` int(11) DEFAULT NULL,
+  `classroom_group_lastupdateUserId` int(11) DEFAULT NULL,
+  `classroom_group_parentLocation` int(11) DEFAULT NULL,
+  `classroom_group_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`classroom_group_id`),
+  UNIQUE KEY `classroom_group_code` (`classroom_group_code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -379,16 +379,16 @@ CREATE TABLE IF NOT EXISTS `studies` (
 --
 
 CREATE TABLE IF NOT EXISTS `studies_organizational_unit` (
-  `studiesOU_id` int(11) NOT NULL AUTO_INCREMENT,
-  `studiesOU_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `studiesOU_name` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `studiesOU_entryDate` datetime NOT NULL,
-  `studiesOU_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `studiesOU_creationUserId` int(11) DEFAULT NULL,
-  `studiesOU_lastupdateUserId` int(11) DEFAULT NULL,
-  `studiesOU_markedForDeletion` enum('n','y') NOT NULL,
-  `studiesOU_markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`studiesOU_id`)
+  `studies_organizational_unit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `studies_organizational_unit_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `studies_organizational_unit_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `studies_organizational_unit_entryDate` datetime NOT NULL,
+  `studies_organizational_unit_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `studies_organizational_unit_creationUserId` int(11) DEFAULT NULL,
+  `studies_organizational_unit_lastupdateUserId` int(11) DEFAULT NULL,
+  `studies_organizational_unit_markedForDeletion` enum('n','y') NOT NULL,
+  `studies_organizational_unit_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`studies_organizational_unit_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- Dump completed on 2013-11-04  9:26:45
