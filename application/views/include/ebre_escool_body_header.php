@@ -121,11 +121,11 @@
           <a tabindex="-1" href="#"><?php echo "Matrícula";?></a>
             <ul class="dropdown-menu">
               <!-- Matrícules -->
-              <li><a href='<?=base_url()?>index.php/managment/enrollment'><?php echo lang('enrollment');?></a></li>              
-              <li><a href='<?=base_url()?>index.php/managment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
-              <li><a href='<?=base_url()?>index.php/managment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
-              <li><a href='<?=base_url()?>index.php/managment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
-              <li><a href='<?=base_url()?>index.php/managment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment'><?php echo lang('enrollment');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>        
 

@@ -12,9 +12,10 @@ class managment extends skeleton_main {
     {
         parent::__construct();
         
-        $this->load->model('attendance_model');
+        //$this->load->model('attendance_model');
+        $this->load->model('managment_model');
         $this->load->library('ebre_escool_ldap');
-        $this->config->load('managment');        
+        //$this->config->load('managment');        
         
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -938,6 +939,7 @@ class managment extends skeleton_main {
 		/* Grocery Crud */
 		$this->current_table="enrollment";
         $this->grocery_crud->set_table($this->current_table);
+        $this->session->set_flashdata('table_name', $this->current_table);
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment'));       
@@ -946,11 +948,11 @@ class managment extends skeleton_main {
         
 
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_entryDate',array($this,'add_field_callback_enrollment_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_entryDate',array($this,'edit_field_callback_enrollment_entryDate'));
+        $this->grocery_crud->callback_add_field('enrollment_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('enrollment_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_last_update',array($this,'edit_field_callback_lastupdate'));
+        $this->grocery_crud->callback_edit_field('enrollment_last_update',array($this,'edit_callback_last_update'));
 
         //Express fields
         
@@ -981,7 +983,7 @@ class managment extends skeleton_main {
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_creationUserId',$this->session->userdata('user_id'));
 
         //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        //$this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_relation('enrollment_lastupdateUserId','users','{username}',array('active' => '1'));
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_lastupdateUserId',$this->session->userdata('user_id'));
         
         $this->grocery_crud->unset_dropdowndetails("enrollment_creationUserId","study_submodules_lastupdateUserId");
@@ -1744,5 +1746,45 @@ class managment extends skeleton_main {
 		$this->_load_body_header();		
 
 	}
+
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}
+
+public function add_field_callback_entryDate(){  
+      $data= date('d/m/Y H:i:s', time());
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+}
+
+public function edit_field_callback_entryDate($value, $primary_key){  
+    //$this->session->flashdata('table_name');
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+    }
+    
+public function edit_callback_last_update($value, $primary_key){ 
+    //$this->session->flashdata('table_name'); 
+     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+    }    
+
+//UPDATE AUTOMATIC FIELDS BEFORE INSERT
+function before_insert_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['entryDate'] = $data;
+        
+        $post_array['creationUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
+
+//UPDATE AUTOMATIC FIELDS BEFORE UPDATE
+function before_update_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['last_update'] = $data;
+        
+        $post_array['lastupdateUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
 
 }

@@ -137,7 +137,7 @@ $pdf = new FPDF();
 $pdf->SetMargins(10,10,10);
 //Obro una pàgina
 $pdf->AddPage();
-		$pdf->Image($jpeg_file_cons[0],166,222,10);        
+		//$pdf->Image($jpeg_file_cons[0],166,222,10);        
 //$pdf->AddPage("P","A3");
 //Es la posicio exacta on comença a escriure
 $x=7;//10

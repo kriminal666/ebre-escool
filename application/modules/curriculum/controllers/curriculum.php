@@ -645,7 +645,7 @@ public function edit_field_callback_entryDate($value, $primary_key){
       return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
     }
     
-function edit_callback_last_update($value, $primary_key){ 
+public function edit_callback_last_update($value, $primary_key){ 
     //$this->session->flashdata('table_name'); 
      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
     }    

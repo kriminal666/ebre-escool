@@ -299,7 +299,7 @@ class attendance extends skeleton_main {
 
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);
-
+        $this->session->set_flashdata('table_name', $this->current_table);
 
 
         //ESTABLISH SUBJECT        
@@ -309,55 +309,62 @@ class attendance extends skeleton_main {
         $this->set_common_columns_name();
 
 		//Mandatory fields
-        $this->grocery_crud->required_fields('group_name','group_shortName','group_markedForDeletion');
+        $this->grocery_crud->required_fields('classroom_group_code','classroom_group_name','classroom_group_shortName','classroom_group_markedForDeletion');
         
         //express fields
-        $this->grocery_crud->express_fields('name','shortName','externalCode');
+        $this->grocery_crud->express_fields('name','shortName','code');
 
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_add_field('group_lastupdate',array($this,'add_field_callback_last_update'));
+        //$this->grocery_crud->callback_add_field('classroom_group_last_update',array($this,'add_callback_last_update'));
       
         //CALLBACKS        
-        $this->grocery_crud->callback_add_field('group_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('group_entryDate',array($this,'edit_field_callback_entryDate'));
+        $this->grocery_crud->callback_add_field('classroom_group_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field('classroom_group_entryDate',array($this,'edit_field_callback_entryDate'));
         
         //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('group_lastupdate',array($this,'edit_callback_last_update'));
+        $this->grocery_crud->callback_edit_field('classroom_group_last_update',array($this,'edit_callback_last_update'));
         
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-   		$this->grocery_crud->unset_add_fields('group_lastupdate');
+   		$this->grocery_crud->unset_add_fields('classroom_group_last_update');
         
    		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('group_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('classroom_group_creationUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'classroom_group_creationUserId',$this->session->userdata('user_id'));
 
         //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('group_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'group_lastupdateUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->set_relation('classroom_group_lastupdateUserId','users','{username}',array('active' => '1'));
+        $this->grocery_crud->set_default_value($this->current_table,'classroom_group_lastupdateUserId',$this->session->userdata('user_id'));
         
-        $this->grocery_crud->unset_dropdowndetails("group_creationUserId","group_lastupdateUserId","group_parentLocation");
+        $this->grocery_crud->unset_dropdowndetails("classroom_group_creationUserId","classroom_group_lastupdateUserId","classroom_group_parentLocation");
         
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
         //Default values:
-        $this->grocery_crud->set_default_value($this->current_table,'group_parentLocation',1);
+        $this->grocery_crud->set_default_value($this->current_table,'classroom_group_parentLocation',1);
         
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'group_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,'classroom_group_markedForDeletion','n');
 
-        $this->grocery_crud->display_as('groupCode',lang('GroupCode'));
-		$this->grocery_crud->display_as('groupShortName',lang('GroupShortName'));
-		$this->grocery_crud->display_as('groupName',lang('GroupName'));
-		$this->grocery_crud->display_as('groupDescription',lang('GroupDescription'));
-		$this->grocery_crud->display_as('educationalLevelId',lang('EducationalLevelId'));
-		$this->grocery_crud->display_as('mentorId',lang('MentorId'));
+        $this->grocery_crud->display_as('classroom_group_id',lang('idGroup'));
+        $this->grocery_crud->display_as('classroom_group_code',lang('GroupCode'));
+		$this->grocery_crud->display_as('classroom_group_shortName',lang('GroupShortName'));
+		$this->grocery_crud->display_as('classroom_group_name',lang('GroupName'));
+		$this->grocery_crud->display_as('classroom_group_description',lang('GroupDescription'));
+		$this->grocery_crud->display_as('classroom_group_educationalLevelId',lang('EducationalLevelId'));
+		$this->grocery_crud->display_as('classroom_group_mentorId',lang('MentorId'));
+        $this->grocery_crud->display_as('classroom_group_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('classroom_group_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('classroom_group_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('classroom_group_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('classroom_group_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('classroom_group_markedForDeletionDate',lang('markedForDeletionDate')); 		
 
 		/* show only specified columns */
-		$this->grocery_crud->columns('group_id','group_code','group_shortName','group_name','group_description','group_mentorId','group_entryDate','group_lastupdate','group_creationUserId','group_lastupdateUserId');
+		$this->grocery_crud->columns('classroom_group_id','classroom_group_code','classroom_group_shortName','classroom_group_name','classroom_group_description','classroom_group_mentorId','classroom_group_entryDate','classroom_group_last_update','classroom_group_creationUserId','classroom_group_lastupdateUserId');
 
 		$output = $this->grocery_crud->render();
                         
@@ -366,7 +373,7 @@ class attendance extends skeleton_main {
 			
 		$default_values=$this->_get_default_values();
 		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="group_";
+		$default_values["field_prefix"]="classroom_group_";
 		$this->load->view('defaultvalues_view.php',$default_values); 
 
         $this->load->view('attendance/classroom_groups_view.php',$output);     
@@ -656,4 +663,44 @@ class attendance extends skeleton_main {
 
     }	
 	
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}
+
+public function add_field_callback_entryDate(){  
+      $data= date('d/m/Y H:i:s', time());
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+}
+
+public function edit_field_callback_entryDate($value, $primary_key){  
+    //$this->session->flashdata('table_name');
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+    }
+    
+public function edit_callback_last_update($value, $primary_key){ 
+    //$this->session->flashdata('table_name'); 
+     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+    }   
+
+//UPDATE AUTOMATIC FIELDS BEFORE INSERT
+function before_insert_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['entryDate'] = $data;
+        
+        $post_array['creationUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
+
+//UPDATE AUTOMATIC FIELDS BEFORE UPDATE
+function before_update_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['last_update'] = $data;
+        
+        $post_array['lastupdateUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
+
 }
