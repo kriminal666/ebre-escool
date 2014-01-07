@@ -47,6 +47,9 @@ class timetables extends skeleton_main {
             $header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     base_url('assets/css/bootstrap-switch.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap.min.extracolours.css'));
 
 
             $header_data= $this->add_javascript_to_html_header_data(
@@ -236,7 +239,7 @@ class timetables extends skeleton_main {
 
     }
 
-    public function allgroupstimetables($group_code = null,$compact = "") {
+    public function allgroupstimetables($group_id = null) {
         if (!$this->skeleton_auth->logged_in()) {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
@@ -257,6 +260,9 @@ class timetables extends skeleton_main {
             $header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     base_url('assets/css/bootstrap-switch.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap.min.extracolours.css'));
 
 
             $header_data= $this->add_javascript_to_html_header_data(
@@ -305,25 +311,29 @@ class timetables extends skeleton_main {
 
             $data['classroom_groups'] = $classroom_groups_array;
 
-            //TODO
-            $data['default_classroom_group'] = 1;                           
+            //TODO: Get default group id by User Session? or by config file?
+            if ($group_id == null)
+                $group_id = 4;
+            
+            $time_slots_array = array();
+            $data['default_classroom_group'] = $group_id;                           
 
-            $group_id = 40;
+            
+            $shift = $this->timetables_model->get_group_shift($group_id);
+            $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
-            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            $all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
-            if ($compact) {
-                $time_slots_array = $complete_time_slots_array;
-            } else {
-                //TODO
-                //$time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($group_id)->result_array();
+            //TODO: Pametritzar time slot orders defineixen mati tarda
+            if ($shift == 2) {
+                $shift_first_time_slot_order = 9;
+                $shift_last_time_slot_order = 15;
             }
-
-            //Get first and last time slot order
-            $keys = array_keys($time_slots_array);
-            $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
-            $last_time_slot_order = $time_slots_array[$keys[count($time_slots_array)-1]]['time_slot_order'];
-
+            else {
+                $shift_first_time_slot_order = 1;
+                $shift_last_time_slot_order = 7;
+            }
+                
             //Get last time slot order
 
             $data['time_slots_array'] = $time_slots_array;
@@ -339,37 +349,36 @@ class timetables extends skeleton_main {
 
             $data['time_slots']=$time_slots;
             $data['time_slots_count']=count($time_slots);
-            $data['complete_time_slots_count']=count($complete_time_slots_array);            
-            $data['first_time_slot_order']=$first_time_slot_order;
-            $data['last_time_slot_order']=$last_time_slot_order;
+            $data['first_time_slot_order']=$shift_first_time_slot_order;
+            $data['last_time_slot_order']=$shift_last_time_slot_order;
 
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
 
-            $lessonsfortimetablebygroupid = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+            $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
 
-            $lessonsfortimetablebygroupid = $this->add_breaks($lessonsfortimetablebygroupid,$first_time_slot_order,$last_time_slot_order);
+            $lessonsfortimetablebygroupid = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
 
             //print_r($lessonsfortimetablebygroupid);                                  
 
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
 
-            $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($teacher_id)->result();
+            $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($group_id)->result();
+
+            //print_r($all_group_study_modules);
 
             $data['all_group_study_modules']= $all_group_study_modules;
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_group_study_modules);
+
+            //print_r($study_modules_colours);
 
             $data['study_modules_colours']= $study_modules_colours;
 
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
-
-            $data['compact']= $compact;
-
-
 
             $this->load->view('timetables/allgroupstimetables',$data);
             
@@ -454,6 +463,8 @@ class timetables extends skeleton_main {
             //echo "Teacher code: $teacher_code | teacher_id: $teacher_id | teacher_full_name: $teacher_full_name";
 
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+
+            $time_slots_array = array();
 
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
@@ -578,20 +589,20 @@ class timetables extends skeleton_main {
                    3 => "btn-warning" ,
                    4 => "btn-success" ,
                    5 => "btn-danger"  ,
-                   6 => "btn-default" ,
+                   6 => "btn-sadlebrown" ,
                    7 => "btn-purple" ,
                    8 => "btn-gold" ,
                    9 => "btn-palegreen" ,
                    10 => "btn-lightgray" ,
                    11 => "btn-yellow" ,
-                   12 => "btn-crimson",
-                   13 => "btn-chocolate",
-                   14 => "btn-coral",
+                   12 => "btn-chocolate",
+                   13 => "btn-coral",
+                   14 => "btn-olivedrab",
                    15 => "btn-yellowgreen",
                    16 => "btn-mignightblue",
                    17 => "btn-darkred",
-                   18 => "btn-sadlebrown",
-                   19 => "btn-olivedrab",
+                   18 => "btn-crimson",
+                   19 => "btn-default",
                    20 => "btn-darkslategray"
                    );
         $index=1;

@@ -19,11 +19,7 @@ $(function() {
 
     });
 
-});
-
-$('#hide_show_legend').bootstrapSwitch({});
-
-    $('#show_compact_timetable').bootstrapSwitch({});
+    $('#hide_show_legend').bootstrapSwitch({});
 
     $('#hide_show_legend').on('switch-change', function (e, data) {
         var $element = $(data.el),
@@ -32,24 +28,7 @@ $('#hide_show_legend').bootstrapSwitch({});
         $("#study_modules_legend").slideToggle();
     });
 
-    $('#show_compact_timetable').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        
-        var pathArray = window.location.pathname.split( '/' );
-        var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
-
-        selectedValue = "";
-        console.log(value);
-        if (value) {
-            selectedValue = "compact";
-        }
-        alert(baseURL + "/" + selectedValue);
-        window.location.href = baseURL + "/" + selectedValue;
-    });
-
-
+ 
     $('#study_modules_legend_table').dataTable( {
                 "oLanguage": {
                         "sProcessing":   "Processant...",
@@ -73,7 +52,7 @@ $('#hide_show_legend').bootstrapSwitch({});
         "bInfo": false,
         });
 
-
+});
 </script>
 
 <div class="container">
@@ -92,12 +71,6 @@ $('#hide_show_legend').bootstrapSwitch({});
 
     <div style="height: 10px;"></div>
     <center>
-            Mostrar horari complet
-            <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
-            data-label-icon="icon-eye-open" 
-            data-on-label="<i class='icon-ok'></i>" 
-            data-off-label="<i class='icon-remove'></i>"
-            data-off="danger">
             Mostrar llegenda: <input id="hide_show_legend" type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
@@ -112,7 +85,7 @@ $('#hide_show_legend').bootstrapSwitch({});
                 <thead style="background-color: #d9edf7;">
                     <tr>
                         <td colspan="4" style="text-align: center;">
-                            <h4><?php echo "Llegenda";?></h4>
+                            <h4><?php echo "Llegenda TODO SHA DE FER COMPLETAMENT!!! Mirar issue";?></h4>
                         </td>
                     </tr>
                     <tr>
@@ -150,10 +123,10 @@ $('#hide_show_legend').bootstrapSwitch({});
         <div id="group_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
             <ul class="tt-events">
                 
-                <?php $day_index = 0; $iii=0;?>
+                <?php $day_index = 0;?>
                 <?php foreach ($days as $day) : ?>
                     
-                    <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
+                    <?php foreach ( $lessonsfortimetablebygroupid[$day->day_number] as $day_lessons) : ?>
                         <?php foreach ( $day_lessons as $day_lesson) : ?>
                             <?php 
                             if ($day_lesson->time_slot_lective) {
@@ -170,12 +143,9 @@ $('#hide_show_legend').bootstrapSwitch({});
                                 data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
                                 <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
-                                <?php echo $day_lesson->location_code;?>
+                                <?php echo $day_lesson->location_code;?> <?php echo @$day_lesson->study_module_id;?>
                             </li>
-                        <?php $iii++;?>  
                         <?php endforeach; ?>
-
-
 
                     <?php endforeach; ?> 
                     
