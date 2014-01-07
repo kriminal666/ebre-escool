@@ -291,11 +291,11 @@ $(function() {
 			 <?php foreach ($all_teacher_groups as $teacher_group) : ?>
                 <div class="span6">
                 <b><center><?php echo $teacher_group['group_code'] . " ( " . $teacher_group['group_shortName']. " )" ;?>:</center></b>
-                <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['group_id']]);?>">
+                <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['classroom_group_id']]);?>">
                     <ul class="tt-events">
                         <?php $day_index = 0; $iii=0;?>
                         <?php foreach ($days as $day) : ?>
-                            <?php foreach ( $lessonsfortimetablebygroupid[$teacher_group['group_id']][$day->day_number] as $day_lessons) : ?>
+                            <?php foreach ( $lessonsfortimetablebygroupid[$teacher_group['classroom_group_id']][$day->day_number] as $day_lessons) : ?>
                                 <?php foreach ( $day_lessons as $day_lesson) : ?>
                                     <?php 
                                     if ($day_lesson->time_slot_lective) {
@@ -311,7 +311,7 @@ $(function() {
                                         //$bootstrap_button_colour = "btn-warning";
                                     }
 
-                                    $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_orderbygroupid[$teacher_group['group_id']];
+                                    $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_orderbygroupid[$teacher_group['classroom_group_id']];
                           
                                     ?> 
                                     <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
@@ -331,7 +331,7 @@ $(function() {
                         
                         <?php $time_slot_index = 0; ?>
                         
-                        <?php foreach ($array_all_teacher_groups_time_slots[$teacher_group['group_id']] as $time_slot_key => $time_slot) : ?>
+                        <?php foreach ($array_all_teacher_groups_time_slots[$teacher_group['classroom_group_id']] as $time_slot_key => $time_slot) : ?>
                             <?php
                                 list($time_slot_start_time1, $time_slot_start_time2) = explode(':', $time_slot['time_slot_start_time']);
                             ;?>

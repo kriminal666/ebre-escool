@@ -179,9 +179,9 @@ class timetables extends skeleton_main {
             $first_time_slot_orderbygroupid = array();
             foreach ($all_teacher_groups as $teacher_group) {
                 # code...
-                $group_id = $teacher_group['group_id'];
-                $shift = $this->timetables_model->get_group_shift($group_id);
-                $array_all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+                $classroom_group_id = $teacher_group['classroom_group_id'];
+                $shift = $this->timetables_model->get_group_shift($classroom_group_id);
+                $array_all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
                 //TODO: Pametritzar time slot orders defineixen mati tarda
                 if ($shift == 2) {
@@ -193,10 +193,10 @@ class timetables extends skeleton_main {
                     $shift_last_time_slot_order = 7;
                 }
                 
-                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
-                $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
-                $first_time_slot_orderbygroupid[$group_id] = $shift_first_time_slot_order;
+                $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
+                $first_time_slot_orderbygroupid[$classroom_group_id] = $shift_first_time_slot_order;
 
             }
   
@@ -239,7 +239,7 @@ class timetables extends skeleton_main {
 
     }
 
-    public function allgroupstimetables($group_id = null) {
+    public function allgroupstimetables($classroom_group_id = null) {
         if (!$this->skeleton_auth->logged_in()) {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
@@ -312,17 +312,17 @@ class timetables extends skeleton_main {
             $data['classroom_groups'] = $classroom_groups_array;
 
             //TODO: Get default group id by User Session? or by config file?
-            if ($group_id == null)
-                $group_id = 4;
+            if ($classroom_group_id == null)
+                $classroom_group_id = 4;
             
             $time_slots_array = array();
-            $data['default_classroom_group'] = $group_id;                           
+            $data['default_classroom_group'] = $classroom_group_id;                           
 
             
-            $shift = $this->timetables_model->get_group_shift($group_id);
+            $shift = $this->timetables_model->get_group_shift($classroom_group_id);
             $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
-            $all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+            $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
             //TODO: Pametritzar time slot orders defineixen mati tarda
             if ($shift == 2) {
@@ -356,7 +356,7 @@ class timetables extends skeleton_main {
 
             $data['days']=$days;
 
-            $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+            $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
             $lessonsfortimetablebygroupid = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
 
@@ -364,7 +364,7 @@ class timetables extends skeleton_main {
 
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
 
-            $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($group_id)->result();
+            $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
 
             //print_r($all_group_study_modules);
 
@@ -527,9 +527,9 @@ class timetables extends skeleton_main {
             $first_time_slot_orderbygroupid = array();
             foreach ($all_teacher_groups as $teacher_group) {
                 # code...
-                $group_id = $teacher_group['group_id'];
-                $shift = $this->timetables_model->get_group_shift($group_id);
-                $array_all_teacher_groups_time_slots[$group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+                $classroom_group_id = $teacher_group['classroom_group_id'];
+                $shift = $this->timetables_model->get_group_shift($classroom_group_id);
+                $array_all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
                 //TODO: Pametritzar time slot orders defineixen mati tarda
                 if ($shift == 2) {
@@ -541,10 +541,10 @@ class timetables extends skeleton_main {
                     $shift_last_time_slot_order = 7;
                 }
                 
-                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($group_id);
+                $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
-                $lessonsfortimetablebygroupid[$group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
-                $first_time_slot_orderbygroupid[$group_id] = $shift_first_time_slot_order;
+                $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
+                $first_time_slot_orderbygroupid[$classroom_group_id] = $shift_first_time_slot_order;
             }
 
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;

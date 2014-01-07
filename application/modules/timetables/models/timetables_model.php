@@ -40,17 +40,17 @@ class timetables_model  extends CI_Model  {
 		/*
 		SELECT DISTINCT group_code,group_shortName,group_name
 		FROM `lesson` 
-		INNER JOIN classroom_group ON `lesson`.`lesson_classroom_group_id`  = classroom_group.group_id
+		INNER JOIN classroom_group ON `lesson`.`lesson_classroom_group_id`  = classroom_group.classroom_group_id
 		WHERE lesson_teacher_id=39
 		*/
 
 		$this->db->from('lesson');
 		$this->db->distinct();
-        $this->db->select('group_id,group_code,group_shortName,group_name');
+        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
 		$this->db->order_by('group_code', $orderby);
 		
-		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.group_id');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
 
 		$this->db->where('lesson.lesson_teacher_id',$teacher_id);
         
@@ -66,11 +66,11 @@ class timetables_model  extends CI_Model  {
 
 	
 
-	function get_all_group_study_modules($group_id) {
+	function get_all_group_study_modules($classroom_group_id) {
 		$this->db->from('study_module');
         $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
 
-		$this->db->where('study_module_classroom_group_id',$group_id);
+		$this->db->where('study_module_classroom_group_id',$classroom_group_id);
         
         $query = $this->db->get();
 
@@ -98,7 +98,7 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
-	function get_all_lessonsfortimetablebygroupid($group_id)	{
+	function get_all_lessonsfortimetablebygroupid($classroom_group_id)	{
 
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
@@ -108,9 +108,9 @@ class timetables_model  extends CI_Model  {
 		
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
-		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.group_id','left');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
 
-		$this->db->where('lesson.lesson_classroom_group_id',$group_id);
+		$this->db->where('lesson.lesson_classroom_group_id',$classroom_group_id);
         
         $query = $this->db->get();
 
@@ -218,7 +218,7 @@ class timetables_model  extends CI_Model  {
 		$this->db->join('teacher', 'lesson.lesson_teacher_id = teacher.teacher_id');
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
-		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.group_id','left');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
 
 		$this->db->where('teacher.teacher_id',$teacher_id);
         
@@ -301,7 +301,7 @@ class timetables_model  extends CI_Model  {
 		INNER JOIN teacher ON lesson.`lesson_teacher_id` = teacher.teacher_id
 		INNER JOIN time_slot ON lesson.lesson_time_slot_id = time_slot.time_slot_id
 		LEFT JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id
-		LEFT JOIN classroom_group ON lesson.lesson_classroom_group_id =  classroom_group.group_id
+		LEFT JOIN classroom_group ON lesson.lesson_classroom_group_id =  classroom_group.classroom_group_id
 		WHERE teacher.teacher_code =41
 		ORDER BY `lesson_day`,time_slot_order ASC*/
 	}
@@ -311,7 +311,7 @@ class timetables_model  extends CI_Model  {
 	function get_all_classroom_groups_ids_and_names($orderby= "asc") {
 
 		$this->db->from('classroom_group');
-        $this->db->select('group_id,group_code,group_shortName,group_name');
+        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
 		$this->db->order_by('group_code', $orderby);
 		
@@ -324,7 +324,7 @@ class timetables_model  extends CI_Model  {
 			$classroom_groups_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$classroom_groups_array[$row['group_id']] = $row['group_code'] . " - " . $row['group_name'] . " ( " . $row['group_shortName'] . ")";
+   				$classroom_groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . " ( " . $row['classroom_group_shortName'] . ")";
 			}
 			return $classroom_groups_array;
 		}			
@@ -386,22 +386,22 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
-	function getMinTimeSlotOrderForGroup($group_id) {
+	function getMinTimeSlotOrderForGroup($classroom_group_id) {
 
 		/*
 		SELECT min( time_slot_order )
 		FROM `lesson`
-		INNER JOIN classroom_group ON classroom_group.group_id = `lesson`.lesson_classroom_group_id
+		INNER JOIN classroom_group ON classroom_group.classroom_group_id = `lesson`.lesson_classroom_group_id
 		INNER JOIN time_slot ON time_slot.time_slot_id = `lesson`.lesson_time_slot_id
-		WHERE classroom_group.group_id =25
+		WHERE classroom_group.classroom_group_id =25
 		*/
 	
 		$this->db->select_min('time_slot_order','min_time_slot_order');
 		$this->db->from('lesson');
-		$this->db->join('classroom_group', 'classroom_group.group_id = lesson.lesson_classroom_group_id');
+		$this->db->join('classroom_group', 'classroom_group.classroom_group_id = lesson.lesson_classroom_group_id');
 		$this->db->join('time_slot', 'time_slot.time_slot_id = lesson.lesson_time_slot_id');
 		
-		$this->db->where('classroom_group.group_id',$group_id);
+		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
 
 		$query = $this->db->get();
 
@@ -415,14 +415,14 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
-	function getMaxTimeSlotOrderForGroup($group_id) {
+	function getMaxTimeSlotOrderForGroup($classroom_group_id) {
 
 		$this->db->select_min('time_slot_order','max_time_slot_order');
 		$this->db->from('lesson');
-		$this->db->join('classroom_group', 'classroom_group.group_id = lesson.lesson_classroom_group_id');
+		$this->db->join('classroom_group', 'classroom_group.classroom_group_id = lesson.lesson_classroom_group_id');
 		$this->db->join('time_slot', 'time_slot.time_slot_id = lesson.lesson_time_slot_id');
 		
-		$this->db->where('classroom_group.group_id',$group_id);
+		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
 
 		$query = $this->db->get();
 
@@ -529,11 +529,11 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
-	function get_group_shift($group_id) {
+	function get_group_shift($classroom_group_id) {
 
 		$this->db->select('group_shift');
 		$this->db->from('classroom_group');
-		$this->db->where('classroom_group.group_id',$group_id);
+		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
 
 		$query = $this->db->get();
 
@@ -542,7 +542,7 @@ class timetables_model  extends CI_Model  {
 			if ($row->group_shift!=0)
 				return $row->group_shift;
 			else {
-				$mintimeslotorder = $this->getMinTimeSlotOrderForGroup($group_id);
+				$mintimeslotorder = $this->getMinTimeSlotOrderForGroup($classroom_group_id);
 				if ($mintimeslotorder > 6)
 					return 2;
 				else

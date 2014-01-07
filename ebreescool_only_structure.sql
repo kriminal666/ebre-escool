@@ -176,6 +176,7 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `classroom_group_shift` smallint(3),
   `classroom_group_entryDate` datetime NOT NULL,
   `classroom_group_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `classroom_group_creationUserId` int(11) DEFAULT NULL,
