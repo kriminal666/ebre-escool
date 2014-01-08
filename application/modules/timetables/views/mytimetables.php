@@ -290,7 +290,7 @@ $(function() {
         <div class="row">
 			 <?php foreach ($all_teacher_groups as $teacher_group) : ?>
                 <div class="span6">
-                <b><center><?php echo $teacher_group['group_code'] . " ( " . $teacher_group['group_shortName']. " )" ;?>:</center></b>
+                <b><center><?php echo $teacher_group['classroom_group_code'] . " ( " . $teacher_group['classroom_group_shortName']. " )" ;?>:</center></b>
                 <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['classroom_group_id']]);?>">
                     <ul class="tt-events">
                         <?php $day_index = 0; $iii=0;?>
