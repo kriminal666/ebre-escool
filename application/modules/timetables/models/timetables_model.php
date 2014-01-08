@@ -48,7 +48,7 @@ class timetables_model  extends CI_Model  {
 		$this->db->distinct();
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
-		$this->db->order_by('group_code', $orderby);
+		$this->db->order_by('classroom_group_code', $orderby);
 		
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
 
@@ -102,7 +102,7 @@ class timetables_model  extends CI_Model  {
 
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	group_code,group_shortName,group_name');
+        	classroom_group_code,classroom_group_shortName,classroom_group_name');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
@@ -134,9 +134,9 @@ class timetables_model  extends CI_Model  {
 				$study_module_id = $row['study_module_id'];
 				$study_module_shortname = $row['study_module_shortname'];
 				$study_module_name = $row['study_module_name'];
-				$group_code = $row['group_code'];
-				$group_shortName = $row['group_shortName'];
-				$group_name = $row['group_name'];
+				$group_code = $row['classroom_group_code'];
+				$group_shortName = $row['classroom_group_shortName'];
+				$group_name = $row['classroom_group_name'];
 
 				if ($previous_day == null || $day != $previous_day) {
 					$day_lessons = new stdClass;	
@@ -211,7 +211,7 @@ class timetables_model  extends CI_Model  {
 
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	group_code,group_shortName,group_name');
+        	classroom_group_code,classroom_group_shortName,classroom_group_name');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
@@ -245,9 +245,9 @@ class timetables_model  extends CI_Model  {
 				$study_module_id = $row['study_module_id'];
 				$study_module_shortname = $row['study_module_shortname'];
 				$study_module_name = $row['study_module_name'];
-				$group_code = $row['group_code'];
-				$group_shortName = $row['group_shortName'];
-				$group_name = $row['group_name'];
+				$group_code = $row['classroom_group_code'];
+				$group_shortName = $row['classroom_group_shortName'];
+				$group_name = $row['classroom_group_name'];
 			
 				if ($previous_day == null || $day != $previous_day) {
 					$day_lessons = new stdClass;	
@@ -313,7 +313,7 @@ class timetables_model  extends CI_Model  {
 		$this->db->from('classroom_group');
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
-		$this->db->order_by('group_code', $orderby);
+		$this->db->order_by('classroom_group_code', $orderby);
 		
 		//$this->db->join('person', 'person.person_id = teacher.teacher_person_id');
         
@@ -531,7 +531,7 @@ class timetables_model  extends CI_Model  {
 
 	function get_group_shift($classroom_group_id) {
 
-		$this->db->select('group_shift');
+		$this->db->select('classroom_group_shift');
 		$this->db->from('classroom_group');
 		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
 
@@ -539,8 +539,8 @@ class timetables_model  extends CI_Model  {
 
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			if ($row->group_shift!=0)
-				return $row->group_shift;
+			if ($row->classroom_group_shift!=0)
+				return $row->classroom_group_shift;
 			else {
 				$mintimeslotorder = $this->getMinTimeSlotOrderForGroup($classroom_group_id);
 				if ($mintimeslotorder > 6)
