@@ -81,6 +81,7 @@
           <a tabindex="-1" href="#"><?php echo lang('persons');?></a>
             <ul class="dropdown-menu">
                <li><a href="<?=base_url()?>index.php/teachers"><?php echo lang('teachers');?></a></li>
+               <li><a href="<?=base_url()?>index.php/students"><?php echo lang('students');?></a></li>
                <li><a href="<?=base_url()?>index.php/persons"><?php echo lang('persons');?></a></li>
                <li><a href="<?=base_url()?>index.php/persons/person_official_id_type"><?php echo "Tipus identificador personal";?></a></li>
                <li><a href="<?=base_url()?>index.php/persons/localities"><?php echo "Poblacions";?></a></li>
