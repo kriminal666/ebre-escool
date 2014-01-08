@@ -15,8 +15,8 @@ class students extends skeleton_main {
         
         //GROCERY CRUD
 		    $this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
-        $this->load->library('grocery_CRUD');
-        $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
+            $this->load->library('grocery_CRUD');
+            $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
     		$this->load->library('image_CRUD');  
 
 		    /* Set language */
@@ -38,6 +38,8 @@ class students extends skeleton_main {
         
 	    //Establish subject:
         $this->grocery_crud->set_subject(lang('students'));
+
+
 
         //RELATIONS
         $this->grocery_crud->set_relation('student_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
@@ -102,11 +104,14 @@ class students extends skeleton_main {
         
         $this->grocery_crud->unset_dropdowndetails("student_creationUserId","student_lastupdateUserId");
 
+        //Action
+        $this->grocery_crud->add_action('Smileys', 'http://www.grocerycrud.com/assets/uploads/general/smiley.png', '','',array($this,'show_photo'));
+
         $output = $this->grocery_crud->render();
 		
 		    $this->_load_html_header($this->_get_html_header_data(),$output); 
 		    $this->_load_body_header();
-        	
+
             $default_values=$this->_get_default_values();
             $default_values["table_name"]=$table_name;
             $default_values["field_prefix"]="student_";
@@ -118,6 +123,27 @@ class students extends skeleton_main {
 	}
 
 //-->
+public function show_photo($primary_key, $row){
+
+    return site_url('students/photo').'/'.$row->student_code;
+}
+public function photo(){
+
+    $image_crud = new image_CRUD();
+    $image_crud->set_table('prova');
+    $image_crud->set_primary_key_field('id');
+    $image_crud->set_url_field('url');
+    $image_crud->set_relation_field('codi');
+    $image_crud->set_image_path('assets/img/alumnes');
+    $output = $image_crud->render();
+
+    $this->_example_output($output);
+
+}
+function _example_output($output = null)
+{
+    $this->load->view('photo.php',$output);
+}
 
 
   public function edit_field_callback_entryDate($value, $primary_key){
