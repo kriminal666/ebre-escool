@@ -4,6 +4,22 @@
 <?php foreach($js_files as $file): ?>
 	<script src="<?php echo $file; ?>"></script>
 <?php endforeach; ?>
-<?php
-	echo $output;
-?>
+<center>
+<table border=1 cellpadding=5 cellspacing=0>
+<tr>
+	<td rowspan="3">
+	<?php
+		echo $output;
+	?>
+	</td>
+	<td width="250px">Nom: </td>
+</tr>
+<tr>
+	<td>Cognoms: </td>
+</tr>
+<tr>
+	<td>ID: </td>
+</tr>
+
+</table>
+</center>
