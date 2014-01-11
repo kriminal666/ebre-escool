@@ -96,7 +96,7 @@ $(function() {
             <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_legend_table" style="width:50%;">
                 <thead style="background-color: #d9edf7;">
                     <tr>
-                        <td colspan="4" style="text-align: center;">
+                        <td colspan="5" style="text-align: center;">
                             <h4><?php echo "Llegenda";?></h4>
                         </td>
                     </tr>
@@ -105,9 +105,10 @@ $(function() {
                         <th><?php echo "Codi assignatura";?></th>
                         <th><?php echo "Nom";?></th>
                         <th><?php echo "Hores setmanals";?></th>
+                        <th><?php echo "Hores setmanals calculades";?></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><?php $i=0; ?>
                     <?php foreach ($all_teacher_study_modules as $study_module) : ?>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
@@ -122,6 +123,9 @@ $(function() {
                             <td>
                                 <?php echo $study_module->study_module_hoursPerWeek;?>
                             </td>
+                            <td>
+                                <?php echo $all_teacher_study_modules_hours_per_week[$i]; $i++;?>
+                            </td>                            
                         </tr>
                     <?php endforeach; ?>
                     

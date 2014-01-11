@@ -126,6 +126,7 @@ class students extends skeleton_main {
 public function show_photo($primary_key, $row){
 
     return site_url('students/photo').'/'.$row->student_code;
+
 }
 public function photo(){
 
@@ -135,17 +136,23 @@ public function photo(){
     $image_crud->set_url_field('url');
     $image_crud->set_relation_field('codi');
     $image_crud->set_image_path('assets/img/alumnes');
-    $output = $image_crud->render();
 
-    $this->_example_output($output);
+    $output = $image_crud->render();
+    $this->_load_html_header($this->_get_html_header_data(),$output); 
+    $this->_load_body_header();    
+    $this->load->view('photo.php',$output);
+    $this->_load_body_footer();   
 
 }
+/*
 function _example_output($output = null)
 {
+    $this->_load_html_header($this->_get_html_header_data(),$output); 
+    $this->_load_body_header();    
     $this->load->view('photo.php',$output);
+    $this->_load_body_footer();      
 }
-
-
+*/
   public function edit_field_callback_entryDate($value, $primary_key){
     //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="person_entryDate" id="field-entryDate" readonly>';    
     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    

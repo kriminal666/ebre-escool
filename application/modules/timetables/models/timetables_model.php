@@ -458,7 +458,7 @@ class timetables_model  extends CI_Model  {
 
 	function getMinTimeSlotOrderForTeacher($teacher_id) {
 	
-		$this->db->select_min('time_slot_order','max_time_slot_order');
+		$this->db->select_min('time_slot_order','min_time_slot_order');
 		$this->db->from('lesson');
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		
@@ -470,7 +470,7 @@ class timetables_model  extends CI_Model  {
 
 		if ($query->num_rows() > 0)	{
 			$row = $query->row();
-			return $row->max_time_slot_order;
+			return $row->min_time_slot_order;
    		}
    		else
 			return false;
@@ -635,6 +635,19 @@ class timetables_model  extends CI_Model  {
 			return false;
 	}
 
-	
+	//Hores Setmanals
+	function get_module_hours_per_week($module)
+	{
+		$this->db->from('lesson');
+		//$this->db->count_all_tesults('lesson_study_module_id');
+		$this->db->select('lesson_study_module_id');
+		$this->db->where('lesson_study_module_id', $module);
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
 	
 }

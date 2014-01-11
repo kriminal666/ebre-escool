@@ -98,10 +98,9 @@ class timetables extends skeleton_main {
                 $teacher_code = 41;
             }
 
-            $teacher_id=$this->timetables_model->get_teacher_id_from_teacher_code($teacher_code);;
+            $teacher_id=$this->timetables_model->get_teacher_id_from_teacher_code($teacher_code);//;
 
             $data["teacher_code"] = $teacher_code;
-
 
             $data["teacher_id"] = $teacher_id;
 
@@ -134,8 +133,8 @@ class timetables extends skeleton_main {
 
             foreach ($time_slots_array as $time_slot)   {
                 $time_slot_data = new stdClass;
-                $time_slot_data->time_slot_start_time= $time_slot['time_slot_start_time'];
-                $time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
+                $time_slot_data->time_slot_start_time = $time_slot['time_slot_start_time'];
+                $time_slot_data->time_interval = $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
                 $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
 
                 $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
@@ -161,7 +160,29 @@ class timetables extends skeleton_main {
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
 
+            foreach($all_teacher_study_modules as $module){
+                //echo $module->study_module_id;
+                //$hours[]=$module->study_module_id;
+
+                $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+           
+//                echo " - $hours->num_rows<br/>";
+                //$test[]=$this->timetables_model->get_module_hours_per_week($module->study_module_id);
+            }
+
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
+            $data['all_teacher_study_modules_hours_per_week'] = $hours;
+
+/*
+            //$hours = $this->timetables_model->get_module_hours_per_week(276);
+            //echo $hours->num_rows;
+
+            echo "<pre>";
+            print_r($data['all_teacher_study_modules']);
+            print_r($data['all_teacher_study_modules_hours_per_week']);
+            echo "</pre>";
+*/
+
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
 
@@ -232,6 +253,10 @@ class timetables extends skeleton_main {
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
+
+            //Número d'hores setmanals a partir del id del modul (taula lliçons)
+            //$hours = $this->timetables_model->get_module_hours_per_week(276);
+            //echo $hours->num_rows;
 
             $this->load->view('timetables/allteacherstimetables',$data);
             
@@ -363,7 +388,7 @@ class timetables extends skeleton_main {
             //print_r($lessonsfortimetablebygroupid);                                  
 
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
-
+echo $classroom_group_id;
             $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
 
             //print_r($all_group_study_modules);
