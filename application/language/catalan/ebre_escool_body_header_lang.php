@@ -51,6 +51,7 @@ $lang['devices'] = 'Dispositius';
 
 $lang['maintenances'] = 'Manteniments';
  $lang['teachers'] = 'Professors';
+ $lang['students'] = 'Alumnes'; 
  $lang['persons'] = 'Persones';
  $lang['externalid_menu'] = 'Tipus Identificadors externs';
  $lang['organizationalunit_menu'] = 'Unitats Organitzatives';

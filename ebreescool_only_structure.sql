@@ -1395,3 +1395,21 @@ CREATE TABLE IF NOT EXISTS `bank_office` (
   `markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_office_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+--
+-- Estructura de la taula `student`
+--
+
+CREATE TABLE IF NOT EXISTS `student` (
+  `student_id` int(11) NOT NULL AUTO_INCREMENT,
+  `student_person_id` int(11) NOT NULL,
+  `student_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `student_entryDate` datetime NOT NULL,
+  `student_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `student_creationUserId` int(11) DEFAULT NULL,
+  `student_lastupdateUserId` int(11) DEFAULT NULL,
+  `student_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `student_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`student_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
