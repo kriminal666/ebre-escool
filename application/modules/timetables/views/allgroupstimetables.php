@@ -54,7 +54,6 @@ $(function() {
 
 });
 </script>
-
 <div class="container">
     <center>
         <select id="classroom_groups" style="width: 400px">

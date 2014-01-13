@@ -160,14 +160,15 @@ $(function() {
         <div style="height: 10px;"></div>
 
 <?php 
-echo "<pre>";
-print_r($lessonsfortimetablebyteacherid);
-echo "</pre>";
+//echo "<pre>";
+//print_r($lessonsfortimetablebyteacherid);
+//echo "</pre>";
 /*
     for($i=1; $i<=5; $i++){
         echo $lessonsfortimetablebyteacherid[$i];
     } 
 */
+
 ?>
 
         <div id="teacher_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
@@ -179,6 +180,7 @@ echo "</pre>";
                     <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
                         <?php foreach ( $day_lessons as $day_lesson) : ?>
                             <?php 
+
                             if ($day_lesson->time_slot_lective) {
                                 $bootstrap_button_colour = "btn-inverse";
                             } else {

@@ -13,6 +13,7 @@ class timetables extends skeleton_main {
         parent::__construct();
 
         $this->load->model('timetables_model');
+        $this->config->load('config');
 
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -32,64 +33,8 @@ class timetables extends skeleton_main {
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
 
-        $header_data= $this->add_css_to_html_header_data(
-                $this->_get_html_header_data(),
-                    "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/tribal-timetable.css'));        
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap-switch.min.css'));
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap.min.extracolours.css'));
+            $header_data = $this->load_header_data();
 
-
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/jquery-1.9.1.js");
-                    
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/jquery.ba-resize.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-tooltip.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-collapse.js'));                
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-shared.js'));        
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-timetable.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-switch.min.js'));
-            
             $this->_load_html_header($header_data);
             $this->_load_body_header();
 
@@ -145,7 +90,7 @@ class timetables extends skeleton_main {
             $data['complete_time_slots_count']=count($complete_time_slots_array);            
             $data['first_time_slot_order']=$first_time_slot_order;
             $data['last_time_slot_order']=$last_time_slot_order;
-
+//echo $last_time_slot_order;
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
@@ -153,7 +98,7 @@ class timetables extends skeleton_main {
             $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
 
             $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$first_time_slot_order,$last_time_slot_order);
-
+//echo $first_time_slot_order ."-".$last_time_slot_order;
             //print_r($lessonsfortimetablebyteacherid);                                  
 
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
@@ -205,15 +150,19 @@ class timetables extends skeleton_main {
                 $array_all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
                 //TODO: Pametritzar time slot orders defineixen mati tarda
+                $time_slot_order = $this->time_slot_order($shift);
+                $shift_first_time_slot_order = $time_slot_order['first'];
+                $shift_last_time_slot_order = $time_slot_order['last'];
+/*              
                 if ($shift == 2) {
-                    $shift_first_time_slot_order = 9;
-                    $shift_last_time_slot_order = 15;
+                    $shift_first_time_slot_order = $this->config->item('afternoon_first_time_slot');//9;
+                    $shift_last_time_slot_order = $this->config->item('afternoon_last_time_slot');//15;
                 }
                 else {
-                    $shift_first_time_slot_order = 1;
-                    $shift_last_time_slot_order = 7;
+                    $shift_first_time_slot_order = $this->config->item('morning_first_time_slot');//1;
+                    $shift_last_time_slot_order = $this->config->item('morning_last_time_slot');//7;
                 }
-                
+*/               
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
@@ -270,64 +219,7 @@ class timetables extends skeleton_main {
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
 
-            $header_data= $this->add_css_to_html_header_data(
-                $this->_get_html_header_data(),
-                    "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/tribal-timetable.css'));        
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap-switch.min.css'));
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap.min.extracolours.css'));
-
-
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/jquery-1.9.1.js");
-                    
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/jquery.ba-resize.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-tooltip.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-collapse.js'));                
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-shared.js'));        
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-timetable.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-switch.min.js'));
-            
+            $header_data = $this->load_header_data();            
             $this->_load_html_header($header_data);
             $this->_load_body_header();
 
@@ -342,7 +234,6 @@ class timetables extends skeleton_main {
             
             $time_slots_array = array();
             $data['default_classroom_group'] = $classroom_group_id;                           
-
             
             $shift = $this->timetables_model->get_group_shift($classroom_group_id);
             $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
@@ -350,6 +241,10 @@ class timetables extends skeleton_main {
             $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
             //TODO: Pametritzar time slot orders defineixen mati tarda
+                $time_slot_order = $this->time_slot_order($shift);
+                $shift_first_time_slot_order = $time_slot_order['first'];
+                $shift_last_time_slot_order = $time_slot_order['last'];            
+/*
             if ($shift == 2) {
                 $shift_first_time_slot_order = 9;
                 $shift_last_time_slot_order = 15;
@@ -358,7 +253,7 @@ class timetables extends skeleton_main {
                 $shift_first_time_slot_order = 1;
                 $shift_last_time_slot_order = 7;
             }
-                
+*/                
             //Get last time slot order
 
             $data['time_slots_array'] = $time_slots_array;
@@ -371,7 +266,6 @@ class timetables extends skeleton_main {
 
                 $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
             }
-
             $data['time_slots']=$time_slots;
             $data['time_slots_count']=count($time_slots);
             $data['first_time_slot_order']=$shift_first_time_slot_order;
@@ -388,7 +282,7 @@ class timetables extends skeleton_main {
             //print_r($lessonsfortimetablebygroupid);                                  
 
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
-echo $classroom_group_id;
+//echo $classroom_group_id;
             $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
 
             //print_r($all_group_study_modules);
@@ -400,10 +294,8 @@ echo $classroom_group_id;
             //print_r($study_modules_colours);
 
             $data['study_modules_colours']= $study_modules_colours;
-
             $days = $this->timetables_model->getAllLectiveDays();
-
-            $data['days']=$days;
+//            $data['days']=$days;
 
             $this->load->view('timetables/allgroupstimetables',$data);
             
@@ -417,59 +309,8 @@ echo $classroom_group_id;
 	        //redirect them to the login page
 	        redirect($this->skeleton_auth->login_page, 'refresh');
 	        }
-            
-        $header_data= $this->add_css_to_html_header_data(
-			$this->_get_html_header_data(),
-                "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-        $header_data= $this->add_css_to_html_header_data(
-				$header_data,
-                    base_url('assets/css/tribal-timetable.css'));
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css");                 
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap-switch.min.css'));
-            $header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    base_url('assets/css/bootstrap.min.extracolours.css'));
-
-
-            //JS
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/jquery-1.9.1.js");
-                    
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/jquery.ba-resize.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-tooltip.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-collapse.js'));                
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-shared.js'));        
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/tribal-timetable.js'));
-            $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
-			$header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/bootstrap-switch.min.js'));
+            //No s'utilitza el select2, es podria evitar que cargués
+            $header_data = $this->load_header_data();
 
             $this->_load_html_header($header_data);
             $this->_load_body_header();     
@@ -479,8 +320,6 @@ echo $classroom_group_id;
 
             $teacher_code = $this->timetables_model->get_teacher_code_from_teacher_id($teacher_id);            
             $teacher_full_name = $this->timetables_model->get_teacher_fullname_from_teacher_id($teacher_id);
-            
-
             $data["teacher_code"] = $teacher_code;
             $data["teacher_id"] = $teacher_id;
             $data["teacher_full_name"] = $teacher_full_name;
@@ -557,6 +396,10 @@ echo $classroom_group_id;
                 $array_all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
 
                 //TODO: Pametritzar time slot orders defineixen mati tarda
+                $time_slot_order = $this->time_slot_order($shift);
+                $shift_first_time_slot_order = $time_slot_order['first'];
+                $shift_last_time_slot_order = $time_slot_order['last'];
+/*
                 if ($shift == 2) {
                     $shift_first_time_slot_order = 9;
                     $shift_last_time_slot_order = 15;
@@ -565,7 +408,7 @@ echo $classroom_group_id;
                     $shift_first_time_slot_order = 1;
                     $shift_last_time_slot_order = 7;
                 }
-                
+*/                
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
@@ -702,5 +545,82 @@ echo $classroom_group_id;
 		$this->mytimetables();
 	}
 	
+    public function load_header_data(){
+
+        $header_data= $this->add_css_to_html_header_data(
+                $this->_get_html_header_data(),
+                    "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/tribal-timetable.css'));        
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap-switch.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/bootstrap.min.extracolours.css'));
+
+
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://code.jquery.com/jquery-1.9.1.js");
+                    
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
+            //$header_data= $this->add_javascript_to_html_header_data(
+            //        $header_data,
+            //        "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/jquery.ba-resize.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-tooltip.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-collapse.js'));                
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/tribal.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/tribal-shared.js'));        
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/tribal-timetable.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-switch.min.js'));
+
+            return $header_data;
+    }
+
+    public function time_slot_order($shift){
+
+        if ($shift == 2) {
+            $shift_first_time_slot_order = $this->config->item('afternoon_first_time_slot');//9;
+            $shift_last_time_slot_order = $this->config->item('afternoon_last_time_slot');//15;
+        }
+        else {
+            $shift_first_time_slot_order = $this->config->item('morning_first_time_slot');//1;
+            $shift_last_time_slot_order = $this->config->item('morning_last_time_slot');//7;
+        }
+        $time_slot_order['first'] = $shift_first_time_slot_order;
+        $time_slot_order['last'] = $shift_last_time_slot_order;
+        return $time_slot_order;
+    }
 	
 }
