@@ -61,11 +61,16 @@ class timetables extends skeleton_main {
             
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
+            $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
+/*
+            $time_slots_array = array();
+
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
             } else {
                 $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
+*/
 
             //Get first and last time slot order
             $keys = array_keys($time_slots_array);
@@ -328,6 +333,8 @@ class timetables extends skeleton_main {
 
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
+            $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
+/*
             $time_slots_array = array();
 
             if ($compact) {
@@ -335,7 +342,7 @@ class timetables extends skeleton_main {
             } else {
                 $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
-
+*/
             //Get first and last time slot order
             $keys = array_keys($time_slots_array);
             $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
@@ -621,6 +628,18 @@ class timetables extends skeleton_main {
         $time_slot_order['first'] = $shift_first_time_slot_order;
         $time_slot_order['last'] = $shift_last_time_slot_order;
         return $time_slot_order;
+    }
+
+    public function get_time_slots_array($compact,$teacher_id)
+    {
+        $time_slots_array = array();
+
+            if ($compact) {
+                $time_slots_array = $complete_time_slots_array;
+            } else {
+                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
+            }
+        return $time_slots_array;
     }
 	
 }
