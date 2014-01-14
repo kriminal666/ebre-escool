@@ -100,13 +100,13 @@ $(function() {
     </center>
     <div style="height: 10px;"></div>
     <center>
-            Mostrar horari complet
+            <?php echo lang('show_full_timetable'); ?>
             <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
             data-off="danger">
-            Mostrar llegenda: <input id="hide_show_legend" type="checkbox" class="switch-small" 
+            <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
@@ -120,15 +120,15 @@ $(function() {
                 <thead style="background-color: #d9edf7;">
                     <tr>
                         <td colspan="5" style="text-align: center;">
-                            <h4><?php echo "Llegenda";?></h4>
+                            <h4><?php echo lang('legend');?></h4>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php echo "Grup";?></th>
-                        <th><?php echo "Codi assignatura";?></th>
-                        <th><?php echo "Nom";?></th>
-                        <th><?php echo "Hores setmanals";?></th>
-                        <th><?php echo "Hores setmanals calculades";?></th>
+                        <th><?php echo lang('group');?></th>
+                        <th><?php echo lang('lesson_id');?></th>
+                        <th><?php echo lang('name');?></th>
+                        <th><?php echo lang('hours_per_week');?></th>
+                        <th><?php echo lang('hours_per_week_calc');?></th>
                     </tr>
                 </thead>
                 <tbody><?php $i=0; ?>
@@ -158,18 +158,6 @@ $(function() {
         </div>
 
         <div style="height: 10px;"></div>
-
-<?php 
-//echo "<pre>";
-//print_r($lessonsfortimetablebyteacherid);
-//echo "</pre>";
-/*
-    for($i=1; $i<=5; $i++){
-        echo $lessonsfortimetablebyteacherid[$i];
-    } 
-*/
-
-?>
 
         <div id="teacher_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
             <ul class="tt-events">
@@ -235,7 +223,7 @@ $(function() {
         <div style="height: px;"></div>
          
          <center>
-            Mostrar dades professor: <input id="hide_show_teacher_legend" type="checkbox" class="switch-small" 
+            <?php echo lang('show_teacher_data');?> <input id="hide_show_teacher_legend" type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
@@ -250,14 +238,14 @@ $(function() {
                 <thead style="background-color: #d9edf7;">
                     <tr>
                         <td colspan="4" style="text-align: center;">
-                            <h4><?php echo "Dades del professor";?></h4>
+                            <h4><?php echo lang('teacher_data');?></h4>
                         </td>
                     </tr>
                 </thead>
                 <tbody>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Número hores setmanals";?>
+                                <?php echo lang('num_hours_per_week');?>
                             </td>
                             <td>
                                 <?php echo $total_week_hours;?>
@@ -265,7 +253,7 @@ $(function() {
                         </tr>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Hores Matí";?>
+                                <?php echo lang('morning_hours');?>
                             </td>
                             <td>
                                 <?php echo $total_morning_week_hours;?>
@@ -273,7 +261,7 @@ $(function() {
                         </tr>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Hores tarda";?>
+                                <?php echo lang('afternoon_hours');?>
                             </td>
                             <td>
                                 <?php echo $total_afternoon_week_hours;?>
@@ -281,7 +269,7 @@ $(function() {
                         </tr>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Número total de grups";?>
+                                <?php echo lang('grup_count');?>
                             </td>
                             <td>
                                 <?php echo $all_teacher_groups_count;?>
@@ -290,7 +278,7 @@ $(function() {
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Grups";?>
+                                <?php echo lang('grups');?>
                             </td>
                             <td>
                                 <?php echo $all_teacher_groups_list;?>
@@ -299,7 +287,7 @@ $(function() {
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Número total de mòduls";?>
+                                <?php echo lang('module_count');?>
                             </td>
                             <td>
                                 <?php echo $all_teacher_study_modules_count;?>
@@ -308,7 +296,7 @@ $(function() {
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "Mòduls";?>
+                                <?php echo lang('modules');?>
                             </td>
                             <td>
                                 <?php echo $all_teacher_study_modules_list;?>
@@ -320,7 +308,7 @@ $(function() {
             </center>
         </div>
         
-        <center><h3>Horaris dels grups:</h3></center>
+        <center><h3><?php echo lang('group_timetables');?></h3></center>
         
         <div class="row">
              <?php foreach ($all_teacher_groups as $teacher_group) : ?>
@@ -394,9 +382,6 @@ $(function() {
         <div class="well">
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">
                 <img alt="Creative Commons Licence" style="border-width: 0" src="http://i.creativecommons.org/l/by-nc-sa/2.0/uk/88x31.png" /></a><br />
-            Els horaris s'han fet utilitzant l'obra de <a target="_blank" href="http://twitter.com/Ben_Lowe">Ben Lowe</a> de 
-            <a target="_blank" href="http://www.triballabs.net">Tribal Labs</a> amb una llicència <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">
-                Creative Commons Attribution-NonCommercial-ShareAlike 2.0 UK: England &amp; Wales
-                License</a>.
+                <?php echo lang('creative_commons_timetables_text');?>
         </div>
 </div>

@@ -25,6 +25,9 @@ class timetables extends skeleton_main {
         
         $this->lang->load('timetables', $current_language);
 
+        $this->load->helper('language');
+
+
 	}
 
     public function allteacherstimetables($teacher_code = null,$compact = "") {
@@ -62,15 +65,6 @@ class timetables extends skeleton_main {
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
             $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
-/*
-            $time_slots_array = array();
-
-            if ($compact) {
-                $time_slots_array = $complete_time_slots_array;
-            } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
-            }
-*/
 
             //Get first and last time slot order
             $keys = array_keys($time_slots_array);
@@ -123,17 +117,6 @@ class timetables extends skeleton_main {
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
-/*
-            //$hours = $this->timetables_model->get_module_hours_per_week(276);
-            //echo $hours->num_rows;
-
-            echo "<pre>";
-            print_r($data['all_teacher_study_modules']);
-            print_r($data['all_teacher_study_modules_hours_per_week']);
-            echo "</pre>";
-*/
-
-
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
 
             $data['study_modules_colours']= $study_modules_colours;
@@ -158,16 +141,7 @@ class timetables extends skeleton_main {
                 $time_slot_order = $this->time_slot_order($shift);
                 $shift_first_time_slot_order = $time_slot_order['first'];
                 $shift_last_time_slot_order = $time_slot_order['last'];
-/*              
-                if ($shift == 2) {
-                    $shift_first_time_slot_order = $this->config->item('afternoon_first_time_slot');//9;
-                    $shift_last_time_slot_order = $this->config->item('afternoon_last_time_slot');//15;
-                }
-                else {
-                    $shift_first_time_slot_order = $this->config->item('morning_first_time_slot');//1;
-                    $shift_last_time_slot_order = $this->config->item('morning_last_time_slot');//7;
-                }
-*/               
+           
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
@@ -208,10 +182,6 @@ class timetables extends skeleton_main {
 
             $data['days']=$days;
 
-            //Número d'hores setmanals a partir del id del modul (taula lliçons)
-            //$hours = $this->timetables_model->get_module_hours_per_week(276);
-            //echo $hours->num_rows;
-
             $this->load->view('timetables/allteacherstimetables',$data);
             
             $this->_load_body_footer();       
@@ -249,16 +219,7 @@ class timetables extends skeleton_main {
                 $time_slot_order = $this->time_slot_order($shift);
                 $shift_first_time_slot_order = $time_slot_order['first'];
                 $shift_last_time_slot_order = $time_slot_order['last'];            
-/*
-            if ($shift == 2) {
-                $shift_first_time_slot_order = 9;
-                $shift_last_time_slot_order = 15;
-            }
-            else {
-                $shift_first_time_slot_order = 1;
-                $shift_last_time_slot_order = 7;
-            }
-*/                
+            
             //Get last time slot order
 
             $data['time_slots_array'] = $time_slots_array;
@@ -288,17 +249,16 @@ class timetables extends skeleton_main {
 
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
 //echo $classroom_group_id;
+            
+            /* EL CAMP study_module_classroom_group_id DE LA BASE DE DADES NO CONTÉ VALORS */
+            /*
             $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
-
-            //print_r($all_group_study_modules);
-
+                //print_r($all_group_study_modules);
             $data['all_group_study_modules']= $all_group_study_modules;
-
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_group_study_modules);
-
-            //print_r($study_modules_colours);
-
+                //print_r($study_modules_colours);
             $data['study_modules_colours']= $study_modules_colours;
+            */
             $days = $this->timetables_model->getAllLectiveDays();
 //            $data['days']=$days;
 
@@ -334,15 +294,7 @@ class timetables extends skeleton_main {
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
             $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
-/*
-            $time_slots_array = array();
 
-            if ($compact) {
-                $time_slots_array = $complete_time_slots_array;
-            } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
-            }
-*/
             //Get first and last time slot order
             $keys = array_keys($time_slots_array);
             $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
@@ -381,7 +333,12 @@ class timetables extends skeleton_main {
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
 
+            foreach($all_teacher_study_modules as $module){
+                $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+            }
+
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
+            $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
 
@@ -406,16 +363,7 @@ class timetables extends skeleton_main {
                 $time_slot_order = $this->time_slot_order($shift);
                 $shift_first_time_slot_order = $time_slot_order['first'];
                 $shift_last_time_slot_order = $time_slot_order['last'];
-/*
-                if ($shift == 2) {
-                    $shift_first_time_slot_order = 9;
-                    $shift_last_time_slot_order = 15;
-                }
-                else {
-                    $shift_first_time_slot_order = 1;
-                    $shift_last_time_slot_order = 7;
-                }
-*/                
+            
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
