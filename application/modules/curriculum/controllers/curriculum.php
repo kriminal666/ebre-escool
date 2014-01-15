@@ -109,7 +109,7 @@ class curriculum extends skeleton_main {
         //Relació de Taules
         $this->grocery_crud->set_relation('lesson_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName} ({classroom_group_id})'); 
 		$this->grocery_crud->set_relation('lesson_teacher_id','teacher','{teacher_code} - ({teacher_id})');        
-		$this->grocery_crud->set_relation('lesson_location_id','location','locationId');
+		$this->grocery_crud->set_relation('lesson_location_id','location','{location_Id} ({location_name})');
 		$this->grocery_crud->set_relation('lesson_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time} ({time_slot_id})');
 
 		//Mandatory fields
@@ -342,6 +342,7 @@ class curriculum extends skeleton_main {
 		$this->grocery_crud->display_as('study_module_name',lang('name'));
         $this->grocery_crud->display_as('study_module_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('study_module_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('study_module_classroom_group_id',lang('study_module_classroom_group_id'));
         $this->grocery_crud->display_as('study_module_creationUserId',lang('creationUserId'));
         $this->grocery_crud->display_as('study_module_lastupdateUserId',lang('lastupdateUserId'));          
         $this->grocery_crud->display_as('study_module_markedForDeletion',lang('markedForDeletion'));   
@@ -355,7 +356,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('study_module_subtype',lang('subtype'));        
 
         //RELACIONS
-        $this->grocery_crud->set_relation('study_module_course_id','course','course_shortname'); 
+        //$this->grocery_crud->set_relation('study_module_course_id','course','course_shortname'); 
         $this->grocery_crud->set_relation('study_module_teacher_id','teacher','({teacher_code} - {teacher_id})');
 /*
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
