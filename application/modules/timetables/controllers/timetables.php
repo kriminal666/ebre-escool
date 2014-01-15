@@ -105,13 +105,7 @@ class timetables extends skeleton_main {
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
 
             foreach($all_teacher_study_modules as $module){
-                //echo $module->study_module_id;
-                //$hours[]=$module->study_module_id;
-
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
-           
-//                echo " - $hours->num_rows<br/>";
-                //$test[]=$this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
 
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
@@ -152,9 +146,9 @@ class timetables extends skeleton_main {
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
             $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
             $data['first_time_slot_orderbygroupid'] = $first_time_slot_orderbygroupid;
-            
-            $all_teacher_groups_list = "Grup1, Grup2, Grup3";
 
+            $all_teacher_groups_list = $this->get_teacher_group_list($all_teacher_groups);
+            
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
 
             $data['all_teacher_groups_count']= count($all_teacher_groups);
@@ -173,7 +167,10 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
 
-            $all_teacher_study_modules_list = "M7, M8, M9";
+            //$all_teacher_study_modules_list = "M7, M8, M9";
+            $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_code)->result_array();
+
+            $all_teacher_study_modules_list = $this->get_teacher_study_modules_list($teacher_study_modules_list);
 
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
             
@@ -588,6 +585,42 @@ class timetables extends skeleton_main {
                 $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
         return $time_slots_array;
+    }
+
+    public function get_teacher_group_list($all_teacher_groups)
+    {
+            $group_list_first=0;
+            foreach($all_teacher_groups as $teacher_group_list){
+                if($group_list_first==0)
+                {
+                    $all_teacher_groups_list = $teacher_group_list['classroom_group_code'];
+                } else {
+                    $all_teacher_groups_list .= ", ".$teacher_group_list['classroom_group_code'];
+                }
+                $group_list_first++;                
+            }
+            return $all_teacher_groups_list;
+    }
+
+    public function get_teacher_study_modules_list($teacher_study_modules_list)
+    {
+            foreach ($teacher_study_modules_list as $mod_list){
+                $module_list[] = $mod_list['study_module_shortname'];
+            }
+            $module_list = array_unique($module_list);
+
+            $study_module_first=0;
+            foreach ($module_list as $study_module_list)
+            {
+                if($study_module_first==0)
+                {
+                    $all_teacher_study_modules_list = $study_module_list;
+                } else {
+                    $all_teacher_study_modules_list .= ", ".$study_module_list;
+                }
+                $study_module_first++;
+            }
+            return $all_teacher_study_modules_list;
     }
 	
 }
