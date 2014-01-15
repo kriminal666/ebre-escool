@@ -54,7 +54,6 @@ $(function() {
 
 });
 </script>
-
 <div class="container">
     <center>
         <select id="classroom_groups" style="width: 400px">
@@ -71,7 +70,7 @@ $(function() {
 
     <div style="height: 10px;"></div>
     <center>
-            Mostrar llegenda: <input id="hide_show_legend" type="checkbox" class="switch-small" 
+            <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
@@ -89,10 +88,10 @@ $(function() {
                         </td>
                     </tr>
                     <tr>
-                        <th><?php echo "Grup";?></th>
-                        <th><?php echo "Codi assignatura";?></th>
-                        <th><?php echo "Nom";?></th>
-                        <th><?php echo "Hores setmanals";?></th>
+                        <th><?php echo lang('group');?></th>
+                        <th><?php echo lang('lesson_id');?></th>
+                        <th><?php echo lang('name');?></th>
+                        <th><?php echo lang('hours_per_week');?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,9 +185,6 @@ $(function() {
         <div class="well">
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">
                 <img alt="Creative Commons Licence" style="border-width: 0" src="http://i.creativecommons.org/l/by-nc-sa/2.0/uk/88x31.png" /></a><br />
-            Els horaris s'han fet utilitzant l'obra de <a target="_blank" href="http://twitter.com/Ben_Lowe">Ben Lowe</a> de 
-            <a target="_blank" href="http://www.triballabs.net">Tribal Labs</a> amb una llicència <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">
-                Creative Commons Attribution-NonCommercial-ShareAlike 2.0 UK: England &amp; Wales
-                License</a>.
+                <?php echo lang('creative_commons_timetables_text');?>
         </div>
 </div>

@@ -91,7 +91,7 @@
 
          
          <li><a href="<?=base_url()?>index.php/skeleton_main/organizational_unit"><?php echo lang('organizationalunit_menu');?></a></li>
-         <li><a href="<?=base_url()?>index.php/skeleton_main/location"><?php echo lang('location_menu');?></a></li>
+         <li><a href="<?=base_url()?>index.php/location/location"><?php echo lang('location_menu');?></a></li>
 
          <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo lang('attendance_managment');?></a>
