@@ -103,6 +103,16 @@ class timetables extends skeleton_main {
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
+            //print_r($all_teacher_study_modules);
+/**/
+            for($i=0;$i<count($all_teacher_study_modules);$i++)
+            {
+                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
+
+                $resultat[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+            }
+            $data['group_by_study_modules'] = $resultat;
+/**/
 
             foreach($all_teacher_study_modules as $module){
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
@@ -324,11 +334,19 @@ class timetables extends skeleton_main {
 
             $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$first_time_slot_order,$last_time_slot_order);
 
-            //print_r($lessonsfortimetablebyteacherid);                                  
+            //print_r($lessonsfortimetablebyteacherid);
 
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
+            //print_r($all_teacher_study_modules);
+            for($i=0;$i<count($all_teacher_study_modules);$i++)
+            {
+                $id = $all_teacher_study_modules[$i]->study_module_id;
+
+                $resultat[$id] = $this->timetables_model->get_all_group_by_study_module($id,$teacher_id);                       
+            }
+            $data['group_by_study_modules'] = $resultat;
 
             foreach($all_teacher_study_modules as $module){
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
@@ -623,4 +641,64 @@ class timetables extends skeleton_main {
             return $all_teacher_study_modules_list;
     }
 	
+    public function classroom_group_info($id_group){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_group'] = $id_group;
+
+            $this->load->view('timetables/groupinfo',$data);
+
+            $this->_load_body_footer();       
+
+    }
+
+    public function study_module_info($id_study_module){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_study_module'] = $id_study_module;
+
+            $this->load->view('timetables/studymoduleinfo',$data);
+
+            $this->_load_body_footer();     
+
+    }
+
+    public function location_info($id_location){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_location'] = $id_location;
+
+            $this->load->view('timetables/locationinfo',$data);
+
+            $this->_load_body_footer(); 
+
+    }        
+
 }

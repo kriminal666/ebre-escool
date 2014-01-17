@@ -63,8 +63,49 @@ class timetables_model  extends CI_Model  {
 
 		
 	}
+//
+function get_all_group_by_study_module($study_module,$teacher_id) {
 
-	
+/*
+SELECT DISTINCT classroom_group_code, lesson_teacher_id,lesson_study_module_id FROM lesson 
+JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_classroom_group_id WHERE lesson_teacher_id = 30
+*/
+
+        $this->db->select('classroom_group_code, lesson_teacher_id,lesson_study_module_id');
+		$this->db->distinct();
+		$this->db->from('lesson');
+        $this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->where('lesson_study_module_id',$study_module);
+		$this->db->where('lesson_teacher_id',$teacher_id);
+
+/*
+        $this->db->select('study_module_id,classroom_group_code');
+		$this->db->distinct();
+		$this->db->from('lesson');
+        $this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
+        $this->db->join('study_module', 'study_module.study_module_id = lesson.lesson_study_module_id');
+		$this->db->where('lesson_study_module_id',$study_module);
+		$this->db->where('lesson_teacher_id',$teacher_id);
+ */       
+        $query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+		foreach ($query->result() as $row)
+		{
+			if($row->classroom_group_code)
+    			return $row->classroom_group_code;
+    		else
+    			return false;
+		}
+		//if ($query->num_rows() > 0) {
+		//	return $query;
+		//}			
+		//else
+		//	return false;
+
+}	
+
+
+//
 
 	function get_all_group_study_modules($classroom_group_id) {
 		$this->db->from('study_module');
