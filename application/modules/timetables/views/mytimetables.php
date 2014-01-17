@@ -260,10 +260,12 @@ $(function() {
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo lang('grups');?>
+                                <?php echo lang('groups');?>
                             </td>
                             <td>
-                                <?php echo $all_teacher_groups_list;?>
+                                <?php foreach($all_teacher_groups_list as $teacher_groups){ ?>
+                                <a href="classroom_group_info/<?php echo $teacher_groups;?>"><?php echo $teacher_groups;?></a>
+                                <?php echo " ";} ?>
                             </td>
                         </tr>
 
@@ -281,7 +283,9 @@ $(function() {
                                 <?php echo lang('modules');?>
                             </td>
                             <td>
-                                <?php echo $all_teacher_study_modules_list;?>
+                                <?php foreach($all_teacher_study_modules_list as $teacher_study_modules){ ?>
+                                <a href="study_module_info/<?php echo $teacher_study_modules;?>"><?php echo $teacher_study_modules;?></a>
+                                <?php echo " ";} ?>                                
                             </td>
                         </tr>
                     
