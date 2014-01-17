@@ -62,34 +62,31 @@ class timetables extends skeleton_main {
             //TODO: select current user (sessions user as default teacher)
             $data['default_teacher'] = $teacher_code;                           
 
-            /* Obtenir Timeslots */            
+            /* Get Timeslots */            
             $timeslots = $this->get_time_slots($compact,$teacher_id);
             foreach($timeslots as $key => $value){
                 $data[$key] = $value;
             }
 
+            /* Get All Lective Days */
             $days = $this->timetables_model->getAllLectiveDays();
-
             $data['days']=$days;
 
+            /* Get All Timetable Lessons For Teacher*/
             $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
-
             $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$data['first_time_slot_order'],$data['last_time_slot_order']);
-            //echo $first_time_slot_order ."-".$last_time_slot_order;
-            //print_r($lessonsfortimetablebyteacherid);
-
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
-            //print_r($all_teacher_study_modules);
+            $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
             for($i=0;$i<count($all_teacher_study_modules);$i++)
             {
                 $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
-
-                $resultat[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+                $group_by_study_modules[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
             }
-            $data['group_by_study_modules'] = $resultat;
+
+            $data['group_by_study_modules'] = $group_by_study_modules;
 
             $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
@@ -97,7 +94,6 @@ class timetables extends skeleton_main {
                 $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
 
-            $data['all_teacher_study_modules']= $all_teacher_study_modules;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
@@ -156,10 +152,6 @@ class timetables extends skeleton_main {
             $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_code)->result_array();
             $all_teacher_study_modules_list = $this->get_teacher_study_modules_list($teacher_study_modules_list);
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
-
-            $days = $this->timetables_model->getAllLectiveDays();
-
-            $data['days']=$days;
 
             $this->load->view('timetables/allteacherstimetables',$data);
             
@@ -269,34 +261,30 @@ class timetables extends skeleton_main {
 
             //echo "Teacher code: $teacher_code | teacher_id: $teacher_id | teacher_full_name: $teacher_full_name";
 
-            /* Obtenir Timeslots */            
+            /* Get Timeslots */            
             $timeslots = $this->get_time_slots($compact,$teacher_id);
             foreach($timeslots as $key => $value){
                 $data[$key] = $value;
             }
 
+            /* Get All Lective Days */
             $days = $this->timetables_model->getAllLectiveDays();
-
             $data['days']=$days;
 
+            /* Get All Timetable Lessons For Teacher*/
             $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
-
             $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$data['first_time_slot_order'],$data['last_time_slot_order']);
-            //echo $first_time_slot_order ."-".$last_time_slot_order;
-            //print_r($lessonsfortimetablebyteacherid);
-
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
-            //print_r($all_teacher_study_modules);
+            $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
             for($i=0;$i<count($all_teacher_study_modules);$i++)
             {
                 $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
-
-                $resultat[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+                $group_by_study_modules[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
             }
-            $data['group_by_study_modules'] = $resultat;
+            $data['group_by_study_modules'] = $group_by_study_modules;
 
             $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
@@ -304,7 +292,6 @@ class timetables extends skeleton_main {
                 $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
 
-            $data['all_teacher_study_modules']= $all_teacher_study_modules;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
