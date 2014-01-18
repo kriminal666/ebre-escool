@@ -1,0 +1,1 @@
+﻿<h3><?php echo $id_group; ?></h3>

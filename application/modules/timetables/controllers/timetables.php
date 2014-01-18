@@ -31,6 +31,7 @@ class timetables extends skeleton_main {
 	}
 
     public function allteacherstimetables($teacher_code = null,$compact = "") {
+
         if (!$this->skeleton_auth->logged_in()) {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
@@ -49,7 +50,6 @@ class timetables extends skeleton_main {
             $teacher_id=$this->timetables_model->get_teacher_id_from_teacher_code($teacher_code);//;
 
             $data["teacher_code"] = $teacher_code;
-
             $data["teacher_id"] = $teacher_id;
 
             //$teacher_id=39;
@@ -61,51 +61,40 @@ class timetables extends skeleton_main {
 
             //TODO: select current user (sessions user as default teacher)
             $data['default_teacher'] = $teacher_code;                           
-            
-            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
 
-            $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
-
-            //Get first and last time slot order
-            $keys = array_keys($time_slots_array);
-            $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
-            $last_time_slot_order = $time_slots_array[$keys[count($time_slots_array)-1]]['time_slot_order'];
-
-            //Get last time slot order
-
-            $data['time_slots_array'] = $time_slots_array;
-
-            foreach ($time_slots_array as $time_slot)   {
-                $time_slot_data = new stdClass;
-                $time_slot_data->time_slot_start_time = $time_slot['time_slot_start_time'];
-                $time_slot_data->time_interval = $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
-                $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
-
-                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+            /* Obtenir Timeslots */            
+            $timeslots = $this->get_time_slots($compact,$teacher_id);
+            foreach($timeslots as $key => $value){
+                $data[$key] = $value;
             }
 
-            $data['time_slots']=$time_slots;
-            $data['time_slots_count']=count($time_slots);
-            $data['complete_time_slots_count']=count($complete_time_slots_array);            
-            $data['first_time_slot_order']=$first_time_slot_order;
-            $data['last_time_slot_order']=$last_time_slot_order;
-//echo $last_time_slot_order;
             $days = $this->timetables_model->getAllLectiveDays();
 
             $data['days']=$days;
 
             $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
 
-            $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$first_time_slot_order,$last_time_slot_order);
-//echo $first_time_slot_order ."-".$last_time_slot_order;
-            //print_r($lessonsfortimetablebyteacherid);                                  
+            $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$data['first_time_slot_order'],$data['last_time_slot_order']);
+            //echo $first_time_slot_order ."-".$last_time_slot_order;
+            //print_r($lessonsfortimetablebyteacherid);
 
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
+            //print_r($all_teacher_study_modules);
 
+            for($i=0;$i<count($all_teacher_study_modules);$i++)
+            {
+                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
+
+                $resultat[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+            }
+            $data['group_by_study_modules'] = $resultat;
+
+            $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
 
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
@@ -114,7 +103,6 @@ class timetables extends skeleton_main {
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
 
             $data['study_modules_colours']= $study_modules_colours;
-
 
             $data['compact']= $compact;
 
@@ -135,29 +123,27 @@ class timetables extends skeleton_main {
                 $time_slot_order = $this->time_slot_order($shift);
                 $shift_first_time_slot_order = $time_slot_order['first'];
                 $shift_last_time_slot_order = $time_slot_order['last'];
-           
+
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
                 $first_time_slot_orderbygroupid[$classroom_group_id] = $shift_first_time_slot_order;
-
             }
-  
+
             $data['array_all_teacher_groups_time_slots'] = $array_all_teacher_groups_time_slots;
             $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
             $data['first_time_slot_orderbygroupid'] = $first_time_slot_orderbygroupid;
 
             $all_teacher_groups_list = $this->get_teacher_group_list($all_teacher_groups);
-            
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
-
             $data['all_teacher_groups_count']= count($all_teacher_groups);
 
-            $total_week_hours = 15;
+            //$total_week_hours = 15;
 
             $data['total_week_hours'] = $total_week_hours;
 
-            $all_teacher_study_modules_count = 11;
+            //$all_teacher_study_modules_count = 11;
+            $all_teacher_study_modules_count = count($all_teacher_study_modules);
 
             $total_morning_week_hours = "TODO";
             $total_afternoon_week_hours = "TODO";
@@ -167,13 +153,9 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
 
-            //$all_teacher_study_modules_list = "M7, M8, M9";
             $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_code)->result_array();
-
             $all_teacher_study_modules_list = $this->get_teacher_study_modules_list($teacher_study_modules_list);
-
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
-            
 
             $days = $this->timetables_model->getAllLectiveDays();
 
@@ -181,8 +163,7 @@ class timetables extends skeleton_main {
 
             $this->load->view('timetables/allteacherstimetables',$data);
             
-            $this->_load_body_footer();       
-
+            $this->_load_body_footer();
     }
 
     public function allgroupstimetables($classroom_group_id = null) {
@@ -266,16 +247,16 @@ class timetables extends skeleton_main {
 	
 	public function mytimetables($compact = "") {
 
-	    if (!$this->skeleton_auth->logged_in())
-	        {
-	        //redirect them to the login page
-	        redirect($this->skeleton_auth->login_page, 'refresh');
-	        }
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
             //No s'utilitza el select2, es podria evitar que cargués
             $header_data = $this->load_header_data();
 
             $this->_load_html_header($header_data);
-            $this->_load_body_header();     
+            $this->_load_body_header();
 
             //TODO: set teacher id by session values (current session user)
             $teacher_id=40;
@@ -288,33 +269,11 @@ class timetables extends skeleton_main {
 
             //echo "Teacher code: $teacher_code | teacher_id: $teacher_id | teacher_full_name: $teacher_full_name";
 
-            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
-
-            $time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
-
-            //Get first and last time slot order
-            $keys = array_keys($time_slots_array);
-            $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
-            $last_time_slot_order = $time_slots_array[$keys[count($time_slots_array)-1]]['time_slot_order'];
-
-            //Get last time slot order
-
-            $data['time_slots_array'] = $time_slots_array;
-
-            foreach ($time_slots_array as $time_slot)   {
-                $time_slot_data = new stdClass;
-                $time_slot_data->time_slot_start_time= $time_slot['time_slot_start_time'];
-                $time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
-                $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
-
-                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+            /* Obtenir Timeslots */            
+            $timeslots = $this->get_time_slots($compact,$teacher_id);
+            foreach($timeslots as $key => $value){
+                $data[$key] = $value;
             }
-
-            $data['time_slots']=$time_slots;
-            $data['time_slots_count']=count($time_slots);
-            $data['complete_time_slots_count']=count($complete_time_slots_array);            
-            $data['first_time_slot_order']=$first_time_slot_order;
-            $data['last_time_slot_order']=$last_time_slot_order;
 
             $days = $this->timetables_model->getAllLectiveDays();
 
@@ -322,16 +281,27 @@ class timetables extends skeleton_main {
 
             $lessonsfortimetablebyteacherid = $this->timetables_model->get_all_lessonsfortimetablebyteacherid($teacher_id);
 
-            $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$first_time_slot_order,$last_time_slot_order);
-
-            //print_r($lessonsfortimetablebyteacherid);                                  
+            $lessonsfortimetablebyteacherid = $this->add_breaks($lessonsfortimetablebyteacherid,$data['first_time_slot_order'],$data['last_time_slot_order']);
+            //echo $first_time_slot_order ."-".$last_time_slot_order;
+            //print_r($lessonsfortimetablebyteacherid);
 
             $data['lessonsfortimetablebyteacherid']= $lessonsfortimetablebyteacherid;
 
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
+            //print_r($all_teacher_study_modules);
 
+            for($i=0;$i<count($all_teacher_study_modules);$i++)
+            {
+                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
+
+                $resultat[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+            }
+            $data['group_by_study_modules'] = $resultat;
+
+            $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
 
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
@@ -360,7 +330,7 @@ class timetables extends skeleton_main {
                 $time_slot_order = $this->time_slot_order($shift);
                 $shift_first_time_slot_order = $time_slot_order['first'];
                 $shift_last_time_slot_order = $time_slot_order['last'];
-            
+
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
 
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
@@ -371,17 +341,16 @@ class timetables extends skeleton_main {
             $data['lessonsfortimetablebygroupid'] = $lessonsfortimetablebygroupid;
             $data['first_time_slot_orderbygroupid'] = $first_time_slot_orderbygroupid;
 
-            $all_teacher_groups_list = "Grup1, Grup2, Grup3";
-
+            $all_teacher_groups_list = $this->get_teacher_group_list($all_teacher_groups);
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
-
             $data['all_teacher_groups_count']= count($all_teacher_groups);
 
-            $total_week_hours = 15;
+            //$total_week_hours = 15;
 
             $data['total_week_hours'] = $total_week_hours;
 
-            $all_teacher_study_modules_count = 11;
+            //$all_teacher_study_modules_count = 11;
+            $all_teacher_study_modules_count = count($all_teacher_study_modules);
 
             $total_morning_week_hours = "TODO";
             $total_afternoon_week_hours = "TODO";
@@ -391,15 +360,14 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
 
-            $all_teacher_study_modules_list = "M7, M8, M9";
-
+            $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_code)->result_array();
+            $all_teacher_study_modules_list = $this->get_teacher_study_modules_list($teacher_study_modules_list);
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
 
             $this->load->view('timetables/mytimetables',$data);
 
-            $this->_load_body_footer();       
-    	                    
-	}
+            $this->_load_body_footer();
+    }
 
     protected function _assign_colours_to_study_modules($study_modules) {
         $study_modules_colours = array();
@@ -575,20 +543,50 @@ class timetables extends skeleton_main {
         return $time_slot_order;
     }
 
-    public function get_time_slots_array($compact,$teacher_id)
+    public function get_time_slots($compact,$teacher_id)
     {
-        $time_slots_array = array();
+            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            $data['complete_time_slots_count'] = count($complete_time_slots_array);            
 
+            //$time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
             if ($compact) {
                 $time_slots_array = $complete_time_slots_array;
             } else {
                 $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
             }
-        return $time_slots_array;
+
+            $data['time_slots_array'] = $time_slots_array;
+
+            //Get first and last time slot order
+            $keys = array_keys($time_slots_array);
+            $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
+            $data['first_time_slot_order'] = $first_time_slot_order;            
+            $last_time_slot_order = $time_slots_array[$keys[count($time_slots_array)-1]]['time_slot_order'];
+            $data['last_time_slot_order'] = $last_time_slot_order;
+
+            foreach ($time_slots_array as $time_slot)   {
+                $time_slot_data = new stdClass;
+                $time_slot_data->time_slot_start_time = $time_slot['time_slot_start_time'];
+                $time_slot_data->time_interval = $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
+                $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
+
+                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+            }
+
+            $data['time_slots'] = $time_slots;
+            $data['time_slots_count'] = count($time_slots);
+
+            return $data;
     }
 
     public function get_teacher_group_list($all_teacher_groups)
     {
+
+            foreach($all_teacher_groups as $teacher_group_list){
+                    $all_teacher_groups_list[] = $teacher_group_list['classroom_group_code'];
+                }
+            return $all_teacher_groups_list;
+        /*
             $group_list_first=0;
             foreach($all_teacher_groups as $teacher_group_list){
                 if($group_list_first==0)
@@ -600,6 +598,7 @@ class timetables extends skeleton_main {
                 $group_list_first++;                
             }
             return $all_teacher_groups_list;
+        */
     }
 
     public function get_teacher_study_modules_list($teacher_study_modules_list)
@@ -609,6 +608,14 @@ class timetables extends skeleton_main {
             }
             $module_list = array_unique($module_list);
 
+            foreach ($module_list as $study_module_list)
+            {
+                    $all_teacher_study_modules_list[] = $study_module_list;
+            }
+            return $all_teacher_study_modules_list;
+
+
+/*
             $study_module_first=0;
             foreach ($module_list as $study_module_list)
             {
@@ -621,6 +628,68 @@ class timetables extends skeleton_main {
                 $study_module_first++;
             }
             return $all_teacher_study_modules_list;
+*/
+
     }
 	
+    public function classroom_group_info($id_group){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_group'] = $id_group;
+
+            $this->load->view('timetables/groupinfo',$data);
+
+            $this->_load_body_footer();       
+
+    }
+
+    public function study_module_info($id_study_module){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_study_module'] = $id_study_module;
+
+            $this->load->view('timetables/studymoduleinfo',$data);
+
+            $this->_load_body_footer();     
+
+    }
+
+    public function location_info($id_location){
+
+        if (!$this->skeleton_auth->logged_in())
+            {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+            }
+            $header_data = $this->load_header_data();
+
+            $this->_load_html_header($header_data);
+            $this->_load_body_header();     
+
+            $data['id_location'] = $id_location;
+
+            $this->load->view('timetables/locationinfo',$data);
+
+            $this->_load_body_footer(); 
+
+    }        
+
 }

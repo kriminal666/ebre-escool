@@ -135,10 +135,11 @@ $(function() {
                     <?php foreach ($all_teacher_study_modules as $study_module) : ?>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo "TODO";?>
+                                <a href="classroom_group_info/<?php echo $group_by_study_modules[$study_module->study_module_id];?>"><?php echo $group_by_study_modules[$study_module->study_module_id];?></a>
                             </td>
                             <td class="<?php echo $study_modules_colours[$study_module->study_module_id];?>">
-                                <?php echo $study_module->study_module_shortname;?>
+                                <a href="study_module_info/<?php echo $study_module->study_module_shortname;?>"><?php echo $study_module->study_module_shortname;?></a>
+
                             </td>
                             <td>
                                 <?php echo $study_module->study_module_name;?>
@@ -182,8 +183,9 @@ $(function() {
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                                 data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
-                                <?php echo $day_lesson->location_code;?>
+                                <a href="classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
+                                <a href="study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
+                                <a href="location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
                             </li>
                         <?php $iii++;?>  
                         <?php endforeach; ?>
@@ -278,10 +280,12 @@ $(function() {
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
-                                <?php echo lang('grups');?>
+                                <?php echo lang('groups');?>
                             </td>
                             <td>
-                                <?php echo $all_teacher_groups_list;?>
+                                <?php foreach($all_teacher_groups_list as $teacher_groups){ ?>
+                                <a href="classroom_group_info/<?php echo $teacher_groups;?>"><?php echo $teacher_groups;?></a>
+                                <?php echo " ";} ?>
                             </td>
                         </tr>
 
@@ -299,7 +303,9 @@ $(function() {
                                 <?php echo lang('modules');?>
                             </td>
                             <td>
-                                <?php echo $all_teacher_study_modules_list;?>
+                                <?php foreach($all_teacher_study_modules_list as $teacher_study_modules){ ?>
+                                <a href="study_module_info/<?php echo $teacher_study_modules;?>"><?php echo $teacher_study_modules;?></a>
+                                <?php echo " ";} ?>                                
                             </td>
                         </tr>
                     
@@ -313,7 +319,7 @@ $(function() {
         <div class="row">
              <?php foreach ($all_teacher_groups as $teacher_group) : ?>
                 <div class="span6">
-                <b><center><?php echo $teacher_group['classroom_group_code'] . " ( " . $teacher_group['classroom_group_shortName']. " )" ;?>:</center></b>
+                <b><center><?php echo "<a href='../classroom_group_info/".$teacher_group['classroom_group_code']."'>".$teacher_group['classroom_group_code']."</a>" . " ( " . $teacher_group['classroom_group_shortName']. " )" ;?>:</center></b>
                 <div class="timetable" data-days="5" data-hours="<?php echo count($array_all_teacher_groups_time_slots[$teacher_group['classroom_group_id']]);?>">
                     <ul class="tt-events">
                         <?php $day_index = 0; $iii=0;?>
@@ -340,8 +346,9 @@ $(function() {
                                     <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                                         data-start="<?php echo $time_slot_current_position;?>" 
                                         data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                        <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
-                                        <?php echo $day_lesson->location_code;?>
+                                        <a href="classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
+                                        <a href="study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
+                                        <a href="location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
                                     </li>
                                     <?php $iii++;?>  
                                 <?php endforeach; ?>
