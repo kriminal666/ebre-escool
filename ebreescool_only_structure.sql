@@ -136,26 +136,27 @@ CREATE TABLE IF NOT EXISTS `organizational_unit` (
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creationUserId` int(11) DEFAULT NULL,
   `lastupdateUserId` int(11) DEFAULT NULL,
-  `location` int(11) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
   `markedForDeletion` enum('n','y') NOT NULL,
   `markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`organizational_unitId`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
 CREATE TABLE IF NOT EXISTS `location` (
-  `locationId` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `shortName` varchar(150) NOT NULL,
-  `description` text,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `parentLocation` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL,
-  `markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`locationId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `location_id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(150) NOT NULL,
+  `location_shortName` varchar(150) NOT NULL,
+  `location_description` text,
+  `location_entryDate` datetime NOT NULL,
+  `location_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `location_creationUserId` int(11) DEFAULT NULL,
+  `location_lastupdateUserId` int(11) DEFAULT NULL,
+  `location_parentLocation` int(11) DEFAULT NULL,
+  `location_markedForDeletion` enum('n','y') NOT NULL,
+  `location_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`location_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
 
 --
 -- Database: `ebre_escool`
