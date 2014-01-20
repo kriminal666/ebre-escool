@@ -472,6 +472,9 @@ class timetables extends skeleton_main {
             $header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     base_url('assets/css/bootstrap.min.extracolours.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/horaris.css'));            
 
 
             $header_data= $this->add_javascript_to_html_header_data(
