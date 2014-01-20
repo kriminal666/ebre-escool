@@ -12,6 +12,7 @@ class managment extends skeleton_main {
     {
         parent::__construct();
         
+        //CAHNGE: Sergi Tur. Move all function form attendance model to managment model
         //$this->load->model('attendance_model');
         $this->load->model('managment_model');
         $this->load->library('ebre_escool_ldap');
@@ -160,11 +161,11 @@ class managment extends skeleton_main {
 
 		$data['exists_assignatures_table']=false;
 		if ($exists_assignatures_table)		{
-			$data['all_lessons']= $this->attendance_model->getAllLessons(true)->result();
+			$data['all_lessons']= $this->managment_model->getAllLessons(true)->result();
 			$data['exists_assignatures_table']=true;			                
 		}
 		else
-			$data['all_lessons']= $this->attendance_model->getAllLessons()->result();
+			$data['all_lessons']= $this->managment_model->getAllLessons()->result();
 		
 		$default_lesson_code = $this->config->item('default_group_code');
 		if ($lesson_code==null) {
@@ -240,7 +241,7 @@ class managment extends skeleton_main {
 		//Load CSS & JS
 		$this->set_header_data();		
 		
-		$all_groups = $this->attendance_model->get_all_classroom_groups();
+		$all_groups = $this->managment_model->get_all_classroom_groups();
 		
 		$data['all_groups']=$all_groups->result();
 				
@@ -258,7 +259,7 @@ class managment extends skeleton_main {
 		if ($data['selected_group']=="ALL_GROUPS")
 			$data['selected_group_names']= array (lang("all_students_table_title"),"");
 		else
-			$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+			$data['selected_group_names']= $this->managment_model->getGroupNamesByGroupCode($data['selected_group']);
 		
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
@@ -335,7 +336,7 @@ class managment extends skeleton_main {
 		//Load CSS & JS
 		$this->set_header_data();
 
-		$all_groups = $this->attendance_model->get_all_classroom_groups();
+		$all_groups = $this->managment_model->get_all_classroom_groups();
 		
 		$data['all_groups']=$all_groups->result();
 		
@@ -353,7 +354,7 @@ class managment extends skeleton_main {
 		if ($data['selected_group']=="ALL_GROUPS")
 			$data['selected_group_names']= array (lang("all_students_table_title"),"");
 		else
-			$data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+			$data['selected_group_names']= $this->managment_model->getGroupNamesByGroupCode($data['selected_group']);
 		
 		$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
 
@@ -406,7 +407,7 @@ class managment extends skeleton_main {
 		
 		$data['all_groups_table_title']=lang("all_groups");
 		
-		$all_groups = $this->attendance_model->get_all_classroom_groups();
+		$all_groups = $this->managment_model->get_all_classroom_groups();
 		
 		$data['all_groups']=array();
 		
