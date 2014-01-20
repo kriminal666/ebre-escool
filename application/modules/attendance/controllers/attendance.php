@@ -7,6 +7,80 @@ class attendance extends skeleton_main {
 	public $body_header_view ='include/ebre_escool_body_header.php' ;
 
 	public $body_header_lang_file ='ebre_escool_body_header' ;
+
+	public function load_header_data(){
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
+		$header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css'));  
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            base_url('assets/css/tribal-timetable.css')); 
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css");
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/bootstrap-switch.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/bootstrap.min.extracolours.css')); 
+
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/jquery-1.9.1.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.ca.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.es.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-tooltip.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-collapse.js'));                
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-shared.js'));        
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-timetable.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-switch.min.js'));
+
+		return $header_data; 
+        
+    }
 	
 	function __construct()
     {
@@ -383,7 +457,7 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function check_attendance($teacher_code = null,$group_code = null) {
+	public function check_attendance($teacher_code = null, $group_code = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -391,82 +465,38 @@ class attendance extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
-		$header_data= $this->add_css_to_html_header_data(
-			$this->_get_html_header_data(),
-			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
-		$header_data= $this->add_css_to_html_header_data(
-            $header_data,
-            base_url('assets/css/datepicker.css'));  
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-            base_url('assets/css/tribal-timetable.css')); 
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
+		$header_data = $this->load_header_data();
+        $this->_load_html_header($header_data);
 
-		//JS
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://code.jquery.com/jquery-1.9.1.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			base_url('assets/js/bootstrap-datepicker.js'));
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			base_url('assets/js/bootstrap-datepicker.ca.js'));
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			base_url('assets/js/bootstrap-datepicker.es.js'));
-		$header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/bootstrap-tooltip.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/bootstrap-collapse.js'));                
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/tribal.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/tribal-shared.js'));        
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/tribal-timetable.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
-        
-		$this->_load_html_header($header_data); 
-		
 		/*******************
 		/*      BODY     *
 		/******************/
 		$this->_load_body_header();
-		
-		//TODO: select current user (sessions user as default teacher)
-	    if ($teacher_code == null) {
-	    	$teacher_code = 43;
-	    }
-		
-		//Load teachers from Model
-		$teachers_array = $this->attendance_model->get_all_teachers_ids_and_names();
 
-		$data['teachers'] = $teachers_array;
+		if ($teacher_code == null) {
+	    	//TODO: Default teacher: current logged user
+	    	$teacher_code = 41;
+	    } else {
+	    	//TODO: Check if user is admin: if not admin it could not select the teacher: Force teacher to be himself
+	    	if (false) { $teacher_code = 41; }
+	    }
+
+	    $teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
+
+	    //echo "teacher_id: $teacher_id<br/>";       
+	    //echo "teacher_code: $teacher_code<br/>";       
+        
+		//TODO: USER IS ADMIN: Show all teachers dropdown
+		if (true) {
+			//Load teachers from Model
+			$teachers_array = $this->attendance_model->get_all_teachers_ids_and_names();
+
+			$data['teachers'] = $teachers_array;
+		} else {
+			//Show Only one teacher
+			$teachers_array = $this->attendance_model->get_teacher_ids_and_names($teacher_id);
+			$data['teachers'] = $teachers_array;
+		}
 
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
@@ -474,31 +504,110 @@ class attendance extends skeleton_main {
 	    $data['check_attendance_date'] = date('d/m/Y');
 
 	    //Obtain Time Slots
-	    $time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
+    	$time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
+    	$time_slots_array_byteacher_and_day = $this->attendance_model->getAllTimeSlotsByTeacherCodeAndDay($teacher_id,1)->result_array();
+    	$lessons_array_byteacher_and_day = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,1);
 
 	    $data['time_slots_array'] = $time_slots_array;
+	    $data['time_slots_array_byteacher_and_day'] = $time_slots_array_byteacher_and_day;
 
 	    //print_r($time_slots_array);
 
 	    $teacher_groups_current_day=array();
 	    
+	    $all_time_slots=array();
+	    $all_time_slots_reduced=array();
+
+	    $classroom_groups_colours = $this->_alt_assign_colours($lessons_array_byteacher_and_day,"classroom_group_code");
+		$study_modules_colours = $this->_assign_colours($lessons_array_byteacher_and_day,"study_module_id");
+
 	    foreach ($time_slots_array as $time_slot)	{
+	    	$group_code = "";
+			$base_url =  "";
+			$group_name =  "";
+			$lesson_name =  "";
+			$lesson_location =  "";
    			$time_slot_data = new stdClass;
 			$time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
 			$time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
+			$time_slot_id = $time_slot['time_slot_id'];
+
+			$study_module_id = null;
+			$group_code = null;
+			$time_slot_data->lesson_colour = "btn-default";
+			if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
+    			$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
+				$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
+				$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;	
+				$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
+				$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
+				$lesson_location = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_location;
+			} 
+			
+			$time_slot_data->group_code = $group_code;
+			$time_slot_data->group_url= $base_url;
+			$time_slot_data->group_name = $group_name;
+			$time_slot_data->lesson_name = $lesson_name;
+			$time_slot_data->lesson_location = $lesson_location;
+			$time_slot_data->classroom_group_colour = "btn-default";
+			if ( $group_code != null ) {
+				if (array_key_exists($group_code, $classroom_groups_colours)) {
+					$time_slot_data->classroom_group_colour = $classroom_groups_colours[$group_code];
+				} 
+			}
+			if ( $study_module_id != null ) {
+				if (array_key_exists($study_module_id, $study_modules_colours)) {
+					$time_slot_data->lesson_colour = $study_modules_colours[$study_module_id];
+				} 
+			}
+
+   			$all_time_slots[$time_slot_id] = $time_slot_data;
+		}
+
+		foreach ($time_slots_array_byteacher_and_day as $time_slot)	{
+			$group_code = "";
+			$base_url =  "";
+			$group_name =  "";
+			$lesson_name =  "";
+			$lesson_location =  "";
+   			$time_slot_data = new stdClass;
+			$time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
+			$time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
+			$time_slot_id = $time_slot['time_slot_id'];
 
 			//Obtain lesson for this teacher date and time slot
+			$study_module_id = null;
+			$time_slot_data->lesson_colour = "btn-default";
+			if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
+				$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
+				$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
+				$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;				
+				$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
+				$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
+				$lesson_location = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_location;
+			}
 
-			//$time_slots_array = $this->attendance_model->getLesson($teacher_code,$time_slot['time_slot_id'])->result_array();
+			$time_slot_data->group_code = $group_code;
+			$time_slot_data->group_url= $base_url;
+			$time_slot_data->group_name = $group_name;
+			$time_slot_data->lesson_name = $lesson_name;
+			$time_slot_data->lesson_location = $lesson_location;
+			if ( $group_code != null ) {
+				if (array_key_exists($group_code, $classroom_groups_colours)) {
+					$time_slot_data->classroom_group_colour = $classroom_groups_colours[$group_code];
+				} 
+			}
+			if ( $study_module_id != null ) {
+				if (array_key_exists($study_module_id, $study_modules_colours)) {
+					$time_slot_data->lesson_colour = $study_modules_colours[$study_module_id];
+				}
+			}
 
-			$time_slot_data->group_code="M 8 TODO";
-			$time_slot_data->group_url=base_url("index.php?/attendance/check_attendance/2DAMTODO");
-			$time_slot_data->group_name="2DAM TODO";
-
-   			$all_time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+   			$all_time_slots_reduced[$time_slot_id] = $time_slot_data;
 		}
 		
 		$data['all_time_slots']=$all_time_slots;
+		$data['all_time_slots_reduced']=$all_time_slots_reduced;
 		
 		//Obtain all teacher groups for selected date
 		
@@ -624,8 +733,62 @@ class attendance extends skeleton_main {
 		$this->_load_body_footer();		
 	}
 
+	protected function _alt_assign_colours($items,$item_id) {
+        $items_colours = array();
+        $bootstrap_button_colours = 
+            array( 1 => "btn-greenyellow " ,
+                   2 => "btn-darkred",
+                   3 => "btn-coral",
+                   4 => "btn-olivedrab",
+                   5 => "btn-yellowgreen",
+                   6 => "btn-mignightblue",
+                   7 => "btn-chocolate",
+                   8 => "btn-crimson",
+                   9 => "btn-default",
+                   0 => "btn-darkslategray"
+                   );
+        $index=1;
+        foreach ($items as $item) {
+            $items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
+            $index++;
+        }
+            
+        return $items_colours;
+    }
 
-	
+	protected function _assign_colours($items,$item_id) {
+        $items_colours = array();
+        $bootstrap_button_colours = 
+            array( 1 => "btn-primary" ,
+                   2 => "btn-info"    ,
+                   3 => "btn-warning" ,
+                   4 => "btn-success" ,
+                   5 => "btn-danger"  ,
+                   6 => "btn-sadlebrown" ,
+                   7 => "btn-purple" ,
+                   8 => "btn-gold" ,
+                   9 => "btn-palegreen" ,
+                   10 => "btn-lightgray" ,
+                   11 => "btn-greenyellow" ,
+                   12 => "btn-chocolate",
+                   13 => "btn-coral",
+                   14 => "btn-olivedrab",
+                   15 => "btn-yellowgreen",
+                   16 => "btn-mignightblue",
+                   17 => "btn-darkred",
+                   18 => "btn-crimson",
+                   19 => "btn-default",
+                   20 => "btn-darkslategray"
+                   );
+        $index=1;
+        foreach ($items as $item) {
+            $items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
+            $index++;
+        }
+            
+        return $items_colours;
+    }
+
 	public function index() {
 		$this->check_attendance();
 	}

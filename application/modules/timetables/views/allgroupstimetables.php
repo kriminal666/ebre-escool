@@ -2,6 +2,8 @@
 
 $(function() {
 
+    $('#hide_show_legend').bootstrapSwitch({});
+
     //*****************************
     //* CLASSROOMGROUP DROPDOWN  **
     //*****************************

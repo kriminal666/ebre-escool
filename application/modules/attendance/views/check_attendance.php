@@ -2,6 +2,16 @@
 
 $(function() {
 
+    $('#hide_show_reduced_table').bootstrapSwitch({});
+
+    $('#hide_show_reduced_table').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#check_attendance_table").slideToggle();
+        $("#check_attendance_table_reduced").slideToggle();
+    });
+
 	//toggle `popup` / `inline` mode
     $.fn.editable.defaults.mode = 'popup';     
     
@@ -40,14 +50,42 @@ $(function() {
     	daysOfWeekDisabled: "0,6",
     	autoclose: true,
     	todayHighlight: true
+    }).on("changeDate", function(e){
+        alert ( $('.input-append.date').datepicker('getDate'));
     });
 
 
-	//***************************
-	//* CHECK ATTENDANCE TABLE **
-	//***************************
+	//*****************************
+	//* CHECK ATTENDANCES TABLES **
+	//*****************************
 
-     $('#groups_by_teacher_an_date').dataTable( {
+    
+
+     $('#table_check_attendance_table_reduced').dataTable( {
+                "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+                "bPaginate": false,
+                "bFilter": false,
+        "bInfo": false,
+        });
+
+
+     $('#table_check_attendance_table').dataTable( {
                 "oLanguage": {
                         "sProcessing":   "Processant...",
                         "sLengthMenu":   "Mostra _MENU_ registres",
@@ -208,15 +246,87 @@ function read_value(alumne,hora){
            <?php endif; ?> 
    <?php endforeach; ?>	
   </select> 
-  <br/><br/>
-      <div class="input-append date">
+  <div style="height: 10px;"></div>
+
+  <div class="input-append date">
     	<input type="text" class="span2" value="<?php echo $check_attendance_date;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
-      </div>
+  </div>
+
+  <div style="height: 10px;"></div>
+
+  <?php echo "Mostrar horari complet:"; ?> <input id="hide_show_reduced_table" type="checkbox" class="switch-small" 
+            data-label-icon="icon-eye-open" 
+            data-on-label="<i class='icon-ok'></i>" 
+            data-off-label="<i class='icon-remove'></i>"
+            data-off="danger">
+  
+  <div style="height: 10px;"></div>
+
  </center>
 
- <div id ="check_attendance_table" style="visibility: visible">
+ <div id ="check_attendance_table_reduced">
+
+ <table class="table table-striped table-bordered table-hover table-condensed" id="table_check_attendance_table_reduced">
+ <thead style="background-color: #d9edf7;">
+  <tr>
+    <td colspan="4" style="text-align: center;"> <h4><?php echo $check_attendance_table_title?> | Dia: <?php echo $check_attendance_date?></h4></td>
+  </tr>
+  <tr>
+     <th><?php echo lang("time_slot");?></th>
+     <th><?php echo lang("ClassroomGroup");?></th>
+     <th>TODO Mòdul Profesional</th>
+     <th><?php echo lang("attendances_actions");?></th>
+  </tr>
+ </thead>
+ <tbody>
+  <!-- Iteration that shows teacher groups for selected day-->
+  <?php foreach ($all_time_slots_reduced as $key => $time_slot) : ?>
+   
+   <tr align="center" class="{cycle values='tr0,tr1'}" id="tr_<?php echo $key;?>">
+     <td><?php echo $time_slot->time_interval;?></td>
+     <td>
+        <?php if ($time_slot->time_slot_lective == 1): ?>
+            <li class="tt-event <?php echo $time_slot->classroom_group_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
+                <a href="<?php echo $time_slot->group_url;?> " style="text-decoration:none;color: inherit;"><?php echo $time_slot->group_name;?></a><br />
+                <?php echo $time_slot->lesson_location;?><br />
+            </li>
+        <?php else: ?>
+            <li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
+                DESCANS<br/>
+                &nbsp;<br />
+            </li>
+        <?php endif; ?>
+     </td>
+
+     <td>
+        <?php if ($time_slot->time_slot_lective == 1): ?>
+            <li class="tt-event <?php echo $time_slot->lesson_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
+                <?php echo $time_slot->group_code;?><br />
+                <?php echo $time_slot->lesson_location;?><br />
+            </li>
+        <?php else: ?>
+            <li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
+                DESCANS<br/>
+                &nbsp;<br />
+            </li>
+        <?php endif; ?>
+
+     </td>
+     <td>
+        <button type="button" class="btn btn-primary">
+            <i class="icon-bell icon-white"></i> Passar llista
+        </button>
+     </td>
+   </tr>
+        <?php endforeach; ?>
+     </tbody>
+    </table>
+
+ </div>
+
+ <div id ="check_attendance_table" style="display:none;">
  
- <table class="table table-striped table-bordered table-hover table-condensed" id="groups_by_teacher_an_date">
+ <table class="table table-striped table-bordered table-hover table-condensed" id="table_check_attendance_table">
  <thead style="background-color: #d9edf7;">
   <tr>
     <td colspan="4" style="text-align: center;"> <h4><?php echo $check_attendance_table_title?> | Dia: <?php echo $check_attendance_date?></h4></td>
@@ -236,9 +346,9 @@ function read_value(alumne,hora){
      <td><?php echo $time_slot->time_interval;?></td>
      <td>
 		<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event btn-warning" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
-           		<a href="<?php echo $time_slot->group_url;?> "><?php echo $time_slot->group_name;?></a><br />
-            	20.2<br />
+			<li class="tt-event <?php echo $time_slot->classroom_group_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
+           		<a href="<?php echo $time_slot->group_url;?> " style="text-decoration:none;color: inherit;"><?php echo $time_slot->group_name;?></a><br />
+            	<?php echo $time_slot->lesson_location;?><br />
         	</li>
 		<?php else: ?>
 			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
@@ -250,9 +360,9 @@ function read_value(alumne,hora){
 
      <td>
      	<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event btn-default" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
-           		<?php echo $time_slot->group_code;?><br />
-            	20.2<br />
+			<li class="tt-event <?php echo $time_slot->lesson_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
+           		<?php echo $time_slot->lesson_name;?><br />
+            	<?php echo $time_slot->lesson_location;?><br />
         	</li>
 		<?php else: ?>
 			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
