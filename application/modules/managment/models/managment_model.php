@@ -26,6 +26,37 @@ class managment_model  extends CI_Model  {
 		} 	
 		return false;
 	}
+
+	function get_all_classroom_groups($orderby='asc') {
+		//classroom_group
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_educationalLevelId,classroom_group_mentorId');
+		$this->db->from('classroom_group');
+		$this->db->order_by('classroom_group_code', $orderby);
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0)
+			return $query;
+		else
+			return false;
+	}
+
+	function getGroupNamesByGroupCode($group_code) {
+		//classroom_group
+		$this->db->select('classroom_group_name,classroom_group_shortName');
+		$this->db->from('classroom_group');
+		$this->db->where('classroom_group_code', $group_code);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			$row = $query->row(); 
+			return array($row->classroom_group_shortName,$row->classroom_group_name);
+		}
+		else
+			return false;
+	}
+	
 /*
 	function get_all_groups($orderby="asc") {
 		$this->db->from('classroom_group');

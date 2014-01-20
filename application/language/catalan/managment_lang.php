@@ -1,25 +1,21 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
- *  Name:  attendance lang - English
+ *  Name:  managment module lang - English
  *
  * Author: Sergi Tur Badenas
  * 		   sergitur@ebretic.com
  *
  * Created:  15.09.2013
  *
- * Description:  English language file for skeleton
+ * Description:  English language file for managment module
  *
  */
  
-$lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
 $lang['select_data_source']   = 'Escolliu origen de les dades';
-$lang['users_in_group'] = 'Usuaris per grups';
 $lang['lessons'] = 'Lliçons | Classes';
 
 $lang['select_group']   = 'Escolliu un grup';
-$lang['statistics_checkings']   = 'Estadístiques. Comprovacions';
-$lang['statistics_checkings_groups']   = 'Grups';
 
 
 //statistics_checkings_groups VIEW
