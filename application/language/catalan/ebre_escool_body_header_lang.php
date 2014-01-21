@@ -74,6 +74,10 @@ $lang['reports'] = 'Informes';
 $lang['managment'] = 'Gestió';
  $lang['users'] = 'Usuaris';
  $lang['groups'] = 'Grups';
+ $lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
+ $lang['statistics_checkings']   = 'Estadístiques. Comprovacions';
+  $lang['statistics_checkings_groups']   = 'Grups';
+  $lang['users_in_group'] = 'Usuaris per grups';
  $lang['preferences'] = 'Preferències';
 
 

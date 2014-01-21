@@ -160,8 +160,8 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo lang('managment');?> <b class="caret"></b></a>
           <ul class="dropdown-menu">
 			  <?php if ($show_managment_menu): ?>
-            <li><a href='<?=base_url()?>index.php/main/users'><?php echo lang('users');?></a></li>
-            <li><a href='<?=base_url()?>index.php/main/groups'><?php echo lang('groups');?></a></li>
+            <li><a href='<?=base_url()?>index.php/skeleton/users'><?php echo lang('users');?></a></li>
+            <li><a href='<?=base_url()?>index.php/skeleton/groups'><?php echo lang('groups');?></a></li>
             <li><a href='<?=base_url()?>index.php/managment/massive_change_password'><?php echo lang('massive_change_password');?></a></li>
             <li class="dropdown-submenu">
 				<a tabindex="-1" href="#"><?php echo lang('statistics_checkings')?></a>

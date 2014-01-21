@@ -136,25 +136,26 @@ CREATE TABLE IF NOT EXISTS `organizational_unit` (
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creationUserId` int(11) DEFAULT NULL,
   `lastupdateUserId` int(11) DEFAULT NULL,
-  `location` int(11) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
   `markedForDeletion` enum('n','y') NOT NULL,
   `markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`organizational_unitId`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
 CREATE TABLE IF NOT EXISTS `location` (
-  `locationId` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `shortName` varchar(150) NOT NULL,
-  `description` text,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `parentLocation` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL,
-  `markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`locationId`)
+  `location_id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(150) NOT NULL,
+  `location_shortName` varchar(150) NOT NULL,
+  `location_description` text,
+  `location_entryDate` datetime NOT NULL,
+  `location_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `location_creationUserId` int(11) DEFAULT NULL,
+  `location_lastupdateUserId` int(11) DEFAULT NULL,
+  `location_parentLocation` int(11) DEFAULT NULL,
+  `location_markedForDeletion` enum('n','y') NOT NULL,
+  `location_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`location_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -176,17 +177,18 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `classroom_group_shift` smallint(3),
+  `classroom_group_shift` smallint(6) NOT NULL,
+  `classroom_group_location_id` int(11) NOT NULL,
   `classroom_group_entryDate` datetime NOT NULL,
-  `classroom_group_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `classroom_group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `classroom_group_creationUserId` int(11) DEFAULT NULL,
   `classroom_group_lastupdateUserId` int(11) DEFAULT NULL,
   `classroom_group_parentLocation` int(11) DEFAULT NULL,
   `classroom_group_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`classroom_group_id`),
-  UNIQUE KEY `classroom_group_code` (`classroom_group_code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  UNIQUE KEY `groupCode` (`classroom_group_code`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=56 ;
 
 --
 -- Restriccions per la taula `users_groups`
