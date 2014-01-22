@@ -8,3 +8,8 @@ li.btn-yellowgreen, li.btn-beige, li.btn-palegreen, li.btn-coral, li.btn-lightgr
 	color: black;
 	text-shadow: none;
 }
+
+table td.group a
+{
+color: black !important;
+}

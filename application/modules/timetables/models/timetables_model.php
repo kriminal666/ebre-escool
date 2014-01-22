@@ -130,7 +130,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->where('study_module_teacher_id',$teacher_id);
         
         $query = $this->db->get();
-		
+		//echo $this->db->last_query();
 		if ($query->num_rows() > 0) {
 			return $query;
 		}			

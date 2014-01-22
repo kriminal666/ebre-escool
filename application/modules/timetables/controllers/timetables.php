@@ -84,7 +84,7 @@ class timetables extends skeleton_main {
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
-            $group_by_study_modules = $this->getGroupByStudModules($teacher_id);
+            $group_by_study_modules = $this->getGroupByStudyModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
 
@@ -258,7 +258,7 @@ class timetables extends skeleton_main {
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
-            $group_by_study_modules = $this->getGroupByStudModules($teacher_id);
+            $group_by_study_modules = $this->getGroupByStudyModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
             /* Get Week hours */
@@ -633,7 +633,7 @@ class timetables extends skeleton_main {
 
     }        
 
-    public function getGroupByStudModules($teacher_id){
+    public function getGroupByStudyModules($teacher_id){
             
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
             $data['all_teacher_study_modules']= $all_teacher_study_modules;

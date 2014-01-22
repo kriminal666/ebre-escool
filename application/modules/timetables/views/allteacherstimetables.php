@@ -134,7 +134,7 @@ $(function() {
                 <tbody><?php $i=0; ?>
                     <?php foreach ($all_teacher_study_modules as $study_module) : ?>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
-                            <td>
+                            <td class="group">
                                 <a href="classroom_group_info/<?php echo $group_by_study_modules[$study_module->study_module_id];?>"><?php echo $group_by_study_modules[$study_module->study_module_id];?></a>
                             </td>
                             <td class="<?php echo $study_modules_colours[$study_module->study_module_id];?>">

@@ -1425,7 +1425,7 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
   `non_lective_hours_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `non_lective_hours_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
   `non_lective_hours_name` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `non_lective_hours_description` varchar(100) NOT NULL,  
+  `non_lective_hours_description` text,  
   `non_lective_hours_entryDate` datetime NOT NULL,
   `non_lective_hours_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `non_lective_hours_creationUserId` int(11) DEFAULT NULL,
