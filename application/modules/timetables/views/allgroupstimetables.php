@@ -86,22 +86,25 @@ $(function() {
                 <thead style="background-color: #d9edf7;">
                     <tr>
                         <td colspan="4" style="text-align: center;">
-                            <h4><?php echo "Llegenda TODO SHA DE FER COMPLETAMENT!!! Mirar issue";?></h4>
+                            <h4><?php echo lang('legend');?></h4>
                         </td>
                     </tr>
                     <tr>
-                        <th><?php echo lang('group');?></th>
+                        <!--<th><?php //echo lang('group');?></th>-->
                         <th><?php echo lang('lesson_id');?></th>
                         <th><?php echo lang('name');?></th>
                         <th><?php echo lang('hours_per_week');?></th>
+                        <th><?php echo lang('hours_per_week_calc');?></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><?php $i=0; ?>
                     <?php foreach ($all_group_study_modules as $study_module) : ?>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <!--
                             <td>
-                                <?php echo "TODO";?>
+                                TODO
                             </td>
+                            -->
                             <td>
                                 <?php echo $study_module->study_module_shortname;?>
                             </td>
@@ -111,6 +114,9 @@ $(function() {
                             <td>
                                 <?php echo $study_module->study_module_hoursPerWeek;?>
                             </td>
+                            <td>
+                                <?php echo $all_teacher_study_modules_hours_per_week[$i]; $i++;?>
+                            </td>                              
                         </tr>
                     <?php endforeach; ?>
                     
@@ -133,7 +139,7 @@ $(function() {
                             if ($day_lesson->time_slot_lective) {
                                 $bootstrap_button_colour = "btn-inverse";
                             } else {
-                                $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
+                                @$bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
                             }
 
                             $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_order;
@@ -143,8 +149,15 @@ $(function() {
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                                 data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <?php echo $day_lesson->group_code;?> <?php echo $day_lesson->study_module_shortname;?><br/>
-                                <?php echo $day_lesson->location_code;?> <?php echo @$day_lesson->study_module_id;?>
+                                <a href="../classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
+                                <a href="../study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
+                                <a href="../location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
+
+
+                                <?php //echo $day_lesson->group_code;?>
+                                <?php //echo $day_lesson->study_module_shortname;?>
+                                <?php //echo $day_lesson->location_code;?> 
+                                <?php echo "(".@$day_lesson->study_module_id.")";?>
                             </li>
                         <?php endforeach; ?>
 
