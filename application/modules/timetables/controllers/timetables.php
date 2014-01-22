@@ -26,6 +26,7 @@ class timetables extends skeleton_main {
         $this->lang->load('timetables', $current_language);
 
         $this->load->helper('language');
+        $this->load->helper('url');
 
 
 	}
@@ -56,7 +57,6 @@ class timetables extends skeleton_main {
         
             //Load teachers from Model
             $teachers_array = $this->timetables_model->get_all_teachers_ids_and_names();
-
             $data['teachers'] = $teachers_array;
 
             //TODO: select current user (sessions user as default teacher)
@@ -81,12 +81,7 @@ class timetables extends skeleton_main {
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
-            for($i=0;$i<count($all_teacher_study_modules);$i++)
-            {
-                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
-                $group_by_study_modules[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
-            }
-
+            $group_by_study_modules = $this->getGroupByStudModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
 
@@ -177,52 +172,27 @@ class timetables extends skeleton_main {
             if ($classroom_group_id == null)
                 $classroom_group_id = 25;//$classroom_group_id = 4;
             
-            $time_slots_array = array();
-            $data['default_classroom_group'] = $classroom_group_id;                           
-            
-            $shift = $this->timetables_model->get_group_shift($classroom_group_id);
+            $data['default_classroom_group'] = $classroom_group_id; 
 
-            $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
-
-            /* Get Time Slots */
-            $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
-            $data['time_slots_array'] = $time_slots_array;
-
-            $time_slot_order = $this->time_slot_order($shift);
-            $shift_first_time_slot_order = $time_slot_order['first'];
-            $shift_last_time_slot_order = $time_slot_order['last'];            
-            
-            foreach ($time_slots_array as $time_slot)   {
-                $time_slot_data = new stdClass;
-                $time_slot_data->time_slot_start_time= $time_slot['time_slot_start_time'];
-                $time_slot_data->time_interval= $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
-                $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
-
-                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+            /* Get Timeslots */  
+            $timeslots = $this->get_time_slots(false,false,$classroom_group_id);
+            foreach($timeslots as $key => $value){
+                $data[$key] = $value;
             }
-            $data['time_slots']=$time_slots;
-            $data['time_slots_count']=count($time_slots);
-            $data['first_time_slot_order']=$shift_first_time_slot_order;
-            $data['last_time_slot_order']=$shift_last_time_slot_order;
 
             /* Get All Lective Days */
             $days = $this->timetables_model->getAllLectiveDays();
             $data['days']=$days;
 
+            /* Lessons For Timetable By Group Id */
             $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
-echo "<pre>";print_r($temp);echo "</pre>";
-            $lessonsfortimetablebygroupid = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
-
-            //print_r($lessonsfortimetablebygroupid);                                  
-
+            $lessonsfortimetablebygroupid = $this->add_breaks($temp,$data['first_time_slot_order'],$data['last_time_slot_order']);
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
-            //echo "ID Grup de classe: ".$classroom_group_id;
             
-            /* EL CAMP study_module_classroom_group_id DE LA BASE DE DADES NO CONTÉ VALORS */
-            
+            /* SI AL CAMP study_module_classroom_group_id de la base de dades no hi ha valors, dona error o no surten els colors */
+            /* All Group Study Modules  */
             $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
-                
-/**/
+            $data['all_group_study_modules']= $all_group_study_modules;
 
             /* Get Week hours */
             $total_week_hours = 0;
@@ -230,32 +200,12 @@ echo "<pre>";print_r($temp);echo "</pre>";
                 $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
                 $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
             }
-
-print_r($total_week_hours);
-
             $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
-
-/**/
-
-//print_r($all_group_study_modules);
-
-//echo count($all_group_study_modules);
-/*
-foreach($all_group_study_modules as $study_module){
-    echo $study_module->study_module_shortname."<br/>";
-}
-*/
-                //print_r($all_group_study_modules);
-            $data['all_group_study_modules']= $all_group_study_modules;
+            /* Get Modules Colors */
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_group_study_modules);
-                //print_r($study_modules_colours);
-            $data['study_modules_colours']= $study_modules_colours;
-            //print_r($study_modules_colours);
-            /**/
-            $days = $this->timetables_model->getAllLectiveDays();
-//            $data['days']=$days;
+            $data['study_modules_colours']= $study_modules_colours; //Color Yellow no apareix correctament
 
             $this->load->view('timetables/allgroupstimetables',$data);
             
@@ -305,11 +255,7 @@ foreach($all_group_study_modules as $study_module){
             $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
             $data['all_teacher_study_modules']= $all_teacher_study_modules;
 
-            for($i=0;$i<count($all_teacher_study_modules);$i++)
-            {
-                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
-                $group_by_study_modules[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
-            }
+            $group_by_study_modules = $this->getGroupByStudModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
             /* Get Week hours */
@@ -558,16 +504,23 @@ foreach($all_group_study_modules as $study_module){
         return $time_slot_order;
     }
 
-    public function get_time_slots($compact,$teacher_id)
+    public function get_time_slots($compact,$teacher_id,$classroom_group_id=null)
     {
             $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
             $data['complete_time_slots_count'] = count($complete_time_slots_array);            
 
-            //$time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
-            if ($compact) {
-                $time_slots_array = $complete_time_slots_array;
+            if($classroom_group_id){
+                $shift = $this->timetables_model->get_group_shift($classroom_group_id);
+                $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+                $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
             } else {
-                $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
+
+                //$time_slots_array = $this->get_time_slots_array($compact,$teacher_id);
+                if ($compact) {
+                    $time_slots_array = $complete_time_slots_array;
+                } else {
+                    $time_slots_array = $this->timetables_model->getCompactTimeSlotsForTeacher($teacher_id)->result_array();
+                }
             }
 
             $data['time_slots_array'] = $time_slots_array;
@@ -601,19 +554,6 @@ foreach($all_group_study_modules as $study_module){
                     $all_teacher_groups_list[] = $teacher_group_list['classroom_group_code'];
                 }
             return $all_teacher_groups_list;
-        /*
-            $group_list_first=0;
-            foreach($all_teacher_groups as $teacher_group_list){
-                if($group_list_first==0)
-                {
-                    $all_teacher_groups_list = $teacher_group_list['classroom_group_code'];
-                } else {
-                    $all_teacher_groups_list .= ", ".$teacher_group_list['classroom_group_code'];
-                }
-                $group_list_first++;                
-            }
-            return $all_teacher_groups_list;
-        */
     }
 
     public function get_teacher_study_modules_list($teacher_study_modules_list)
@@ -628,23 +568,6 @@ foreach($all_group_study_modules as $study_module){
                     $all_teacher_study_modules_list[] = $study_module_list;
             }
             return $all_teacher_study_modules_list;
-
-
-/*
-            $study_module_first=0;
-            foreach ($module_list as $study_module_list)
-            {
-                if($study_module_first==0)
-                {
-                    $all_teacher_study_modules_list = $study_module_list;
-                } else {
-                    $all_teacher_study_modules_list .= ", ".$study_module_list;
-                }
-                $study_module_first++;
-            }
-            return $all_teacher_study_modules_list;
-*/
-
     }
 	
     public function classroom_group_info($id_group){
@@ -706,5 +629,189 @@ foreach($all_group_study_modules as $study_module){
             $this->_load_body_footer(); 
 
     }        
+
+    public function getGroupByStudModules($teacher_id){
+            
+            $all_teacher_study_modules = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result();
+            $data['all_teacher_study_modules']= $all_teacher_study_modules;
+
+            for($i=0;$i<count($all_teacher_study_modules);$i++)
+            {
+                $study_module_id = $all_teacher_study_modules[$i]->study_module_id;
+                $group_by_study_modules[$study_module_id] = $this->timetables_model->get_all_group_by_study_module($study_module_id,$teacher_id);                       
+            }
+            return $group_by_study_modules;
+    }
+
+/**/
+
+
+    public function non_lective_hours() {
+
+        $this->check_logged_user(); 
+
+        /* Grocery Crud */
+        $this->current_table="non_lective_hours";
+        $this->grocery_crud->set_table("non_lective_hours");
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('non_lective_hours'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields('non_lective_hours_name','non_lective_hours_shortname','non_lective_hours_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+       
+        //Camps last update no editable i automàtic        
+
+        //Express fields
+        $this->grocery_crud->express_fields('non_lective_hours_name','non_lective_hours_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('non_lective_hours_code',lang('code'));
+        $this->grocery_crud->display_as('non_lective_hours_description',lang('description'));        
+        $this->grocery_crud->display_as('non_lective_hours_shortname',lang('shortName'));
+        $this->grocery_crud->display_as('non_lective_hours_name',lang('name'));
+        $this->grocery_crud->display_as('non_lective_hours_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('non_lective_hours_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('non_lective_hours_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('non_lective_hours_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('non_lective_hours_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('non_lective_hours_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('non_lective_hours_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails("non_lective_hours_creationUserId","non_lective_hours_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'non_lective_hours_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
+
+    }
+
+//<--
+
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}
+
+public function add_field_callback_entryDate(){  
+      $data= date('d/m/Y H:i:s', time());
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+}
+
+public function edit_field_callback_entryDate($value, $primary_key){  
+    //$this->session->flashdata('table_name');
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+    }
+    
+public function edit_callback_last_update($value, $primary_key){ 
+    //$this->session->flashdata('table_name'); 
+     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+    }    
+
+//UPDATE AUTOMATIC FIELDS BEFORE INSERT
+function before_insert_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['entryDate'] = $data;
+        
+        $post_array['creationUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
+
+//UPDATE AUTOMATIC FIELDS BEFORE UPDATE
+function before_update_object_callback($post_array, $primary_key) {
+        //UPDATE LAST UPDATE FIELD
+        $data= date('d/m/Y H:i:s', time());
+        $post_array['last_update'] = $data;
+        
+        $post_array['lastupdateUserId'] = $this->session->userdata('user_id');
+        return $post_array;
+}
+    
+//-->
+
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
+
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
+function renderitzar($table_name)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($this->_get_html_header_data(),$output); 
+       
+       //      BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
+
+/**/
+
 
 }

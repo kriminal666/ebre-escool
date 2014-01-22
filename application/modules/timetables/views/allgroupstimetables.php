@@ -1,8 +1,8 @@
-﻿<script>
+<script>
 
 $(function() {
 
-    $('#hide_show_legend').bootstrapSwitch({});
+    //$('#hide_show_legend').bootstrapSwitch({});
 
     //*****************************
     //* CLASSROOMGROUP DROPDOWN  **
@@ -105,11 +105,12 @@ $(function() {
                                 TODO
                             </td>
                             -->
-                            <td>
-                                <?php echo $study_module->study_module_shortname;?>
+                            <td class="<?php echo $study_modules_colours[$study_module->study_module_id];?>">
+                                <a href="study_module_info/<?php echo $study_module->study_module_shortname;?>"><?php echo $study_module->study_module_shortname;?></a>
+                                <?php //echo $study_module->study_module_shortname;?>
                             </td>
                             <td>
-                                <?php echo $study_module->study_module_name;?>
+                                <?php echo $study_module->study_module_name." - ".$study_module->study_module_id;?>
                             </td>
                             <td>
                                 <?php echo $study_module->study_module_hoursPerWeek;?>
@@ -149,15 +150,15 @@ $(function() {
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                                 data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <a href="../classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
-                                <a href="../study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
-                                <a href="../location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
+                                <a href="<?php echo site_url();?>/timetables/classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
+                                <a href="<?php echo site_url();?>/timetables/study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
+                                <a href="<?php echo site_url();?>/timetables/location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
 
 
                                 <?php //echo $day_lesson->group_code;?>
                                 <?php //echo $day_lesson->study_module_shortname;?>
                                 <?php //echo $day_lesson->location_code;?> 
-                                <?php echo "(".@$day_lesson->study_module_id.")";?>
+                                <?php echo @$day_lesson->study_module_id;?>
                             </li>
                         <?php endforeach; ?>
 

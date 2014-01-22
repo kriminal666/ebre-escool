@@ -131,6 +131,14 @@
          </li>        
 
          <li class="dropdown-submenu">
+          <a tabindex="-1" href="#"><?php echo lang('timetables');?></a>
+            <ul class="dropdown-menu">
+              <!-- Matrícules -->
+              <li><a href='<?=base_url()?>index.php/timetables/non_lective_hours'><?php echo lang('non_lective_hours');?></a></li>              
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li>  
+
+         <li class="dropdown-submenu">
           <a tabindex="-1" href="#"><?php echo "Inventari";?></a>
             <ul class="dropdown-menu">
               <li><a href='<?php echo site_url('main/externalIDType')?>'><?php echo lang('externalid_menu');?></a></li>
