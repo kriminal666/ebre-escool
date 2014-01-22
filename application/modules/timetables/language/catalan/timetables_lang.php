@@ -56,6 +56,8 @@ $lang['module_count'] = "Número total de mòduls";
 $lang['modules'] = "Mòduls";
 
 $lang['group_timetables'] = "Horaris dels grups:";
+$lang['non_lective_hours'] = "Hores no lectives";
+
 
 $lang['creative_commons_timetables_text'] = 'Els horaris s\'han fet utilitzant l\'obra de <a target="_blank" href="http://twitter.com/Ben_Lowe">Ben Lowe</a> de 
             <a target="_blank" href="http://www.triballabs.net">Tribal Labs</a> amb una llicència <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/deed.en_GB">

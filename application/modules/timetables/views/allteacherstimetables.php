@@ -134,7 +134,7 @@ $(function() {
                 <tbody><?php $i=0; ?>
                     <?php foreach ($all_teacher_study_modules as $study_module) : ?>
                         <tr align="center" class="{cycle values='tr0,tr1'}">
-                            <td>
+                            <td class="group">
                                 <a href="classroom_group_info/<?php echo $group_by_study_modules[$study_module->study_module_id];?>"><?php echo $group_by_study_modules[$study_module->study_module_id];?></a>
                             </td>
                             <td class="<?php echo $study_modules_colours[$study_module->study_module_id];?>">
@@ -183,9 +183,9 @@ $(function() {
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                                 data-start="<?php echo $time_slot_current_position;?>" 
                                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <a href="classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
-                                <a href="study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
-                                <a href="location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
+                                <a href="<?php echo site_url();?>/timetables/classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
+                                <a href="<?php echo site_url();?>/timetables/study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
+                                <a href="<?php echo site_url();?>/timetables/location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
                             </li>
                         <?php $iii++;?>  
                         <?php endforeach; ?>

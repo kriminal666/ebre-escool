@@ -1,7 +1,15 @@
-li.tt-event a {
+li.tt-event a, #study_modules_legend_table td a {
 	color:white;
 }
 
-li.btn-beige a {
+li.btn-yellowgreen a, li.btn-beige a, li.btn-palegreen a, li.btn-coral a, li.btn-lightgray a, li.btn-gold a,
+li.btn-yellowgreen, li.btn-beige, li.btn-palegreen, li.btn-coral, li.btn-lightgray, li.btn-gold,
+#study_modules_legend_table td.btn-yellow a, #study_modules_legend_table td.btn-yellowgreen a, #study_modules_legend_table td.btn-beige a, #study_modules_legend_table td.btn-palegreen a, #study_modules_legend_table td.btn-coral a, #study_modules_legend_table td.btn-lightgray a, #study_modules_legend_table td.btn-gold a {
 	color: black;
+	text-shadow: none;
+}
+
+table td.group a
+{
+color: black !important;
 }
