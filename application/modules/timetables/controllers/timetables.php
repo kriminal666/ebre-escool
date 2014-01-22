@@ -53,6 +53,9 @@ class timetables extends skeleton_main {
             $data["teacher_code"] = $teacher_code;
             $data["teacher_id"] = $teacher_id;
 
+            //echo "Teacher code: $teacher_code<br/>";
+            //echo "Teacher id $teacher_id<br/>";
+
             //$teacher_id=39;
         
             //Load teachers from Model
@@ -145,7 +148,7 @@ class timetables extends skeleton_main {
 
             $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
 
-            $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_code)->result_array();
+            $teacher_study_modules_list = $this->timetables_model->get_all_teacher_study_modules($teacher_id)->result_array();
             $all_teacher_study_modules_list = $this->get_teacher_study_modules_list($teacher_study_modules_list);
             $data['all_teacher_study_modules_list'] = $all_teacher_study_modules_list;
 
