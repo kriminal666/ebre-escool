@@ -30,12 +30,19 @@ $(function() {
 	$("#teachers").select2(); 
 
 	$('#teachers').on("change", function(e) {	
-		selectedValue = $("#teachers").select2("val");
+		teacher_code = $("#teachers").select2("val");
+    selected_date = $('.input-append.date').datepicker('getDate');
+    day= selected_date.getDate();
+    month = parseInt(selected_date.getMonth());
+    converted_month = month +1 ;
+    year=selected_date.getFullYear();
+    formated_selectedDate = day + "/" + converted_month + "/" + year;
+    alert (formated_selectedDate);
 		var pathArray = window.location.pathname.split( '/' );
 		var secondLevelLocation = pathArray[1];
 		var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
-		//alert(baseURL + "/" + selectedValue);
-		window.location.href = baseURL + "/" + selectedValue;
+		//alert(baseURL + "/" + teacher_code);
+		window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
 
 	}); 
 
@@ -51,7 +58,25 @@ $(function() {
     	autoclose: true,
     	todayHighlight: true
     }).on("changeDate", function(e){
-        alert ( $('.input-append.date').datepicker('getDate'));
+        teacher_code = $("#teachers").select2("val");
+        selected_date = $('.input-append.date').datepicker('getDate');
+        day=selected_date.getDate();
+        month = parseInt(selected_date.getMonth());
+        converted_month = month +1 ;
+        year=selected_date.getFullYear();
+        formated_selectedDate = day + "/" + converted_month + "/" + year;
+
+        /*
+        alert ( "Day: " + day);
+        alert ( "Month: " + converted_month );
+        alert ( "Year: " + year);
+        */
+
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var  baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
     });
 
 

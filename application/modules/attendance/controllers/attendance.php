@@ -457,7 +457,8 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function check_attendance($teacher_code = null, $group_code = null) {
+	public function check_attendance(
+		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -501,7 +502,12 @@ class attendance extends skeleton_main {
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
-	    $data['check_attendance_date'] = date('d/m/Y');
+	    if ( ($day != null) && ($month != null) && ($year != null) ) {
+	    	$data['check_attendance_date'] = $day . "/" . $month . "/" .$year;
+	    } else {
+	    	$data['check_attendance_date'] = date('d/m/Y');	
+	    }
+	    
 
 	    //Obtain Time Slots
     	$time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
