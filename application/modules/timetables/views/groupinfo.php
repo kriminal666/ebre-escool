@@ -1,1 +1,1 @@
-﻿<h3><?php echo $id_group; ?></h3>
+﻿<h3><?php echo urldecode($id_group); ?></h3>

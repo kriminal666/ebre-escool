@@ -629,7 +629,7 @@ class timetables extends skeleton_main {
         $this->grocery_crud->set_subject(lang('non_lective_hours'));          
 
         //Mandatory fields
-        $this->grocery_crud->required_fields('non_lective_hours_name','non_lective_hours_shortname','non_lective_hours_markedForDeletion');
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
 
         $this->common_callbacks($this->current_table);
 
@@ -670,6 +670,66 @@ class timetables extends skeleton_main {
         $this->renderitzar($this->current_table);
 
     }
+
+    public function non_lective_lessons() {
+
+        $this->check_logged_user(true); 
+
+        /* Grocery Crud */
+        $this->current_table="non_lective_lessons";
+        $this->grocery_crud->set_table("non_lective_lessons");
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('non_lective_lessons'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+
+        //Express fields
+        $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_non_lective_hours_id',lang('non_lective_hours_id'));
+        $this->grocery_crud->display_as($this->current_table.'_teacher_code',lang('teacher_code'));        
+        $this->grocery_crud->display_as($this->current_table.'_lesson_day',lang('lesson_day'));
+        $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang('time_slot_id'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+        $this->grocery_crud->set_relation($this->current_table.'_non_lective_hours_id','non_lective_hours','{non_lective_hours_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_teacher_code','teacher','{teacher_code}');
+        $this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_start_time}');
+
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
+
+    }
+
 
 public function add_callback_last_update(){  
    

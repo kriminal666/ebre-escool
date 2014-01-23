@@ -100,18 +100,18 @@ $(function() {
     </center>
     <div style="height: 10px;"></div>
     <center>
-            <?php echo lang('show_full_timetable'); ?>
-            <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
-            data-label-icon="icon-eye-open" 
-            data-on-label="<i class='icon-ok'></i>" 
-            data-off-label="<i class='icon-remove'></i>"
-            data-off="danger">
-            <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
-            data-label-icon="icon-eye-open" 
-            data-on-label="<i class='icon-ok'></i>" 
-            data-off-label="<i class='icon-remove'></i>"
-            data-off="danger">
-        </center>
+        <?php echo lang('show_full_timetable'); ?>
+        <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
+        data-label-icon="icon-eye-open" 
+        data-on-label="<i class='icon-ok'></i>" 
+        data-off-label="<i class='icon-remove'></i>"
+        data-off="danger">
+        <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
+        data-label-icon="icon-eye-open" 
+        data-on-label="<i class='icon-ok'></i>" 
+        data-off-label="<i class='icon-remove'></i>"
+        data-off="danger">
+    </center>
         <div style="height: 10px;" ></div>
 
         <div id="study_modules_legend" style="display: none;">

@@ -57,6 +57,12 @@ $lang['modules'] = "Mòduls";
 
 $lang['group_timetables'] = "Horaris dels grups:";
 $lang['non_lective_hours'] = "Hores no lectives";
+$lang['non_lective_lessons'] = "Lliçons no lectives";
+
+$lang['non_lective_hours_id'] = "ID Hores no lectives";
+$lang['teacher_code'] = "Codi Professor";        
+$lang['lesson_day'] = "Dia";
+$lang['time_slot_id'] = "ID Time Slot";
 
 
 $lang['creative_commons_timetables_text'] = 'Els horaris s\'han fet utilitzant l\'obra de <a target="_blank" href="http://twitter.com/Ben_Lowe">Ben Lowe</a> de 
