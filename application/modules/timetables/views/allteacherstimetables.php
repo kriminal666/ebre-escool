@@ -169,7 +169,6 @@ $(function() {
                     <?php foreach ( $lessonsfortimetablebyteacherid[$day->day_number] as $day_lessons) : ?>
                         <?php foreach ( $day_lessons as $day_lesson) : ?>
                             <?php 
-
                             if ($day_lesson->time_slot_lective) {
                                 $bootstrap_button_colour = "btn-inverse";
                             } else {
