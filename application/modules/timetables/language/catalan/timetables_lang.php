@@ -56,11 +56,9 @@ $lang['module_count'] = "Número total de mòduls";
 $lang['modules'] = "Mòduls";
 
 $lang['group_timetables'] = "Horaris dels grups:";
-$lang['non_lective_hours'] = "Hores no lectives";
-$lang['non_lective_lessons'] = "Lliçons no lectives";
 
 $lang['non_lective_hours_id'] = "ID Hores no lectives";
-$lang['teacher_code'] = "Codi Professor";        
+$lang['teacher_id'] = "ID Professor (codi)";        
 $lang['lesson_day'] = "Dia";
 $lang['time_slot_id'] = "ID Time Slot";
 
