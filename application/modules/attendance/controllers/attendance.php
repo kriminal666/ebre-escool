@@ -9,6 +9,7 @@ class attendance extends skeleton_main {
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 
 	public function load_header_data(){
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
@@ -24,15 +25,29 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
             base_url('assets/css/tribal-timetable.css')); 
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css");
+		
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/bootstrap-switch.min.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/bootstrap.min.extracolours.css')); 
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-fonts.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-responsive.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-skins.min.css'));
 
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
@@ -73,10 +88,22 @@ class attendance extends skeleton_main {
             base_url('assets/js/tribal-timetable.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+            base_url('assets/js/jquery.dataTables.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/jquery.dataTables.bootstrap.js'));
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/bootstrap-switch.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace.min.js'));
 
 		return $header_data; 
         
@@ -234,9 +261,6 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
             base_url('assets/css/tribal-timetable.css')); 
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"); 
 
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
@@ -277,7 +301,7 @@ class attendance extends skeleton_main {
             base_url('assets/js/tribal-timetable.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
-            "http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");
+            base_url('assets/js/jquery.dataTables.min.js'));
 	
 		$this->_load_html_header($header_data); 
 		
