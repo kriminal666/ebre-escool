@@ -185,7 +185,7 @@ class attendance_model  extends CI_Model  {
 		*/
 		
 		$this->db->select('time_slot_order,time_slot_id,lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,
-						  classroom_group_name,study_module_id,study_module_shortname,location_shortName,classroom_group_location_id');
+						  classroom_group_name,study_module_id,study_module_shortname,study_module_name,location_shortName,classroom_group_location_id');
 		$this->db->from('lesson');
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
@@ -207,10 +207,13 @@ class attendance_model  extends CI_Model  {
 				$lesson = new stdClass();
 				$lesson->group_code = $row['classroom_group_code'];
 				$lesson->base_url = base_url("index.php?/attendance/check_attendance/" . $row['classroom_group_code']);
-				$lesson->group_name = $row['classroom_group_shortName'];
+				$lesson->group_shortname = $row['classroom_group_shortName'];
+				$lesson->group_name = $row['classroom_group_name'];
 				$lesson->study_module_id = $row['study_module_id'];
 				$lesson->classroom_group_code = $row['classroom_group_code'];				
-				$lesson->lesson_name = $row['study_module_shortname'];
+				$lesson->lesson_code = $row['lesson_code'];
+				$lesson->lesson_shortname = $row['study_module_shortname'];
+				$lesson->lesson_name = $row['study_module_name'];
 				$lesson->lesson_location = $row['location_shortName'];
 				$lesson->classroom_group_location_id = $row['classroom_group_location_id'];
 
