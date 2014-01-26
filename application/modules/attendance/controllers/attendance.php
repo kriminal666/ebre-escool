@@ -502,17 +502,36 @@ class attendance extends skeleton_main {
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
+
+		$data['check_attendance_date'] = null;
+		//YYYY-MM-DD
+		$iso_date = null;
+
 	    if ( ($day != null) && ($month != null) && ($year != null) ) {
 	    	$data['check_attendance_date'] = $day . "/" . $month . "/" .$year;
+	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    } else {
 	    	$data['check_attendance_date'] = date('d/m/Y');	
+	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    }
-	    
 
+	    $day_of_week_number = date('N', strtotime($iso_date));
+
+	    
 	    //Obtain Time Slots
     	$time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
-    	$time_slots_array_byteacher_and_day = $this->attendance_model->getAllTimeSlotsByTeacherCodeAndDay($teacher_id,1)->result_array();
-    	$lessons_array_byteacher_and_day = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,1);
+    	$time_slots_array_byteacher_and_day = null;
+
+    	$time_slots_array_byteacher_and_day = $this->attendance_model->getAllTimeSlotsByTeacherCodeAndDay($teacher_id,$day_of_week_number);
+
+    	if ($time_slots_array_byteacher_and_day != null) {
+    		$time_slots_array_byteacher_and_day = $time_slots_array_byteacher_and_day->result_array();
+    	} else {
+    		$time_slots_array_byteacher_and_day = array();
+    	}
+
+    	
+    	$lessons_array_byteacher_and_day = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,$day_of_week_number);
 
 	    $data['time_slots_array'] = $time_slots_array;
 	    $data['time_slots_array_byteacher_and_day'] = $time_slots_array_byteacher_and_day;
@@ -541,14 +560,16 @@ class attendance extends skeleton_main {
 			$study_module_id = null;
 			$group_code = null;
 			$time_slot_data->lesson_colour = "btn-default";
-			if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
-    			$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
-				$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
-				$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;	
-				$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
-				$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
-				$lesson_location = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_location;
-			} 
+			if (is_array($lessons_array_byteacher_and_day)) {
+				if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
+    				$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
+					$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
+					$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;	
+					$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
+					$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
+					$lesson_location = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_location;
+				} 
+			}
 			
 			$time_slot_data->group_code = $group_code;
 			$time_slot_data->group_url= $base_url;
@@ -754,9 +775,11 @@ class attendance extends skeleton_main {
                    0 => "btn-darkslategray"
                    );
         $index=1;
-        foreach ($items as $item) {
-            $items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
-            $index++;
+        if ( is_array ( $items )) {
+        	foreach ($items as $item) {
+            	$items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
+            	$index++;
+        	}
         }
             
         return $items_colours;
@@ -787,9 +810,11 @@ class attendance extends skeleton_main {
                    20 => "btn-darkslategray"
                    );
         $index=1;
-        foreach ($items as $item) {
-            $items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
-            $index++;
+        if ( is_array ( $items )) {
+        	foreach ($items as $item) {
+            	$items_colours[$item->$item_id] = $bootstrap_button_colours[$index];
+            	$index++;
+        	}
         }
             
         return $items_colours;
