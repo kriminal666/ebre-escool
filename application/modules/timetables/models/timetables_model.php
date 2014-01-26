@@ -124,11 +124,27 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	function get_all_teacher_study_modules($teacher_id) {
+/*
+select 
+`classroom_group`.`classroom_group_code`,
+`study_module`.`study_module_shortname`,
+`study_module`.`study_module_name`,
+`study_module`.`study_module_hoursPerWeek` from lesson 
+join classroom_group on lesson.lesson_classroom_group_id = classroom_group.classroom_group_id
+join study_module on lesson.lesson_study_module_id = study_module.study_module_id
+where lesson_teacher_id=7
 
-		$this->db->from('study_module');
-        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
+*/
+		//$this->db->from('study_module');
+        //$this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
+		//$this->db->where('study_module_teacher_id',$teacher_id);
+        $this->db->select('classroom_group_code,study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
+		$this->db->from('lesson');
+		$this->db->distinct();
+		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
 		$this->db->where('study_module_teacher_id',$teacher_id);
-        
+
         $query = $this->db->get();
 		//echo $this->db->last_query();
 		if ($query->num_rows() > 0) {

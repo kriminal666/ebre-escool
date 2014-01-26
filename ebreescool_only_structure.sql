@@ -1434,3 +1434,22 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
   `non_lective_hours_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`non_lective_hours_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Estructura de la taula `non_lective_lessons`
+--
+
+CREATE TABLE IF NOT EXISTS `non_lective_lessons` (
+  `non_lective_lessons_id` int(11) NOT NULL AUTO_INCREMENT,
+  `non_lective_lessons_non_lective_hours_id` int(11) NOT NULL,
+  `non_lective_lessons_teacher_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `non_lective_lessons_lesson_day` int(5) NOT NULL,
+  `non_lective_lessons_time_slot_id` int(11),    
+  `non_lective_lessons_entryDate` datetime NOT NULL,
+  `non_lective_lessons_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `non_lective_lessons_creationUserId` int(11) DEFAULT NULL,
+  `non_lective_lessons_lastupdateUserId` int(11) DEFAULT NULL,
+  `non_lective_lessons_markedForDeletion` enum('n','y') NOT NULL,
+  `non_lective_lessons_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`non_lective_lessons_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

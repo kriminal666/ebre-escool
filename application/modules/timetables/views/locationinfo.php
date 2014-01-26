@@ -1,1 +1,1 @@
-﻿<h3><?php echo $id_location; ?></h3>
+﻿<h3><?php echo urldecode($id_location); ?></h3>

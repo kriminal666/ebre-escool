@@ -1,1 +1,1 @@
-﻿<h3><?php echo $id_study_module; ?></h3>
+﻿<h3><?php echo urldecode($id_study_module); ?></h3>

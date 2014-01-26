@@ -33,10 +33,7 @@ class timetables extends skeleton_main {
 
     public function allteacherstimetables($teacher_code = null,$compact = "") {
 
-        if (!$this->skeleton_auth->logged_in()) {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-        }
+            $this->check_logged_user();
 
             $header_data = $this->load_header_data();
 
@@ -52,9 +49,6 @@ class timetables extends skeleton_main {
 
             $data["teacher_code"] = $teacher_code;
             $data["teacher_id"] = $teacher_id;
-
-            //echo "Teacher code: $teacher_code<br/>";
-            //echo "Teacher id $teacher_id<br/>";
 
             //$teacher_id=39;
         
@@ -87,7 +81,6 @@ class timetables extends skeleton_main {
             $group_by_study_modules = $this->getGroupByStudyModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
-
             /* Get Week hours */
             $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
@@ -104,8 +97,8 @@ class timetables extends skeleton_main {
 
             $data['compact']= $compact;
 
+            /* Get all teacher groups */
             $all_teacher_groups = $this->timetables_model->get_all_groups_byteacherid($teacher_id);
-
             $data['all_teacher_groups']= $all_teacher_groups;
 
             $array_all_teacher_groups_time_slots = array();
@@ -158,10 +151,8 @@ class timetables extends skeleton_main {
     }
 
     public function allgroupstimetables($classroom_group_id = null) {
-        if (!$this->skeleton_auth->logged_in()) {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-        }
+            
+            $this->check_logged_user();
 
             $header_data = $this->load_header_data();            
             $this->_load_html_header($header_data);
@@ -217,10 +208,7 @@ class timetables extends skeleton_main {
 	
 	public function mytimetables($compact = "") {
 
-        if (!$this->skeleton_auth->logged_in()) {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-        }
+            $this->check_logged_user();
 
             //No s'utilitza el select2, es podria evitar que cargués
             $header_data = $this->load_header_data();
@@ -236,8 +224,6 @@ class timetables extends skeleton_main {
             $data["teacher_code"] = $teacher_code;
             $data["teacher_id"] = $teacher_id;
             $data["teacher_full_name"] = $teacher_full_name;
-
-            //echo "Teacher code: $teacher_code | teacher_id: $teacher_id | teacher_full_name: $teacher_full_name";
 
             /* Get Timeslots */            
             $timeslots = $this->get_time_slots($compact,$teacher_id);
@@ -277,8 +263,8 @@ class timetables extends skeleton_main {
 
             $data['compact']= $compact;
 
+            /* Get all teacher groups */
             $all_teacher_groups = $this->timetables_model->get_all_groups_byteacherid($teacher_id);
-
             $data['all_teacher_groups']= $all_teacher_groups;
 
             $array_all_teacher_groups_time_slots = array();
@@ -309,10 +295,10 @@ class timetables extends skeleton_main {
             $data['all_teacher_groups_list']= $all_teacher_groups_list;
             $data['all_teacher_groups_count']= count($all_teacher_groups);
 
-
             //$all_teacher_study_modules_count = 11;
             $all_teacher_study_modules_count = count($all_teacher_study_modules);
 
+            /* S'han de calcular les hores de matí i de tarde */
             $total_morning_week_hours = "TODO";
             $total_afternoon_week_hours = "TODO";
 
@@ -363,16 +349,12 @@ class timetables extends skeleton_main {
         return $study_modules_colours;
     }
 
-
-
     public function add_breaks($lessons,$first_time_slot_order,$last_time_slot_order) {
         
         $days = $this->timetables_model->getAllLectiveDays();
 
         //ADD BREAKS
         $not_lective_time_slots_array = $this->timetables_model->getNotLectiveTimeSlots()->result_array();
-
-        //print_r($not_lective_time_slots_array);
 
         foreach ($days as $day) {
             $day_number = $day->day_number;
@@ -428,7 +410,8 @@ class timetables extends skeleton_main {
 	
     public function load_header_data(){
 
-        $header_data= $this->add_css_to_html_header_data(
+            // CSS
+            $header_data= $this->add_css_to_html_header_data(
                 $this->_get_html_header_data(),
                     "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
             $header_data= $this->add_css_to_html_header_data(
@@ -450,17 +433,13 @@ class timetables extends skeleton_main {
                 $header_data,
                     base_url('assets/css/horaris.css'));            
 
-
+            // JAVASCRIPT
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     "http://code.jquery.com/jquery-1.9.1.js");
-                    
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-            //$header_data= $this->add_javascript_to_html_header_data(
-            //        $header_data,
-            //        "http://code.jquery.com/ui/1.10.3/jquery-ui.js");
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/jquery.ba-resize.js'));
@@ -575,11 +554,8 @@ class timetables extends skeleton_main {
 	
     public function classroom_group_info($id_group){
 
-        if (!$this->skeleton_auth->logged_in())
-            {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-            }
+            $this->check_logged_user();
+
             $header_data = $this->load_header_data();
 
             $this->_load_html_header($header_data);
@@ -595,11 +571,8 @@ class timetables extends skeleton_main {
 
     public function study_module_info($id_study_module){
 
-        if (!$this->skeleton_auth->logged_in())
-            {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-            }
+            $this->check_logged_user();
+
             $header_data = $this->load_header_data();
 
             $this->_load_html_header($header_data);
@@ -615,11 +588,8 @@ class timetables extends skeleton_main {
 
     public function location_info($id_location){
 
-        if (!$this->skeleton_auth->logged_in())
-            {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-            }
+            $this->check_logged_user(); 
+
             $header_data = $this->load_header_data();
 
             $this->_load_html_header($header_data);
@@ -646,12 +616,9 @@ class timetables extends skeleton_main {
             return $group_by_study_modules;
     }
 
-/**/
-
-
     public function non_lective_hours() {
 
-        $this->check_logged_user(); 
+        $this->check_logged_user(true); 
 
         /* Grocery Crud */
         $this->current_table="non_lective_hours";
@@ -662,53 +629,107 @@ class timetables extends skeleton_main {
         $this->grocery_crud->set_subject(lang('non_lective_hours'));          
 
         //Mandatory fields
-        $this->grocery_crud->required_fields('non_lective_hours_name','non_lective_hours_shortname','non_lective_hours_markedForDeletion');
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
 
         $this->common_callbacks($this->current_table);
-       
-        //Camps last update no editable i automàtic        
 
         //Express fields
-        $this->grocery_crud->express_fields('non_lective_hours_name','non_lective_hours_shortname');
+        $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
 
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
 
          //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('non_lective_hours_code',lang('code'));
-        $this->grocery_crud->display_as('non_lective_hours_description',lang('description'));        
-        $this->grocery_crud->display_as('non_lective_hours_shortname',lang('shortName'));
-        $this->grocery_crud->display_as('non_lective_hours_name',lang('name'));
-        $this->grocery_crud->display_as('non_lective_hours_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('non_lective_hours_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('non_lective_hours_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('non_lective_hours_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('non_lective_hours_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('non_lective_hours_markedForDeletionDate',lang('markedForDeletionDate')); 
+        $this->grocery_crud->display_as($this->current_table.'_code',lang('code'));
+        $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));        
+        $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
  
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('non_lective_hours_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
         
         $this->userCreation_userModification($this->current_table);
 
-        $this->grocery_crud->unset_dropdowndetails("non_lective_hours_creationUserId","non_lective_hours_lastupdateUserId");
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
-        //Default values:
-//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'non_lective_hours_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
         $this->renderitzar($this->current_table);
 
     }
 
-//<--
+    public function non_lective_lessons() {
+
+        $this->check_logged_user(true); 
+
+        /* Grocery Crud */
+        $this->current_table="non_lective_lessons";
+        $this->grocery_crud->set_table("non_lective_lessons");
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('non_lective_lessons'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+
+        //Express fields
+        $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_non_lective_hours_id',lang('non_lective_hours_id'));
+        $this->grocery_crud->display_as($this->current_table.'_teacher_code',lang('teacher_code'));        
+        $this->grocery_crud->display_as($this->current_table.'_lesson_day',lang('lesson_day'));
+        $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang('time_slot_id'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+        $this->grocery_crud->set_relation($this->current_table.'_non_lective_hours_id','non_lective_hours','{non_lective_hours_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_teacher_code','teacher','{teacher_code}');
+        $this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_start_time}');
+
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table);
+
+    }
+
 
 public function add_callback_last_update(){  
    
@@ -749,10 +770,8 @@ function before_update_object_callback($post_array, $primary_key) {
         $post_array['lastupdateUserId'] = $this->session->userdata('user_id');
         return $post_array;
 }
-    
-//-->
 
-function check_logged_user()
+function check_logged_user($is_grocery = null)
 {
     if (!$this->skeleton_auth->logged_in())
     {
@@ -760,12 +779,14 @@ function check_logged_user()
         redirect($this->skeleton_auth->login_page, 'refresh');
     }
 
-    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
-    $readonly_group = $this->config->item('readonly_group');
-    if ($this->skeleton_auth->in_group($readonly_group)) {
-        $this->grocery_crud->unset_add();
-        $this->grocery_crud->unset_edit();
-        $this->grocery_crud->unset_delete();
+    if($is_grocery){
+        //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+        $readonly_group = $this->config->item('readonly_group');
+        if ($this->skeleton_auth->in_group($readonly_group)) {
+            $this->grocery_crud->unset_add();
+            $this->grocery_crud->unset_edit();
+            $this->grocery_crud->unset_delete();
+        }
     }
 }
 
@@ -795,11 +816,9 @@ function renderitzar($table_name)
        $output = $this->grocery_crud->render();
 
        // HTML HEADER
-       
        $this->_load_html_header($this->_get_html_header_data(),$output); 
        
-       //      BODY       
-
+       // BODY       
        $this->_load_body_header();
        
        $default_values=$this->_get_default_values();
@@ -809,12 +828,9 @@ function renderitzar($table_name)
 
        $this->load->view($table_name.'.php',$output);     
        
-       //      FOOTER     
+       // FOOTER     
        $this->_load_body_footer();  
 
 }
-
-/**/
-
 
 }
