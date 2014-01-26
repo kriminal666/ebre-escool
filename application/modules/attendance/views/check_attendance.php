@@ -344,9 +344,9 @@ function read_value(alumne,hora){
 
      </td>
      <td>
-        <button type="button" class="btn btn-primary">
-            <i class="icon-bell icon-white"></i> Passar llista
-        </button>
+        <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group";?>" class="btn btn-primary">
+          <i class="icon-bell icon-white"></i> Passar llista
+        </a>
      </td>
    </tr>
         <?php endforeach; ?>
@@ -407,9 +407,9 @@ function read_value(alumne,hora){
 
 	 </td>
 	 <td>
-	 	<button type="button" class="btn btn-primary">
+    <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group";?>" class="btn btn-primary">
   			<i class="icon-bell icon-white"></i> Passar llista
-		</button>
+		</a>
 	 </td>
    </tr>
   <?php endforeach; ?>

@@ -457,6 +457,49 @@ class attendance extends skeleton_main {
 
 	}
 
+	public function check_attendance_classroom_group() {
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$header_data = $this->load_header_data();
+        $this->_load_html_header($header_data);
+
+        /*******************
+		/*      BODY     *
+		/******************/
+		$this->_load_body_header();
+
+		$teacher_code = null;
+
+		if ($teacher_code == null) {
+	    	//TODO: Default teacher: current logged user
+	    	$teacher_code = 41;
+	    } else {
+	    	//TODO: Check if user is admin: if not admin it could not select the teacher: Force teacher to be himself
+	    	if (false) { $teacher_code = 41; }
+	    }
+
+		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
+
+	    //echo "teacher_id: $teacher_id<br/>";       
+	    //echo "teacher_code: $teacher_code<br/>";       
+        
+		//TODO: select current user (sessions user as default teacher)
+	    $data['default_teacher'] = $teacher_code;
+
+		/* fi llista alumnes grup */
+		$this->load->view('attendance/check_attendance_classroom_group',$data);
+		 
+		/*******************
+		/*      FOOTER     *
+		*******************/
+		$this->_load_body_footer();	
+	}
+
+
 	public function check_attendance(
 		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
 
