@@ -8,6 +8,11 @@ class attendance extends skeleton_main {
 
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 
+	public $html_header_view ='include/ebre_escool_html_header' ;
+
+	public $body_footer_view ='include/ebre_escool_body_footer' ;
+
+
 	public function load_header_data(){
 
 		$header_data= $this->add_css_to_html_header_data(
