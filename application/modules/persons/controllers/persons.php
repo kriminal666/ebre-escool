@@ -12,7 +12,7 @@ class persons extends skeleton_main {
 	function __construct()
     {
         parent::__construct();
-        
+
         //GROCERY CRUD
 		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
         $this->load->library('grocery_CRUD');
@@ -189,6 +189,7 @@ class persons extends skeleton_main {
   /* PERSON MODIFICADA */
 
   public function person() {
+
         $table_name="person";
         $this->session->set_flashdata('table_name', $table_name.'_');
         $this->grocery_crud->set_table($table_name);  
@@ -493,6 +494,5 @@ public function add_field_callback_entryDate(){
 		$this->_load_body_footer();	 
 		
 	}
-
 
 }

@@ -391,6 +391,20 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));		
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -398,7 +412,16 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
-			
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));   			
 
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);

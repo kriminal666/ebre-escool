@@ -71,7 +71,7 @@ $(function() {
 
 </script>
 
-<div class="container">
+<div class="container" style="margin-left:200px;margin-right:10;">
         <header class="jumbotron subhead" id="overview"> 
 			<center><h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
             " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3></center>

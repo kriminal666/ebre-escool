@@ -433,6 +433,22 @@ class timetables extends skeleton_main {
                 $header_data,
                     base_url('assets/css/horaris.css'));            
 
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-fonts.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-responsive.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-skins.min.css'));
+
+
+
+
             // JAVASCRIPT
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
@@ -467,6 +483,16 @@ class timetables extends skeleton_main {
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/bootstrap-switch.min.js'));
+
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-extra.min.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-elements.min.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace.min.js'));            
 
             return $header_data;
     }

@@ -358,19 +358,19 @@
 
             <ul class="submenu">
               <li>
-                <a href="tables.html">
+                <a href="<?php echo base_url('/index.php/timetables/mytimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('my_timetables');?>
               </li>
 
               <li>
-                <a href="jqgrid.html">
+                <a href="<?php echo base_url('/index.php/timetables/allteacherstimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('all_teachers_timetables');?>
                 </a>
               </li>
               <li>
-                <a href="jqgrid.html">
+                <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('all_groups_timetables');?>
                 </a>
@@ -400,31 +400,31 @@
 
                 <ul class="submenu">
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_d_h_1'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_di_df_1'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_date');?>
                     </a>
                   </li>
                   
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_ranking_di_df_1'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/Llistat_grup_tutor'); ?>">
                       <?php echo lang('reports_educational_center_reports_grup_mentors');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/mailing_list_report'); ?>">
                       <?php echo lang('reports_educational_center_reports_student_emails');?>
                     </a>
                   </li>
@@ -442,25 +442,25 @@
 
                 <ul class="submenu">
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">
                         <?php echo lang('reports_group_reports_class_list');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">
                       <?php echo lang('reports_group_reports_student_sheet');?>
                     </a>
                   </li>
                   
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_resum_grup_di_df_1'); ?>">
                       <?php echo lang('reports_group_reports_incidents_by_date');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_resum_grup_faltes_mes_1'); ?>">
                       <?php echo lang('reports_group_reports_monthly_report');?>
                     </a>
                   </li>
@@ -468,7 +468,7 @@
                 </ul>
 
                 <li>
-                  <a href="jqgrid.html">
+                  <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informeGuifi'); ?>">
                    <i class="icon-double-angle-right"></i>
                     <?php echo lang('reports_guifi');?>
                   </a>
@@ -510,37 +510,37 @@
 
                 <ul class="submenu">
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/teachers'); ?>">
                       <?php echo lang('teachers');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/students'); ?>">
                       <?php echo lang('students');?>
                     </a>
                   </li>
                   
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/persons'); ?>">
                        <?php echo lang('persons');?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/persons/person_official_id_type'); ?>">
                       <?php echo "Tipus identificador personal";?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/persons/localities'); ?>">
                       <?php echo "Poblacions";?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/persons/states'); ?>">
                       <?php echo "Províncies";?>
                     </a>
                   </li>
@@ -548,14 +548,14 @@
               </li>
 
               <li>
-                <a href="error-404.html">
+                <a href="<?php echo base_url('/index.php/skeleton_main/organizational_unit'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('organizationalunit_menu');?>
                 </a>
               </li>
 
               <li>
-                <a href="error-500.html">
+                <a href="<?php echo base_url('/index.php/location/location'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('location_menu');?>
                 </a>
@@ -573,13 +573,13 @@
 
                 <ul class="submenu">
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/classroom_groups'); ?>">
                       <?php echo lang('classroom_groups')?>
                     </a>
                   </li>
 
                   <li>
-                    <a href="#">
+                    <a href="<?php echo base_url('/index.php/attendance/time_slots'); ?>">
                       <?php echo lang('time_slots')?>
                     </a>
                   </li>
