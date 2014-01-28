@@ -5,6 +5,13 @@ $( "#data_inicial" ).datepicker({ dateFormat: 'dd-mm-yy' });
 $( "#data_final" ).datepicker({ dateFormat: 'dd-mm-yy' });
 });
 </script>
+<!--Select2 -->
+<script>
+$(function() { 
+	$("#grup").select2(); 
+});
+</script>
+
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
@@ -157,7 +164,7 @@ if($_POST){
 				<div class="form-group">
 					<tr>
 						<td><label for="grup">Selecciona el grup:</label></td>
-						<td><select class="chosen-select" data-place_holder="TODO" style="width:200px;" id="grup" name="grup" data-size="5" data-live-search="true">
+						<td><select data-place_holder="TODO" style="width:200px;" id="grup" name="grup" data-size="5" data-live-search="true">
 							<?php foreach ($grups as $key => $value) { ?>
 								<option value="<?php echo $key ?>" ><?php echo $value ?></option>
 							<?php } ?>

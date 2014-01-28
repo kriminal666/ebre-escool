@@ -5,6 +5,7 @@ $(function() {
 	$( "#data_final" ).datepicker({ dateFormat: 'dd-mm-yy' });
 });
 </script>
+</script>
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
