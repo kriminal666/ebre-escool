@@ -108,3 +108,7 @@ $lang['enrollment_class_group']="Matrícules de Grups de Classe";
 $lang['enrollment_modules']="Matrícules Mòduls";
 $lang['enrollment_submodules']="Matrícules Sub-Mòduls";
 
+//Hores i Lliçons No lectives
+$lang['non_lective_hours'] = "Hores no lectives";
+$lang['non_lective_lessons'] = "Lliçons no lectives";
+

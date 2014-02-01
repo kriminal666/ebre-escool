@@ -32,6 +32,8 @@ class students extends skeleton_main {
 
 	public function student() {
 		
+ $header_data= $this->load_ace_template();    
+
         $table_name="student";
         $this->session->set_flashdata('table_name', $table_name.'_');    
         $this->grocery_crud->set_table($table_name);  
@@ -109,8 +111,8 @@ class students extends skeleton_main {
 
         $output = $this->grocery_crud->render();
 		
-		    $this->_load_html_header($this->_get_html_header_data(),$output); 
-		    $this->_load_body_header();
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();
 
             $default_values=$this->_get_default_values();
             $default_values["table_name"]=$table_name;
@@ -130,6 +132,8 @@ public function show_photo($primary_key, $row){
 }
 public function photo(){
 
+ $header_data= $this->load_ace_template();  
+
     $image_crud = new image_CRUD();
     $image_crud->set_table('prova');
     $image_crud->set_primary_key_field('id');
@@ -138,8 +142,8 @@ public function photo(){
     $image_crud->set_image_path('assets/img/alumnes');
 
     $output = $image_crud->render();
-    $this->_load_html_header($this->_get_html_header_data(),$output); 
-    $this->_load_body_header();    
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();  
     $this->load->view('photo.php',$output);
     $this->_load_body_footer();   
 
@@ -193,5 +197,32 @@ public function add_field_callback_entryDate(){
 	public function index() {
 		$this->student();
 	}
+
+  public function load_ace_template() {
+        $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js')); 
+        return $header_data;
+
+  }    
 
 }

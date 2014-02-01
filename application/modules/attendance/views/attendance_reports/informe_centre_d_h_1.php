@@ -7,6 +7,12 @@ $(function() {
 });
 
 </script>
+ <script>
+$(function() { 
+	$("#hora_informe").select2(); 
+});
+</script>
+
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
@@ -93,6 +99,7 @@ padding: 0.3em;
 }
 </style>
 
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -111,7 +118,7 @@ padding: 0.3em;
 				<div class="form-group">
 					<tr>
 						<td><laber for="hora_informe"><?php echo lang('select_time');?></label></td>
-						<td><select class="chosen-select" id="hora_informe" name="hora">
+						<td><select  id="hora_informe" name="hora" style="width:150px;">
 							<?php foreach ($hores as $key => $value) { ?>
 								<option value="<?php echo $value ?>" <?php if(isset($_POST['hora']) && $value == $_POST['hora']){ ?> selected <?php } else {if($key==1){?> selected <?php }} ?> ><?php echo $value ?></option>
 							<?php } ?>
@@ -187,4 +194,5 @@ if($_POST){
 if($i==0) { echo "No hi ha incidències per a aquesta data i hora."; }
 } ?>
 
+</div>
 </div>

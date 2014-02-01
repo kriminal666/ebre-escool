@@ -1,3 +1,12 @@
+<!-- Select2-->
+<script>
+$(function() { 
+	$("#grup").select2(); 
+	$("#mes").select2(); 
+	$("#any").select2(); 
+});
+</script>
+
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
@@ -87,7 +96,7 @@ print_r($alumne);
 echo "</pre>";
 */
 ?>
-
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -101,7 +110,7 @@ echo "</pre>";
 					<tr>
 						<td><label for="data_informe">Select Group:</label></td>
 						<td>
-							<select class="chosen-select" data-place_holder="TODO" style="width:400px;" id="grup" name="grup" data-size="5" data-live-search="true">
+							<select data-place_holder="TODO" style="width:400px;" id="grup" name="grup" data-size="5" data-live-search="true">
 							<?php foreach ($grups as $key => $value) { ?>
 								<option value="<?php echo $key ?>" <?php if(isset($_POST['grup']) && $key==$_POST['grup']){ ?> selected <?php }?> > <?php echo $value ?></option>
 							<?php } ?>
@@ -113,7 +122,7 @@ echo "</pre>";
 					<tr>
 						<td><laber for="hora_informe">Select Month:</label></td>
 						<td>
-							<select class="chosen-select" data-place_holder="TODO" style="width:400px;" id="mes" name="mes" data-size="5" data-live-search="true">
+							<select data-place_holder="TODO" style="width:400px;" id="mes" name="mes" data-size="5" data-live-search="true">
 							<?php foreach ($mes as $key => $value) { ?>
 								<option value="<?php echo $key ?>" <?php if(isset($_POST['mes']) && $key==$_POST['mes']){ ?> selected <?php }?> > <?php echo $value ?></option>
 							<?php } ?>
@@ -125,7 +134,7 @@ echo "</pre>";
 					<tr>
 						<td valign="top"><label for="incident">Select Year:</label></td>
 						<td>
-							<select class="chosen-select" data-place_holder="TODO" style="width:400px;" id="any" name="any" data-size="5" data-live-search="true">
+							<select data-place_holder="TODO" style="width:400px;" id="any" name="any" data-size="5" data-live-search="true">
 							<?php foreach ($any as $key => $value) { ?>
 								<option value="<?php echo $key; ?>" <?php if(isset($_POST['any']) && $value==$_POST['any']){ ?> selected <?php }?> > <?php echo $value ?></option>
 							
@@ -173,3 +182,4 @@ if($_POST){
 } ?>
 
 <!-- Fi proves datatable -->		
+</div>

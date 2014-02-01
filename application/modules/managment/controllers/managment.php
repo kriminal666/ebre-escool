@@ -130,7 +130,22 @@ class managment extends skeleton_main {
 			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			base_url('assets/css/tooltipster.css'));			
+			base_url('assets/css/tooltipster.css'));		
+
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));
+
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -150,6 +165,18 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/js/jquery.tooltipster.min.js"));		
+        
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));   		
+
+
 			
 		$this->_load_html_header($header_data); 
 		

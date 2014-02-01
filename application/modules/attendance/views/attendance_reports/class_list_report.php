@@ -1,3 +1,10 @@
+ <script>
+$(function() { 
+	$("#grup").select2(); 
+});
+</script>
+
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -11,7 +18,7 @@
 				<div class="form-group ui-widget">
 					<tr>
 						<td><label for="grup">Selecciona el grup:</label></td>
-						<td><select class="chosen-select" data-place_holder="TODO" style="width:400px;" id="grup" name="grup" data-size="5" data-live-search="true">
+						<td><select data-place_holder="TODO" style="width:400px;" id="grup" name="grup" data-size="5" data-live-search="true">
 							<?php foreach ($grups as $key => $value) { ?>
 								<option value="<?php echo $key ?>" ><?php echo $value ?></option>
 							<?php } ?>
@@ -29,3 +36,4 @@
 			</table>
 		</form>
 	</div>	
+</div>	

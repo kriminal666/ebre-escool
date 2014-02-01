@@ -433,6 +433,22 @@ class timetables extends skeleton_main {
                 $header_data,
                     base_url('assets/css/horaris.css'));            
 
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-fonts.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-responsive.min.css'));
+            $header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    base_url('assets/css/ace-skins.min.css'));
+
+
+
+
             // JAVASCRIPT
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
@@ -467,6 +483,16 @@ class timetables extends skeleton_main {
             $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/bootstrap-switch.min.js'));
+
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-extra.min.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-elements.min.js'));
+            $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace.min.js'));            
 
             return $header_data;
     }
@@ -696,7 +722,7 @@ class timetables extends skeleton_main {
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_non_lective_hours_id',lang('non_lective_hours_id'));
-        $this->grocery_crud->display_as($this->current_table.'_teacher_code',lang('teacher_code'));        
+        $this->grocery_crud->display_as($this->current_table.'_teacher_id',lang('teacher_id'));  
         $this->grocery_crud->display_as($this->current_table.'_lesson_day',lang('lesson_day'));
         $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang('time_slot_id'));
         $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
@@ -707,8 +733,15 @@ class timetables extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
  
         $this->grocery_crud->set_relation($this->current_table.'_non_lective_hours_id','non_lective_hours','{non_lective_hours_name}');
-        $this->grocery_crud->set_relation($this->current_table.'_teacher_code','teacher','{teacher_code}');
-        $this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_start_time}');
+        
+        /*
+        relation n n ($field_name,$relation_table,$selection_table,$primary_key_alias_to_this_table,$primary_key_alias_to_selection_table,
+        $title_field_selection_table,[$priority_field_relation])
+        */
+        //$this->grocery_crud->set_relation_n_n($this->current_table.'_teacher_id', 'teacher', 'person', 'teacher_code', 'teacher_person_id', '{person_givenName} {person_sn1} {person_sn2}');
+
+        $this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','{teacher_id} ({teacher_code})');
+        $this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time}');
 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));

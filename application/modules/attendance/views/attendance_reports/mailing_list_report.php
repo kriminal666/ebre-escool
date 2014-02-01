@@ -1,4 +1,4 @@
-
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -25,3 +25,4 @@
 			</table>
 		</form>
 	</div>	
+</div>	

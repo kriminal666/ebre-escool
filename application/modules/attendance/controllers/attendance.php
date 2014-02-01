@@ -143,6 +143,40 @@ class attendance extends skeleton_main {
 
 	public function time_slots () {
 
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			    base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));		
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));   			
+
+
+
+
+
+
 		$table_name="time_slot";
         $this->grocery_crud->set_table($table_name);  
 		
@@ -166,12 +200,11 @@ class attendance extends skeleton_main {
         //$this->grocery_crud->set_default_value($table_name,'person_creationUserId','TODO');
         $this->grocery_crud->set_default_value($table_name,'person_markedForDeletion','n');
 
-
         $output = $this->grocery_crud->render();
 		
-		$this->_load_html_header($this->_get_html_header_data(),$output); 
-		$this->_load_body_header();
-	
+        $this->_load_html_header($header_data,$output); 
+	    $this->_load_body_header();
+
 		$this->load->view('time_slots',$output); 
                 
 		$this->_load_body_footer();	 	
@@ -391,6 +424,20 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));		
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -398,7 +445,16 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
-			
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));   			
 
 		$this->current_table="classroom_group";
         $this->grocery_crud->set_table($this->current_table);

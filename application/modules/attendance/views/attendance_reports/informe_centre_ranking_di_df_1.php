@@ -93,7 +93,7 @@ $(document).ready( function () {
 	}	
 
 ?>
-
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -182,3 +182,4 @@ if($i==0) { echo "No hi ha incidències per a aquest rang de dades."; }
 </table>
 
 </div>		
+</div>

@@ -56,7 +56,7 @@ $(function() {
 
 });
 </script>
-<div class="container">
+<div class="container" style="margin-left:200px;margin-right:10;">
     <center>
         <select id="classroom_groups" style="width: 400px">
             <option></option>

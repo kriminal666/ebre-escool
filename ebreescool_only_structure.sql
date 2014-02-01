@@ -1442,7 +1442,7 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
 CREATE TABLE IF NOT EXISTS `non_lective_lessons` (
   `non_lective_lessons_id` int(11) NOT NULL AUTO_INCREMENT,
   `non_lective_lessons_non_lective_hours_id` int(11) NOT NULL,
-  `non_lective_lessons_teacher_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `non_lective_lessons_teacher_id` int(11) NOT NULL,
   `non_lective_lessons_lesson_day` int(5) NOT NULL,
   `non_lective_lessons_time_slot_id` int(11),    
   `non_lective_lessons_entryDate` datetime NOT NULL,

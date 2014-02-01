@@ -5,6 +5,7 @@ $(function() {
 	$( "#data_final" ).datepicker({ dateFormat: 'dd-mm-yy' });
 });
 </script>
+</script>
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
@@ -95,7 +96,7 @@ $(document).ready( function () {
 		$data_fi = strtotime($_POST['data_final']);
 	}	
 ?>
-
+<div class="container" style="margin-left:200px;margin-right:10;">
 <!-- TITLE -->
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
@@ -195,3 +196,4 @@ if($i==0) { echo "No hi ha incidències per a aquest rang de dades."; }
 } ?>
 
 </div>	
+</div>

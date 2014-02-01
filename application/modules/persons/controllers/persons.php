@@ -12,7 +12,7 @@ class persons extends skeleton_main {
 	function __construct()
     {
         parent::__construct();
-        
+
         //GROCERY CRUD
 		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
         $this->load->library('grocery_CRUD');
@@ -32,7 +32,10 @@ class persons extends skeleton_main {
 	}
 
 	public function person_official_id_type() {
-		$table_name="person_official_id_type";
+		
+       $header_data= $this->load_ace_template();  
+
+    $table_name="person_official_id_type";
         $this->grocery_crud->set_table($table_name);  
 		
 		//Establish subject:
@@ -45,8 +48,8 @@ class persons extends skeleton_main {
 
         $output = $this->grocery_crud->render();
 		
-		$this->_load_html_header($this->_get_html_header_data(),$output); 
-		$this->_load_body_header();
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();      
 	
 		$this->load->view('person_official_id_type',$output); 
                 
@@ -189,6 +192,10 @@ class persons extends skeleton_main {
   /* PERSON MODIFICADA */
 
   public function person() {
+
+        $header_data= $this->load_ace_template();  
+
+
         $table_name="person";
         $this->session->set_flashdata('table_name', $table_name.'_');
         $this->grocery_crud->set_table($table_name);  
@@ -284,8 +291,8 @@ class persons extends skeleton_main {
 
         $output = $this->grocery_crud->render();
 
-    $this->_load_html_header($this->_get_html_header_data(),$output); 
-    $this->_load_body_header();
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();      
   
     $default_values=$this->_get_default_values();
     $default_values["table_name"]=$table_name;
@@ -454,6 +461,8 @@ public function add_field_callback_entryDate(){
 	
 	public function localities() {
 		
+ $header_data= $this->load_ace_template();  
+
 		$table_name="locality";
         $this->grocery_crud->set_table($table_name);  
 		
@@ -466,8 +475,8 @@ public function add_field_callback_entryDate(){
         
         $output = $this->grocery_crud->render();
         
-		$this->_load_html_header($this->_get_html_header_data(),$output); 
-		$this->_load_body_header();
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();      
 	
 		$this->load->view('persons',$output); 
                 
@@ -477,6 +486,8 @@ public function add_field_callback_entryDate(){
 	
 	public function states() {
 		
+ $header_data= $this->load_ace_template();  
+
 		$table_name="state";
         $this->grocery_crud->set_table($table_name);  
 		
@@ -485,8 +496,8 @@ public function add_field_callback_entryDate(){
         
         $output = $this->grocery_crud->render();
 		
-		$this->_load_html_header($this->_get_html_header_data(),$output); 
-		$this->_load_body_header();
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();      
 	
 		$this->load->view('persons',$output); 
                 
@@ -494,5 +505,31 @@ public function add_field_callback_entryDate(){
 		
 	}
 
+  public function load_ace_template() {
+        $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js')); 
+        return $header_data;
+
+  }
 
 }
