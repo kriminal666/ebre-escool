@@ -1,91 +1,28 @@
-﻿<script>
+﻿<div class="main-content">
+                
+                <div class="breadcrumbs" id="breadcrumbs">
+                    <script type="text/javascript">
+                        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                    </script>
 
-$(function() {
+                    <ul class="breadcrumb">
+                        <li>
+                            <i class="icon-home home-icon"></i>
+                            <a href="#">Home</a>
 
-    //*****************************
-    //* CLASSROOMGROUP DROPDOWN  **
-    //*****************************
+                            <span class="divider">
+                                <i class="icon-angle-right arrow-icon"></i>
+                            </span>
+                        </li>
+                        <li class="active">Els meus horaris</li>
+                    </ul><!-- .breadcrumb -->
 
-    //Jquery select plugin: http://ivaynberg.github.io/select2/
-    $("#teachers").select2(); 
+                </div>
 
-    $('#teachers').on("change", function(e) {   
-        selectedValue = $("#teachers").select2("val");
-        var pathArray = window.location.pathname.split( '/' );
-        var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
-        //alert(baseURL + "/" + selectedValue);
-        window.location.href = baseURL + "/" + selectedValue;
+       
 
-    });
+    <div class="page-content">
 
-    $('#hide_show_legend').bootstrapSwitch({});
-
-    $('#show_compact_timetable').bootstrapSwitch({});
-
-    $('#hide_show_teacher_legend').bootstrapSwitch({});
-
-    $('#hide_show_legend').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        //console.log(e, $element, value);
-        $("#study_modules_legend").slideToggle();
-    });
-
-
-    $('#hide_show_teacher_legend').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        //console.log(e, $element, value);
-        $("#teacher_legend").slideToggle();
-    });
-
-    $('#show_compact_timetable').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        
-        var pathArray = window.location.pathname.split( '/' );
-        var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
-
-        selectedValue = "";
-        console.log(value);
-        if (value) {
-            selectedValue = "compact";
-        }
-        alert(baseURL + "/" + selectedValue);
-        window.location.href = baseURL + "/" + selectedValue;
-    });
-
-
-    $('#study_modules_legend_table').dataTable( {
-                "oLanguage": {
-                        "sProcessing":   "Processant...",
-                        "sLengthMenu":   "Mostra _MENU_ registres",
-                        "sZeroRecords":  "No s'han trobat registres.",
-                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
-                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
-                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Filtrar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                                "sFirst":    "Primer",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Següent",
-                                "sLast":     "Últim"
-                        }
-            },
-                "bPaginate": false,
-                "bFilter": false,
-        "bInfo": false,
-        });
-
-});
-
-</script>
-
-<div class="container" style="margin-left:200px;margin-right:10;">
     <center>
         <select id="teachers" style="width: 400px">
             <option></option>
@@ -390,4 +327,95 @@ $(function() {
                 <img alt="Creative Commons Licence" style="border-width: 0" src="http://i.creativecommons.org/l/by-nc-sa/2.0/uk/88x31.png" /></a><br />
                 <?php echo lang('creative_commons_timetables_text');?>
         </div>
+
+        </div>
 </div>
+</div>
+</div>
+
+<script>
+
+$(function() {
+
+    //*****************************
+    //* CLASSROOMGROUP DROPDOWN  **
+    //*****************************
+
+    //Jquery select plugin: http://ivaynberg.github.io/select2/
+    $("#teachers").select2(); 
+
+    $('#teachers').on("change", function(e) {   
+        selectedValue = $("#teachers").select2("val");
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+
+    });
+
+    $('#hide_show_legend').bootstrapSwitch({});
+
+    $('#show_compact_timetable').bootstrapSwitch({});
+
+    $('#hide_show_teacher_legend').bootstrapSwitch({});
+
+    $('#hide_show_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#study_modules_legend").slideToggle();
+    });
+
+
+    $('#hide_show_teacher_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#teacher_legend").slideToggle();
+    });
+
+    $('#show_compact_timetable').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+
+        selectedValue = "";
+        console.log(value);
+        if (value) {
+            selectedValue = "compact";
+        }
+        alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+    });
+
+
+    $('#study_modules_legend_table').dataTable( {
+                "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+                "bPaginate": false,
+                "bFilter": false,
+        "bInfo": false,
+        });
+
+});
+
+</script>

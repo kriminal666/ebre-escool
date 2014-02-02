@@ -1,81 +1,24 @@
-﻿<script type="text/javascript">
+﻿<div class="main-content">
+                
 
-$(function() {
+       
 
-    $('#hide_show_legend').bootstrapSwitch({});
+        <div class="page-content">
 
-    $('#show_compact_timetable').bootstrapSwitch({});
+        <div class="page-header position-relative">
+                        <h1>
+                            <?php echo lang("mytimetables_teacher_timetable_title");?>
+                            <small>
+                                <i class="icon-double-angle-right"></i>
+                                <?php echo $teacher_full_name . " ( ". lang("mytimetables_teacher_timetable_code") . " " .  $teacher_code . " )";?>
+                            </small>
+                        </h1>
+        </div><!-- /.page-header -->
 
-    $('#hide_show_teacher_legend').bootstrapSwitch({});
-
-    $('#hide_show_legend').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        //console.log(e, $element, value);
-        $("#study_modules_legend").slideToggle();
-    });
-
-    $('#hide_show_teacher_legend').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
-        //console.log(e, $element, value);
-        $("#teacher_legend").slideToggle();
-    });
-    
-
-    $('#show_compact_timetable').on('switch-change', function (e, data) {
-        var $element = $(data.el),
-        value = data.value;
         
-        var pathArray = window.location.pathname.split( '/' );
-        var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+        <div class="row-fluid">
+            <div class="span12">
 
-        selectedValue = "";
-        console.log(value);
-        if (value) {
-            selectedValue = "compact";
-        }
-        alert(baseURL + "/" + selectedValue);
-        window.location.href = baseURL + "/" + selectedValue;
-    });
-
-    //***************************
-    //* CHECK ATTENDANCE TABLE **
-    //***************************
-
-     $('#study_modules_legend_table').dataTable( {
-                "oLanguage": {
-                        "sProcessing":   "Processant...",
-                        "sLengthMenu":   "Mostra _MENU_ registres",
-                        "sZeroRecords":  "No s'han trobat registres.",
-                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
-                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
-                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Filtrar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                                "sFirst":    "Primer",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Següent",
-                                "sLast":     "Últim"
-                        }
-            },
-                "bPaginate": false,
-                "bFilter": false,
-        "bInfo": false,
-        });
-
-});
-
-</script>
-
-<div class="container" style="margin-left:200px;margin-right:10;">
-        <header class="jumbotron subhead" id="overview"> 
-			<center><h3><?php echo lang("mytimetables_teacher_timetable_title") .": ". $teacher_full_name . 
-            " ( ". lang("mytimetables_teacher_timetable_code") . ": ". $teacher_code . " )";?> </h3></center>
-		</header>
         <center>
             <?php echo lang('show_full_timetable'); ?>
             <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
@@ -370,4 +313,83 @@ $(function() {
                 <img alt="Creative Commons Licence" style="border-width: 0" src="http://i.creativecommons.org/l/by-nc-sa/2.0/uk/88x31.png" /></a><br />
                 <?php echo lang('creative_commons_timetables_text');?>
         </div>
+
+        </div>
+        </div>
+
+    </div>
+
 </div>
+
+<script type="text/javascript">
+
+$(function() {
+
+    $('#hide_show_legend').bootstrapSwitch({});
+
+    $('#show_compact_timetable').bootstrapSwitch({});
+
+    $('#hide_show_teacher_legend').bootstrapSwitch({});
+
+    $('#hide_show_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#study_modules_legend").slideToggle();
+    });
+
+    $('#hide_show_teacher_legend').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        //console.log(e, $element, value);
+        $("#teacher_legend").slideToggle();
+    });
+    
+
+    $('#show_compact_timetable').on('switch-change', function (e, data) {
+        var $element = $(data.el),
+        value = data.value;
+        
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+
+        selectedValue = "";
+        console.log(value);
+        if (value) {
+            selectedValue = "compact";
+        }
+        alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+    });
+
+    //***************************
+    //* CHECK ATTENDANCE TABLE **
+    //***************************
+
+     $('#study_modules_legend_table').dataTable( {
+                "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+                "bPaginate": false,
+                "bFilter": false,
+        "bInfo": false,
+        });
+
+});
+
+</script>
