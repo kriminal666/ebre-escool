@@ -3,12 +3,41 @@ $(function() {
 	$("#grup").select2(); 
 });
 </script>
-<div class="container" style="margin-left:200px;margin-right:10;">
+<div class="main-content" >
+
+<div id="breadcrumbs" class="breadcrumbs">
+ <script type="text/javascript">
+  try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+ </script>
+ <ul class="breadcrumb">
+  <li>
+   <i class="icon-home home-icon"></i>
+   <a href="#">Home</a>
+   <span class="divider">
+    <i class="icon-angle-right arrow-icon"></i>
+   </span>
+  </li>
+  <li class="active"><?php echo lang('reports');?></li>
+ </ul>
+</div>
+
+
+
+        <div class="page-header position-relative">
+                        <h1>
+                            <?php echo lang("attendance").". ".lang("reports_group_reports");?>
+                            <small>
+                                <i class="icon-double-angle-right"></i>
+                                <?php echo lang('reports_group_reports_student_sheet');?>
+                            </small>
+                        </h1>
+        </div><!-- /.page-header -->
+
 <!-- TITLE -->
-<div style='height:30px;'></div>
-	<div style="margin:10px;">
-		<h2><?php echo lang('reports_group_reports_student_sheet'); ?></h2>
-	</div> 
+<div style='height:10px;'></div>
+	<div style="margin:10px; text-align:center;">
+		<h2><?php echo $title; ?></h2>
+	</div>  
 
 	<!-- FORM -->    
 	<div style="width:40%; margin:0px auto;">

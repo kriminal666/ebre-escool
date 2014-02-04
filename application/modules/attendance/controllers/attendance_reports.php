@@ -396,7 +396,8 @@ class attendance_reports extends skeleton_main {
     function mailing_list_report() {
 
         $this->load_header();    
-        $this->load->view('attendance_reports/mailing_list_report.php');     
+        $data['title']=lang('reports_educational_center_reports_student_emails');
+        $this->load->view('attendance_reports/mailing_list_report.php',$data);     
         $this->load_footer();      
     }  
 
@@ -461,7 +462,8 @@ class attendance_reports extends skeleton_main {
                                 "SE" => "SE - Secretariat (S) - CF"
             );
 
-/**/
+        $data['title']=lang('reports_group_reports_class_list');
+        
         $this->load_datatables_data();
 
         if (!$this->skeleton_auth->logged_in())
@@ -526,6 +528,7 @@ class attendance_reports extends skeleton_main {
     }
 
     function class_sheet_report() {
+        $data['title'] = lang('reports_group_reports_student_sheet');
 
         $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
                                 "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
@@ -648,6 +651,8 @@ class attendance_reports extends skeleton_main {
 
     function informe_resum_grup_di_df_1() {
 
+        $data['title'] = lang('reports_group_reports_incidents_by_date');
+
         $data['grups'] = array( "1AF" => "1AF",
                                 "1APD" => "1APD",
                                 "1ASIX-DAM" => "1ASIX-DAM",
@@ -746,6 +751,8 @@ class attendance_reports extends skeleton_main {
     }
 
     function informe_resum_grup_faltes_mes_1() {
+
+        $data['title'] = lang('reports_group_reports_monthly_report');
 
         $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
                                 "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
@@ -893,6 +900,10 @@ class attendance_reports extends skeleton_main {
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));
 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));          
+
         //JS
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
@@ -952,6 +963,10 @@ class attendance_reports extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));          
 
         //JS
         $header_data= $this->add_javascript_to_html_header_data(

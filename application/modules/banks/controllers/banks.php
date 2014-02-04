@@ -90,6 +90,10 @@ class banks extends skeleton_main {
     }
 	
 	public function bank_account() {
+
+        /* Ace */
+        $header_data = $this->load_ace_files();   
+
 		$table_name="bank_account";
         $this->grocery_crud->set_table($table_name);  
 		
@@ -190,6 +194,8 @@ class banks extends skeleton_main {
 
         $this->grocery_crud->unset_dropdowndetails("bank_account_creationUserId","bank_account_lastupdateUserId");
         
+        $this->renderitzar($table_name,$header_data);
+        /*
         $output = $this->grocery_crud->render();
 		
 		$this->_load_html_header($this->_get_html_header_data(),$output); 
@@ -198,6 +204,7 @@ class banks extends skeleton_main {
 		$this->load->view('bank_account',$output); 
                 
 		$this->_load_body_footer();	 	
+		*/
 	}
 
 	public function ccc_valido($field,$ccc)	{
@@ -264,12 +271,18 @@ class banks extends skeleton_main {
 
 	
 	public function bank() {
+
+        /* Ace */
+        $header_data = $this->load_ace_files();   
+
 		$table_name="bank";
         $this->grocery_crud->set_table($table_name);  
 		
 		//Establish subject:
         $this->grocery_crud->set_subject("banc");
         
+        $this->renderitzar($table_name,$header_data);
+        /*
         $output = $this->grocery_crud->render();
 		
 		$this->_load_html_header($this->_get_html_header_data(),$output); 
@@ -278,15 +291,22 @@ class banks extends skeleton_main {
 		$this->load->view('bank',$output); 
                 
 		$this->_load_body_footer();	 	
+		*/
 	}				
 	
 	public function bank_account_type() {
+
+        /* Ace */
+        $header_data = $this->load_ace_files();   
+
 		$table_name="bank_account_type";
         $this->grocery_crud->set_table($table_name);  
 		
 		//Establish subject:
         $this->grocery_crud->set_subject("Tipus de Compte");
         
+        $this->renderitzar($table_name,$header_data);
+        /*
         $output = $this->grocery_crud->render();
 		
 		$this->_load_html_header($this->_get_html_header_data(),$output); 
@@ -295,9 +315,14 @@ class banks extends skeleton_main {
 		$this->load->view('bank_account_type',$output); 
                 
 		$this->_load_body_footer();	 	
+		*/
 	}
 	
 	public function bank_office() {
+
+        /* Ace */
+        $header_data = $this->load_ace_files();   
+
 		$table_name="bank_office";
         $this->grocery_crud->set_table($table_name);  
 		
@@ -306,7 +331,9 @@ class banks extends skeleton_main {
         
         $this->grocery_crud->set_relation('bank_office_bank_id','bank','{bank_code}-{bank_name}');
         
-        
+
+        $this->renderitzar($table_name,$header_data);        
+        /*
         $output = $this->grocery_crud->render();
 		
 		$this->_load_html_header($this->_get_html_header_data(),$output); 
@@ -315,6 +342,78 @@ class banks extends skeleton_main {
 		$this->load->view('bank_office',$output); 
                 
 		$this->_load_body_footer();	 	
+		*/
 	}				
 	
+function renderitzar($table_name,$header_data)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($header_data,$output); 
+    
+       //      BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       //$this->load->view('course.php',$output);     
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
+
+function load_ace_files(){
+
+$header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));  
+                    
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));    
+
+        return $header_data;
+}
+
+
+
 }

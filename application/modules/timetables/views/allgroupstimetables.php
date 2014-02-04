@@ -56,7 +56,38 @@ $(function() {
 
 });
 </script>
-<div class="container" style="margin-left:200px;margin-right:10;">
+<div class="main-content">
+
+<div id="breadcrumbs" class="breadcrumbs">
+ <script type="text/javascript">
+  try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+ </script>
+ <ul class="breadcrumb">
+  <li>
+   <i class="icon-home home-icon"></i>
+   <a href="#">Home</a>
+   <span class="divider">
+    <i class="icon-angle-right arrow-icon"></i>
+   </span>
+  </li>
+  <li class="active"><?php echo lang('timetable');?></li>
+ </ul>
+</div>
+
+
+
+        <div class="page-header position-relative">
+                        <h1>
+                            <?php echo lang("mytimetables_teacher_timetable_title");?>
+                            <small>
+                                <i class="icon-double-angle-right"></i>
+                                <?php echo "TODO Nom Professor";?>
+                            </small>
+                        </h1>
+        </div><!-- /.page-header -->
+
+
+
     <center>
         <select id="classroom_groups" style="width: 400px">
             <option></option>

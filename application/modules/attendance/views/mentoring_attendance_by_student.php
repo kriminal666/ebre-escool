@@ -1,4 +1,4 @@
-<div class="main-content" style="margin-left:190px;">
+<div class="main-content">
 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
@@ -12,13 +12,25 @@
     <i class="icon-angle-right arrow-icon"></i>
    </span>
   </li>
-  <li class="active">Bancs</li>
+  <li class="active"><?php echo lang('mentoring');?></li>
  </ul>
 </div>
 
+<div class="page-content">
+<div class="page-header position-relative">
+ <h1>
+  <?php echo lang('mentoring_attendance_by_student');?>
+  <small>
+   <i class="icon-double-angle-right"></i>
+    TODO Nom professor
+  </small>
+ </h1>
+</div>
 
 <div style='height:30px;'></div>
  <div style="margin:10px;">
-   <?php echo $output; ?>
+   <?php 
+    echo "TODO";
+    ?>
  </div>
 </div>

@@ -49,6 +49,9 @@ class enrollment extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
 		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
 		$readonly_group = $this->config->item('readonly_group');
 		if ($this->skeleton_auth->in_group($readonly_group)) {
@@ -116,30 +119,9 @@ class enrollment extends skeleton_main {
 //      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_markedForDeletion','n');
-                   
-        $output = $this->grocery_crud->render();
 
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="enrollment_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
+        $this->renderitzar($this->current_table,$header_data);                   
 
-        $this->load->view('enrollment/enrollment.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
 	}
 
 /* FI ENROLLMENT */
@@ -154,6 +136,9 @@ class enrollment extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
 		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
 		$readonly_group = $this->config->item('readonly_group');
 		if ($this->skeleton_auth->in_group($readonly_group)) {
@@ -222,29 +207,7 @@ class enrollment extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_studies_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="enrollment_studies_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('enrollment/enrollment_studies.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
+        $this->renderitzar($this->current_table,$header_data);
 	}
 
 /* FI ENROLLMENT STUDIES */
@@ -259,6 +222,9 @@ class enrollment extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
 		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
 		$readonly_group = $this->config->item('readonly_group');
 		if ($this->skeleton_auth->in_group($readonly_group)) {
@@ -328,29 +294,7 @@ class enrollment extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_class_group_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="enrollment_class_group_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('enrollment/enrollment_class_group.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
+        $this->renderitzar($this->current_table,$header_data);	
 	}
 
 /* FI ENROLLMENT CLASS GROUP */
@@ -365,6 +309,9 @@ class enrollment extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
 		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
 		$readonly_group = $this->config->item('readonly_group');
 		if ($this->skeleton_auth->in_group($readonly_group)) {
@@ -435,29 +382,7 @@ class enrollment extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_modules_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="enrollment_modules_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('enrollment/enrollment_modules.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
+        $this->renderitzar($this->current_table,$header_data);
 	}
 
 /* FI ENROLLMENT MODULES */
@@ -472,6 +397,9 @@ class enrollment extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 		
+        /* Ace */
+        $header_data = $this->load_ace_files();
+        
 		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
 		$readonly_group = $this->config->item('readonly_group');
 		if ($this->skeleton_auth->in_group($readonly_group)) {
@@ -543,29 +471,7 @@ class enrollment extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,'enrollment_submodules_markedForDeletion','n');
                    
-        $output = $this->grocery_crud->render();
-
-       /*******************
-	   /* HTML HEADER     *
-	   /******************/
-	   $this->_load_html_header($this->_get_html_header_data(),$output); 
-	   
-	   /*******************
-	   /*      BODY       *
-	   /******************/
-	   $this->_load_body_header();
-	   
-		$default_values=$this->_get_default_values();
-		$default_values["table_name"]=$this->current_table;
-		$default_values["field_prefix"]="enrollment_submodules_";
-		$this->load->view('defaultvalues_view.php',$default_values); 
-
-        $this->load->view('enrollment/enrollment_submodules.php',$output);     
-       
-       /*******************
-	   /*      FOOTER     *
-	   *******************/
-	   $this->_load_body_footer();	
+        $this->renderitzar($this->current_table,$header_data);
 	}
 
 /* FI ENROLLMENT SUBMODULES */
@@ -587,6 +493,12 @@ class enrollment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/css/tooltipster.css'));			
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));  
+
+
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -651,6 +563,70 @@ function before_update_object_callback($post_array, $primary_key) {
         
         $post_array['lastupdateUserId'] = $this->session->userdata('user_id');
         return $post_array;
+}
+
+function renderitzar($table_name,$header_data)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($header_data,$output); 
+    
+       //      BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       //$this->load->view('course.php',$output);     
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
+
+function load_ace_files(){
+
+$header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));    
+
+        return $header_data;
 }
 
 }

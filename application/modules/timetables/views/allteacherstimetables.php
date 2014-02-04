@@ -14,7 +14,7 @@
                                 <i class="icon-angle-right arrow-icon"></i>
                             </span>
                         </li>
-                        <li class="active">Els meus horaris</li>
+                        <li class="active"><?php echo lang('mytimetables_teacher_timetable_title');?></li>
                     </ul><!-- .breadcrumb -->
 
                 </div>
@@ -22,6 +22,17 @@
        
 
     <div class="page-content">
+
+        <div class="page-header position-relative">
+                        <h1>
+                            <?php echo lang("mytimetables_teacher_timetable_title");?>
+                            <small>
+                                <i class="icon-double-angle-right"></i>
+                                <?php echo "TODO Nom Professor  ( ". lang("mytimetables_teacher_timetable_code") . " " .  $teacher_code . " )";?>
+                            </small>
+                        </h1>
+        </div><!-- /.page-header -->
+
 
     <center>
         <select id="teachers" style="width: 400px">

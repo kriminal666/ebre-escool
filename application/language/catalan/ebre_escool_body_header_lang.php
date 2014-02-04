@@ -54,6 +54,7 @@ $lang['maintenances'] = 'Manteniments';
  $lang['students'] = 'Alumnes'; 
  $lang['persons'] = 'Persones';
  $lang['externalid_menu'] = 'Tipus Identificadors externs';
+ $lang['personal_id_type'] = 'Tipus identificador personal';
  $lang['organizationalunit_menu'] = 'Unitats Organitzatives';
  $lang['location_menu'] = 'Espais';
  $lang['brand_menu'] = 'Marques';

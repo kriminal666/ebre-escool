@@ -12,7 +12,7 @@
     <i class="icon-angle-right arrow-icon"></i>
    </span>
   </li>
-  <li class="active">Passar llista</li>
+  <li class="active"><?php echo lang('check_attendance');?></li>
  </ul>
 </div>
 
