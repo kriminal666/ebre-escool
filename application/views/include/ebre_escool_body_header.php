@@ -527,7 +527,7 @@
 
                   <li>
                     <a href="<?php echo base_url('/index.php/persons/person_official_id_type'); ?>">
-                      <?php echo "Tipus identificador personal";?>
+                      <?php echo lang('personal_id_type');?>
                     </a>
                   </li>
 
