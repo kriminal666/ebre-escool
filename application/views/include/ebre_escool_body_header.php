@@ -648,13 +648,13 @@
           </a>
            
             <ul class="submenu">
-              <li><a href='<?php echo site_url('main/externalIDType')?>'><?php echo lang('externalid_menu');?></a></li>
-              <li><a href='<?php echo site_url('main/material')?>'><?php echo lang('material_menu');?></a></li>
-              <li><a href='<?php echo site_url('main/brand')?>'><?php echo lang('brand_menu');?></a></li>
-              <li><a href='<?php echo site_url('main/model')?>'><?php echo lang('model_menu');?></a></li>
-              <li><a href='<?php echo site_url('main/provider')?>'><?php echo lang('provider_menu');?></a></li>    
-              <li><a href='<?php echo site_url('main/money_source')?>'><?php echo lang('money_source_menu');?></a></li>              
-              <li><a href='<?php echo site_url('main/barcode')?>'><?php echo lang('barcode_menu');?></a></li>
+              <li><a href='<?=base_url()?>index.php/inventory/externalIDType'><?php echo lang('externalid_menu');?></a></li>
+              <li><a href='<?=base_url()?>index.php/inventory/material'><?php echo lang('material_menu');?></a></li>
+              <li><a href='<?=base_url()?>index.php/inventory/brand'><?php echo lang('brand_menu');?></a></li>
+              <li><a href='<?=base_url()?>index.php/inventory/model'><?php echo lang('model_menu');?></a></li>
+              <li><a href='<?=base_url()?>index.php/inventory/provider'><?php echo lang('provider_menu');?></a></li>    
+              <li><a href='<?=base_url()?>index.php/inventory/money_source'><?php echo lang('money_source_menu');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/inventory/barcode'><?php echo lang('barcode_menu');?></a></li>
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li> 
 
