@@ -310,20 +310,21 @@
         </div><!-- #sidebar-shortcuts -->
 
         <ul class="nav nav-list">
+          <!-- PANELL DE CONTROL -->
           <li class="active">
             <a href="<?php echo base_url('/index.php/dashboard'); ?>">
               <i class="icon-dashboard"></i>
               <span class="menu-text"> Panell de control </span>
             </a>
           </li>
-
+          <!-- PASSAR LLISTA -->
           <li>
             <a href="<?php echo base_url('/index.php/attendance/check_attendance'); ?>">
               <i class="icon-bell"></i>
               <span class="menu-text"> <?php echo lang('check_attendance');?> </span>
             </a>
           </li>
-
+          <!-- TUTORIA -->
           <li>
             <a href="#" class="dropdown-toggle">
               <i class="icon-eye-open"></i>
@@ -332,43 +333,45 @@
             </a>
 
             <ul class="submenu">
+              <!-- tutoritza els teus grups -->
               <li>
-                <a href="elements.html">
+                <a href="<?=base_url()?>index.php/attendance/mentoring_groups">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('mentoring_groups_mentoring');?>
                 </a>
               </li>
-
+              <!-- llistat de faltes per alumne -->
               <li>
-                <a href="buttons.html">
+                <a href="<?=base_url()?>index.php/attendance/mentoring_attendance_by_student">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('mentoring_attendance_by_student');?>
                 </a>
               </li>
             </ul>
               
-
+          <!-- HORARIS -->
           <li>
             <a href="#" class="dropdown-toggle">
               <i class="icon-calendar"></i>
               <span class="menu-text"> <?php echo lang('timetables');?> </span>
-
               <b class="arrow icon-angle-down"></b>
             </a>
 
             <ul class="submenu">
+              <!-- els meus horaris -->
               <li>
                 <a href="<?php echo base_url('/index.php/timetables/mytimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('my_timetables');?>
               </li>
-
+              <!-- horaris de tots els professors -->
               <li>
                 <a href="<?php echo base_url('/index.php/timetables/allteacherstimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('all_teachers_timetables');?>
                 </a>
               </li>
+              <!-- tots els horaris de grups -->
               <li>
                 <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables'); ?>">
                   <i class="icon-double-angle-right"></i>
@@ -378,18 +381,15 @@
 
             </ul>
           </li>
-
+          <!-- INFORMES -->
           <li>
             <a href="#" class="dropdown-toggle">
               <i class="icon-file-text"></i>
               <span class="menu-text"> <?php echo lang('reports');?> </span>
-
               <b class="arrow icon-angle-down"></b>
             </a>
-
             <ul class="submenu">
-              
-
+              <!-- Assistència informes del centre -->
               <li>
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
@@ -431,7 +431,7 @@
                 </ul>
               </li>
 
-
+              <!-- Assistència informes de grup -->
               <li>
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
@@ -466,7 +466,7 @@
                   </li>
 
                 </ul>
-
+                <!-- Informe guifi -->
                 <li>
                   <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informeGuifi'); ?>">
                    <i class="icon-double-angle-right"></i>
@@ -477,28 +477,26 @@
 
             </ul>
           </li>
-
+          <!-- INVENTARI -->
           <li>
-            <a href="widgets.html">
+            <a href="<?=base_url()?>index.php/inventory/inventory">
               <i class="icon-check"></i>
               <span class="menu-text"> Inventari </span>
             </a>
           </li>
 
-
+          <!-- MANTENIMENTS -->
           <li>
             <a href="#" class="dropdown-toggle">
               <i class="icon-briefcase"></i>
-
               <span class="menu-text">
                 <?php echo lang('maintenances');?>
               </span>
-
               <b class="arrow icon-angle-down"></b>
             </a>
 
             <ul class="submenu">
-
+              <!-- Persones -->
               <li>
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
@@ -546,22 +544,21 @@
                   </li>
                 </ul>
               </li>
-
+              <!-- Unitats Organitzatives -->
               <li>
                 <a href="<?php echo base_url('/index.php/skeleton_main/organizational_unit'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('organizationalunit_menu');?>
                 </a>
               </li>
-
+              <!-- Espais -->
               <li>
                 <a href="<?php echo base_url('/index.php/location/location'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('location_menu');?>
                 </a>
               </li>
-
-              
+              <!-- Gestio Assistència -->              
               <li>
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
@@ -591,11 +588,97 @@
                   </li> 
                 </ul>
               </li>
+              <!-- currículum -->
+         <li>
+          <a href="#" class="dropdown-toggle">
+            <i class="icon-double-angle-right"></i>
+            <?php echo lang("curriculum");?>
+
+                  <b class="arrow icon-angle-down"></b>
+          </a>
+            <ul class="submenu">
+              <!-- Manteniments -->
+              <li><a href='<?=base_url()?>index.php/curriculum/studies_organizational_unit'><?php echo lang('organizational_unit_studies');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/departments_families'><?php echo lang('departments_families');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/studies'><?php echo lang('studies');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/cycle'><?php echo lang('cycles');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/course'><?php echo lang('course');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/classroom_group'><?php echo lang('classroom_group');?></a></li>
+              <li><a href='<?=base_url()?>index.php/curriculum/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->
+              <li><a href='<?=base_url()?>index.php/curriculum/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
+              <li><a href='<?=base_url()?>index.php/curriculum/lessons'><?php echo lang('lessons');?></a></li><!-- Lliçons -->              
+            </ul>
+         </li>  
+              <!-- matricula -->
+         <li>
+          <a href="#" class="dropdown-toggle">
+          <i class="icon-double-angle-right"></i>
+            <?php echo "Matrícula";?>
+                  <b class="arrow icon-angle-down"></b>             
+          </a>
+           
+            <ul class="submenu">
+              <!-- Matrícules -->
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment'><?php echo lang('enrollment');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/enrollment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li>      
+         <!-- Hores no lectives-->
+         <li>
+          <a href="#" class="dropdown-toggle">
+          <i class="icon-double-angle-right"></i>
+            <?php echo lang('timetables');?>
+                  <b class="arrow icon-angle-down"></b>             
+          </a>
+           
+            <ul class="submenu">
+              <li><a href='<?=base_url()?>index.php/timetables/non_lective_hours'><?php echo lang('non_lective_hours');?></a></li>              
+              <li><a href='<?=base_url()?>index.php/timetables/non_lective_lessons'><?php echo lang('non_lective_lessons');?></a></li>
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li> 
+         <!-- Inventari -->
+         <li>
+          <a href="#" class="dropdown-toggle">
+          <i class="icon-double-angle-right"></i>
+            <?php echo "Inventari";?>
+                  <b class="arrow icon-angle-down"></b>             
+          </a>
+           
+            <ul class="submenu">
+              <li><a href='<?php echo site_url('main/externalIDType')?>'><?php echo lang('externalid_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/material')?>'><?php echo lang('material_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/brand')?>'><?php echo lang('brand_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/model')?>'><?php echo lang('model_menu');?></a></li>
+              <li><a href='<?php echo site_url('main/provider')?>'><?php echo lang('provider_menu');?></a></li>    
+              <li><a href='<?php echo site_url('main/money_source')?>'><?php echo lang('money_source_menu');?></a></li>              
+              <li><a href='<?php echo site_url('main/barcode')?>'><?php echo lang('barcode_menu');?></a></li>
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li> 
+
+         <!-- Dades Bancaries -->
+         <li>
+          <a href="#" class="dropdown-toggle">
+          <i class="icon-double-angle-right"></i>
+            <?php echo "Dades bancàries";?>
+                  <b class="arrow icon-angle-down"></b>             
+          </a>
+           
+            <ul class="submenu">
+              <li><a href='<?=base_url()?>index.php/banks/bank_account')?><?php echo "Comptes";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank')?><?php echo "Bancs";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_office')?><?php echo "Oficines";?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_account_type')?><?php echo "Tipus de compte";?></a></li>
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li>
+
 
             </ul>
           </li>
 
-
+          <!-- GESTIÓ -->
           <li>
             <a href="#" class="dropdown-toggle">
               <i class="icon-cog"></i>

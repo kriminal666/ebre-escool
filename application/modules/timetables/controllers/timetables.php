@@ -655,6 +655,9 @@ class timetables extends skeleton_main {
 
         $this->check_logged_user(true); 
 
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
         /* Grocery Crud */
         $this->current_table="non_lective_hours";
         $this->grocery_crud->set_table("non_lective_hours");
@@ -702,13 +705,16 @@ class timetables extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-        $this->renderitzar($this->current_table);
+        $this->renderitzar($this->current_table,$header_data);
 
     }
 
     public function non_lective_lessons() {
 
         $this->check_logged_user(true); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files();
 
         /* Grocery Crud */
         $this->current_table="non_lective_lessons";
@@ -768,7 +774,7 @@ class timetables extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-        $this->renderitzar($this->current_table);
+        $this->renderitzar($this->current_table,$header_data);
 
     }
 
@@ -853,12 +859,17 @@ function userCreation_userModification($table_name)
     $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
 }
 
-function renderitzar($table_name)
+function renderitzar($table_name,$header_data=false)
 {
        $output = $this->grocery_crud->render();
 
        // HTML HEADER
-       $this->_load_html_header($this->_get_html_header_data(),$output); 
+       if($header_data){
+            $this->_load_html_header($header_data,$output); 
+       } else {
+            $this->_load_html_header($this->_get_html_header_data(),$output);         
+       }
+
        
        // BODY       
        $this->_load_body_header();
@@ -873,6 +884,45 @@ function renderitzar($table_name)
        // FOOTER     
        $this->_load_body_footer();  
 
+}
+
+function load_ace_files(){
+
+$header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));    
+
+        return $header_data;
 }
 
 }

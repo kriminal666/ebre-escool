@@ -283,7 +283,10 @@ class attendance extends skeleton_main {
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-		
+
+		$header_data = $this->load_header_data();
+        $this->_load_html_header($header_data);
+		/*
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
@@ -340,8 +343,8 @@ class attendance extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/jquery.dataTables.min.js'));
-	
-		$this->_load_html_header($header_data); 
+*/	
+		//$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
 
@@ -369,6 +372,16 @@ class attendance extends skeleton_main {
 	}
 
 	public function mentoring_attendance_by_student () {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$header_data = $this->load_header_data();
+        $this->_load_html_header($header_data);
+/*
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
@@ -381,10 +394,12 @@ class attendance extends skeleton_main {
 			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
 			
 		$this->_load_html_header($header_data); 
-		
+*/		
 		$this->_load_body_header();
+
+		$data = array();
 		
-		echo "TODO";	
+		$this->load->view('mentoring_attendance_by_student',$data);	
 
 		$this->_load_body_footer();		
 	}
