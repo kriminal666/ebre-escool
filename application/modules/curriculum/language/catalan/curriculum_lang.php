@@ -16,6 +16,8 @@ $lang['curriculum']   = "Pla d'estudis";
 
 $lang['department']   = "Departament/Família";
 
+$lang['external_code']   = "Codi Extern";
+
 $lang['department_shortname']   = "Nom curt";
 $lang['department_name']   = "Nom";
 $lang['department_parent_department_id']   = "Departament/Família pare";

@@ -546,7 +546,7 @@
               </li>
               <!-- Unitats Organitzatives -->
               <li>
-                <a href="<?php echo base_url('/index.php/skeleton_main/organizational_unit'); ?>">
+                <a href="<?php echo base_url('/index.php/curriculum/organizational_unit'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('organizationalunit_menu');?>
                 </a>
