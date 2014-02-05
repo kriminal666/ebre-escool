@@ -3,7 +3,7 @@
 <style type="text/css">	  
     .footer {		   
 		color: #666;
-		background: #222;
+		background: #222 !important;
 		padding: 5px 0 5px 0;
 		border-top: 1px solid #000;
      }

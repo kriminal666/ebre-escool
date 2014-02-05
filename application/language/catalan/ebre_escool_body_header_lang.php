@@ -113,3 +113,12 @@ $lang['enrollment_submodules']="Matrícules Sub-Mòduls";
 $lang['non_lective_hours'] = "Hores no lectives";
 $lang['non_lective_lessons'] = "Lliçons no lectives";
 
+//Inventari
+$lang['inventory']="Inventari";
+
+//Dades Bancàries
+$lang['bank']="Bancs";
+$lang['bank_data']="Dades bancàries";
+$lang['bank_account']="Comptes";
+$lang['bank_office']="Oficines";
+$lang['bank_account_type']="Tipus de compte";

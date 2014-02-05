@@ -252,7 +252,7 @@
                 <li class="divider"></li>
 
                 <li>
-                  <a href="#">
+                  <a href="<?php echo base_url('/index.php/skeleton_auth/auth/logout'); ?>">
                     <i class="icon-off"></i>
                     Sortir
                   </a>
@@ -281,21 +281,29 @@
 
         <div class="sidebar-shortcuts" id="sidebar-shortcuts">
           <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-            <button class="btn btn-small btn-success">
-              <i class="icon-signal"></i>
-            </button>
+            <a href="<?php echo base_url('/index.php/dashboard'); ?>">
+              <button class="btn btn-small btn-success">
+                <i class="icon-signal"></i>
+              </button>
+            </a>
 
-            <button class="btn btn-small btn-info">
-              <i class="icon-pencil"></i>
-            </button>
+            <a href="#">
+              <button class="btn btn-small btn-info">
+                <i class="icon-flag"></i>
+              </button>
+            </a>
+             
+            <a href="#">    
+              <button class="btn btn-small btn-warning">
+                <i class="icon-group"></i>
+              </button>
+            </a>  
 
-            <button class="btn btn-small btn-warning">
-              <i class="icon-group"></i>
-            </button>
-
-            <button class="btn btn-small btn-danger">
-              <i class="icon-cogs"></i>
-            </button>
+            <a href="#">
+              <button class="btn btn-small btn-danger">
+                <i class="icon-cogs"></i>
+              </button>
+            </a>  
           </div>
 
           <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
@@ -613,7 +621,7 @@
          <li>
           <a href="#" class="dropdown-toggle">
           <i class="icon-double-angle-right"></i>
-            <?php echo "Matrícula";?>
+            <?php echo lang('enrollment');?>
                   <b class="arrow icon-angle-down"></b>             
           </a>
            
@@ -643,7 +651,7 @@
          <li>
           <a href="#" class="dropdown-toggle">
           <i class="icon-double-angle-right"></i>
-            <?php echo "Inventari";?>
+            <?php echo lang('inventory');?>
                   <b class="arrow icon-angle-down"></b>             
           </a>
            
@@ -662,15 +670,15 @@
          <li>
           <a href="#" class="dropdown-toggle">
           <i class="icon-double-angle-right"></i>
-            <?php echo "Dades bancàries";?>
+            <?php echo lang('bank_data');?>
                   <b class="arrow icon-angle-down"></b>             
           </a>
-           
+
             <ul class="submenu">
-              <li><a href='<?=base_url()?>index.php/banks/bank_account')?><?php echo "Comptes";?></a></li>
-            <li><a href='<?=base_url()?>index.php/banks/bank')?><?php echo "Bancs";?></a></li>
-            <li><a href='<?=base_url()?>index.php/banks/bank_office')?><?php echo "Oficines";?></a></li>
-            <li><a href='<?=base_url()?>index.php/banks/bank_account_type')?><?php echo "Tipus de compte";?></a></li>
+              <li><a href='<?=base_url()?>index.php/banks/bank_account')?><?php echo lang('bank_account');?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank')?><?php echo lang('bank');?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_office')?><?php echo lang('bank_office');?></a></li>
+            <li><a href='<?=base_url()?>index.php/banks/bank_account_type')?><?php echo lang('bank_account_type');?></a></li>
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>
 
