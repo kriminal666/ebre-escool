@@ -63,7 +63,9 @@ class location extends skeleton_main {
         $this->grocery_crud->display_as('location_parentLocation',lang('location_parentLocation'));          
         $this->grocery_crud->display_as('location_lastupdateUserId',lang('location_lastupdateUserId'));   
         $this->grocery_crud->display_as('location_markedForDeletion',lang('location_markedForDeletion'));       
-        $this->grocery_crud->display_as('location_markedForDeletionDate',lang('location_markedForDeletionDate'));       
+        $this->grocery_crud->display_as('location_markedForDeletionDate',lang('location_markedForDeletionDate'));   
+
+        $this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));

@@ -22,7 +22,7 @@
   Grup classe
   <small>
    <i class="icon-double-angle-right"></i>
-    Nom grup
+    <?php echo "(" . $selected_classroom_group_shortname . ") " . $selected_classroom_group;?>
   </small>
  </h1>
 </div>
@@ -100,7 +100,8 @@
 <div class="row-fluid">
 
   <div class="table-header">
-    Grup: 2DAM M 9 (17 Alumne) | Data: 20-01-2014 (19:00 - 20:00)
+    <i class="icon-table"></i> <?php echo " " . $selected_classroom_group_shortname . " "; ?><i class="icon-double-angle-right"></i> <?php echo " " .  $selected_module_shortname . " "; ?> <i class="icon-user"></i><?php echo " " . $total_number_of_students;?> 
+    <span style="text-align: right;"><i class="icon-calendar"></i> Data: 20-01-2014 (19:00 - 20:00)</span>
   </div>
 
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">

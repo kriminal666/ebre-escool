@@ -594,6 +594,11 @@ class attendance extends skeleton_main {
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
+	    $data['total_number_of_students'] = 3;
+		$data['selected_module_shortname'] = "M 9";
+		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
+	    $data['selected_classroom_group_shortname'] = "2 ASIX";
+
 		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 
