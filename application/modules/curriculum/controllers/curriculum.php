@@ -37,6 +37,73 @@ class curriculum extends skeleton_main {
 		$this->lessons();
 	}
 
+
+    public function organizational_unit() {
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files();        
+
+        /* Grocery Crud */
+        $this->current_table="organizational_unit";
+        $this->grocery_crud->set_table("organizational_unit");
+        //$_SESSION['table_name'] = 'studiesOU_';
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('organizational_unit'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields('organizational_unit_name','organizational_unit_shortname','organizational_unit_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+       
+        //Camps last update no editable i automàtic        
+        //$this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
+
+        //Express fields
+        $this->grocery_crud->express_fields('organizational_unit_name','organizational_unit_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('organizational_unit_shortName',lang('shortName'));
+        $this->grocery_crud->display_as('organizational_unit_name',lang('name'));
+        $this->grocery_crud->display_as('organizational_unit_description',lang('description'));        
+        $this->grocery_crud->display_as('organizational_unit_location',lang('location'));            
+        $this->grocery_crud->display_as('organizational_unit_externalCode',lang('external_code'));
+        $this->grocery_crud->display_as('organizational_unit_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as('organizational_unit_last_update',lang('last_update'));
+        $this->grocery_crud->display_as('organizational_unit_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as('organizational_unit_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as('organizational_unit_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as('organizational_unit_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields('organizational_unit_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails("organizational_unit_creationUserId","organizational_unit_lastupdateUserId");
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,'organizational_unit_markedForDeletion','n');
+
+       $this->renderitzar($this->current_table,$header_data);
+
+    }
+
+
     public function studies_organizational_unit() {
 
         $this->check_logged_user(); 
