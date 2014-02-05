@@ -1,1 +1,8 @@
+/* No padding top */
 body{padding-top:0px !important;}
+
+/* Footer color */
+.footer{color:#666;background:#fff !important;border-top:1px solid #ccc !important;}
+.footer a:link, .footer a:visited {color:#444 !important;}
+.footer a:hover {color:#666 !important;border-bottom:1px dotted #666 !important;text-decoration:none;}
+

@@ -1,5 +1,32 @@
-<div class="container" style="margin-left:200px;">
-<div style='height:30px;'></div>
+<div class="main-content" >
+<div id="breadcrumbs" class="breadcrumbs">
+ <script type="text/javascript">
+  try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+ </script>
+ <ul class="breadcrumb">
+  <li>
+   <i class="icon-home home-icon"></i>
+   <a href="#">Home</a>
+   <span class="divider">
+    <i class="icon-angle-right arrow-icon"></i>
+   </span>
+  </li>
+  <li class="active"><?php echo lang('inventory');?></li>
+ </ul>
+</div>
+
+
+
+        <div class="page-header position-relative">
+                        <h1>
+                            <?php echo lang("inventory");?>
+                            <small>
+                                <i class="icon-double-angle-right"></i>
+                                <?php echo lang('money_source_menu');?>
+                            </small>
+                        </h1>
+        </div><!-- /.page-header -->
+<div style='height:10px;'></div>
 	<div style="margin:10px;">
    		<?php echo "Origen Diners"; ?>		
 	</div>	
