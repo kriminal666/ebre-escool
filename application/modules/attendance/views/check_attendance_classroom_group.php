@@ -100,48 +100,54 @@
 <div class="row-fluid">
 
   <div class="table-header">
-    <i class="icon-table"></i> <?php echo " " . $selected_classroom_group_shortname . " "; ?><i class="icon-double-angle-right"></i> <?php echo " " .  $selected_module_shortname . " "; ?> 
-              
-      <div class="inline position-relative">
+    <i class="icon-table"></i> 
+    <div class="inline position-relative">
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            This Week
+                            <?php echo $selected_classroom_group_shortname;?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                            <li class="active">
-                              <a href="#" class="blue">
+                          <?php foreach ($classroom_groups as $classroom_group_key => $classroom_group): ?>
+                            <li <?php if ($selected_classroom_group_key == $classroom_group_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($selected_classroom_group_key == $classroom_group_key ) { echo 'class="blue"';}?> >
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                This Week
+                                <?php echo $classroom_group; ?>
                               </a>
-                            </li>
-
-                            <li>
-                              <a href="#">
-                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
-                                Last Week
-                              </a>
-                            </li>
-
-                            <li>
-                              <a href="#">
-                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
-                                This Month
-                              </a>
-                            </li>
-
-                            <li>
-                              <a href="#">
-                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
-                                Last Month
-                              </a>
-                            </li>
+                            </li>      
+                          <?php endforeach; ?>
                           </ul>
-      </div>                   
+    </div>
+    <i class="icon-double-angle-right"></i> 
+    <div class="inline position-relative">
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <?php echo $selected_study_module_shortname;?>
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
 
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                          <?php foreach ($study_modules as $study_module_key => $study_module): ?>
+                            <li <?php if ($selected_study_module_key == $study_module_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($selected_study_module_key == $study_module_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $study_module; ?>
+                              </a>
+                            </li>      
+                          <?php endforeach; ?>
+                          </ul>
+    </div>
+
+      
     <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
 
-    <span style="float:right;margin-right:5px;"><i class="icon-calendar"></i> <?php echo $selected_day . " ( " . $selected_time_slot . " )";?></span>
+    <span style="float:right;margin-right:5px;"> 
+         <div class="input-append date">
+           <input type="text" class="span2" value="<?php echo $selected_day;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+         <?php echo " ( " . $selected_time_slot . ")";?>
+    </span>
   </div>
 
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">
@@ -478,6 +484,7 @@
 </div>
 <script type="text/javascript">
       jQuery(function($) {
+        
         var oTable1 = $('#sample-table-2').dataTable( {
           "oLanguage": {
                         "sProcessing":   "Processant...",
@@ -501,6 +508,39 @@
             { "bSortable": false },null,null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
           { "bSortable": false }
         ] } );
+
+  //***********************
+  //* Datepicker         **
+  //***********************
+  $('.input-append.date').datepicker({
+      format: "dd/mm/yyyy",
+      weekStart: 1,
+      todayBtn: true,
+      language: "ca",
+      daysOfWeekDisabled: "0,6",
+      autoclose: true,
+      todayHighlight: true
+    }).on("changeDate", function(e){
+        teacher_code = $("#teachers").select2("val");
+        selected_date = $('.input-append.date').datepicker('getDate');
+        day=selected_date.getDate();
+        month = parseInt(selected_date.getMonth());
+        converted_month = month +1 ;
+        year=selected_date.getFullYear();
+        formated_selectedDate = day + "/" + converted_month + "/" + year;
+
+        /*
+        alert ( "Day: " + day);
+        alert ( "Month: " + converted_month );
+        alert ( "Year: " + year);
+        */
+
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var  baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
+    });
         
       })
 </script>

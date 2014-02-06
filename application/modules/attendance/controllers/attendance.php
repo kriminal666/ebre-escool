@@ -590,6 +590,32 @@ class attendance extends skeleton_main {
 
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";       
+
+	    #Obrain class_room_groups
+	    //TODO:
+	    $data['classroom_groups']=array();
+	    $user_is_admin=true;
+	    if ($user_is_admin) {
+	    	$data['classroom_groups']= array ( 1 => "2 ASIX", 2 => "2 DAM", 3 => "1 ASIX", 4 => "2 SMX", 5 => "1 SMX" );
+	    } else {
+			$data['classroom_groups']=array();
+	    }
+
+	    $data['study_modules']=array();
+	    $user_is_admin=true;
+	    if ($user_is_admin) {
+	    	$data['study_modules']= array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
+	    } else {
+			$data['study_modules']=array();
+	    }
+
+	    $data['selected_classroom_group_key']= 1;
+	    $data['selected_classroom_group_shortname'] = "2 ASIX";
+		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
+
+		$data['selected_study_module_key']= 2;
+	    $data['selected_study_module_shortname'] = "M 9";
+		$data['selected_study_module'] = "Mòdul 9 bla bla bla";
         
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
@@ -599,8 +625,8 @@ class attendance extends skeleton_main {
 
 	    $data['total_number_of_students'] = 3;
 		$data['selected_module_shortname'] = "M 9";
-		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
-	    $data['selected_classroom_group_shortname'] = "2 ASIX";
+
+	    
 
 		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
