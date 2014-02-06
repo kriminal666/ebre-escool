@@ -29,8 +29,49 @@
 <div class="space-3"></div>
 
               <div class="row-fluid">
-                <div class="span3"></div>
-                <div class="span6 widget-container-span">
+                <div class="span1"></div>
+
+                <div class="widget-box span5 collapsed">
+                        <div class="widget-header widget-header-small header-color-green">
+                          <h6>Data i franja horaria: <?php echo $selected_day . " " . $selected_time_slot;?></h6>
+
+                          <span class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                              <i class="icon-chevron-down"></i>
+                            </a>
+
+                            <a href="#" data-action="close">
+                              <i class="icon-remove"></i>
+                            </a>
+                          </span>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            <label for="id-date-picker-1">Escolliu la data:</label>
+
+                                <div class="input-group">
+                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $selected_day;?>" />
+                                  <span class="input-group-addon">
+                                    <i class="icon-calendar bigger-110"></i>
+                                  </span>
+                                </div>
+                            
+
+                            <label for="timepicker1">Escolliu la franja horaria</label>
+
+                            <div class="input-group bootstrap-timepicker">
+                              <input id="timepicker1" type="text" class="form-control" />
+                              <span class="input-group-addon">
+                                <i class="icon-time bigger-110"></i>
+                              </span>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                <div class="span4 widget-container-span">
                   <div class="widget-box collapsed">
                     <div class="widget-header widget-header-small header-color-orange">
                       <h6>
@@ -92,10 +133,14 @@
                     </div>
                   </div>
                 </div>
-              <div class="span3"></div>
+
+                
+
+              <div class="span2"></div>
             </div>
 
 <div class="space-8"></div>
+
 
 <div class="row-fluid">
 
@@ -139,16 +184,30 @@
                           </ul>
     </div>
 
-      
     <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
 
-    <span style="float:right;margin-right:5px;"> 
-         <div class="input-append date">
-           <input type="text" class="span2" value="<?php echo $selected_day;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
-        </div>
-         <?php echo " ( " . $selected_time_slot . ")";?>
-    </span>
+    <div class="inline position-relative" style="float:right;">
+              Professors del grup: 
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <?php echo $selected_group_teacher;?>
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
+
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                          <?php foreach ($group_teachers as $group_teacher_key => $group_teacher): ?>
+                            <li <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $group_teacher; ?>
+                              </a>
+                            </li>      
+                          <?php endforeach; ?>
+                          </ul>
+    </div>
   </div>
+
+
 
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">
                   <thead>
@@ -509,9 +568,21 @@
           { "bSortable": false }
         ] } );
 
+  $('.date-picker').datepicker({
+          format: "dd/mm/yyyy",
+          weekStart: 1,
+          todayBtn: true,
+          language: "ca",
+          daysOfWeekDisabled: "0,6",
+          autoclose: true,
+          todayHighlight: true
+          }).next().on(ace.click_event, function(){
+          $(this).prev().focus();
+        });
+
   //***********************
   //* Datepicker         **
-  //***********************
+  //*********************** 
   $('.input-append.date').datepicker({
       format: "dd/mm/yyyy",
       weekStart: 1,
@@ -535,11 +606,11 @@
         alert ( "Year: " + year);
         */
 
-        var pathArray = window.location.pathname.split( '/' );
-        var secondLevelLocation = pathArray[1];
-        var  baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
+        //var pathArray = window.location.pathname.split( '/' );
+        //var secondLevelLocation = pathArray[1];
+        //var  baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
         //alert(baseURL + "/" + selectedValue);
-        window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
+        //window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
     });
         
       })

@@ -609,6 +609,10 @@ class attendance extends skeleton_main {
 			$data['study_modules']=array();
 	    }
 
+	    $data['group_teachers']= array ( 1 => "Mireia Consarnau", 2 => "Sergi Tur", 3 => "Santi Sabaté", 4 => "Manu Macias");
+	    $data['selected_group_teacher']= "Mireia Consarnau (tutora)";
+	    $data['group_teachers_default_teacher_key']= 1;
+
 	    $data['selected_classroom_group_key']= 1;
 	    $data['selected_classroom_group_shortname'] = "2 ASIX";
 		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
@@ -620,7 +624,7 @@ class attendance extends skeleton_main {
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
-	    $data['selected_day'] = "20-01-2014";;
+	    $data['selected_day'] = "20/01/2014";;
 	    $data['selected_time_slot'] = "19:00 - 20:00";
 
 	    $data['total_number_of_students'] = 3;
