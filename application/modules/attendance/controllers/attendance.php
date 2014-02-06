@@ -594,6 +594,9 @@ class attendance extends skeleton_main {
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
+	    $data['selected_day'] = "20-01-2014";;
+	    $data['selected_time_slot'] = "19:00 - 20:00";
+
 	    $data['total_number_of_students'] = 3;
 		$data['selected_module_shortname'] = "M 9";
 		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";

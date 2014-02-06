@@ -100,8 +100,48 @@
 <div class="row-fluid">
 
   <div class="table-header">
-    <i class="icon-table"></i> <?php echo " " . $selected_classroom_group_shortname . " "; ?><i class="icon-double-angle-right"></i> <?php echo " " .  $selected_module_shortname . " "; ?> <i class="icon-user"></i><?php echo " " . $total_number_of_students;?> 
-    <span style="text-align: right;"><i class="icon-calendar"></i> Data: 20-01-2014 (19:00 - 20:00)</span>
+    <i class="icon-table"></i> <?php echo " " . $selected_classroom_group_shortname . " "; ?><i class="icon-double-angle-right"></i> <?php echo " " .  $selected_module_shortname . " "; ?> 
+              
+      <div class="inline position-relative">
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            This Week
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
+
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                            <li class="active">
+                              <a href="#" class="blue">
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                This Week
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                Last Week
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                This Month
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                Last Month
+                              </a>
+                            </li>
+                          </ul>
+      </div>                   
+
+    <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
+
+    <span style="float:right;margin-right:5px;"><i class="icon-calendar"></i> <?php echo $selected_day . " ( " . $selected_time_slot . " )";?></span>
   </div>
 
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">
