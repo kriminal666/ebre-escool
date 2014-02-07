@@ -58,6 +58,10 @@ class attendance extends skeleton_main {
             $header_data,
             base_url('assets/css/no_padding_top.css'));        
 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/chosen.min.css'));        
+
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -113,6 +117,9 @@ class attendance extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ace.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/chosen.jquery.min.js'));
 
 		return $header_data; 
         
@@ -589,7 +596,16 @@ class attendance extends skeleton_main {
 		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
 
 	    //echo "teacher_id: $teacher_id<br/>";       
-	    //echo "teacher_code: $teacher_code<br/>";       
+	    //echo "teacher_code: $teacher_code<br/>";   
+
+
+	    //time_slots
+	    $data['study_modules']=array();
+
+	    time_slots as $time_slot_key => $time_slot): ?>
+                                  <option value="<?php echo $time_slot_key;?>" <?php if ($selected_time_slot_key == $time_slot_key ) { echo 'selected="selected"'};?>>
+                                    <?php echo $time_slot;?>
+                                  </option>    
 
 	    #Obrain class_room_groups
 	    //TODO:
@@ -602,14 +618,61 @@ class attendance extends skeleton_main {
 	    }
 
 	    $data['study_modules']=array();
-	    $user_is_admin=true;
 	    if ($user_is_admin) {
 	    	$data['study_modules']= array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
 	    } else {
 			$data['study_modules']=array();
 	    }
 
-	    $data['group_teachers']= array ( 1 => "Mireia Consarnau", 2 => "Sergi Tur", 3 => "Santi Sabaté", 4 => "Manu Macias");
+	    if ($user_is_admin) {
+	    	$time_slot1 = new stdClass;
+			$time_slot1->hour = "15:30";
+			$time_slot1->range = "15:30 - 16:30";
+			$time_slot1->study_module_shortname = "M9";
+			$time_slot1->study_module_name = "Mòdul 9";
+			$time_slot1->teacher_name = "Sergi Tur Badenas";
+
+			$time_slot2 = new stdClass;
+			$time_slot2->hour = "16:30";
+			$time_slot2->range = "16:30 - 17:30";
+			$time_slot2->study_module_shortname = "M10";
+			$time_slot2->study_module_name = "Mòdul 10";
+			$time_slot2->teacher_name = "Mireia Consarnau";
+
+			$time_slot3 = new stdClass;
+			$time_slot3->hour = "17:30";
+			$time_slot3->range = "17:30 - 18:30";
+			$time_slot3->study_module_shortname = "M11";
+			$time_slot3->study_module_name = "Mòdul 11";
+			$time_slot3->teacher_name = "Jordi Varas";
+
+			$time_slot4 = new stdClass;
+			$time_slot4->hour = "19:00";
+			$time_slot4->range = "19:00 - 20:00";
+			$time_slot4->study_module_shortname = "M3";
+			$time_slot4->study_module_name = "Mòdul 3";
+			$time_slot4->teacher_name = "Manu Macias";
+
+			$time_slot5 = new stdClass;
+			$time_slot5->hour = "20:00";
+			$time_slot5->range = "20:00 - 21:00";
+			$time_slot5->study_module_shortname = "M1";
+			$time_slot5->study_module_name = "Mòdul 1";
+			$time_slot5->teacher_name = "TODO";
+
+			$time_slot6 = new stdClass;
+			$time_slot6->hour = "21:00";
+			$time_slot6->range = "21:00 - 22:00";
+			$time_slot6->study_module_shortname = "M4";
+			$time_slot6->study_module_name = "Mòdul 4";
+			$time_slot6->teacher_name = "TODO 1";
+			
+	    	$data['time_slots'] = array ( 1 => $time_slot1, 2 => $time_slot2, 3 => $time_slot3, 4 => $time_slot4, 5 => $time_slot5, 6 => $time_slot6 );
+	    } else {
+			$data['time_slots'] = array();
+	    }
+
+	    $data['group_teachers']= array ( 1 => "Mireia Consarnau (tutora)", 2 => "Sergi Tur", 3 => "Santi Sabaté", 4 => "Manu Macias");
 	    $data['selected_group_teacher']= "Mireia Consarnau (tutora)";
 	    $data['group_teachers_default_teacher_key']= 1;
 
@@ -629,6 +692,41 @@ class attendance extends skeleton_main {
 
 	    $data['total_number_of_students'] = 3;
 		$data['selected_module_shortname'] = "M 9";
+
+		//classroom_group_students
+
+		$student1 = new stdClass;
+		$student1->givenName = "Julia";
+		$student1->sn1 = "Adell";
+		$student1->sn2 = "Girbes";
+		$student1->photo_url = "/assets/avatars/avatar3.png";
+		$student1->username = "juliaadell";
+		$student1->email = "juliaadell@email.com";
+		$student1->notes = "Esta setmana està faltant molt";
+
+		$student2 = new stdClass;
+		$student2->givenName = "Manuel";
+		$student2->sn1 = "Blanch";
+		$student2->sn2 = "Garzon";
+		$student2->photo_url = "/assets/avatars/avatar1.png";
+		$student2->username = "manuelblanch";
+		$student2->email = "manuelblanch@email.com";
+		$student2->notes = "";
+
+		$student3 = new stdClass;
+		$student3->givenName = "Josep Francesc";
+		$student3->sn1 = "Borrell";
+		$student3->sn2 = "Girbes";
+		$student3->photo_url = "/assets/avatars/avatar2.png";
+		$student3->username = "josepborrell";
+		$student3->email = "josepborrell@email.com";
+		$student3->notes = "";
+
+		$data['classroom_group_students'] = array (
+			1 => $student1,
+			2 => $student2,
+			3 => $student3
+			);
 
 	    
 
