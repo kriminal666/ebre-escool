@@ -15,18 +15,38 @@ class dashboard extends skeleton_main {
 
 	public function load_header_data(){
 
+		//CSS URLS
+		$jquery_ui_css_url = "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
+		$jquery_ui_editable_css_url = "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css";
+		$select2_css_url = "http://cdn.jsdelivr.net/select2/3.4.5/select2.css";
+		//JS URLS
+		$jquery_url= "http://code.jquery.com/jquery-1.9.1.js";
+		$jquery_ui_url= "http://code.jquery.com/ui/1.10.3/jquery-ui.js";
+		$select2_url= "http://cdn.jsdelivr.net/select2/3.4.5/select2.js";
+		$jquery_ui_editable_url= "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js";
+
+		if (defined('ENVIRONMENT') && ENVIRONMENT=="development") {
+  			$jquery_ui_css_url = base_url('assets/css/jquery-ui.css');
+  			$jquery_ui_editable_css_url = base_url('assets/css/jqueryui-editable.css');
+  			$select2_css_url = base_url('assets/css/select2.css');
+  			$jquery_url= base_url('assets/js/jquery-1.9.1.js');
+			$jquery_ui_url= base_url('assets/js/jquery-ui.js');
+			$select2_url= base_url('assets/js/select2.js');
+			$jquery_ui_editable_url= base_url('assets/js/jqueryui-editable.min.js');
+		}
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
-			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+			$jquery_ui_css_url);
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
+			$jquery_ui_editable_css_url);
 		$header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/datepicker.css'));  
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+			$select2_css_url);
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
             base_url('assets/css/tribal-timetable.css')); 
@@ -56,21 +76,22 @@ class dashboard extends skeleton_main {
 
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
-            base_url('assets/css/no_padding_top.css'));          
+            base_url('assets/css/no_padding_top.css'));
 
 		//JS
+		//Jquery already load by skeleton main!!!
+		//$header_data= $this->add_javascript_to_html_header_data(
+		//	$header_data,
+		//	$jquery_url);
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://code.jquery.com/jquery-1.9.1.js");
+			$jquery_ui_url);	
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			$select2_url);
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
+			$jquery_ui_editable_url);
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url('assets/js/bootstrap-datepicker.js'));

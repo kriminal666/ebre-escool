@@ -74,8 +74,8 @@
                               <select id="time_slots" data-placeholder="Escolliu la franja horaria">                                
                                 <option value=""> </option>
                                 <?php foreach ($time_slots as $time_slot_key => $time_slot): ?>
-                                  <option value="<?php echo $time_slot_key;?>" <?php if ($selected_time_slot_key == $time_slot_key ) { echo 'selected="selected"'};?>>
-                                    <?php echo $time_slot;?>
+                                  <option value="<?php echo $time_slot_key;?>" <?php if ($selected_time_slot_key == $time_slot_key ) { echo 'selected="selected"';};?>>
+                                    <?php echo $time_slot->range;?>
                                   </option>
                                 <?php endforeach;?>
                               </select>  
@@ -244,14 +244,19 @@
 
 
                       <?php foreach ( $time_slots as $time_slot_key => $time_slot): ?>
+
                         <th><center>
                              <span data-rel="tooltip" title="<?php echo $time_slot->range;?>">
+                               <?php if ( $selected_time_slot_key == $time_slot_key ):?>
+                                    <i class="icon-check bigger-120"></i>
+                               <?php endif; ?>
                                <?php echo $time_slot->hour;?>
                              </span>
                              <span class="label label-purple" data-rel="tooltip" title="<?php echo $time_slot->study_module_name . ". " . $time_slot->teacher_name;?>">
                               <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
                              </span>
                         </th>  
+
                       <?php endforeach; ?>
                       
                       <th class="hidden-480">Observacions</th>
