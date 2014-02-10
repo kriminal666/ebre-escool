@@ -166,6 +166,25 @@
     <i class="icon-group"></i> 
     <div class="inline position-relative">
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <?php echo $selected_department_name;?>
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
+
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                          <?php foreach ($departments as $department_key => $department): ?>
+                            <li <?php if ($selected_department_key == $department_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($selected_department_key == $department_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $department; ?>
+                              </a>
+                            </li>      
+                          <?php endforeach; ?>
+                          </ul>
+    </div>
+    <i class="icon-double-angle-right"></i> 
+    <div class="inline position-relative">
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_classroom_group_shortname;?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>

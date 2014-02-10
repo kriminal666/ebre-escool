@@ -615,19 +615,38 @@ class attendance extends skeleton_main {
 	    	if (false) { $teacher_code = 41; }
 	    }
 
+	    $teacher_department_id = 2;
+
 		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
 
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";   
 
+	    $user_is_admin=true;
+	    $user_is_teacher=true;
+
+	    //Departaments
+	    $data['departments']=array();
+	    $data['selected_department_key']=2;
+	    $data['selected_department_name']=$this->attendance_model->get_teacher_departmentName($teacher_id);
+		if ($user_is_admin) {
+	    	//Get all classroom_groups
+	    	$data['departments']= $this->attendance_model->get_all_departments();
+	    } else {
+	    	$data['departments']= $this->attendance_model->get_teacher_departments($teacher_id);
+	    }
             
 	    #Obtain class_room_groups
 	    //TODO:
 	    $data['classroom_groups']=array();
-	    $user_is_admin=true;
-	    if ($user_is_admin) {
-	    	$data['classroom_groups']= array ( 1 => "2 ASIX", 2 => "2 DAM", 3 => "1 ASIX", 4 => "2 SMX", 5 => "1 SMX" );
+	    if (false) {
+	    	//Get all classroom_groups
+	    	$data['classroom_groups']= $this->attendance_model->get_all_groupscodenameByDeparment($teacher_department_id);
 	    } else {
+	    	//IF TEACHER
+	    	if($user_is_teacher) {
+	    		$data['classroom_groups']=$this->attendance_model->get_all_groupscodenameByTeacher($teacher_id);
+	    	}
 			$data['classroom_groups']=array();
 	    }
 
@@ -693,8 +712,8 @@ class attendance extends skeleton_main {
 	    $data['selected_group_teacher']= "Mireia Consarnau (tutora)";
 	    $data['group_teachers_default_teacher_key']= 1;
 
-	    $data['selected_classroom_group_key']= 1;
-	    $data['selected_classroom_group_shortname'] = "2 ASIX";
+	    $data['selected_classroom_group_key']= 25;
+	    $data['selected_classroom_group_shortname'] = "2ASIX";
 		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
 
 		$data['selected_study_module_key']= 2;
