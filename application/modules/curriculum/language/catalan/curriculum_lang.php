@@ -64,4 +64,20 @@ $lang['study_module_endDate']="Data fí";
 $lang['type']="Tipus";   
 $lang['subtype']="Subtipus"; 
 
+//Course
+$lang['course_entryDate']   = "Data de creació";
+$lang['course_last_update']   = "Data última modificació";
+$lang['course_creationUserId']   = "Usuari de creació";
+$lang['course_lastupdateUserId']   = "Usuari última modificació";
+$lang['course_markedForDeletion']   = "Baixa?";
+$lang['course_markedForDeletionDate']   = "Data de baixa";
+
+//Classroom_group
 $lang['mentor_code']="Codi Tutor"; 
+$lang['classroom_group_shift']="Torn (matí/tarda)";
+$lang['classroom_group_entryDate']   = "Data de creació";
+$lang['classroom_group_lastupdate']   = "Data última modificació";
+$lang['classroom_group_creationUserId']   = "Usuari de creació";
+$lang['classroom_group_lastupdateUserId']   = "Usuari última modificació";
+$lang['classroom_group_markedForDeletion']   = "Baixa?";
+$lang['classroom_group_markedForDeletionDate']   = "Data de baixa";

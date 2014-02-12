@@ -1458,3 +1458,27 @@ CREATE TABLE IF NOT EXISTS `non_lective_lessons` (
   `non_lective_lessons_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`non_lective_lessons_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Estructura de la taula `shift`
+--
+
+CREATE TABLE IF NOT EXISTS `shift` (
+  `shift_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shift_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `entryDate` datetime NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `creationUserId` int(11) DEFAULT NULL,
+  `lastupdateUserId` int(11) DEFAULT NULL,
+  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`shift_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Bolcant dades de la taula `shift`
+--
+
+INSERT INTO `shift` (`shift_id`, `shift_name`, `entryDate`, `last_update`, `creationUserId`, `lastupdateUserId`, `markedForDeletion`, `markedForDeletionDate`) VALUES
+(1, 'Matí', '0000-00-00 00:00:00', '2014-02-12 11:32:07', NULL, NULL, 'n', '0000-00-00 00:00:00'),
+(2, 'Tarda', '0000-00-00 00:00:00', '2014-02-12 11:32:18', NULL, NULL, 'n', '0000-00-00 00:00:00');
