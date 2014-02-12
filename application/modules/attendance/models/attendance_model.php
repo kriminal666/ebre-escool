@@ -48,6 +48,166 @@ class attendance_model  extends CI_Model  {
 			return false;
 	}	
 
+	 
+
+	function get_teacher_departmentName($teacherId,$orderby="asc") {
+		$this->db->from('department');
+        $this->db->select('department_id,department_shortName,department_name');
+   		$this->db->join('teacher', 'department.department_id = teacher.teacher_departmentid');
+
+		$this->db->order_by('department_shortName', $orderby);
+
+		$this->db->where('teacher_id', $teacherId);			
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->department_shortName;
+		}			
+		else
+			return false;
+	}
+	
+
+	function get_teacher_departments($teacherId,$orderby="asc") {
+		$this->db->from('department');
+        $this->db->select('department_id,department_shortName,department_name');
+   		$this->db->join('teacher', 'department.department_id = teacher.teacher_departmentid');
+
+		$this->db->order_by('department_shortName', $orderby);
+
+		$this->db->where('teacher_id', $teacherId);			
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$departments_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$departments_array[$row['department_id']] = $row['department_shortName'];
+			}
+			return $departments_array;
+		}			
+		else
+			return false;
+	}
+
+	function get_department($departmentId,$orderby="asc") {
+		$this->db->from('department');
+        $this->db->select('department_id,department_shortName,department_name');
+
+		$this->db->order_by('department_shortName', $orderby);
+
+		$this->db->where('department_id', $departmentId);			
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$departments_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$departments_array[$row['department_id']] = $row['department_shortName'];
+			}
+			return $departments_array;
+		}			
+		else
+			return false;
+	}
+
+	function get_all_departments($orderby="asc") {
+		$this->db->from('department');
+        $this->db->select('department_id,department_shortName,department_name');
+
+		$this->db->order_by('department_shortName', $orderby);
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$departments_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$departments_array[$row['department_id']] = $row['department_shortName'];
+			}
+			return $departments_array;
+		}			
+		else
+			return false;
+	}
+
+	function get_all_groupscodenameByTeacher($teacherId,$orderby="asc") {
+		$this->db->from('classroom_group');
+        $this->db->select('classroom_group_id,classroom_group_code');
+        $this->db->join('lesson', 'classroom_group.classroom_group_id = lesson.lesson_classroom_group_id');
+        $this->db->distinct();
+		$this->db->order_by('classroom_group_code', $orderby);
+
+		$this->db->where('lesson.lesson_teacher_id', $teacherId);
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'];
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}	
+
+	function get_all_groupscodenameByDeparment($departmentId,$orderby="asc") {
+		$this->db->from('classroom_group');
+        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+
+		$this->db->order_by('classroom_group_code', $orderby);
+
+		$this->db->where('classroom_group_departmentid', $departmentId);
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'];
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}	
+
+	function get_all_groupscodename($orderby="asc") {
+		$this->db->from('classroom_group');
+        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+
+		$this->db->order_by('classroom_group_code', $orderby);
+		       
+        $query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'];
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}	
+
+
+
 	function get_teacher_ids_and_names($teacher_id,$orderby="asc") {
 
 		$this->db->from('teacher');

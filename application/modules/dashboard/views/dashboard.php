@@ -29,6 +29,40 @@
 						</h1>
 					</div><!-- /.page-header -->
 					TODO
+					<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            This Week
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
+
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                            <li class="active">
+                              <a href="#" class="blue">
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                This Week
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                Last Week
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                This Month
+                              </a>
+                            </li>
+
+                            <li>
+                              <a href="#">
+                                <i class="icon-caret-right bigger-110 invisible">&nbsp;</i>
+                                Last Month
+                              </a>
+                            </li>
+                          </ul>
 					<div class="row-fluid">
 						<div class="span12">
 							<!-- PAGE CONTENT BEGINS -->
@@ -249,6 +283,8 @@
 									</div><!-- /widget-box -->
 								</div><!-- /span -->
 							</div><!-- /row -->
+
+
 
 							<div class="hr hr32 hr-dotted"></div>
 				</div>

@@ -15,18 +15,39 @@ class attendance extends skeleton_main {
 
 	public function load_header_data(){
 
+		//CSS URLS
+		$jquery_ui_css_url = "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
+		$jquery_ui_editable_css_url = "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css";
+		$select2_css_url = "http://cdn.jsdelivr.net/select2/3.4.5/select2.css";
+		//JS URLS
+		$jquery_url= "http://code.jquery.com/jquery-1.9.1.js";
+		$jquery_ui_url= "http://code.jquery.com/ui/1.10.3/jquery-ui.js";
+		$select2_url= "http://cdn.jsdelivr.net/select2/3.4.5/select2.js";
+		$jquery_ui_editable_url= "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js";
+
+		if (defined('ENVIRONMENT') && ENVIRONMENT=="development") {
+  			$jquery_ui_css_url = base_url('assets/css/jquery-ui.css');
+  			$jquery_ui_editable_css_url = base_url('assets/css/jqueryui-editable.css');
+  			$select2_css_url = base_url('assets/css/select2.css');
+
+  			$jquery_url= base_url('assets/js/jquery-1.9.1.js');
+			$jquery_ui_url= base_url('assets/js/jquery-ui.js');
+			$select2_url= base_url('assets/js/select2.js');
+			$jquery_ui_editable_url= base_url('assets/js/jqueryui-editable.min.js');
+		}
+
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
-			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+			$jquery_ui_css_url);
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css");
+			$jquery_ui_editable_css_url);
 		$header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/datepicker.css'));  
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+			$select2_css_url);
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
             base_url('assets/css/tribal-timetable.css')); 
@@ -58,19 +79,24 @@ class attendance extends skeleton_main {
             $header_data,
             base_url('assets/css/no_padding_top.css'));        
 
-		//JS
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/chosen.min.css'));        
+
+		//JS Already load at skeleton main!!!
+		//$header_data= $this->add_javascript_to_html_header_data(
+		//	$header_data,
+		//	$jquery_url);
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://code.jquery.com/jquery-1.9.1.js");
+			$jquery_ui_url);	
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://code.jquery.com/ui/1.10.3/jquery-ui.js");	
+			$select2_url);
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			"http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js");
+			$jquery_ui_editable_url);
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url('assets/js/bootstrap-datepicker.js'));
@@ -113,6 +139,9 @@ class attendance extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ace.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/chosen.jquery.min.js'));
 
 		return $header_data; 
         
@@ -586,13 +615,156 @@ class attendance extends skeleton_main {
 	    	if (false) { $teacher_code = 41; }
 	    }
 
+	    $teacher_department_id = 2;
+
 		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
 
 	    //echo "teacher_id: $teacher_id<br/>";       
-	    //echo "teacher_code: $teacher_code<br/>";       
+	    //echo "teacher_code: $teacher_code<br/>";   
+
+	    $user_is_admin=true;
+	    $user_is_teacher=true;
+
+	    //Departaments
+	    $data['departments']=array();
+	    $data['selected_department_key']=2;
+	    $data['selected_department_name']=$this->attendance_model->get_teacher_departmentName($teacher_id);
+		if ($user_is_admin) {
+	    	//Get all classroom_groups
+	    	$data['departments']= $this->attendance_model->get_all_departments();
+	    } else {
+	    	$data['departments']= $this->attendance_model->get_teacher_departments($teacher_id);
+	    }
+            
+	    #Obtain class_room_groups
+	    //TODO:
+	    $data['classroom_groups']=array();
+	    if (false) {
+	    	//Get all classroom_groups
+	    	$data['classroom_groups']= $this->attendance_model->get_all_groupscodenameByDeparment($teacher_department_id);
+	    } else {
+	    	//IF TEACHER
+	    	if($user_is_teacher) {
+	    		$data['classroom_groups']=$this->attendance_model->get_all_groupscodenameByTeacher($teacher_id);
+	    	}
+			$data['classroom_groups']=array();
+	    }
+
+	    $data['study_modules']=array();
+	    if ($user_is_admin) {
+	    	$data['study_modules']= array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
+	    } else {
+			$data['study_modules']=array();
+	    }
+
+	    if ($user_is_admin) {
+	    	$time_slot1 = new stdClass;
+			$time_slot1->hour = "15:30";
+			$time_slot1->range = "15:30 - 16:30";
+			$time_slot1->study_module_shortname = "M9";
+			$time_slot1->study_module_name = "Mòdul 9";
+			$time_slot1->teacher_name = "Sergi Tur Badenas";
+
+			$time_slot2 = new stdClass;
+			$time_slot2->hour = "16:30";
+			$time_slot2->range = "16:30 - 17:30";
+			$time_slot2->study_module_shortname = "M10";
+			$time_slot2->study_module_name = "Mòdul 10";
+			$time_slot2->teacher_name = "Mireia Consarnau";
+
+			$time_slot3 = new stdClass;
+			$time_slot3->hour = "17:30";
+			$time_slot3->range = "17:30 - 18:30";
+			$time_slot3->study_module_shortname = "M11";
+			$time_slot3->study_module_name = "Mòdul 11";
+			$time_slot3->teacher_name = "Jordi Varas";
+
+			$time_slot4 = new stdClass;
+			$time_slot4->hour = "19:00";
+			$time_slot4->range = "19:00 - 20:00";
+			$time_slot4->study_module_shortname = "M3";
+			$time_slot4->study_module_name = "Mòdul 3";
+			$time_slot4->teacher_name = "Manu Macias";
+
+			$time_slot5 = new stdClass;
+			$time_slot5->hour = "20:00";
+			$time_slot5->range = "20:00 - 21:00";
+			$time_slot5->study_module_shortname = "M1";
+			$time_slot5->study_module_name = "Mòdul 1";
+			$time_slot5->teacher_name = "TODO";
+
+			$time_slot6 = new stdClass;
+			$time_slot6->hour = "21:00";
+			$time_slot6->range = "21:00 - 22:00";
+			$time_slot6->study_module_shortname = "M4";
+			$time_slot6->study_module_name = "Mòdul 4";
+			$time_slot6->teacher_name = "TODO 1";
+
+		    $data['time_slots']=array();
+		    $data['selected_time_slot_key'] = 4;
+			
+	    	$data['time_slots'] = array ( 1 => $time_slot1, 2 => $time_slot2, 3 => $time_slot3, 4 => $time_slot4, 5 => $time_slot5, 6 => $time_slot6 );
+	    } else {
+			$data['time_slots'] = array();
+	    }
+
+	    $data['group_teachers']= array ( 1 => "Mireia Consarnau (tutora)", 2 => "Sergi Tur", 3 => "Santi Sabaté", 4 => "Manu Macias");
+	    $data['selected_group_teacher']= "Mireia Consarnau (tutora)";
+	    $data['group_teachers_default_teacher_key']= 1;
+
+	    $data['selected_classroom_group_key']= 25;
+	    $data['selected_classroom_group_shortname'] = "2ASIX";
+		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
+
+		$data['selected_study_module_key']= 2;
+	    $data['selected_study_module_shortname'] = "M 9";
+		$data['selected_study_module'] = "Mòdul 9 bla bla bla";
         
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
+
+	    $data['selected_day'] = "20/01/2014";;
+	    $data['selected_time_slot'] = "19:00 - 20:00";
+
+	    $data['total_number_of_students'] = 3;
+		$data['selected_module_shortname'] = "M 9";
+
+		//classroom_group_students
+
+		$student1 = new stdClass;
+		$student1->givenName = "Julia";
+		$student1->sn1 = "Adell";
+		$student1->sn2 = "Girbes";
+		$student1->photo_url = "/assets/avatars/avatar3.png";
+		$student1->username = "juliaadell";
+		$student1->email = "juliaadell@email.com";
+		$student1->notes = "Esta setmana està faltant molt";
+
+		$student2 = new stdClass;
+		$student2->givenName = "Manuel";
+		$student2->sn1 = "Blanch";
+		$student2->sn2 = "Garzon";
+		$student2->photo_url = "/assets/avatars/avatar1.png";
+		$student2->username = "manuelblanch";
+		$student2->email = "manuelblanch@email.com";
+		$student2->notes = "";
+
+		$student3 = new stdClass;
+		$student3->givenName = "Josep Francesc";
+		$student3->sn1 = "Borrell";
+		$student3->sn2 = "Girbes";
+		$student3->photo_url = "/assets/avatars/avatar2.png";
+		$student3->username = "josepborrell";
+		$student3->email = "josepborrell@email.com";
+		$student3->notes = "";
+
+		$data['classroom_group_students'] = array (
+			1 => $student1,
+			2 => $student2,
+			3 => $student3
+			);
+
+	    
 
 		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance_classroom_group',$data);

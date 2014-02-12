@@ -56,14 +56,16 @@ class location extends skeleton_main {
         $this->grocery_crud->display_as('location_Id',lang('location_id'));
         $this->grocery_crud->display_as('location_name',lang('location_name'));
         $this->grocery_crud->display_as('location_shortName',lang('location_shortName')); 
+        $this->grocery_crud->display_as('location_parentLocation',lang('location_parentLocation'));
         $this->grocery_crud->display_as('location_description',lang('location_description'));
         $this->grocery_crud->display_as('location_entryDate',lang('location_entryDate'));
         $this->grocery_crud->display_as('location_last_update',lang('location_last_update'));
-        $this->grocery_crud->display_as('location_creationUserId',lang('location_creationUserId'));          
-        $this->grocery_crud->display_as('location_parentLocation',lang('location_parentLocation'));          
+        $this->grocery_crud->display_as('location_creationUserId',lang('location_creationUserId'));                  
         $this->grocery_crud->display_as('location_lastupdateUserId',lang('location_lastupdateUserId'));   
         $this->grocery_crud->display_as('location_markedForDeletion',lang('location_markedForDeletion'));       
-        $this->grocery_crud->display_as('location_markedForDeletionDate',lang('location_markedForDeletionDate'));       
+        $this->grocery_crud->display_as('location_markedForDeletionDate',lang('location_markedForDeletionDate'));   
+
+        $this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
