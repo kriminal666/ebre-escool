@@ -395,12 +395,13 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('course_number',lang('course_number'));
         $this->grocery_crud->display_as('course_cycle_id',lang('course_cycle_id')); 
         $this->grocery_crud->display_as('course_estudies_id',lang('course_estudies_id'));
-        $this->grocery_crud->display_as('course_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('course_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('course_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('course_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('course_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('course_markedForDeletionDate',lang('markedForDeletionDate'));              
+
+        $this->grocery_crud->display_as('course_entryDate',lang('course_entryDate'));        
+        $this->grocery_crud->display_as('course_last_update',lang('course_last_update'));
+        $this->grocery_crud->display_as('course_creationUserId',lang('course_creationUserId'));
+        $this->grocery_crud->display_as('course_lastupdateUserId',lang('course_lastupdateUserId'));          
+        $this->grocery_crud->display_as('course_markedForDeletion',lang('course_markedForDeletion'));   
+        $this->grocery_crud->display_as('course_markedForDeletionDate',lang('course_markedForDeletionDate'));              
 
 /*       
         //Relacions entre taules
@@ -459,23 +460,32 @@ class curriculum extends skeleton_main {
         $this->set_common_columns_name();
 
         //SPECIFIC COLUMNS
+        
+        $this->grocery_crud->display_as('classroom_group_code',lang('group_code'));  
         $this->grocery_crud->display_as('classroom_group_shortName',lang('shortName'));
         $this->grocery_crud->display_as('classroom_group_name',lang('name'));
-        $this->grocery_crud->display_as('classroom_group_code',lang('group_code'));  
-        $this->grocery_crud->display_as('classroom_group_last_update',lang('last_update'));        
+        $this->grocery_crud->display_as('classroom_group_course_id',lang('course'));
         $this->grocery_crud->display_as('classroom_group_description',lang('description'));
-        $this->grocery_crud->display_as('classroom_group_creationUserId',lang('creationUserId'));   
-        $this->grocery_crud->display_as('classroom_group_lastupdateUserId',lang('lastupdateUserId')); 
-        $this->grocery_crud->display_as('classroom_group_entryDate',lang('entryDate'));   
-        $this->grocery_crud->display_as('classroom_group_educationalLevelId',lang('group_EducationalLevelId')); 
-        $this->grocery_crud->display_as('classroom_group_parentLocation',lang('parentLocation'));       
-        $this->grocery_crud->display_as('classroom_group_mentorId',lang('mentor_code')); 
-        $this->grocery_crud->display_as('classroom_group_course_id',lang('course')); 
-        $this->grocery_crud->display_as('classroom_group_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('classroom_group_markedForDeletionDate',lang('markedForDeletionDate'));     
+        $this->grocery_crud->display_as('classroom_group_mentorId',lang('mentor_code'));
+        $this->grocery_crud->display_as('classroom_group_shift',lang('classroom_group_shift'));
+        $this->grocery_crud->display_as('classroom_group_location_id',lang('location'));       
+                
+        
+        //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
+        //The last one is the same as educationalLevelId
+        //$this->grocery_crud->display_as('classroom_group_educationalLevelId',lang('group_EducationalLevelId')); 
+               
+        $this->grocery_crud->display_as('classroom_group_entryDate',lang('classroom_group_entryDate'));
+        $this->grocery_crud->display_as('classroom_group_creationUserId',lang('classroom_group_creationUserId'));   
+        $this->grocery_crud->display_as('classroom_group_lastupdateUserId',lang('classroom_group_lastupdateUserId'));
+        $this->grocery_crud->display_as('classroom_group_lastupdate',lang('classroom_group_lastupdate'));
+        $this->grocery_crud->display_as('classroom_group_markedForDeletion',lang('classroom_group_markedForDeletion'));   
+        $this->grocery_crud->display_as('classroom_group_markedForDeletionDate',lang('classroom_group_markedForDeletionDate'));     
 
 //      RELACIONS
         $this->grocery_crud->set_relation('classroom_group_course_id','course','{course_name} ({course_shortname} - {course_id})');
+        $this->grocery_crud->set_relation('classroom_group_mentorId','teacher','teacher_code');
+        $this->grocery_crud->set_relation('classroom_group_location_id','location','location_name');
 
         //$this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})',array('status' => 'active'));
 
