@@ -685,6 +685,7 @@
             <ul class="submenu">
               <li><a href='<?=base_url()?>index.php/timetables/non_lective_hours'><?php echo lang('non_lective_hours');?></a></li>              
               <li><a href='<?=base_url()?>index.php/timetables/non_lective_lessons'><?php echo lang('non_lective_lessons');?></a></li>
+              <li><a href='<?=base_url()?>index.php/timetables/shift'><?php echo lang('shift');?></a></li>
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li> 
          <!-- Inventari -->
