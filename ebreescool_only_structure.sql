@@ -1466,12 +1466,12 @@ CREATE TABLE IF NOT EXISTS `non_lective_lessons` (
 CREATE TABLE IF NOT EXISTS `shift` (
   `shift_id` int(11) NOT NULL AUTO_INCREMENT,
   `shift_name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `shift_entryDate` datetime NOT NULL,
+  `shift_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `shift_creationUserId` int(11) DEFAULT NULL,
+  `shift_lastupdateUserId` int(11) DEFAULT NULL,
+  `shift_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `shift_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`shift_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 

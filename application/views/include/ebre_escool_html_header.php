@@ -10,10 +10,10 @@
       
       <!-- BEGIN CSS --> 
       <?php if (isset($skeleton_css_files)): ?>
-		<?php foreach((array) $skeleton_css_files as $skeleton_css_file): ?>
+		  <?php foreach((array) $skeleton_css_files as $skeleton_css_file): ?>
 			<link type="text/css" rel="stylesheet" href="<?php echo $skeleton_css_file; ?>" />
-		<?php endforeach; ?>
-	  <?php endif; ?>
+		  <?php endforeach; ?>
+	   <?php endif; ?>
       
       <!-- END CSS --> 
       

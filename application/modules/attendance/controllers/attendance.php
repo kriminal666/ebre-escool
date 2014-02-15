@@ -777,8 +777,8 @@ class attendance extends skeleton_main {
 
 
 	public function check_attendance(
-		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
 
+		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
@@ -1029,7 +1029,6 @@ class attendance extends skeleton_main {
         }   else {
             $data['selected_group']=$default_group_code;
         }
-
 		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance',$data);
 		 

@@ -160,7 +160,6 @@ class dashboard extends skeleton_main {
 		/*      BODY     *
 		/******************/
 		$this->_load_body_header();
-		
 		$this->load->view('dashboard'); 
                 
 		/*******************
@@ -168,4 +167,11 @@ class dashboard extends skeleton_main {
 		*******************/
 		$this->_load_body_footer();		 
 	}		
+
+	public function categories()
+	{
+		//$this->session->set_flashdata('prova','categoria');
+		$valor = $_POST['valor'];
+		echo $valor;
+	}
 }

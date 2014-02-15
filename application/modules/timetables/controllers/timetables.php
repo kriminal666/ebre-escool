@@ -783,6 +783,64 @@ class timetables extends skeleton_main {
     }
 
 
+    public function shift() {
+
+        $this->check_logged_user(true); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files();
+
+        /* Grocery Crud */
+        $this->current_table="shift";
+        $this->grocery_crud->set_table("shift");
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('shift'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+
+        //Express fields
+        $this->grocery_crud->express_fields($this->current_table.'_name');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name();
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+ 
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $this->renderitzar($this->current_table,$header_data);
+
+    }
+
+
+
+
 public function add_callback_last_update(){  
    
     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
