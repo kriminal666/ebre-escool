@@ -19,7 +19,7 @@
 
 //GENERAL
 $lang['inventory']       		= 'Inventari';
-/*
+
 $lang['remember']       		= 'Recordar';
 
 //LOGIN FORM
@@ -215,4 +215,3 @@ $lang['show_express_form']="Mostrar el formulari express";
 $lang['hide_express_form']="Amagar el formulari express";
 
 $lang['Add']="Afegir";
-*/

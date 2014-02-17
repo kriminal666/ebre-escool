@@ -1,3 +1,4 @@
+
 <div class="main-content">
 
 <div id="breadcrumbs" class="breadcrumbs">
@@ -17,13 +18,13 @@
 </div>
 
 
-
+    
         <div class="page-header position-relative">
                         <h1>
                             <?php echo lang("inventory");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo "TODO Resum Inventari";?>
+                                <?php echo "Images";?>
                             </small>
                         </h1>
         </div><!-- /.page-header -->
@@ -32,6 +33,6 @@
 
 <div style='height:30px;'></div>
 	<div style="margin:10px;">
-   		<?php echo "Inventari"; ?>		
+   	  <?php echo $output;?>
 	</div>	
 </div>

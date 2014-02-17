@@ -1482,3 +1482,5 @@ CREATE TABLE IF NOT EXISTS `shift` (
 INSERT INTO `shift` (`shift_id`, `shift_name`, `entryDate`, `last_update`, `creationUserId`, `lastupdateUserId`, `markedForDeletion`, `markedForDeletionDate`) VALUES
 (1, 'Matí', '0000-00-00 00:00:00', '2014-02-12 11:32:07', NULL, NULL, 'n', '0000-00-00 00:00:00'),
 (2, 'Tarda', '0000-00-00 00:00:00', '2014-02-12 11:32:18', NULL, NULL, 'n', '0000-00-00 00:00:00');
+
+

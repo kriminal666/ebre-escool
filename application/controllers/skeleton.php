@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-include "application/third_party/skeleton/application/controllers/skeleton_main.php";
+require_once "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
 class skeleton extends skeleton_main {
 

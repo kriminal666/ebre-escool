@@ -1,43 +1,5 @@
-<?php 
-  session_start();
-?>
-<script>
-  $(document).ready(function(){
-//AJAX
-  $.ajax({
-  url: "test.html",
-  context: document.body
-  }).done(function() {
-  $( this ).addClass( "done" );
-  });
-
-
-//FI AJAX
-    $(".submenu>li a").click(function(){
-      var subcategoria = $(this).text();
-        //alert("subcategoria");
-    });    
-    $(".nav-list>li span").click(function(){
-      var categoria = $(this).text();
-        //alert(categoria);
-        document.write("<?php $_SESSION['menu']="+categoria+"; ?>");
-        //document.write("<?php $this->session->set_flashdata('prova','categoria'); ?>");
-        //alert(categoria);
-
-        //$(this).addClass("active");  
-        //$("li").removeClass("active"); 
-          //$(this).parent("li").addClass("active");
-          //$(this).addClass("active");
-          // define the styles for the active class for this to work
-  });
-
-
-});
-</script>
-
 <body>
 
-  <?php echo $_SESSION['menu']; ?>
   <div class="navbar" id="navbar">
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
