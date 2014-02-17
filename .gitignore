@@ -18,3 +18,6 @@ application/third_party/skeleton/
 application/third_party/fpdf-codeigniter/
 
 application/third_party/skeleton_auth/application/config/auth_ldap.php
+
+uploads/inventory_files/*
+uploads/qr_codes/*
