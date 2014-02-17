@@ -113,7 +113,7 @@ public function index()	{
     $this->grocery_crud->set_subject(lang('object_subject'));
                         
     //COMMON_COLUMNS               
-    //$this->set_common_columns_name();
+    $this->set_common_columns_name();
 
     //ESPECIFIC COLUMNS                                            
         $this->grocery_crud->display_as('publicId',lang('publicId'));
@@ -147,16 +147,16 @@ public function index()	{
         $this->grocery_crud->unset_add_fields('manualLast_update','last_update');
                
         //ExternalID types
-        $this->grocery_crud->set_relation('externalIDType','externalIDType','{name}',array('markedForDeletion' => 'n'));
-        
+        $this->grocery_crud->set_relation('externalIDType','externalIDType','{externalIDType_name}',array('externalIDType_markedForDeletion' => 'n'));
+       
         //BRAND RELATION
-        $this->grocery_crud->set_relation('brandId','brand','{name}',array('markedForDeletion' => 'n'));
+        $this->grocery_crud->set_relation('brandId','brand','{brand_name}',array('brand_markedForDeletion' => 'n'));
         
         //MODEL RELATION
-        $this->grocery_crud->set_relation('modelId','model','{name}',array('markedForDeletion' => 'n'));
+        $this->grocery_crud->set_relation('modelId','model','{model_name}',array('model_markedForDeletion' => 'n'));
         
         //MATERIAL RELATION
-        $this->grocery_crud->set_relation('materialId','material','{name}',array('markedForDeletion' => 'n'));
+        $this->grocery_crud->set_relation('materialId','material','{material_name}',array('material_markedForDeletion' => 'n'));
         
         //ORGANIZATIONAL UNIT
         $this->grocery_crud->set_relation_n_n('OwnerOrganizationalUnit', 'inventory_object_organizational_unit', 'organizational_unit', 'organitzational_unitId','inventory_objectId', 'organizational_unit_name','priority');
@@ -168,10 +168,10 @@ public function index()	{
         $this->grocery_crud->set_relation('location','location','{location_name}',array('location_markedForDeletion' => 'n'));
         
         //PROVIDERS
-        $this->grocery_crud->set_relation('providerId','provider','{name}',array('markedForDeletion' => 'n'));
+        $this->grocery_crud->set_relation('providerId','provider','{provider_name}',array('provider_markedForDeletion' => 'n'));
         
         //MONEYSOURCEID
-        $this->grocery_crud->set_relation('moneySourceId','money_source ','{name}',array('markedForDeletion' => 'n'));
+        $this->grocery_crud->set_relation('moneySourceId','moneySource ','{moneySource_name}',array('moneySource_markedForDeletion' => 'n'));
                 
         //Validation example. Natural non zero
         $this->grocery_crud->set_rules('quantityInStock','Quantitat','is_natural_no_zero');
@@ -238,156 +238,364 @@ public function index()	{
  
 public function externalIDType()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('externalIDType',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="externalIDType";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('externalIDType'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_barcodeId',lang('barcodeId'));    
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 	
 public function material()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('material',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="material";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('material_subject'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_parentMaterialId',lang('parentMaterialId'));    
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 public function brand()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('brand',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="brand";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('brand'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_parentMaterialId',lang('parentMaterialId'));    
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 public function model()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('model',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="model";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('model_subject'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_brandId',lang('brandId'));    
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 public function provider()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('provider',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="provider";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('provider_subject'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 public function money_source()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('money_source',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="moneySource";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('moneySource_subject'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
+
 	
 public function barcode()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
-	$output = array();
-	
-	$this->_load_html_header($header_data,$output); 
-	$this->_load_body_header();
-	
-	
-	$this->load->view('barcode',$output); 
-                
-	$this->_load_body_footer();
+	// Grocery Crud 
+	$this->current_table="barcode";
+       $this->grocery_crud->set_table($this->current_table);
 
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+        
+    //ESTABLISH SUBJECT
+    $this->grocery_crud->set_subject(lang('barcode_subject'));   
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
+
+	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+
+    //UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+    
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+		
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+    $this->set_theme($this->grocery_crud);
+    $this->set_dialogforms($this->grocery_crud);
+    
+    //Default values:
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 
@@ -485,6 +693,26 @@ $header_data= $this->add_css_to_html_header_data(
         return $header_data;
 }
 
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}
+
+public function add_field_callback_entryDate(){  
+      $data= date('d/m/Y H:i:s', time());
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+}
+
+public function edit_field_callback_entryDate($value, $primary_key){  
+    //$this->session->flashdata('table_name');
+      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+    }
+    
+public function edit_callback_last_update($value, $primary_key){ 
+    //$this->session->flashdata('table_name'); 
+     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+    }    
+
 //UPDATE AUTOMATIC FIELDS BEFORE INSERT
 function before_insert_object_callback($post_array, $primary_key) {
         //UPDATE LAST UPDATE FIELD
@@ -505,9 +733,71 @@ function before_update_object_callback($post_array, $primary_key) {
         return $post_array;
 }
 
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
 
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
+function renderitzar($table_name,$header_data = null)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+        $this->_load_html_header($header_data,$output); 
+        $this->_load_body_header();      
+
+      // $this->_load_html_header($this->_get_html_header_data(),$output); 
+       
+       //      BODY       
+
+       //$this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
 
 }
 
+}
 /* End of file inventory.php */
 /* Location: ./application/modules/inventory/controllers/inventory.php */

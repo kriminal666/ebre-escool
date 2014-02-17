@@ -28,6 +28,6 @@
         </div><!-- /.page-header -->
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
-   		<?php echo "Tipus Identificadors Externs"; ?>		
+   		<?php echo $output; ?>		
 	</div>	
 </div>
