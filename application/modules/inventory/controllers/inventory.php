@@ -319,7 +319,7 @@ public function material()	{
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
-    $this->grocery_crud->set_relation('material_id','material','material_name');
+    $this->grocery_crud->set_relation('material_parentMaterialId','material','material_name');
 	//$this->grocery_crud->set_relation('material_id','`material`','`material_shortName`');    
 
     //UPDATE AUTOMATIC FIELDS
