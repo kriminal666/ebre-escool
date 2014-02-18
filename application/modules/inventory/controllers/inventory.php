@@ -319,7 +319,8 @@ public function material()	{
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
-	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+    $this->grocery_crud->set_relation('material_parentMaterialId','material','material_name');
+	//$this->grocery_crud->set_relation('material_id','`material`','`material_shortName`');    
 
     //UPDATE AUTOMATIC FIELDS
 	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -423,7 +424,7 @@ public function model()	{
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
-	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+	$this->grocery_crud->set_relation('model_brandId','brand','brand_name');    
 
     //UPDATE AUTOMATIC FIELDS
 	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
