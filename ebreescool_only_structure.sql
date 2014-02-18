@@ -1483,4 +1483,141 @@ INSERT INTO `shift` (`shift_id`, `shift_name`, `entryDate`, `last_update`, `crea
 (1, 'Matí', '0000-00-00 00:00:00', '2014-02-12 11:32:07', NULL, NULL, 'n', '0000-00-00 00:00:00'),
 (2, 'Tarda', '0000-00-00 00:00:00', '2014-02-12 11:32:18', NULL, NULL, 'n', '0000-00-00 00:00:00');
 
+---
+--- TAULES INVENTORY
+---
+
+--
+-- Table structure for table `externalIDType`
+--
+
+CREATE TABLE IF NOT EXISTS `externalIDType` (
+  `externalIDType_id` int(11) NOT NULL AUTO_INCREMENT,
+  `externalIDType_name` varchar(150) NOT NULL,
+  `externalIDType_shortName` varchar(150) NOT NULL,
+  `externalIDType_description` text,
+  `externalIDType_barcodeId` int(11) NOT NULL,
+  `externalIDType_entryDate` datetime NOT NULL,
+  `externalIDType_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `externalIDType_creationUserId` int(11) DEFAULT NULL,
+  `externalIDType_lastupdateUserId` int(11) DEFAULT NULL,
+  `externalIDType_markedForDeletion` enum('n','y') NOT NULL,
+  `externalIDType_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`externalIDType_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+--
+-- Table structure for table `brand`
+--
+
+CREATE TABLE IF NOT EXISTS `brand` (
+  `brand_id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand_name` varchar(150) NOT NULL,
+  `brand_shortName` varchar(150) NOT NULL,
+  `brand_description` text,
+  `brand_entryDate` datetime NOT NULL,
+  `brand_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `brand_creationUserId` int(11) DEFAULT NULL,
+  `brand_lastupdateUserId` int(11) DEFAULT NULL,
+  `brand_markedForDeletion` enum('n','y') NOT NULL,
+  `brand_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`brand_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+--
+-- Table structure for table `model`
+--
+
+CREATE TABLE IF NOT EXISTS `model` (
+  `model_id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_brandId` int(11) DEFAULT NULL,
+  `model_name` varchar(150) NOT NULL,
+  `model_shortName` varchar(150) NOT NULL,
+  `model_description` text,
+  `model_entryDate` datetime NOT NULL,
+  `model_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `model_creationUserId` int(11) DEFAULT NULL,
+  `model_lastupdateUserId` int(11) DEFAULT NULL,
+  `model_markedForDeletion` enum('n','y') NOT NULL,
+  `model_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`model_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+--
+-- Table structure for table `material`
+--
+
+CREATE TABLE IF NOT EXISTS `material` (
+  `material_id` int(11) NOT NULL AUTO_INCREMENT,
+  `material_name` varchar(150) NOT NULL,
+  `material_shortName` varchar(150) NOT NULL,
+  `material_description` text,
+  `material_entryDate` datetime NOT NULL,
+  `material_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `material_creationUserId` int(11) DEFAULT NULL,
+  `material_lastupdateUserId` int(11) DEFAULT NULL,
+  `material_parentMaterialId` int(11) DEFAULT NULL,
+  `material_markedForDeletion` enum('n','y') NOT NULL,
+  `material_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`material_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+--
+-- Table structure for table `provider`
+--
+
+CREATE TABLE IF NOT EXISTS `provider` (
+  `provider_id` int(11) NOT NULL AUTO_INCREMENT,
+  `provider_name` varchar(150) NOT NULL,
+  `provider_shortName` varchar(150) NOT NULL,
+  `provider_description` text,
+  `provider_entryDate` datetime NOT NULL,
+  `provider_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `provider_creationUserId` int(11) DEFAULT NULL,
+  `provider_lastupdateUserId` int(11) DEFAULT NULL,
+  `provider_markedForDeletion` enum('n','y') NOT NULL,
+  `provider_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`provider_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `money_source`
+--
+
+CREATE TABLE IF NOT EXISTS `moneySource` (
+  `moneySource_id` int(11) NOT NULL AUTO_INCREMENT,
+  `moneySource_name` varchar(150) NOT NULL,
+  `moneySource_shortName` varchar(150) NOT NULL,
+  `moneySource_description` text,
+  `moneySource_entryDate` datetime NOT NULL,
+  `moneySource_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `moneySource_creationUserId` int(11) DEFAULT NULL,
+  `moneySource_lastupdateUserId` int(11) DEFAULT NULL,
+  `moneySource_markedForDeletion` enum('n','y') NOT NULL,
+  `moneySource_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`moneySource_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `barcode`
+--
+
+CREATE TABLE IF NOT EXISTS `barcode` (
+  `barcode_id` int(11) NOT NULL AUTO_INCREMENT,
+  `barcode_name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `barcode_shortName` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `barcode_description` text COLLATE utf8_unicode_ci,
+  `barcode_entryDate` datetime NOT NULL,
+  `barcode_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `barcode_creationUserId` int(11) DEFAULT NULL,
+  `barcode_lastupdateUserId` int(11) DEFAULT NULL,
+  `barcode_markedForDeletion` enum('n','y') COLLATE utf8_unicode_ci NOT NULL,
+  `barcode_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`barcode_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+
 
