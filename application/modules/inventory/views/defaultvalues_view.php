@@ -116,7 +116,6 @@ var pageInitialized = false;
 
 $(document).ready(function(){
 
-console.debug("prova11");
  //ONLY IN LIST VIEW:	
 //$('.qr_button').bind('click', false);
 
@@ -124,7 +123,6 @@ console.debug("prova11");
 
 
  
- console.debug("prova14");
 
 $('.qr_button').click( function (event) {
  	console.debug("click");

@@ -21,7 +21,7 @@
     
         <div class="page-header position-relative">
                         <h1>
-                            <?php echo lang("inventory");?>
+                            <a href="<?php echo base_url('index.php/inventory/inventory');?>"><?php echo lang("inventory");?></a>
                             <small>
                                 <i class="icon-double-angle-right"></i>
                                 <?php echo "Images";?>
