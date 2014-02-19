@@ -158,7 +158,7 @@ class inventory_Model  extends CI_Model  {
 		//Shortname is barcodetype (php-barcode format)
 		$this->db->select('barcode.barcode_shortname');
 		$this->db->from('externalIDType');
-		$this->db->join('barcode', 'barcode.barcode_barcodeId = externalIDType.barcode_barcodeId','inner');
+		$this->db->join('barcode', 'barcode.barcode_id = externalIDType.externalIDType_barcodeId','inner');
 		$this->db->where('externalIDType_id',$externalIDTypeID);
 		$query = $this->db->get();
 
