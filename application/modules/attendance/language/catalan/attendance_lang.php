@@ -63,6 +63,9 @@ $lang['my_timetables']='Els meus horaris';
 
 $lang['ClassroomGroup']="Grup de Classe";
 
+$lang['location_id']= 'id Ubicació';
+$lang['idCurs']= 'Id Curs';
+
 $lang['idGroup']="Id";
 $lang['GroupCode']="Codi de grup";
 $lang['GroupShortName']="Nom Curt";
