@@ -80,31 +80,23 @@ public function images(){
 
 public function index()	{
 
-	if (!$this->skeleton_auth->logged_in())	{
-		//redirect them to the login page
-		redirect($this->skeleton_auth->login_page, 'refresh');
-	}
+    $this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
 
 	$data = array();
 
-	//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-	$readonly_group = $this->config->item('readonly_group');
-	if ($this->skeleton_auth->in_group($readonly_group)) {
-		$this->grocery_crud->unset_add();
-		$this->grocery_crud->unset_edit();
-		$this->grocery_crud->unset_delete();
-	}
-
 	//ESPECIFIC CUSTOM ACTIONS
     $this->grocery_crud->add_action(lang('Images'),base_url('assets/img/images.png'), '/inventory/images',"images_button");
     $this->grocery_crud->add_action(lang('QRCode'),base_url('assets/img/qr_code.png'), '/inventory/qr/generate',"qr_button");
 		
-	$this->current_table="inventory_object";
+    // Grocery Crud 
+    $this->current_table="inventory_object";
     $this->grocery_crud->set_table($this->current_table);
         
+    $this->session->set_flashdata('table_name', $this->current_table); 
+
     //EXAMPLE FILTER BY ORGANIZATIONAL UNIT
 	//Relation n a n table: inventory_object_organizational_unit
 	//$crud->where('status','active');->where('status','active');
@@ -113,126 +105,130 @@ public function index()	{
     $this->grocery_crud->set_subject(lang('object_subject'));
                         
     //COMMON_COLUMNS               
-    $this->set_common_columns_name();
+    $this->set_common_columns_name($this->current_table);
 
     //ESPECIFIC COLUMNS                                            
-        $this->grocery_crud->display_as('publicId',lang('publicId'));
-        $this->grocery_crud->display_as('externalID',lang('externalId')); 
-        $this->grocery_crud->display_as('externalIDType',lang('externalIDType')); 
-        $this->grocery_crud->display_as('materialId',lang('materialId'));
-        $this->grocery_crud->display_as('brandId',lang('brandId'));
-        $this->grocery_crud->display_as('modelId',lang('modelId'));
-        $this->grocery_crud->display_as('location',lang('location'));
-        $this->grocery_crud->display_as('quantityInStock',lang('quantityInStock'));
-        $this->grocery_crud->display_as('price',lang('price'));
-        $this->grocery_crud->display_as('moneySourceId',lang('moneySourceIdcolumn'));
-        $this->grocery_crud->display_as('providerId',lang('providerId'));
-        $this->grocery_crud->display_as('preservationState',lang('preservationState'));                
-        $this->grocery_crud->display_as('file_url',lang('file_url'));
-        $this->grocery_crud->display_as('OwnerOrganizationalUnit',lang('OwnerOrganizationalUnit'));
-        $this->grocery_crud->display_as('mainOrganizationaUnitId',lang('mainOrganizationaUnitId'));
+    $this->grocery_crud->display_as($this->current_table.'_publicId',lang('publicId'));
+    $this->grocery_crud->display_as($this->current_table.'_externalID',lang('externalId')); 
+    $this->grocery_crud->display_as($this->current_table.'_externalIDType',lang('externalIDType')); 
+    $this->grocery_crud->display_as($this->current_table.'_materialId',lang('materialId'));
+    $this->grocery_crud->display_as($this->current_table.'_brandId',lang('brandId'));
+    $this->grocery_crud->display_as($this->current_table.'_modelId',lang('modelId'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));    
+    $this->grocery_crud->display_as($this->current_table.'_manualEntryDate',lang('manualEntryDate'));      
+    $this->grocery_crud->display_as($this->current_table.'_manualLast_update',lang('manual_last_update'));      
+    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));    
+    $this->grocery_crud->display_as($this->current_table.'_location',lang('location'));
+    $this->grocery_crud->display_as($this->current_table.'_quantityInStock',lang('quantityInStock'));
+    $this->grocery_crud->display_as($this->current_table.'_price',lang('price'));
+    $this->grocery_crud->display_as($this->current_table.'_moneySourceId',lang('moneySourceIdcolumn'));
+    $this->grocery_crud->display_as($this->current_table.'_providerId',lang('providerId'));
+    $this->grocery_crud->display_as($this->current_table.'_preservationState',lang('preservationState'));                
+    $this->grocery_crud->display_as($this->current_table.'_file_url',lang('file_url'));
+    $this->grocery_crud->display_as('OwnerOrganizationalUnit',lang('OwnerOrganizationalUnit'));
+    $this->grocery_crud->display_as($this->current_table.'_mainOrganizationaUnitId',lang('mainOrganizationaUnitId'));
         
-        //Establish fields/columns order and wich camps to show
-        //example: $this->grocery_crud->columns("inventory_objectId","name","shortName");       
-        //$this->grocery_crud->columns($this->session->userdata('inventory_object_current_fields_to_show'));       
+    //Establish fields/columns order and wich camps to show
+    //example: $this->grocery_crud->columns("inventory_objectId","name","shortName");       
+    //$this->grocery_crud->columns($this->session->userdata('inventory_object_current_fields_to_show'));       
         
-        //Mandatory fields
-        $this->grocery_crud->required_fields('name','shortName','location','markedForDeletion');
-        //$this->grocery_crud->required_fields('externalCode','name','shortName','location','markedForDeletion');
+    //Mandatory fields
+    $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortName',$this->current_table.'_location',$this->current_table.'_markedForDeletion');
+    //$this->grocery_crud->required_fields('externalCode','name','shortName','location','markedForDeletion');
         
-        //Express fields
-        $this->grocery_crud->express_fields('name','shortName');
+    //Express fields
+    $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortName');
 
-		//Do not show in add form
-        $this->grocery_crud->unset_add_fields('manualLast_update','last_update');
+	//Do not show in add form
+    $this->grocery_crud->unset_add_fields($this->current_table.'_manualLast_update',$this->current_table.'_last_update');
                
-        //ExternalID types
-        $this->grocery_crud->set_relation('externalIDType','externalIDType','{externalIDType_name}',array('externalIDType_markedForDeletion' => 'n'));
+    //ExternalID types
+    $this->grocery_crud->set_relation($this->current_table.'_externalIDType','externalIDType','{externalIDType_name}',array('externalIDType_markedForDeletion' => 'n'));
        
-        //BRAND RELATION
-        $this->grocery_crud->set_relation('brandId','brand','{brand_name}',array('brand_markedForDeletion' => 'n'));
+    //BRAND RELATION
+    $this->grocery_crud->set_relation($this->current_table.'_brandId','brand','{brand_name}',array('brand_markedForDeletion' => 'n'));
         
-        //MODEL RELATION
-        $this->grocery_crud->set_relation('modelId','model','{model_name}',array('model_markedForDeletion' => 'n'));
+    //MODEL RELATION
+    $this->grocery_crud->set_relation($this->current_table.'_modelId','model','{model_name}',array('model_markedForDeletion' => 'n'));
         
-        //MATERIAL RELATION
-        $this->grocery_crud->set_relation('materialId','material','{material_name}',array('material_markedForDeletion' => 'n'));
+    //MATERIAL RELATION
+    $this->grocery_crud->set_relation($this->current_table.'_materialId','material','{material_name}',array('material_markedForDeletion' => 'n'));
         
-        //ORGANIZATIONAL UNIT
-        $this->grocery_crud->set_relation_n_n('OwnerOrganizationalUnit', 'inventory_object_organizational_unit', 'organizational_unit', 'organitzational_unitId','inventory_objectId', 'organizational_unit_name','priority');
+    //ORGANIZATIONAL UNIT
+    $this->grocery_crud->set_relation_n_n('OwnerOrganizationalUnit', 'inventory_object_organizational_unit', 'organizational_unit', 'inventory_objectId','organitzational_unitId', 'organizational_unit_name','priority');
         
-        //MAIN ORGANIZATIONAL UNIT
-        $this->grocery_crud->set_relation('mainOrganizationaUnitId','organizational_unit','{organizational_unit_name}',array('organizational_unit_markedForDeletion' => 'n'));
+    //MAIN ORGANIZATIONAL UNIT
+    $this->grocery_crud->set_relation($this->current_table.'_mainOrganizationaUnitId','organizational_unit','{organizational_unit_name}',array('organizational_unit_markedForDeletion' => 'n'));
         
-        //LOCATION
-        $this->grocery_crud->set_relation('location','location','{location_name}',array('location_markedForDeletion' => 'n'));
+    //LOCATION
+    $this->grocery_crud->set_relation($this->current_table.'_location','location','{location_name}',array('location_markedForDeletion' => 'n'));
         
-        //PROVIDERS
-        $this->grocery_crud->set_relation('providerId','provider','{provider_name}',array('provider_markedForDeletion' => 'n'));
+    //PROVIDERS
+    $this->grocery_crud->set_relation($this->current_table.'_providerId','provider','{provider_name}',array('provider_markedForDeletion' => 'n'));
         
-        //MONEYSOURCEID
-        $this->grocery_crud->set_relation('moneySourceId','moneySource ','{moneySource_name}',array('moneySource_markedForDeletion' => 'n'));
+    //MONEYSOURCEID
+    $this->grocery_crud->set_relation($this->current_table.'_moneySourceId','moneySource ','{moneySource_name}',array('moneySource_markedForDeletion' => 'n'));
                 
-        //Validation example. Natural non zero
-        $this->grocery_crud->set_rules('quantityInStock','Quantitat','is_natural_no_zero');
+    //Validation example. Natural non zero
+    $this->grocery_crud->set_rules($this->current_table.'_quantityInStock','Quantitat','is_natural_no_zero');
        	
-       	//Show current datetime
-		$this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
+    //Show current datetime
+	//$this->grocery_crud->callback_add_field($this->current_table.'_entryDate',array($this,'add_field_callback_entryDate'));
 			
-		//ENTRY DATE
-		//DEFAULT VALUE=NOW. ONLY WHEN ADDING
-		//EDITING: SHOW CURRENT VALUE READONLY
-		$this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-		$this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
+	//ENTRY DATE
+	//DEFAULT VALUE=NOW. ONLY WHEN ADDING
+	//EDITING: SHOW CURRENT VALUE READONLY
+	$this->grocery_crud->callback_add_field($this->current_table.'_entryDate',array($this,'add_field_callback_entryDate'));
+	$this->grocery_crud->callback_edit_field($this->current_table.'_entryDate',array($this,'edit_field_callback_entryDate'));
 		
-		//LAST UPDATE
-		//DEFAULT VALUE=NOW. ONLY WHEN ADDING
-		//EDITING: SHOW CURRENT VALUE READONLY
-		$this->grocery_crud->callback_add_field('last_update',array($this,'add_callback_last_update'));
-		$this->grocery_crud->callback_edit_field('last_update',array($this,'edit_callback_last_update'));
+	//LAST UPDATE
+	//DEFAULT VALUE=NOW. ONLY WHEN ADDING
+	//EDITING: SHOW CURRENT VALUE READONLY
+	$this->grocery_crud->callback_add_field($this->current_table.'_last_update',array($this,'add_callback_last_update'));
+	$this->grocery_crud->callback_edit_field($this->current_table.'_last_update',array($this,'edit_callback_last_update'));
 
 		//TODO
 		//$this->grocery_crud->callback_column('price',array($this,'valueToEuro'));
-		$this->grocery_crud->callback_field('Link Imatges',array($this,'field_callback_Link'));
+		$this->grocery_crud->callback_field('Link_Imatges',array($this,'field_callback_Link'));
 		
-		//UPDATE AUTOMATIC FIELDS
-		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
-		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+	//UPDATE AUTOMATIC FIELDS
+	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
 		
-        $this->grocery_crud->set_field_upload('file_url','uploads/inventory_files');
+    $this->grocery_crud->set_field_upload($this->current_table.'_file_url','uploads/inventory_files');
         
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'creationUserId',$this->session->userdata('user_id'));
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($this->current_table.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'lastupdateUserId',$this->session->userdata('user_id'));
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($this->current_table.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_lastupdateUserId',$this->session->userdata('user_id'));
         
-        $this->grocery_crud->unset_dropdowndetails("creationUserId","lastupdateUserId");
+    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
      
 		$current_organizational_unit = $this->session->userdata("current_organizational_unit");
         if ($current_organizational_unit != "all")
-			$this->grocery_crud->where('`inventory_object`.mainOrganizationaUnitId',$current_organizational_unit);    
+			$this->grocery_crud->where('`inventory_object`.inventory_object_mainOrganizationaUnitId',$current_organizational_unit);    
 		
 		$current_role_id   = $this->session->userdata('role');	
 		$current_role_name = $this->_get_rolename_byId($current_role_id);
         
         if ($current_role_name == $this->config->item('organizationalunit_group') ) {
-			$this->grocery_crud->field_type('mainOrganizationaUnitId', 'hidden', $current_organizational_unit);
+			$this->grocery_crud->field_type('inventory_object_mainOrganizationaUnitId', 'hidden', $current_organizational_unit);
 		}
 		
-		//DEFAULT VALUES
-		//$this->grocery_crud->set_default_value($table_name,"materialId","2");
-		
-		//$this->set_theme($this->grocery_crud);
-		$this->grocery_crud->set_theme("datatables");
-		$this->set_dialogforms($this->grocery_crud);
+	//DEFAULT VALUES
+	//$this->grocery_crud->set_default_value($table_name,"materialId","2");
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-        $this->render($this->current_table,$header_data);
+	//$this->set_theme($this->grocery_crud);
+	$this->grocery_crud->set_theme("datatables");
+	$this->set_dialogforms($this->grocery_crud);
+
+    $this->renderitzar($this->current_table,$header_data);
                 
-		$this->_load_body_footer();
-
 	}
 	
  
@@ -245,13 +241,18 @@ public function externalIDType()	{
 
 	// Grocery Crud 
 	$this->current_table="externalIDType";
-       $this->grocery_crud->set_table($this->current_table);
+    $this->grocery_crud->set_table($this->current_table);
 
         
     $this->session->set_flashdata('table_name', $this->current_table); 
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('externalIDType'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -260,12 +261,6 @@ public function externalIDType()	{
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
     $this->grocery_crud->display_as($this->current_table.'_barcodeId',lang('barcodeId'));    
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
@@ -304,6 +299,10 @@ public function material()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('material_subject'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -312,12 +311,6 @@ public function material()	{
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
     $this->grocery_crud->display_as($this->current_table.'_parentMaterialId',lang('parentMaterialId'));    
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
     $this->grocery_crud->set_relation('material_parentMaterialId','material','material_name');
 	//$this->grocery_crud->set_relation('material_id','`material`','`material_shortName`');    
@@ -357,6 +350,10 @@ public function brand()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('brand'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -365,12 +362,6 @@ public function brand()	{
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
     $this->grocery_crud->display_as($this->current_table.'_parentMaterialId',lang('parentMaterialId'));    
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
@@ -409,6 +400,10 @@ public function model()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('model_subject'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -417,12 +412,6 @@ public function model()	{
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
     $this->grocery_crud->display_as($this->current_table.'_brandId',lang('brandId'));    
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	$this->grocery_crud->set_relation('model_brandId','brand','brand_name');    
 
@@ -461,6 +450,10 @@ public function provider()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('provider_subject'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -468,12 +461,6 @@ public function provider()	{
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
@@ -512,6 +499,10 @@ public function money_source()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('moneySource_subject'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -519,12 +510,6 @@ public function money_source()	{
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
@@ -564,6 +549,10 @@ public function barcode()	{
         
     //ESTABLISH SUBJECT
     $this->grocery_crud->set_subject(lang('barcode_subject'));   
+                        
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);
+
     $this->common_callbacks($this->current_table);
 
     //SPECIFIC COLUMNS
@@ -571,12 +560,6 @@ public function barcode()	{
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));   
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
 
@@ -625,30 +608,6 @@ function image_crud_render($table_name,$header_data)
 
 }
 	
-function render($table_name,$header_data)
-{
-       $output = $this->grocery_crud->render();
-
-       // HTML HEADER
-       
-       $this->_load_html_header($header_data,$output); 
-    
-       //BODY       
-       $this->_load_body_header();
-       
-       $default_values=$this->_get_default_values();
-       $default_values["table_name"]=$table_name;
-       $default_values["field_prefix"]=$table_name."_";
-       $this->load->view('defaultvalues_view.php',$default_values); 
-
-       //$this->load->view('course.php',$output);     
-       $this->load->view($table_name.'.php',$output);     
-       
-       //FOOTER     
-       $this->_load_body_footer();  
-
-}
-
 function load_ace_files(){
 
 $header_data= $this->add_css_to_html_header_data(
@@ -798,6 +757,16 @@ function renderitzar($table_name,$header_data = null)
        $this->_load_body_footer();  
 
 }
+
+function set_common_columns_name($table_name){
+    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+}
+
 
 }
 /* End of file inventory.php */

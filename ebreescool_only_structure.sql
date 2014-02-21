@@ -1488,6 +1488,42 @@ INSERT INTO `shift` (`shift_id`, `shift_name`, `entryDate`, `last_update`, `crea
 ---
 
 --
+-- Table structure for table `inventory_object`
+--
+
+CREATE TABLE IF NOT EXISTS `inventory_object` (
+  `inventory_objectId` int(11) NOT NULL AUTO_INCREMENT,
+  `inventory_object_publicId` varchar(50) NOT NULL,
+  `inventory_object_externalID` varchar(100) NOT NULL,
+  `inventory_object_externalIDType` int(11) NOT NULL,
+  `inventory_object_name` varchar(150) NOT NULL,
+  `inventory_object_shortName` varchar(150) NOT NULL,
+  `inventory_object_description` text,
+  `inventory_object_materialId` int(11) NOT NULL,
+  `inventory_object_brandId` int(11) NOT NULL,
+  `inventory_object_modelId` int(11) NOT NULL,
+  `inventory_object_entryDate` datetime NOT NULL,
+  `inventory_object_manualEntryDate` datetime NOT NULL,
+  `inventory_object_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `inventory_object_manualLast_update` datetime NOT NULL,
+  `inventory_object_creationUserId` int(11) DEFAULT NULL,
+  `inventory_object_lastupdateUserId` int(11) DEFAULT NULL,
+  `inventory_object_location` int(11) DEFAULT NULL,
+  `inventory_object_quantityInStock` smallint(6) NOT NULL,
+  `inventory_object_price` double NOT NULL,
+  `inventory_object_moneySourceId` int(11) DEFAULT NULL,
+  `inventory_object_providerId` int(11) DEFAULT NULL,
+  `inventory_object_preservationState` enum('Good','Regular','Bad') NOT NULL DEFAULT 'Good',
+  `inventory_object_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `inventory_object_markedForDeletionDate` datetime NOT NULL,
+  `inventory_object_file_url` varchar(250) NOT NULL,
+  `inventory_object_mainOrganizationaUnitId` int(11) NOT NULL,
+  PRIMARY KEY (`inventory_objectId`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+
+--
 -- Table structure for table `externalIDType`
 --
 
