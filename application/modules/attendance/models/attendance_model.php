@@ -415,7 +415,7 @@ class attendance_model  extends CI_Model  {
 
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
-		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_educationalLevelId,classroom_group_mentorId');
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_mentorId');
 		$this->db->from('classroom_group');
 		$this->db->order_by('classroom_group_code', $orderby);
 		

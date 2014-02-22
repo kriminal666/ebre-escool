@@ -7,30 +7,25 @@
  <ul class="breadcrumb">
   <li>
    <i class="icon-home home-icon"></i>
-   <a href="#">Home</a>
+   <a href="<?php echo base_url();?>">Home</a>
    <span class="divider">
     <i class="icon-angle-right arrow-icon"></i>
    </span>
   </li>
-  <li class="active"><?php echo lang('inventory');?></li>
+  <li class="active"><a href="<?php echo base_url('/index.php/inventory/inventory');?>"><?php echo lang('inventory');?></a></li>
  </ul>
 </div>
 
-
-    
         <div class="page-header position-relative">
                         <h1>
                             <a href="<?php echo base_url('index.php/inventory/inventory');?>"><?php echo lang("inventory");?></a>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo "TODO";?>
+                                Objectes
                             </small>
                         </h1>
         </div><!-- /.page-header -->
 
-
-
-<div style='height:30px;'></div>
 	<div style="margin:10px;">
    		
       <!-- Load Grocery Crud -->
