@@ -227,7 +227,49 @@ public function index()	{
 	$this->grocery_crud->set_theme("datatables");
 	$this->set_dialogforms($this->grocery_crud);
 
-    $this->renderitzar($this->current_table,$header_data);
+	$data= array();
+	$organizational_units = array();
+
+	//TODO
+	$user_is_admin = true;
+
+	if ($user_is_admin) {
+		$all_organizational_units = $this->inventory_model->getAllorganizationalUnits();
+		$organizational_units = $all_organizational_units;
+	} else {
+		$organizational_units[] = "La meva unitat organitzativa principal";
+	}
+
+	$data['organizational_units'] = $organizational_units;
+	$data['selected_organizational_unit'] = "Manteniment d'informàtica";
+	$data['selected_organizational_unit_key'] = 3;
+
+	//Providers
+	$data['selected_provider_name'] = "Departament d'Ensenyament" ;	
+	$data['selected_provider_id'] = 2 ;
+
+	$data['providers'] = array();
+
+	if ($user_is_admin) {
+		$providers = $this->inventory_model->getAllProviders();
+	} else {
+		$providers[] = $this->inventory_model->getAllProvidersByOrganizationalUnit($data['selected_organizational_unit_key']);
+	}
+
+	$data['providers'] = $providers;
+
+	$data['selected_material_name'] = "Cartutxos Tinta";
+	$data['selected_material_id'] = 4;
+
+	$data['materials'] = $this->inventory_model->getAllMaterials();
+
+
+	$data['selected_location_name'] = "Altell 1";
+	$data['selected_location_id'] = 3;
+
+	$data['locations'] = $this->inventory_model->getAllLocations();
+
+	$this->renderitzar($this->current_table,$header_data,$data);
                 
 	}
 	
@@ -731,29 +773,35 @@ function userCreation_userModification($table_name)
     $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
 }
 
-function renderitzar($table_name,$header_data = null)
+function renderitzar($table_name,$header_data = null, $data=array())
 {
+
+	   $state = $this->grocery_crud->getState();
+    
+
        $output = $this->grocery_crud->render();
 
        // HTML HEADER
        
         $this->_load_html_header($header_data,$output); 
         $this->_load_body_header();      
-
-      // $this->_load_html_header($this->_get_html_header_data(),$output); 
-       
-       //      BODY       
-
-       //$this->_load_body_header();
        
        $default_values=$this->_get_default_values();
        $default_values["table_name"]=$table_name;
        $default_values["field_prefix"]=$table_name."_";
        $this->load->view('defaultvalues_view.php',$default_values); 
 
+	   //example:
+	   //$output->content_view='crud_content_view'; //we add a new attribute called content_view
+	   //because our template loads the view content_view for the content.
+	   //if we want to pass data, try this.
+	   $data['grocery_crud_state']=$state;
+	   
+	   $output->data=$data;
+		
        $this->load->view($table_name.'.php',$output);     
        
-       //      FOOTER     
+       //FOOTER     
        $this->_load_body_footer();  
 
 }

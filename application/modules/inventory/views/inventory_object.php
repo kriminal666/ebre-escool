@@ -201,22 +201,29 @@
               <div class="span2"></div>
             </div>
 
-
-      <div class="table-header">
+  <?php if ($data['grocery_crud_state'] == "list"): ?>         
+  <div class="table-header">
     <i class="icon-group"></i> 
     <div class="inline position-relative">
+              Unitat organitzativa principal:
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <?php echo "selected_department_name";?>
+                             <?php echo $data['selected_organizational_unit'];?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                          <?php foreach ($departments as $department_key => $department): ?>
-                            <li <?php if ($selected_department_key == $department_key ) { echo 'class="active"';} ?> >
-                              <a href="#" 
-                                <?php if ($selected_department_key == $department_key ) { echo 'class="blue"';}?> >
+                            <li> 
+                              <a href="#">
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $department; ?>
+                                Totes
+                              </a>
+                            </li>      
+                          <?php foreach ($data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
+                            <li <?php if ($data['selected_organizational_unit_key'] == $organizational_unit_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($data['selected_organizational_unit_key'] == $organizational_unit_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $organizational_unit; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
@@ -224,18 +231,25 @@
     </div>
     <i class="icon-double-angle-right"></i> 
     <div class="inline position-relative">
+              Tipus de material:
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <?php echo "selected_classroom_group_shortname";?>
+                            <?php echo $data['selected_material_name'];?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                          <?php foreach ($classroom_groups as $classroom_group_key => $classroom_group): ?>
-                            <li <?php if ($selected_classroom_group_key == $classroom_group_key ) { echo 'class="active"';} ?> >
-                              <a href="#" 
-                                <?php if ($selected_classroom_group_key == $classroom_group_key ) { echo 'class="blue"';}?> >
+                            <li> 
+                              <a href="#">
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $classroom_group; ?>
+                                Tots
+                              </a>
+                            </li>  
+                          <?php foreach ($data['materials'] as $material_key => $material): ?>
+                            <li <?php if ($data['selected_material_id'] == $material_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($data['selected_material_id'] == $material_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $material; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
@@ -243,46 +257,60 @@
     </div>
     <i class="icon-double-angle-right"></i> 
     <div class="inline position-relative">
+              Ubicació:
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <?php echo "selected_study_module_shortname";?>
+                            <?php echo $data['selected_location_name'];?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                          <?php foreach ($study_modules as $study_module_key => $study_module): ?>
-                            <li <?php if ($selected_study_module_key == $study_module_key ) { echo 'class="active"';} ?> >
-                              <a href="#" 
-                                <?php if ($selected_study_module_key == $study_module_key ) { echo 'class="blue"';}?> >
+                            <li> 
+                              <a href="#">
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $study_module; ?>
+                                Totes
+                              </a>
+                            </li>  
+                          <?php foreach ($data['locations'] as $location_key => $location): ?>
+                            <li <?php if ($data['selected_location_id'] == $location_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($data['selected_location_id'] == $location_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $location; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
                           </ul>
     </div>
-
-    <i class="icon-user" style="margin-left:50px;"></i> # Objectes: <?php echo " " . "total_number_of_students";?> 
 
     <div class="inline position-relative" style="float:right;">
-              Professors del grup: 
+              Proveidors: 
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <?php echo "selected_group_teacher";?>
+                            <?php echo $data['selected_provider_name'];?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                          <?php foreach ($group_teachers as $group_teacher_key => $group_teacher): ?>
-                            <li <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="active"';} ?> >
-                              <a href="#" 
-                                <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="blue"';}?> >
+                            <li> 
+                              <a href="#">
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $group_teacher; ?>
+                                Tots
+                              </a>
+                            </li>                              
+                          <?php foreach ($data['providers'] as $provider_key => $provider_name): ?>
+                            <li <?php if ($data['selected_provider_id'] == $provider_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($data['selected_provider_id'] == $provider_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $provider_name; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
                           </ul>
     </div>
   </div>
+  <!-- End table header> -->
+  <?php endif; ?>
+
 
         <!-- Load Grocery Crud -->
       <?php echo $output; ?>

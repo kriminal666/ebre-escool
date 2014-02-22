@@ -109,6 +109,58 @@ class inventory_Model  extends CI_Model  {
 		$query = $this->db->get('organizational_unit');
 		return $query->result_array();
 	}
+
+	function getAllorganizationalUnits(){
+		$this->db->select('organizational_unit_Id, organizational_unit_name');
+		$query = $this->db->get('organizational_unit');
+		
+		$organizational_units_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$organizational_units_array[$row['organizational_unit_Id']] = $row['organizational_unit_name'];
+		}
+		return $organizational_units_array;
+	}	
+
+	function getAllProviders() {
+		$this->db->select('provider_id, provider_shortName');
+		$this->db->order_by("provider_shortName", "asc"); 
+		$query = $this->db->get('provider');
+		
+		$providers_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$providers_array[$row['provider_id']] = $row['provider_shortName'];
+		}
+		return $providers_array;
+	}
+
+	function getAllLocations() {
+		$this->db->select('location_id, location_shortName');
+		$this->db->order_by("location_shortName", "asc"); 
+		$query = $this->db->get('location');
+		
+		$locations_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$locations_array[$row['location_id']] = $row['location_shortName'];
+		}
+		return $locations_array;
+	}
+
+	function getAllMaterials() {
+		$this->db->select('material_id, material_shortName');
+		$this->db->order_by("material_shortName", "asc");
+		$query = $this->db->get('material');
+		
+		$materials_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$materials_array[$row['material_id']] = $row['material_shortName'];
+		}
+		return $materials_array;
+	}
+
 	
 	function get_main_organizational_unit_from_userid($userid){
 		
