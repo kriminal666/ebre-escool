@@ -15,7 +15,7 @@
           </a><!-- /.brand -->
 
           <ul class="nav ace-nav pull-right">
-            <li class="grey" style="display:none;">
+            <li class="grey" style="">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="icon-tasks"></i>
                 <span class="badge badge-grey">4</span>
@@ -88,7 +88,7 @@
               </ul>
             </li>
 
-            <li class="purple" style="display:none;">
+            <li class="purple" style="">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="icon-bell-alt icon-animated-bell"></i>
                 <span class="badge badge-important">8</span>
@@ -152,7 +152,7 @@
               </ul>
             </li>
 
-            <li class="green" style="display:none;">
+            <li class="green" style="">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="icon-envelope icon-animated-vertical"></i>
                 <span class="badge badge-success">5</span>
@@ -166,7 +166,7 @@
 
                 <li>
                   <a href="#">
-                    <img src="assets/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
+                    <img src="<?php echo base_url('assets/avatars/avatar.png');?>" class="msg-photo" alt="Alex's Avatar" />
                     <span class="msg-body">
                       <span class="msg-title">
                         <span class="blue">Alex:</span>
@@ -183,7 +183,7 @@
 
                 <li>
                   <a href="#">
-                    <img src="assets/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
+                    <img src="<?php echo base_url('assets/avatars/avatar3.png');?>" class="msg-photo" alt="Susan's Avatar" />
                     <span class="msg-body">
                       <span class="msg-title">
                         <span class="blue">Susan:</span>
@@ -200,7 +200,7 @@
 
                 <li>
                   <a href="#">
-                    <img src="assets/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
+                    <img src="<?php echo base_url('assets/avatars/avatar4.png');?>" class="msg-photo" alt="Bob's Avatar" />
                     <span class="msg-body">
                       <span class="msg-title">
                         <span class="blue">Bob:</span>
@@ -477,12 +477,32 @@
 
                 </ul>
                 <!-- Informe guifi -->
-                <li>
+                <!--<li>
                   <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informeGuifi'); ?>">
                    <i class="icon-double-angle-right"></i>
                     <?php echo lang('reports_guifi');?>
                   </a>
-                </li>
+                </li>-->
+              </li>
+
+
+              <!-- Inventari. Informes -->
+              <li>
+                <a href="#" class="dropdown-toggle">
+                  <i class="icon-double-angle-right"></i>
+
+                  Informes d'inventari
+                  <b class="arrow icon-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                  <li>
+                    <a href="<?php echo base_url('/index.php/inventory/inventory_reports/inventory'); ?>">
+                        Tot l'inventari amb opció de filtres
+                    </a>
+                  </li>
+
+                </ul>
               </li>
 
             </ul>

@@ -159,7 +159,7 @@ public function index()	{
     $this->grocery_crud->set_relation_n_n('OwnerOrganizationalUnit', 'inventory_object_organizational_unit', 'organizational_unit', 'inventory_objectId','organitzational_unitId', 'organizational_unit_name','priority');
         
     //MAIN ORGANIZATIONAL UNIT
-    $this->grocery_crud->set_relation($this->current_table.'_mainOrganizationaUnitId','organizational_unit','{organizational_unit_name}',array('organizational_unit_markedForDeletion' => 'n'));
+    $this->grocery_crud->set_relation($this->current_table.'_mainOrganizationalUnitId','organizational_unit','{organizational_unit_shortName}',array('organizational_unit_markedForDeletion' => 'n'));
         
     //LOCATION
     $this->grocery_crud->set_relation($this->current_table.'_location','location','{location_name}',array('location_markedForDeletion' => 'n'));
@@ -207,17 +207,19 @@ public function index()	{
     $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_lastupdateUserId',$this->session->userdata('user_id'));
         
     $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
-     
-		$current_organizational_unit = $this->session->userdata("current_organizational_unit");
-        if ($current_organizational_unit != "all")
-			$this->grocery_crud->where('`inventory_object`.inventory_object_mainOrganizationaUnitId',$current_organizational_unit);    
+    
+    /* 
+	$current_organizational_unit = $this->session->userdata("current_organizational_unit");
+    if ($current_organizational_unit != "all")
+		$this->grocery_crud->where('`inventory_object`.inventory_object_mainOrganizationalUnitId',$current_organizational_unit);    
 		
-		$current_role_id   = $this->session->userdata('role');	
-		$current_role_name = $this->_get_rolename_byId($current_role_id);
+	$current_role_id   = $this->session->userdata('role');	
+	$current_role_name = $this->_get_rolename_byId($current_role_id);
         
-        if ($current_role_name == $this->config->item('organizationalunit_group') ) {
-			$this->grocery_crud->field_type('inventory_object_mainOrganizationaUnitId', 'hidden', $current_organizational_unit);
-		}
+    if ($current_role_name == $this->config->item('organizationalunit_group') ) {
+		$this->grocery_crud->field_type('inventory_object_mainOrganizationalUnitId', 'hidden', $current_organizational_unit);
+	}
+	*/
 		
 	//DEFAULT VALUES
 	//$this->grocery_crud->set_default_value($table_name,"materialId","2");
@@ -268,6 +270,17 @@ public function index()	{
 	$data['selected_location_id'] = 3;
 
 	$data['locations'] = $this->inventory_model->getAllLocations();
+
+	//Filters
+	//Organizational Unit
+	//Material
+	//location
+	//Provider
+	//$this->grocery_crud->where('inventory_object_mainOrganizationalUnitId','TODO');
+	//$this->grocery_crud->where('inventory_object_materialId','TODO');
+	//$this->grocery_crud->where('inventory_object_materialId','TODO');
+	//$this->grocery_crud->where('inventory_object_location','TODO');
+	//$this->grocery_crud->where('inventory_object_providerId','TODO');
 
 	$this->renderitzar($this->current_table,$header_data,$data);
                 

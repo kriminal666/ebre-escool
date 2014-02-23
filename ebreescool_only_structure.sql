@@ -1517,7 +1517,7 @@ CREATE TABLE IF NOT EXISTS `inventory_object` (
   `inventory_object_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `inventory_object_markedForDeletionDate` datetime NOT NULL,
   `inventory_object_file_url` varchar(250) NOT NULL,
-  `inventory_object_mainOrganizationaUnitId` int(11) NOT NULL,
+  `inventory_object_mainOrganizationalUnitId` int(11) NOT NULL,
   PRIMARY KEY (`inventory_objectId`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
