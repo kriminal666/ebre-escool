@@ -48,7 +48,6 @@ class curriculum extends skeleton_main {
         /* Grocery Crud */
         $this->current_table="organizational_unit";
         $this->grocery_crud->set_table("organizational_unit");
-        //$_SESSION['table_name'] = 'studiesOU_';
         $this->session->set_flashdata('table_name', $this->current_table);
         
         //ESTABLISH SUBJECT
@@ -84,7 +83,10 @@ class curriculum extends skeleton_main {
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
-        
+    
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_location',$this->current_table,$this->current_table.'_name');
+
         $this->grocery_crud->unset_add_fields('organizational_unit_last_update');
         
         $this->userCreation_userModification($this->current_table);

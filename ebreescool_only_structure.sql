@@ -1495,10 +1495,15 @@ CREATE TABLE IF NOT EXISTS `inventory_object` (
   `inventory_objectId` int(11) NOT NULL AUTO_INCREMENT,
   `inventory_object_publicId` varchar(50) NOT NULL,
   `inventory_object_externalID` varchar(100) NOT NULL,
+  `inventory_object_externalID1` varchar(100) NOT NULL,
+  `inventory_object_externalID2` varchar(100) NOT NULL,
   `inventory_object_externalIDType` int(11) NOT NULL,
+  `inventory_object_externalIDType1` int(11) NOT NULL,
+  `inventory_object_externalIDType2` int(11) NOT NULL,
   `inventory_object_name` varchar(150) NOT NULL,
   `inventory_object_shortName` varchar(150) NOT NULL,
   `inventory_object_description` text,
+  `inventory_object_parent` int(11),
   `inventory_object_materialId` int(11) NOT NULL,
   `inventory_object_brandId` int(11) NOT NULL,
   `inventory_object_modelId` int(11) NOT NULL,
@@ -1587,6 +1592,7 @@ CREATE TABLE IF NOT EXISTS `model` (
 
 CREATE TABLE IF NOT EXISTS `material` (
   `material_id` int(11) NOT NULL AUTO_INCREMENT,
+  `material_internalCode` text,	
   `material_name` varchar(150) NOT NULL,
   `material_shortName` varchar(150) NOT NULL,
   `material_description` text,

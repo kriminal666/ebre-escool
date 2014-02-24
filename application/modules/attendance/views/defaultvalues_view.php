@@ -104,20 +104,6 @@ var set_form_default_values = function(){
 	* END USER PREFERENCES FORM *
 	*****************************/
 
-	//PreservationState Language translations
-	'<?php echo $field_prefix;?>'
-	if (document.getElementById('field-<?php echo $table_name?>-<?php echo $field_prefix;?>preservationState') != null) {
-		var ps=document.getElementById("field-<?php echo $table_name?>-<?php echo $field_prefix;?>preservationState");
-		//TRANSLATE MARKED FOR DELETION:
-
-		ps.options[1].text='<?php echo $good_translated ?>';
-		ps.options[2].text='<?php echo $regular_translated ?>';
-		ps.options[3].text='<?php echo $bad_translated ?>';
-		$('#field-<?php echo $table_name?>-<?php echo $field_prefix;?>preservationState').trigger('liszt:updated');
-	}
-
-
-
 /*******************************************
 * END SET DEFAULT VALUES FOR CHOSEN FIELDS *
 ********************************************/	 
