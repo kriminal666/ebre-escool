@@ -66,25 +66,9 @@ function load_ace_files(){
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-                base_url('assets/css/ace-fonts.css'));
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-                base_url('assets/css/ace.min.css'));
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-                base_url('assets/css/ace-responsive.min.css'));
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-                base_url('assets/css/ace-skins.min.css'));      
-
-        $header_data= $this->add_css_to_html_header_data(
+	$header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-            base_url('assets/grocery_crud/themes/datatables/css/jquery.dataTables.css'));  
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));
@@ -94,8 +78,22 @@ function load_ace_files(){
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/css/ColVis.css'));
-        
-        
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));        
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));      
+
+
         //JS
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
@@ -105,8 +103,13 @@ function load_ace_files(){
             "http://code.jquery.com/jquery-migrate-1.2.1.min.js");
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
-
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");  
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/js/jquery.dataTables.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/jquery.dataTables.bootstrap.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/ace-extra.min.js'));
@@ -116,9 +119,7 @@ function load_ace_files(){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-                base_url('assets/grocery_crud/themes/datatables/js/jquery.dataTables.min.js'));  
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js'));

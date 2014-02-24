@@ -202,7 +202,8 @@
     Objectes de l'Inventari
   </div>          
   <div class="table-responsive">
-  <table cellpadding="0" cellspacing="0" border="0" id="inventory_report_table" width="100%" class="table table-striped table-bordered table-hover dataTable" style="max-width:none;">
+
+  <table style="max-width:none;" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" id="inventory_report_table" width="100%" >
   
   <thead>
     <tr>
