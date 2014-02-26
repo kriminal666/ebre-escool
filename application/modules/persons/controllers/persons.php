@@ -37,28 +37,45 @@ class persons extends skeleton_main {
 
 	public function person_official_id_type() {
 		
-       $header_data= $this->load_ace_template();  
+    /* Ace */
+    $header_data= $this->load_ace_files();  
 
-    $table_name="person_official_id_type";
-        $this->grocery_crud->set_table($table_name);  
-		
-		//Establish subject:
-        $this->grocery_crud->set_subject("Tipus identificador personal");
+    /* Grocery Crud */ 
+    $this->current_table="person_official_id_type";
+    $this->grocery_crud->set_table($this->current_table);
         
-        /*
-        $this->grocery_crud->display_as('person_id',lang('person_id'));
-       	$this->grocery_crud->display_as('person_givenName',lang('person_givenName'));       
-       	*/
-
-        $output = $this->grocery_crud->render();
+    $this->session->set_flashdata('table_name', $this->current_table); 
 		
-        $this->_load_html_header($header_data,$output); 
-        $this->_load_body_header();      
-	
-		$this->load->view('person_official_id_type',$output); 
-                
-		$this->_load_body_footer();	 
+    //Establish subject:
+    $this->grocery_crud->set_subject("Tipus identificador personal");
+        
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));
+    $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
 
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+    //UPDATE AUTOMATIC FIELDS
+    $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+    $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+
+
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data);        
 	}
 
 	
@@ -164,40 +181,12 @@ class persons extends skeleton_main {
 	}
 
 
-	public function _callback_person_bank_account_id_url($value, $row)	{
-		if (isset($row->person_bank_account_id))
-			return "<a href='". base_url('/index.php/banks/bank_account/edit/') . "/" . $row->person_bank_account_id ."'>". $value . "</a>";
-		else
-			return $value;
-	}
 
-	public function _callback_person_locality_id_url($value, $row)	{
-		if (isset($row->person_locality_id))
-			return "<a href='". base_url('/index.php/persons/localities/edit/') . "/" . $row->person_locality_id ."'>". $value . "</a>";
-		else
-			return $value;
-	}
-
-	
-
-	public function _callback_person_email_url($value, $row)	{
-		if (isset($row->person_email))
-			return "<a href='mailto:". $value . "'>" . $value . "</a>";
-		 	else
-			return $value;
-	}
-
-	public function _callback_person_secondary_email_url($value, $row)	{
-		if (isset($row->person_secondary_email))
-			return "<a href='mailto:". $value . "'>" . $value . "</a>";
-		 	else
-			return $value;
-	}
   /* PERSON MODIFICADA */
 
   public function person() {
 
-        $header_data= $this->load_ace_template();  
+        $header_data= $this->load_ace_files();  
 
 
         $table_name="person";
@@ -308,33 +297,7 @@ class persons extends skeleton_main {
     $this->_load_body_footer();  
   }
 
-  public function edit_field_callback_entryDate($value, $primary_key){
-    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="person_entryDate" id="field-entryDate" readonly>';    
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
-  }
 
-  public function edit_callback_last_update($value, $primary_key){
-
-    $data = date('d/m/Y H:i:s', time());
-    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="person_last_update" id="field-last_update" readonly>';
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="'.$this->session->flashdata('table_name').'last_update" id="field-last_update" readonly>';
-
-  }
-
-  public function before_update_last_update($post_array, $primary_key) {
-    $data= date('d/m/Y H:i:s', time());
-    //$post_array['person_last_update'] = $data;
-    $post_array[$this->session->flashdata('table_name').'last_update'] = $data;
-    //$post_array['lastupdateUserId'] = $this->session->userdata('user_id');
-    return $post_array;
-}  
-
-public function add_field_callback_entryDate(){  
-
-    $data= date('d/m/Y H:i:s', time());
-    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="person_entryDate" id="field-entryDate" readonly>';    
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
-}
 
   /* FI PERSON MODIFICADA */
 
@@ -464,8 +427,53 @@ public function add_field_callback_entryDate(){
 	}
 	
 	public function localities() {
-		
- $header_data= $this->load_ace_template();  
+    /* Ace */
+    $header_data= $this->load_ace_files();  
+
+    /* Grocery Crud */ 
+    $this->current_table="locality";
+    $this->grocery_crud->set_table($this->current_table);
+        
+    $this->session->set_flashdata('table_name', $this->current_table); 
+    
+    //Establish subject:
+    $this->grocery_crud->set_subject(lang($this->current_table.'_subject'));
+        
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));        
+    $this->grocery_crud->display_as($this->current_table.'_parent_locality_id',lang($this->current_table.'_parent_locality_id'));
+    $this->grocery_crud->display_as($this->current_table.'_state_id',lang($this->current_table.'_state_id'));
+    $this->grocery_crud->display_as($this->current_table.'_ine_id',lang($this->current_table.'_ine_id'));          
+    $this->grocery_crud->display_as($this->current_table.'_aeat_id',lang($this->current_table.'_aeat_id'));   
+    $this->grocery_crud->display_as($this->current_table.'_postal_code',lang($this->current_table.'_postal_code')); 
+
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+    //UPDATE AUTOMATIC FIELDS
+    $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+    $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+    //RELACIONS
+    $this->grocery_crud->set_relation($this->current_table.'_parent_locality_id','locality','{locality_name}');
+    $this->grocery_crud->set_relation($this->current_table.'_state_id','state','{state_name}');
+
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data); 
+
+		/*
+ $header_data= $this->load_ace_files();  
 
 		$table_name="locality";
         $this->grocery_crud->set_table($table_name);  
@@ -485,12 +493,57 @@ public function add_field_callback_entryDate(){
 		$this->load->view('persons',$output); 
                 
 		$this->_load_body_footer();	 
-		
+		*/
 	}
 	
 	public function states() {
 		
- $header_data= $this->load_ace_template();  
+    $this->check_logged_user(); 
+
+    /* Ace */
+    $header_data= $this->load_ace_files();  
+
+    /* Grocery Crud */ 
+    $this->current_table="state";
+    $this->grocery_crud->set_table($this->current_table);
+    $this->session->set_flashdata('table_name', $this->current_table); 
+    
+    //Establish subject:
+    $this->grocery_crud->set_subject(lang($this->current_table.'_subject'));
+        
+    $this->common_callbacks($this->current_table);
+
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));        
+    $this->grocery_crud->display_as($this->current_table.'_parent_state_id',lang($this->current_table.'_parent_state_id'));
+    $this->grocery_crud->display_as($this->current_table.'_parent_state_name',lang($this->current_table.'_parent_state_name'));
+
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+    //UPDATE AUTOMATIC FIELDS
+    $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+    $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+    $this->userCreation_userModification($this->current_table);
+
+    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+    $this->renderitzar($this->current_table,$header_data); 
+
+
+
+
+/*    
+ $header_data= $this->load_ace_files();  
 
 		$table_name="state";
         $this->grocery_crud->set_table($table_name);  
@@ -506,12 +559,71 @@ public function add_field_callback_entryDate(){
 		$this->load->view('persons',$output); 
                 
 		$this->_load_body_footer();	 
-		
+	*/	
 	}
 
-  public function load_ace_template() {
-        $header_data= $this->add_css_to_html_header_data(
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
+
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
+function renderitzar($table_name,$header_data)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($header_data,$output); 
+    
+       // BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       //$this->load->view('course.php',$output);     
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}
+
+function load_ace_files(){
+
+$header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
                 base_url('assets/css/ace-fonts.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -521,13 +633,21 @@ public function add_field_callback_entryDate(){
                 base_url('assets/css/ace-responsive.min.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
-                base_url('assets/css/ace-skins.min.css'));      
-
+                base_url('assets/css/ace-skins.min.css'));
+                      
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-        
+
+
         //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/ace-extra.min.js'));
@@ -536,9 +656,80 @@ public function add_field_callback_entryDate(){
                 base_url('assets/js/ace-elements.min.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
-                base_url('assets/js/ace.min.js')); 
+                base_url('assets/js/ace.min.js'));    
+
         return $header_data;
+}
+
+  //CALLBACKS
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+  public function edit_field_callback_entryDate($value, $primary_key){
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+  }
+
+  public function edit_callback_last_update($value, $primary_key){
+
+    $data = date('d/m/Y H:i:s', time());
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
 
   }
+
+  public function before_update_last_update($post_array, $primary_key) {
+    $data= date('d/m/Y H:i:s', time());
+    //$post_array['person_last_update'] = $data;
+    $post_array[$this->session->flashdata('table_name').'_last_update'] = $data;
+    //$post_array['lastupdateUserId'] = $this->session->userdata('user_id');
+    return $post_array;
+}  
+
+public function add_field_callback_entryDate(){  
+
+    $data= date('d/m/Y H:i:s', time());
+    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="person_entryDate" id="field-entryDate" readonly>';    
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
+}
+
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}  
+
+  public function _callback_person_bank_account_id_url($value, $row)  {
+    if (isset($row->person_bank_account_id))
+      return "<a href='". base_url('/index.php/banks/bank_account/edit/') . "/" . $row->person_bank_account_id ."'>". $value . "</a>";
+    else
+      return $value;
+  }
+
+  public function _callback_person_locality_id_url($value, $row)  {
+    if (isset($row->person_locality_id))
+      return "<a href='". base_url('/index.php/persons/localities/edit/') . "/" . $row->person_locality_id ."'>". $value . "</a>";
+    else
+      return $value;
+  }
+
+  public function _callback_person_email_url($value, $row)  {
+    if (isset($row->person_email))
+      return "<a href='mailto:". $value . "'>" . $value . "</a>";
+      else
+      return $value;
+  }
+
+  public function _callback_person_secondary_email_url($value, $row)  {
+    if (isset($row->person_secondary_email))
+      return "<a href='mailto:". $value . "'>" . $value . "</a>";
+      else
+      return $value;
+  }
+
 
 }

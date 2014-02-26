@@ -73,6 +73,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('organizational_unit_description',lang('description'));        
         $this->grocery_crud->display_as('organizational_unit_location',lang('location'));            
         $this->grocery_crud->display_as('organizational_unit_externalCode',lang('external_code'));
+        $this->grocery_crud->display_as('organizational_unit_parent',lang('organizational_unit_parent'));
         $this->grocery_crud->display_as('organizational_unit_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as('organizational_unit_last_update',lang('last_update'));
         $this->grocery_crud->display_as('organizational_unit_creationUserId',lang('creationUserId'));
@@ -80,6 +81,9 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('organizational_unit_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('organizational_unit_markedForDeletionDate',lang('markedForDeletionDate')); 
  
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_parent',$this->current_table,$this->current_table.'_name');
+
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
@@ -198,6 +202,8 @@ class curriculum extends skeleton_main {
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as('department_shortname',lang('department_shortname'));
         $this->grocery_crud->display_as('department_name',lang('department_name'));
+        $this->grocery_crud->display_as('department_organizational_unit_id',lang('department_organizational_unit_id'));
+        $this->grocery_crud->display_as('department_head',lang('department_head'));
         $this->grocery_crud->display_as('department_parent_department_id',lang('department_parent_department_id'));
         $this->grocery_crud->display_as('department_entryDate',lang('department_entryDate'));
         $this->grocery_crud->display_as('department_last_update',lang('department_last_update'));
@@ -205,6 +211,10 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('department_lastupdateUserId',lang('department_lastupdateUserId'));   
         $this->grocery_crud->display_as('department_markedForDeletion',lang('department_markedForDeletion'));       
         $this->grocery_crud->display_as('department_markedForDeletionDate',lang('department_markedForDeletionDate'));       
+
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_id');
+        $this->grocery_crud->set_relation($this->current_table.'_organizational_unit_id','organizational_unit','organizational_unit_name');
 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -222,7 +232,7 @@ class curriculum extends skeleton_main {
         //Default values:
         $this->grocery_crud->set_default_value($this->current_table,'department_markedForDeletion','n');
                    
-        $this->renderitzar('departments_families',$header_data);
+        $this->renderitzar('department',$header_data);
 
     }
 
@@ -832,7 +842,7 @@ function renderitzar($table_name,$header_data)
        
        $this->_load_html_header($header_data,$output); 
     
-       //      BODY       
+       // BODY       
 
        $this->_load_body_header();
        

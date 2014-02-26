@@ -11,7 +11,7 @@
     <i class="icon-angle-right arrow-icon"></i>
    </span>
   </li>
-  <li class="active"><?php echo lang('bank');?></li>
+  <li class="active"><?php echo lang('maintenances');?></li>
  </ul>
 </div>
 
@@ -19,15 +19,15 @@
 
         <div class="page-header position-relative">
                         <h1>
-                            <?php echo lang("bank");?>
+                            <?php echo lang("persons");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo lang('bank');?>
+                                <?php echo lang('localities');?>
                             </small>
                         </h1>
         </div><!-- /.page-header -->
-<div style='height:10px;'></div>
- <div style="margin:10px;">
-   <?php echo $output; ?>
- </div>
+<div style='height:10px;'></div>  
+<div style="margin:10px;">
+	<?php echo $output; ?>
+</div>
 </div>

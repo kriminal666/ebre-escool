@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `organizational_unit` (
   `organizational_unit_name` varchar(150) NOT NULL,
   `organizational_unit_shortName` varchar(150) NOT NULL,
   `organizational_unit_description` text,
+  `organizational_unit_parent` int(11) NOT NULL,
   `organizational_unit_entryDate` datetime NOT NULL,
   `organizational_unit_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `organizational_unit_creationUserId` int(11) DEFAULT NULL,
@@ -351,7 +352,9 @@ CREATE TABLE IF NOT EXISTS `department` (
   `department_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `department_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
   `department_name` varchar(150) CHARACTER SET utf8 NOT NULL,
+  `department_head` int(11) NOT NULL,
   `department_parent_department_id` int(11) NOT NULL,
+  `department_organizational_unit_id` int(11) NOT NULL,
   `department_entryDate` datetime NOT NULL,
   `department_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `department_creationUserId` int(11) DEFAULT NULL,
@@ -510,12 +513,12 @@ CREATE TABLE IF NOT EXISTS `state` (
   `state_name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `state_parent_state_id` int(11) NOT NULL,
   `state_parent_state_name` varchar(255) NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `state_entryDate` datetime NOT NULL,
+  `state_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `state_creationUserId` int(11) DEFAULT NULL,
+  `state_lastupdateUserId` int(11) DEFAULT NULL,
+  `state_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `state_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`state_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
 
@@ -589,12 +592,12 @@ CREATE TABLE IF NOT EXISTS `locality` (
   `locality_ine_id` int(11) NOT NULL COMMENT 'Codi Instituto Nacional Estadística',
   `locality_aeat_id` int(11) NOT NULL COMMENT 'Codi segons Hisenda',
   `locality_postal_code` varchar(255) NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `locality_entryDate` datetime NOT NULL,
+  `locality_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `locality_creationUserId` int(11) DEFAULT NULL,
+  `locality_lastupdateUserId` int(11) DEFAULT NULL,
+  `locality_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `locality_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`locality_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=478 ;
 
@@ -1089,12 +1092,12 @@ INSERT INTO `locality` (`locality_id`, `locality_name`, `locality_parent_localit
 CREATE TABLE IF NOT EXISTS `bank` (
   `bank_name` varchar(255) NOT NULL,
   `bank_code` varchar(4) NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `bank_entryDate` datetime NOT NULL,
+  `bank_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `bank_creationUserId` int(11) DEFAULT NULL,
+  `bank_lastupdateUserId` int(11) DEFAULT NULL,
+  `bank_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `bank_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1102,7 +1105,7 @@ CREATE TABLE IF NOT EXISTS `bank` (
 -- Bolcant dades de la taula `bank`
 --
 
-INSERT INTO `bank` (`bank_name`, `bank_code`, `entryDate`, `last_update`, `creationUserId`, `lastupdateUserId`, `markedForDeletion`, `markedForDeletionDate`) VALUES
+INSERT INTO `bank` (`bank_name`, `bank_code`, `bank_entryDate`, `bank_last_update`, `bank_creationUserId`, `bank_lastupdateUserId`, `bank_markedForDeletion`, `bank_markedForDeletionDate`) VALUES
 ('SENSEBANC', '0000', '0000-00-00 00:00:00', '0000-00-00 00:00:00', NULL, NULL, '', '0000-00-00 00:00:00'),
 ('BANCO DE DEPOSITOS', '0003', '0000-00-00 00:00:00', '0000-00-00 00:00:00', NULL, NULL, 'n', '0000-00-00 00:00:00'),
 ('ALLFUNDS BANK', '0011', '0000-00-00 00:00:00', '0000-00-00 00:00:00', NULL, NULL, 'n', '0000-00-00 00:00:00'),
@@ -1369,12 +1372,12 @@ CREATE TABLE IF NOT EXISTS `bank_account` (
 CREATE TABLE IF NOT EXISTS `bank_account_type` (
   `bank_account_type_id` int(11) NOT NULL AUTO_INCREMENT,
   `bank_account_type_name` varchar(255) NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `bank_account_type_entryDate` datetime NOT NULL,
+  `bank_account_type_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `bank_account_type_creationUserId` int(11) DEFAULT NULL,
+  `bank_account_type_lastupdateUserId` int(11) DEFAULT NULL,
+  `bank_account_type_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `bank_account_type_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_account_type_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
@@ -1394,12 +1397,12 @@ CREATE TABLE IF NOT EXISTS `bank_office` (
   `bank_office_name` varchar(255) NOT NULL,
   `bank_office_code` varchar(4) NOT NULL,
   `bank_office_bank_id` int(11) NOT NULL,
-  `entryDate` datetime NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creationUserId` int(11) DEFAULT NULL,
-  `lastupdateUserId` int(11) DEFAULT NULL,
-  `markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
-  `markedForDeletionDate` datetime NOT NULL,
+  `bank_office_entryDate` datetime NOT NULL,
+  `bank_office_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `bank_office_creationUserId` int(11) DEFAULT NULL,
+  `bank_office_lastupdateUserId` int(11) DEFAULT NULL,
+  `bank_office_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `bank_office_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_office_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
