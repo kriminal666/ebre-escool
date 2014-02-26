@@ -297,12 +297,12 @@ class inventory_Model  extends CI_Model  {
 	
 
 	function get_externalIdInfoByInventoryObjectId($inventory_objectid)	{
-		$this->db->select('externalID,externalIDType');
+		$this->db->select('inventory_object_externalID,inventory_object_externalIDType');
 		$this->db->where('inventory_objectId',$inventory_objectid);
 		$query = $this->db->get('inventory_object');
 		if ($query->num_rows() > 0)
-			return array ("externalID" => $query->row()->externalID,
-						  "externalIDType" => $query->row()->externalIDType);
+			return array ("externalID" => $query->row()->inventory_object_externalID,
+						  "externalIDType" => $query->row()->inventory_object_externalIDType);
 		else
 			return false;
 	}
