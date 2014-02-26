@@ -722,38 +722,32 @@
             </a>
 
             <ul class="submenu">
+
+              <li>
+                <a href="<?php echo base_url('index.php/skeleton/users');?>">
+                  <i class="icon-double-angle-right"></i>
+                  Usuaris
+                </a>
+              </li>
+
+              <li>
+                <a href="<?php echo base_url('index.php/skeleton/groups');?>">
+                  <i class="icon-double-angle-right"></i>
+                  Grups
+                </a>
+              </li>
+
+              <li>
+                <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
+                  <i class="icon-double-angle-right"></i>
+                  Preferències
+                </a>
+              </li>
+
               <li>
                 <a href="faq.html">
                   <i class="icon-double-angle-right"></i>
                   FAQ
-                </a>
-              </li>
-
-              <li>
-                <a href="error-404.html">
-                  <i class="icon-double-angle-right"></i>
-                  Error 404
-                </a>
-              </li>
-
-              <li>
-                <a href="error-500.html">
-                  <i class="icon-double-angle-right"></i>
-                  Error 500
-                </a>
-              </li>
-
-              <li>
-                <a href="grid.html">
-                  <i class="icon-double-angle-right"></i>
-                  Grid
-                </a>
-              </li>
-
-              <li>
-                <a href="blank.html">
-                  <i class="icon-double-angle-right"></i>
-                  Blank Page
                 </a>
               </li>
             </ul>

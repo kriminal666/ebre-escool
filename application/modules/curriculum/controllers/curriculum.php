@@ -89,7 +89,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
     
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_location',$this->current_table,$this->current_table.'_name');
+        $this->grocery_crud->set_relation($this->current_table.'_location','location','location_name');
 
         $this->grocery_crud->unset_add_fields('organizational_unit_last_update');
         
