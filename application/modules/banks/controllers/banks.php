@@ -321,7 +321,7 @@ class banks extends skeleton_main {
     $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
     //RELATIONS
-    $this->grocery_crud->set_relation($this->current_table.'_bank_id','bank','{bank_code}-{bank_name}');
+    //$this->grocery_crud->set_relation($this->current_table.'_bank_id','bank','{bank_code}-{bank_name}');
 
 
     $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
