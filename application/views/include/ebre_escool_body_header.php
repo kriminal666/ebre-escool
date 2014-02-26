@@ -544,6 +544,18 @@
                   </li>
 
                   <li>
+                    <a href="<?php echo base_url('/index.php/employees'); ?>">
+                      <?php echo lang('employees');?>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="<?php echo base_url('/index.php/employees/employees_type'); ?>">
+                      <?php echo lang('employees_type');?>
+                    </a>
+                  </li>                  
+
+                  <li>
                     <a href="<?php echo base_url('/index.php/students'); ?>">
                       <?php echo lang('students');?>
                     </a>
