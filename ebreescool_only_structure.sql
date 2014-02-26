@@ -500,6 +500,24 @@ CREATE TABLE IF NOT EXISTS `person_official_id_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Estructura de la taula `teacher`
+--
+
+CREATE TABLE IF NOT EXISTS `teacher` (
+  `teacher_id` int(11) NOT NULL AUTO_INCREMENT,
+  `teacher_person_id` int(11) NOT NULL,
+  `teacher_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `teacher_department_id` int(11) NOT NULL,
+  `teacher_entryDate` datetime NOT NULL,
+  `teacher_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `teacher_creationUserId` int(11) DEFAULT NULL,
+  `teacher_lastupdateUserId` int(11) DEFAULT NULL,
+  `teacher_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `teacher_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`teacher_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=104 ;
+
+--
 -- Bolcant dades de la taula `person_official_id_type`
 --
 

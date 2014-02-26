@@ -48,6 +48,9 @@ class teachers extends skeleton_main {
 
         //RELATIONS
         $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
+
+        //RELATIONS
+        $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}'); 
         
         //$this->grocery_crud->unset_dropdowndetails("person_official_id_type");
         
