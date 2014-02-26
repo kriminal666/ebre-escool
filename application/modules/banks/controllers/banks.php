@@ -91,16 +91,18 @@ class banks extends skeleton_main {
 	
 	public function bank_account() {
 
-        /* Ace */
-        $header_data = $this->load_ace_files();   
+    $this->check_logged_user();
 
-		$table_name="bank_account";
-        $this->grocery_crud->set_table($table_name);  
-		
-		//Establish subject:
-        $this->grocery_crud->set_subject("Compte");
+    /* Ace */
+    $header_data = $this->load_ace_files();   
 
-        //echo "user:".$this->session->userdata('user_id');;
+    /* Grocery Crud */
+    $this->current_table="bank_account";
+    $this->grocery_crud->set_table($this->current_table);
+    $this->session->set_flashdata('table_name', $this->current_table);
+    
+    //Establish subject:
+    $this->grocery_crud->set_subject(lang("bank_account"));
 
 		$this->grocery_crud->columns('bank_account_id','bank_account_owner_id','bank_account_type_id','bank_account_entity_code',
 			'bank_account_office_code','bank_account_control_digit_code','bank_account_number','bank_account_entryDate',
@@ -143,9 +145,9 @@ class banks extends skeleton_main {
         //$this->grocery_crud->express_fields('name','shortName');
 
 
-   	    $this->grocery_crud->set_default_value($table_name,'bank_account_type_id',1);
-   	    $this->grocery_crud->set_default_value($table_name,'bank_account_entity_code',2100);
-   	    $this->grocery_crud->set_default_value($table_name,'bank_account_markedForDeletion','n');
+   	    $this->grocery_crud->set_default_value($this->current_table,'bank_account_type_id',1);
+   	    $this->grocery_crud->set_default_value($this->current_table,'bank_account_entity_code',2100);
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
    	    $complete_ccc=$this->input->post('bank_account_entity_code').$this->input->post('bank_account_office_code').$this->input->post('bank_account_control_digit_code').$this->input->post('bank_account_number');
    	    
@@ -155,22 +157,11 @@ class banks extends skeleton_main {
    	    }
    	    
    	    $this->grocery_crud->set_relation('bank_account_owner_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} ');    
-		$this->grocery_crud->set_relation('bank_account_type_id','bank_account_type','{bank_account_type_name}');
+    		$this->grocery_crud->set_relation('bank_account_type_id','bank_account_type','{bank_account_type_name}');
         $this->grocery_crud->set_relation('bank_account_entity_code','bank','{bank_code}-{bank_name}');
         //$this->grocery_crud->set_relation('bank_account_office_code','bank_office','{bank_office_code}-{bank_office_name}');
 
-
-		//ENTRY DATE
-		//DEFAULT VALUE=NOW. ONLY WHEN ADDING
-		//EDITING: SHOW CURRENT VALUE READONLY
-		$this->grocery_crud->callback_add_field('entryDate',array($this,'add_field_callback_entryDate'));
-		$this->grocery_crud->callback_edit_field('entryDate',array($this,'edit_field_callback_entryDate'));
-		
-		//LAST UPDATE
-		//DEFAULT VALUE=NOW. ONLY WHEN ADDING
-		//EDITING: SHOW CURRENT VALUE READONLY
-		$this->grocery_crud->callback_add_field('last_update',array($this,'add_callback_last_update'));
-		$this->grocery_crud->callback_edit_field('last_update',array($this,'edit_callback_last_update'));
+    $this->common_callbacks($this->current_table);
 		
 		$admin_group = ($this->config->item('admin_group') == "") ? 'intranet_admin' : $this->config->item('admin_group');
 		
@@ -183,28 +174,12 @@ class banks extends skeleton_main {
 			$this->grocery_crud->callback_before_insert(array($this,'before_insert_user_preference_callback'));
 			$this->grocery_crud->callback_before_update(array($this,'before_update_user_preference_callback'));
 		}
-		
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('bank_account_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($table_name,'bank_account_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('bank_account_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($table_name,'bank_account_lastupdateUserId',$this->session->userdata('user_id'));
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+    $this->userCreation_userModification($this->current_table);
+    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
 
-        $this->grocery_crud->unset_dropdowndetails("bank_account_creationUserId","bank_account_lastupdateUserId");
-        
-        $this->renderitzar($table_name,$header_data);
-        /*
-        $output = $this->grocery_crud->render();
-		
-		$this->_load_html_header($this->_get_html_header_data(),$output); 
-		$this->_load_body_header();
-	
-		$this->load->view('bank_account',$output); 
-                
-		$this->_load_body_footer();	 	
-		*/
+    $this->renderitzar($this->current_table,$header_data);
 	}
 
 	public function ccc_valido($field,$ccc)	{
