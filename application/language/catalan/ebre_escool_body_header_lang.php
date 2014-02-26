@@ -53,6 +53,7 @@ $lang['maintenances'] = 'Manteniments';
  $lang['teachers'] = 'Professors';
  $lang['students'] = 'Alumnes'; 
  $lang['persons'] = 'Persones';
+ $lang['states'] = 'Províncies';
  $lang['externalid_menu'] = 'Tipus Identificadors externs';
  $lang['personal_id_type'] = 'Tipus identificador personal';
  $lang['organizationalunit_menu'] = 'Unitats Organitzatives';

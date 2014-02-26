@@ -120,7 +120,8 @@ public function index()	{
     $this->grocery_crud->display_as($this->current_table.'_modelId',lang('modelId'));
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));    
-    $this->grocery_crud->display_as($this->current_table.'_manualEntryDate',lang('manualEntryDate'));      
+    $this->grocery_crud->display_as($this->current_table.'_manualEntryDate',lang('manualEntryDate'));   
+    $this->grocery_crud->display_as($this->current_table.'_parent',lang('inventory_object_parent'));
     $this->grocery_crud->display_as($this->current_table.'_manualLast_update',lang('manual_last_update'));      
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));    
     $this->grocery_crud->display_as($this->current_table.'_location',lang('location'));

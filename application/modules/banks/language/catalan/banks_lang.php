@@ -29,3 +29,11 @@ $lang['bank_account_markedForDeletionDate'] = 'Data de baixa';
 $lang['bank_account_num_persona'] = 'Num persona';
 
 $lang['bank_account_incorrect'] = 'Número de compte incorrecte';
+
+$lang['bank_code'] = 'Codi Banc';
+
+$lang['bank_office'] = 'Oficina';
+$lang['bank_office_code'] = 'Codi Oficina';
+$lang['bank_office_bank_id'] = 'Id';
+
+$lang['bank_account_type_id'] = 'Id';

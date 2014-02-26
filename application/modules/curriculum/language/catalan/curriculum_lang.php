@@ -18,7 +18,11 @@ $lang['department']   = "Departament/Família";
 
 $lang['external_code']   = "Codi Extern";
 
+$lang['organizational_unit_parent']   = "Unitat Organitzativa Pare";
+
 $lang['department_shortname']   = "Nom curt";
+$lang['department_head']   = "Cap de departament";
+$lang['department_organizational_unit_id']   = "Unitat Organitzativa";
 $lang['department_name']   = "Nom";
 $lang['department_parent_department_id']   = "Departament/Família pare";
 $lang['department_entryDate']   = "Data de creació";

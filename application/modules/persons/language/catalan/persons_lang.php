@@ -15,6 +15,7 @@
 // Errors
 
 $lang['person_id'] = 'Id';
+$lang['person_official_id_type_id'] = 'Id';
 $lang['person_givenName'] = 'Nom';
 $lang['person_sn1'] = 'Cognom 1';
 $lang['person_sn2'] = 'Cognom 2';
@@ -34,6 +35,18 @@ $lang['person_bank_account_id'] = 'Compte bancari';
 $lang['person_notes'] = 'Notes';
 $lang['person_mobile'] = 'Mòbil';
 
+//Subjects
+$lang['locality_subject'] = 'Població';
+$lang['state_subject'] = 'Província';
+
+$lang['state_parent_state_id'] = 'Província';
+$lang['state_parent_state_name'] = 'Província Pare';
+
+$lang['locality_parent_locality_id'] = 'Població Pare';
+$lang['locality_state_id'] = 'Província';
+$lang['locality_ine_id'] = 'Codi INE';
+$lang['locality_aeat_id'] = 'Codi AEAT';
+$lang['locality_postal_code'] = 'Codi Postal';
 
 $lang['person_entryDate'] = 'Data de creació';
 $lang['person_last_update'] = 'Data última modificació';

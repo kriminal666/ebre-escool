@@ -185,6 +185,7 @@ $lang['user_groups_in_database']="Grups";
 $lang['main_user_organizational_unit']="Unitat organitzativa principal";
 $lang['rol_title']="Rol";
 $lang['inventory_object_fields_title']="Camps per defecte dels objectes";
+$lang['inventory_object_parent']="Objecte pare";
 $lang['externalIDType_fields_title']="Camps per defecte dels identificadors externs";
 $lang['organizational_unit_fields_title']="Camps per defecte de les unitats organitzatives";
 $lang['location_fields_title']="Camps per defecte dels espais";
