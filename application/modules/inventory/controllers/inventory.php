@@ -110,7 +110,11 @@ public function index()	{
     //ESPECIFIC COLUMNS                                            
     $this->grocery_crud->display_as($this->current_table.'_publicId',lang('publicId'));
     $this->grocery_crud->display_as($this->current_table.'_externalID',lang('externalId')); 
+    $this->grocery_crud->display_as($this->current_table.'_externalID1',lang('externalId1')); 
+    $this->grocery_crud->display_as($this->current_table.'_externalID2',lang('externalId2')); 
     $this->grocery_crud->display_as($this->current_table.'_externalIDType',lang('externalIDType')); 
+	$this->grocery_crud->display_as($this->current_table.'_externalIDType1',lang('externalIDType1')); 
+	$this->grocery_crud->display_as($this->current_table.'_externalIDType2',lang('externalIDType2'));     
     $this->grocery_crud->display_as($this->current_table.'_materialId',lang('materialId'));
     $this->grocery_crud->display_as($this->current_table.'_brandId',lang('brandId'));
     $this->grocery_crud->display_as($this->current_table.'_modelId',lang('modelId'));
@@ -120,6 +124,7 @@ public function index()	{
     $this->grocery_crud->display_as($this->current_table.'_manualLast_update',lang('manual_last_update'));      
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));    
     $this->grocery_crud->display_as($this->current_table.'_location',lang('location'));
+    $this->grocery_crud->display_as($this->current_table.'_mainOrganizationalUnitId',lang('main_user_organizational_unit'));
     $this->grocery_crud->display_as($this->current_table.'_quantityInStock',lang('quantityInStock'));
     $this->grocery_crud->display_as($this->current_table.'_price',lang('price'));
     $this->grocery_crud->display_as($this->current_table.'_moneySourceId',lang('moneySourceIdcolumn'));
@@ -134,7 +139,7 @@ public function index()	{
     //$this->grocery_crud->columns($this->session->userdata('inventory_object_current_fields_to_show'));       
         
     //Mandatory fields
-    $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortName',$this->current_table.'_location',$this->current_table.'_markedForDeletion');
+    $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortName',$this->current_table.'_location',$this->current_table.'_markedForDeletion',$this->current_table.'_quantityInStock');
     //$this->grocery_crud->required_fields('externalCode','name','shortName','location','markedForDeletion');
         
     //Express fields
@@ -176,6 +181,19 @@ public function index()	{
     //Show current datetime
 	//$this->grocery_crud->callback_add_field($this->current_table.'_entryDate',array($this,'add_field_callback_entryDate'));
 			
+    //RELATION
+    //PARENT OBJECT
+    $this->grocery_crud->set_relation($this->current_table.'_parent',$this->current_table,$this->current_table.'_name');
+
+    //QUANTITY
+    //DEFAULT VALUE=1
+	$this->grocery_crud->callback_add_field($this->current_table.'_quantityInStock',array($this,'add_field_callback_quantityInStock'));
+	$this->session->set_flashdata('quantityInStock', $this->current_table."_quantityInStock"); 
+
+    //PRICE
+    //€ 
+ 	$this->grocery_crud->callback_column($this->current_table.'_price',array($this,'valueToEuro'));
+
 	//ENTRY DATE
 	//DEFAULT VALUE=NOW. ONLY WHEN ADDING
 	//EDITING: SHOW CURRENT VALUE READONLY
@@ -194,6 +212,7 @@ public function index()	{
 		
 	//UPDATE AUTOMATIC FIELDS
 	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+
 	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
 		
     $this->grocery_crud->set_field_upload($this->current_table.'_file_url','uploads/inventory_files');
@@ -223,6 +242,7 @@ public function index()	{
 		
 	//DEFAULT VALUES
 	//$this->grocery_crud->set_default_value($table_name,"materialId","2");
+	$this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_preservationState','Good');
     $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
 	//$this->set_theme($this->grocery_crud);
@@ -362,6 +382,7 @@ public function material()	{
 
     //SPECIFIC COLUMNS
     $this->grocery_crud->display_as($this->current_table.'_id',lang('id'));
+    $this->grocery_crud->display_as($this->current_table.'_internalCode',lang('internalCode'));
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName')); 
     $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
@@ -718,6 +739,10 @@ public function add_field_callback_entryDate(){
       return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
 }
 
+public function add_field_callback_quantityInStock(){  
+      return '<input type="text" maxlength="19" value="1" name="'.$this->session->flashdata('table_name').'_quantityInStock">';    
+}
+
 public function edit_field_callback_entryDate($value, $primary_key){  
     //$this->session->flashdata('table_name');
       return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
@@ -728,12 +753,17 @@ public function edit_callback_last_update($value, $primary_key){
      return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', time()) .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
     }    
 
+public function valueToEuro($value, $row)
+{
+    return $value.' &euro;';
+}
+
 //UPDATE AUTOMATIC FIELDS BEFORE INSERT
 function before_insert_object_callback($post_array, $primary_key) {
         //UPDATE LAST UPDATE FIELD
         $data= date('d/m/Y H:i:s', time());
         $post_array['entryDate'] = $data;
-        
+        $post_array['quantityInStock'] = $this->session->flashdata('quantityInStock');
         $post_array['creationUserId'] = $this->session->userdata('user_id');
         return $post_array;
 }
