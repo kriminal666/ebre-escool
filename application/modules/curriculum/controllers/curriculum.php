@@ -213,7 +213,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as('department_markedForDeletionDate',lang('department_markedForDeletionDate'));       
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_id');
+        $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_code');
         $this->grocery_crud->set_relation($this->current_table.'_organizational_unit_id','organizational_unit','organizational_unit_name');
 
          //UPDATE AUTOMATIC FIELDS
