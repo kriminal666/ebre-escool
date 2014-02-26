@@ -316,7 +316,7 @@ class inventory_Model  extends CI_Model  {
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0)
-			return $query->row()->shortname;
+			return $query->row()->barcode_shortname;
 		else
 			return false;
 	}
