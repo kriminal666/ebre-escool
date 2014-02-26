@@ -131,7 +131,7 @@ class Qr extends CI_Controller {
 		$data['bar_code_type'] = $bar_code_type;
 		$data['bar_code_value'] = $bar_code_value;
 	}
-	print_r($data);
+	
 	// SHOW QR CODE AND BARCODE IF EXISTS                                           
 	$output = $this->load->view('qr_view',$data,true);
 	    
