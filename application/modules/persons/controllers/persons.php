@@ -36,7 +36,9 @@ class persons extends skeleton_main {
 	}
 
 	public function person_official_id_type() {
-		
+    
+    $this->check_logged_user(); 
+
     /* Ace */
     $header_data= $this->load_ace_files();  
 
@@ -427,6 +429,9 @@ class persons extends skeleton_main {
 	}
 	
 	public function localities() {
+    
+    $this->check_logged_user(); 
+
     /* Ace */
     $header_data= $this->load_ace_files();  
 
@@ -472,28 +477,6 @@ class persons extends skeleton_main {
 
     $this->renderitzar($this->current_table,$header_data); 
 
-		/*
- $header_data= $this->load_ace_files();  
-
-		$table_name="locality";
-        $this->grocery_crud->set_table($table_name);  
-		
-		//Establish subject:
-        $this->grocery_crud->set_subject("població");
-        
-        //RELATIONS
-        $this->grocery_crud->set_relation('locality_parent_locality_id','locality','{locality_name}');
-        $this->grocery_crud->set_relation('locality_state_id','state','{state_name}');
-        
-        $output = $this->grocery_crud->render();
-        
-        $this->_load_html_header($header_data,$output); 
-        $this->_load_body_header();      
-	
-		$this->load->view('persons',$output); 
-                
-		$this->_load_body_footer();	 
-		*/
 	}
 	
 	public function states() {
@@ -539,27 +522,6 @@ class persons extends skeleton_main {
 
     $this->renderitzar($this->current_table,$header_data); 
 
-
-
-
-/*    
- $header_data= $this->load_ace_files();  
-
-		$table_name="state";
-        $this->grocery_crud->set_table($table_name);  
-		
-		//Establish subject:
-        $this->grocery_crud->set_subject("província");
-        
-        $output = $this->grocery_crud->render();
-		
-        $this->_load_html_header($header_data,$output); 
-        $this->_load_body_header();      
-	
-		$this->load->view('persons',$output); 
-                
-		$this->_load_body_footer();	 
-	*/	
 	}
 
 function check_logged_user()

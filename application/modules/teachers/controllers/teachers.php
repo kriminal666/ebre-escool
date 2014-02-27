@@ -36,118 +36,86 @@ class teachers extends skeleton_main {
 	}
 
 	public function teacher() {
+    
+    $this->check_logged_user(); 
 
-        $header_data= $this->load_ace_template();             
-		
-        $table_name="teacher";
-        $this->session->set_flashdata('table_name', $table_name.'_');    
-        $this->grocery_crud->set_table($table_name);  
+    /* Ace */
+    $header_data= $this->load_ace_files();  
+
+    /* Grocery Crud */ 
+    $this->current_table="teacher";
+    $this->grocery_crud->set_table($this->current_table);
         
-	    //Establish subject:
-        $this->grocery_crud->set_subject(lang('teacher'));
+    $this->session->set_flashdata('table_name', $this->current_table); 
+    
+    //Establish subject:
+    $this->grocery_crud->set_subject(lang('teacher'));
 
-        //RELATIONS
-        $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
-
-        //RELATIONS
-        $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}'); 
+    $this->common_callbacks($this->current_table);
         
-        //$this->grocery_crud->unset_dropdowndetails("person_official_id_type");
+    //SPECIFIC COLUMNS
+    $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
+    $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
+    $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
+
+    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+    //RELATIONS
+    $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
+    $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}');   
+
+    //UPDATE AUTOMATIC FIELDS
+    $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+    $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        //$this->grocery_crud->columns('person_id','person_sn1','person_sn2','person_givenName','person_official_id','person_homePostalAddress','person_locality_id','person_email','person_telephoneNumber','person_mobile','person_gender','person_bank_account_id');
+    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+    $this->userCreation_userModification($this->current_table);
 
-        /*$this->grocery_crud->add_fields('person_official_id_type','person_official_id','person_sn1','person_sn2','person_givenName','person_email','person_homePostalAddress','person_gender',
-        	'person_locality_id','person_telephoneNumber','person_mobile','person_date_of_birth','person_bank_account_id','person_notes','person_entryDate','person_creationUserId',
-        	'person_markedForDeletion','person_markedForDeletionDate');
+    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
 
-        $this->grocery_crud->edit_fields('person_official_id_type','person_official_id','person_sn1','person_sn2','person_givenName','person_email','person_homePostalAddress','person_gender',
-        	'person_locality_id','person_telephoneNumber','person_mobile','person_date_of_birth','person_bank_account_id','person_notes','person_entryDate','person_last_update','person_creationUserId',
-        	'person_lastupdateUserId','person_markedForDeletion','person_markedForDeletionDate');
+    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-        $this->grocery_crud->unset_dropdowndetails("person_official_id_type");
-        */
+    $this->renderitzar($this->current_table,$header_data); 
 
-        //COLUMN NAMES
-        $this->grocery_crud->display_as('teacher_person_id',lang('teacher_person_id'));          
-        $this->grocery_crud->display_as('teacher_code',lang('teacher_code'));  
-        $this->grocery_crud->display_as('teacher_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('teacher_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('teacher_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('teacher_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('teacher_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('teacher_markedForDeletionDate',lang('markedForDeletionDate'));              
-
-        //$this->grocery_crud->display_as('person_id',lang('person_id'));
-       	//$this->grocery_crud->display_as('person_givenName',lang('person_givenName'));       
-       	//$this->grocery_crud->display_as('person_sn1',lang('person_sn1'));       
-       	
-        //DEFAULT VALUES
-
-        $this->grocery_crud->set_default_value($table_name,'teacher_markedForDeletion','n');
-        //$this->grocery_crud->set_default_value($table_name,'teacher_creationUserId','TODO');
-        //$this->grocery_crud->set_default_value($table_name,'person_markedForDeletion','n');
-
-        //CALLBACKS
-//-->
-    //Camps last update no editable i automàtic  
-        $this->grocery_crud->callback_add_field($table_name.'_entryDate',array($this,'add_field_callback_entryDate')); 
-        //$this->grocery_crud->callback_add_field($table_name.'_last_update',array($this,'add_field_callback_last_update'));     
-        $this->grocery_crud->callback_edit_field($table_name.'_entryDate',array($this,'edit_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field($table_name.'_last_update',array($this,'edit_callback_last_update'));
-        $this->grocery_crud->callback_before_update(array($this,'before_update_last_update'));
-//<--        
-        //$this->grocery_crud->callback_add_field('teacher_entryDate',array($this,'add_field_callback_entryDate'));
-        //$this->grocery_crud->callback_edit_field('teacher_entryDate',array($this,'edit_field_callback_entryDate'));
 
        	//$this->grocery_crud->set_rules('person_official_id',lang('person_official_id'),'callback_valida_nif_cif_nie['.$this->input->post('person_official_id_type').']');
         //$this->grocery_crud->set_rules('person_email',lang('person_email'),'valid_email');
-       	
-        //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('teacher_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($table_name,'teacher_creationUserId',$this->session->userdata('user_id'));
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('teacher_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($table_name,'teacher_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("teacher_creationUserId","teacher_lastupdateUserId");
-
-        $output = $this->grocery_crud->render();
-		
-
-        $this->_load_html_header($header_data,$output); 
-        $this->_load_body_header();        
-		            	
-            $default_values=$this->_get_default_values();
-            $default_values["table_name"]=$table_name;
-            $default_values["field_prefix"]="teacher_";
-            $this->load->view('defaultvalues_view.php',$default_values); 
-
-		    $this->load->view('teachers',$output); 
-                
-		    $this->_load_body_footer();	 
 	}
 
 //-->
-
+  //CALLBACKS
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
 
   public function edit_field_callback_entryDate($value, $primary_key){
-    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="person_entryDate" id="field-entryDate" readonly>';    
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. date('d/m/Y H:i:s', strtotime($value)) .'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
   }
 
   public function edit_callback_last_update($value, $primary_key){
 
     $data = date('d/m/Y H:i:s', time());
-    //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="person_last_update" id="field-last_update" readonly>';
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="'.$this->session->flashdata('table_name').'last_update" id="field-last_update" readonly>';
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'. $data .'"  name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
 
   }
 
   public function before_update_last_update($post_array, $primary_key) {
     $data= date('d/m/Y H:i:s', time());
     //$post_array['person_last_update'] = $data;
-    $post_array[$this->session->flashdata('table_name').'last_update'] = $data;
+    $post_array[$this->session->flashdata('table_name').'_last_update'] = $data;
     //$post_array['lastupdateUserId'] = $this->session->userdata('user_id');
     return $post_array;
 }  
@@ -156,23 +124,80 @@ public function add_field_callback_entryDate(){
 
     $data= date('d/m/Y H:i:s', time());
     //return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="person_entryDate" id="field-entryDate" readonly>';    
-    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'entryDate" id="field-entryDate" readonly>';    
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" value="'.$data.'" name="'.$this->session->flashdata('table_name').'_entryDate" id="field-entryDate" readonly>';    
 }
 
-//<--    
+public function add_callback_last_update(){  
+   
+    return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
+}  
 
-
-	protected function _unique_field_name($field_name)
+protected function _unique_field_name($field_name)
     {
     	return 's'.substr(md5($field_name),0,8); //This s is because is better for a string to begin with a letter and not with a number
     }
 
 	
-	public function index() {
+public function index() {
 		$this->teacher();
 	}
 
-  public function load_ace_template() {
+
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
+
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
+function renderitzar($table_name,$header_data)
+{
+       $output = $this->grocery_crud->render();
+
+       // HTML HEADER
+       
+       $this->_load_html_header($header_data,$output); 
+    
+       // BODY       
+
+       $this->_load_body_header();
+       
+       $default_values=$this->_get_default_values();
+       $default_values["table_name"]=$table_name;
+       $default_values["field_prefix"]=$table_name."_";
+       $this->load->view('defaultvalues_view.php',$default_values); 
+
+       //$this->load->view('course.php',$output);     
+       $this->load->view($table_name.'.php',$output);     
+       
+       //      FOOTER     
+       $this->_load_body_footer();  
+
+}    
+
+  public function load_ace_files() {
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
                 base_url('assets/css/ace-fonts.css'));

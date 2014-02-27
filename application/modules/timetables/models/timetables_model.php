@@ -629,8 +629,13 @@ where lesson_teacher_id=7
 
 	function getCompactTimeSlotsForTeacher($teacher_id,$orderby="asc",$min_time_slot_order=1,$max_time_slot_order=15) {
 
-		$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
-		$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);		
+		//if($this->getMinTimeSlotOrderForTeacher($teacher_id)){
+			$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
+		//}
+
+		//if($this->getMinTimeSlotOrderForTeacher($teacher_id)){
+			$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);
+		//}
 
 		//echo "MIN: " . $min_time_slot_order;
 		//echo "MAX: " . $max_time_slot_order;
