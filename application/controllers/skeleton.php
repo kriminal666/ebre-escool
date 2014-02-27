@@ -12,7 +12,9 @@ class skeleton extends skeleton_main {
   	public $html_header_view ='include/ebre_escool_html_header' ;
 
 	public $body_footer_view ='include/ebre_escool_body_footer' ;
-	
+
+	public $header_data;
+
 	function __construct()
     {
 		parent::__construct();
@@ -27,4 +29,58 @@ class skeleton extends skeleton_main {
 		redirect('dashboard','refresh');
 		
 	}
+
+	public function groups() {
+
+		$this->header_data = $this->load_ace_files();  
+
+		parent::groups();
+	}
+
+	function load_ace_files(){
+
+		$header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-fonts.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-responsive.min.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/ace-skins.min.css'));
+                      
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));  
+
+
+        //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/ace.min.js'));    
+
+        return $header_data;
 }
+
+}
+

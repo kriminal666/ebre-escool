@@ -73,7 +73,7 @@ class Qr extends CI_Controller {
 	}
 	
 	// **** QR CODE ****
-	$base_read_url = base_url('index.php/main/inventory_object/read/');
+	$base_read_url = base_url('index.php/inventory/index/read/');
 	
 	$qr_code_relative_url="/uploads/qrcodes/temp_qr_code.png";
 	
@@ -93,7 +93,7 @@ class Qr extends CI_Controller {
 	
 	// ** BARCODE **
 	//Obtain externalID, and externalIDType by inventory_objectid
-	$base_url_barcode= base_url() . "index.php/qr/barcode";
+	$base_url_barcode= base_url() . "index.php/inventory/qr/barcode"; 
 	$url_barcode="";
 	$bar_code_type="128B";
 	$bar_code_value="";

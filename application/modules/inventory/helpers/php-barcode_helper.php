@@ -90,7 +90,7 @@ $font_loc=dirname(__FILE__)."/"."FreeSansBold.ttf";
  * genbarcode is needed to render encodings other than EAN-12/EAN-13/ISBN
  */
 //$genbarcode_loc="c:\winnt\genbarcode.exe";
-$genbarcode_loc="/usr/local/bin/genbarcode";
+$genbarcode_loc="";
                  
 
 /* CONFIGURATION ENDS HERE */

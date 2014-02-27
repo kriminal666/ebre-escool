@@ -339,6 +339,7 @@ public function externalIDType()	{
     $this->grocery_crud->display_as($this->current_table.'_barcodeId',lang('barcodeId'));    
 
 	//$this->grocery_crud->set_relation('location_parentLocation','location','{location_shortName} - {location_name}');    
+	$this->grocery_crud->set_relation($this->current_table.'_barcodeId','barcode','{barcode_name}');    
 
     //UPDATE AUTOMATIC FIELDS
 	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
