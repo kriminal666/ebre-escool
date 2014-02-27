@@ -641,7 +641,7 @@ where lesson_teacher_id=7
 		
 		$this->db->where('time_slot_order >=',$min_time_slot_order);
 		$this->db->where('time_slot_order <=',$max_time_slot_order);		
-
+		
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0)

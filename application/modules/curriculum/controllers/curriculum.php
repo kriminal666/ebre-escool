@@ -54,7 +54,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_subject(lang('organizational_unit'));          
 
         //Mandatory fields
-        $this->grocery_crud->required_fields('organizational_unit_name','organizational_unit_shortname','organizational_unit_markedForDeletion');
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
 
         $this->common_callbacks($this->current_table);
        
@@ -62,24 +62,24 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
-        $this->grocery_crud->express_fields('organizational_unit_name','organizational_unit_shortname');
+        $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
 
         //COMMON_COLUMNS               
         $this->set_common_columns_name();
 
          //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('organizational_unit_shortName',lang('shortName'));
-        $this->grocery_crud->display_as('organizational_unit_name',lang('name'));
-        $this->grocery_crud->display_as('organizational_unit_description',lang('description'));        
-        $this->grocery_crud->display_as('organizational_unit_location',lang('location'));            
-        $this->grocery_crud->display_as('organizational_unit_externalCode',lang('external_code'));
-        $this->grocery_crud->display_as('organizational_unit_parent',lang('organizational_unit_parent'));
-        $this->grocery_crud->display_as('organizational_unit_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('organizational_unit_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('organizational_unit_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('organizational_unit_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('organizational_unit_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('organizational_unit_markedForDeletionDate',lang('markedForDeletionDate')); 
+        $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));        
+        $this->grocery_crud->display_as($this->current_table.'_location',lang('location'));            
+        $this->grocery_crud->display_as($this->current_table.'_externalCode',lang('external_code'));
+        $this->grocery_crud->display_as($this->current_table.'_parent',lang($this->current_table.'_parent'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
  
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_parent',$this->current_table,$this->current_table.'_name');
@@ -89,13 +89,13 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
     
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_location',$this->current_table,$this->current_table.'_name');
+        $this->grocery_crud->set_relation($this->current_table.'_location','location','location_name');
 
-        $this->grocery_crud->unset_add_fields('organizational_unit_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
         
         $this->userCreation_userModification($this->current_table);
 
-        $this->grocery_crud->unset_dropdowndetails("organizational_unit_creationUserId","organizational_unit_lastupdateUserId");
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
@@ -103,7 +103,7 @@ class curriculum extends skeleton_main {
         //Default values:
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'organizational_unit_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
        $this->renderitzar($this->current_table,$header_data);
 
@@ -189,28 +189,30 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_subject(lang('department'));       
 
         //Relació de Taules
-        $this->grocery_crud->set_relation('department_parent_department_id','department','{department_shortname} - {department_name} ({department_id})'); 
+        $this->grocery_crud->set_relation($this->current_table.'_parent_department_id','department','{department_shortname} - {department_name} ({department_id})'); 
+        $this->grocery_crud->set_relation($this->current_table.'_location_id','location','location_name'); 
         
         //Mandatory fields
-        //$this->grocery_crud->required_fields('department_code','department_classroom_group_id','department_teacher_id','department_day','department_time_slot_id');
+        //$this->grocery_crud->required_fields($this->current_table.'_code',$this->current_table.'_classroom_group_id',$this->current_table.'_teacher_id',$this->current_table.'_day',$this->current_table.'_time_slot_id');
 
         $this->common_callbacks($this->current_table);
 
         //Express fields
-        //$this->grocery_crud->express_fields('department_code','department_day');
+        //$this->grocery_crud->express_fields($this->current_table.'_code',$this->current_table.'_day');
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('department_shortname',lang('department_shortname'));
-        $this->grocery_crud->display_as('department_name',lang('department_name'));
-        $this->grocery_crud->display_as('department_organizational_unit_id',lang('department_organizational_unit_id'));
-        $this->grocery_crud->display_as('department_head',lang('department_head'));
-        $this->grocery_crud->display_as('department_parent_department_id',lang('department_parent_department_id'));
-        $this->grocery_crud->display_as('department_entryDate',lang('department_entryDate'));
-        $this->grocery_crud->display_as('department_last_update',lang('department_last_update'));
-        $this->grocery_crud->display_as('department_creationUserId',lang('department_creationUserId'));          
-        $this->grocery_crud->display_as('department_lastupdateUserId',lang('department_lastupdateUserId'));   
-        $this->grocery_crud->display_as('department_markedForDeletion',lang('department_markedForDeletion'));       
-        $this->grocery_crud->display_as('department_markedForDeletionDate',lang('department_markedForDeletionDate'));       
+        $this->grocery_crud->display_as($this->current_table.'_shortname',lang($this->current_table.'_shortname'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang($this->current_table.'_name'));
+        $this->grocery_crud->display_as($this->current_table.'_organizational_unit_id',lang($this->current_table.'_organizational_unit_id'));
+        $this->grocery_crud->display_as($this->current_table.'_head',lang($this->current_table.'_head'));
+        $this->grocery_crud->display_as($this->current_table.'_parent_department_id',lang($this->current_table.'_parent_department_id'));
+        $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location_id'));        
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table.'_last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang($this->current_table.'_creationUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table.'_lastupdateUserId'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table.'_markedForDeletion'));       
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table.'_markedForDeletionDate'));       
 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_id');
@@ -220,7 +222,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('department_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
         
         $this->userCreation_userModification($this->current_table);
 
@@ -230,7 +232,7 @@ class curriculum extends skeleton_main {
         $this->set_dialogforms($this->grocery_crud);
         
         //Default values:
-        $this->grocery_crud->set_default_value($this->current_table,'department_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
                    
         $this->renderitzar('department',$header_data);
 
