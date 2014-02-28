@@ -57,15 +57,12 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
 
         $this->common_callbacks($this->current_table);
-       
-        //Camps last update no editable i automàtic        
-        //$this->grocery_crud->callback_edit_field('studiesOU_last_update',array($this,'edit_field_callback_lastupdate'));
 
         //Express fields
         $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
@@ -75,22 +72,13 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_externalCode',lang('external_code'));
         $this->grocery_crud->display_as($this->current_table.'_parent',lang($this->current_table.'_parent'));
 
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
- 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_parent',$this->current_table,$this->current_table.'_name');
+        $this->grocery_crud->set_relation($this->current_table.'_location','location','location_name');
 
-         //UPDATE AUTOMATIC FIELDS
+        //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
-    
-        //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_location','location','location_name');
 
         $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
         
@@ -135,19 +123,12 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
 
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
- 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
@@ -197,6 +178,9 @@ class curriculum extends skeleton_main {
 
         //Express fields
         //$this->grocery_crud->express_fields($this->current_table.'_code',$this->current_table.'_day');
+        
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang($this->current_table.'_shortname'));
@@ -205,13 +189,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_head',lang($this->current_table.'_head'));
         $this->grocery_crud->display_as($this->current_table.'_parent_department_id',lang($this->current_table.'_parent_department_id'));
         $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location_id'));        
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table.'_last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang($this->current_table.'_creationUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table.'_lastupdateUserId'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table.'_markedForDeletion'));       
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table.'_markedForDeletionDate'));       
 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_code');
@@ -265,7 +242,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_relation_n_n($this->current_table.'_departments', 'study_department', 'department', 'study_id', 'department_id', 'department_name');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         $this->grocery_crud->add_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_departments' ,  $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
@@ -277,13 +254,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_departments',lang($this->current_table.'_departments'));
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -332,18 +302,11 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
         
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -402,7 +365,7 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname','parentLocation');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
@@ -410,13 +373,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_number',lang($this->current_table.'_number'));
         $this->grocery_crud->display_as($this->current_table.'_cycle_id',lang($this->current_table.'_cycle_id')); 
         $this->grocery_crud->display_as($this->current_table.'_estudies_id',lang($this->current_table.'_estudies_id'));
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table.'_last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang($this->current_table.'_creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table.'_lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table.'_markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table.'_markedForDeletionDate'));              
 
 /*       
         //Relacions entre taules
@@ -472,7 +428,7 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
         
@@ -491,13 +447,6 @@ class curriculum extends skeleton_main {
         //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
         //The last one is the same as educationalLevelId
         //$this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang('group_EducationalLevelId')); 
-               
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang($this->current_table.'_creationUserId'));   
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table.'_lastupdateUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdate',lang($this->current_table.'_lastupdate'));
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table.'_markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table.'_markedForDeletionDate'));     
 
 //      RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_name} ({course_shortname} - {course_id})');
@@ -566,7 +515,7 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
@@ -580,13 +529,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_type',lang('type'));   
         $this->grocery_crud->display_as($this->current_table.'_subtype',lang('subtype'));        
         $this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));                
 
         //RELACIONS
         //$this->grocery_crud->set_relation($this->current_table.'_course_id','course','course_shortname'); 
@@ -647,18 +589,11 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
-
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));                
 
         //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -713,6 +648,9 @@ class curriculum extends skeleton_main {
 		//Mandatory fields
         $this->grocery_crud->required_fields($this->current_table.'_code',$this->current_table.'_classroom_group_id',$this->current_table.'_teacher_id',$this->current_table.'_day',$this->current_table.'_time_slot_id');
 
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);
+
         $this->common_callbacks($this->current_table);
 
         //Express fields
@@ -729,13 +667,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location_id')); 
         $this->grocery_crud->display_as($this->current_table.'_day',lang($this->current_table.'_day'));
         $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang($this->current_table.'_time_slot_id'));        
-        
-        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));
-        $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table.'_last_update'));
-        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang($this->current_table.'_creationUserId'));          
-        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table.'_lastupdateUserId'));   
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table.'_markedForDeletion'));       
-        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table.'_markedForDeletionDate'));       
 
          //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -859,6 +790,15 @@ function renderitzar($table_name,$header_data)
        //      FOOTER     
        $this->_load_body_footer();  
 
+}
+
+function set_common_columns_name($table_name){
+    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
 function load_ace_files(){

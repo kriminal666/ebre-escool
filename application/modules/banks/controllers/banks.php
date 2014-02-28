@@ -104,36 +104,33 @@ class banks extends skeleton_main {
     //Establish subject:
     $this->grocery_crud->set_subject(lang("bank_account"));
 
-		$this->grocery_crud->columns('bank_account_id','bank_account_owner_id','bank_account_type_id','bank_account_entity_code',
-			'bank_account_office_code','bank_account_control_digit_code','bank_account_number','bank_account_entryDate',
-			'bank_account_last_update','bank_account_creationUserId','bank_account_lastupdateUserId','bank_account_markedForDeletion',
-			'bank_account_markedForDeletionDate');
+		$this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_owner_id',$this->current_table.'_type_id',$this->current_table.'_entity_code',
+			$this->current_table.'_office_code',$this->current_table.'_control_digit_code',$this->current_table.'_number',$this->current_table.'_entryDate',
+			$this->current_table.'_last_update',$this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',
+			$this->current_table.'_markedForDeletionDate');
 
-		$this->grocery_crud->add_fields('bank_account_owner_id','bank_account_type_id','bank_account_entity_code',
-			'bank_account_office_code','bank_account_control_digit_code','bank_account_number','bank_account_entryDate',
-			'bank_account_creationUserId','bank_account_lastupdateUserId','bank_account_markedForDeletion',
-			'bank_account_markedForDeletionDate');        
+		$this->grocery_crud->add_fields($this->current_table.'_owner_id',$this->current_table.'_type_id',$this->current_table.'_entity_code',
+			$this->current_table.'_office_code',$this->current_table.'_control_digit_code',$this->current_table.'_number',$this->current_table.'_entryDate',
+			$this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',
+			$this->current_table.'_markedForDeletionDate');        
 
-		$this->grocery_crud->edit_fields('bank_account_owner_id','bank_account_type_id','bank_account_entity_code',
-			'bank_account_office_code','bank_account_control_digit_code','bank_account_number','bank_account_entryDate',
-			'bank_account_last_update','bank_account_creationUserId','bank_account_lastupdateUserId','bank_account_markedForDeletion',
-			'bank_account_markedForDeletionDate');
+		$this->grocery_crud->edit_fields($this->current_table.'_owner_id',$this->current_table.'_type_id',$this->current_table.'_entity_code',
+			$this->current_table.'_office_code',$this->current_table.'_control_digit_code',$this->current_table.'_number',$this->current_table.'_entryDate',
+			$this->current_table.'_last_update',$this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',
+			$this->current_table.'_markedForDeletionDate');
         
-        $this->grocery_crud->display_as('bank_account_id',lang('bank_account_id'));
-       	$this->grocery_crud->display_as('bank_account_owner_id',lang('bank_account_owner_id'));       
-       	$this->grocery_crud->display_as('bank_account_type_id',lang('bank_account_type_id'));
-       	$this->grocery_crud->display_as('bank_account_entity_code',lang('bank_account_entity_code'));
-       	$this->grocery_crud->display_as('bank_account_office_code',lang('bank_account_office_code'));
-       	$this->grocery_crud->display_as('bank_account_control_digit_code',lang('bank_account_control_digit_code'));
-       	$this->grocery_crud->display_as('bank_account_number',lang('bank_account_number'));
-       	$this->grocery_crud->display_as('bank_account_type_id',lang('bank_account_type_id'));
-       	$this->grocery_crud->display_as('bank_account_entryDate',lang('bank_account_entryDate'));
-       	$this->grocery_crud->display_as('bank_account_last_update',lang('bank_account_last_update'));
-       	$this->grocery_crud->display_as('bank_account_creationUserId',lang('bank_account_creationUserId'));
-       	$this->grocery_crud->display_as('bank_account_lastupdateUserId',lang('bank_account_lastupdateUserId'));
-       	$this->grocery_crud->display_as('bank_account_markedForDeletion',lang('bank_account_markedForDeletion'));
-       	$this->grocery_crud->display_as('bank_account_markedForDeletionDate',lang('bank_account_markedForDeletionDate'));
-       	$this->grocery_crud->display_as('bank_account_num_persona',lang('bank_account_num_persona'));
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);    
+
+        $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));
+       	$this->grocery_crud->display_as($this->current_table.'_owner_id',lang($this->current_table.'_owner_id'));       
+       	$this->grocery_crud->display_as($this->current_table.'_type_id',lang($this->current_table.'_type_id'));
+       	$this->grocery_crud->display_as($this->current_table.'_entity_code',lang($this->current_table.'_entity_code'));
+       	$this->grocery_crud->display_as($this->current_table.'_office_code',lang($this->current_table.'_office_code'));
+       	$this->grocery_crud->display_as($this->current_table.'_control_digit_code',lang($this->current_table.'_control_digit_code'));
+       	$this->grocery_crud->display_as($this->current_table.'_number',lang($this->current_table.'_number'));
+       	$this->grocery_crud->display_as($this->current_table.'_type_id',lang($this->current_table.'_type_id'));
+       	$this->grocery_crud->display_as($this->current_table.'_num_persona',lang($this->current_table.'_num_persona'));
 
   		$this->grocery_crud->unset_dropdowndetails("bank_account_type_id");
 
@@ -145,21 +142,21 @@ class banks extends skeleton_main {
         //$this->grocery_crud->express_fields('name','shortName');
 
 
-   	    $this->grocery_crud->set_default_value($this->current_table,'bank_account_type_id',1);
-   	    $this->grocery_crud->set_default_value($this->current_table,'bank_account_entity_code',2100);
+   	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_type_id',1);
+   	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_entity_code',2100);
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-   	    $complete_ccc=$this->input->post('bank_account_entity_code').$this->input->post('bank_account_office_code').$this->input->post('bank_account_control_digit_code').$this->input->post('bank_account_number');
+   	    $complete_ccc=$this->input->post($this->current_table.'_entity_code').$this->input->post($this->current_table.'_office_code').$this->input->post($this->current_table.'_control_digit_code').$this->input->post($this->current_table.'_number');
    	    
    	    // IF ACCOUNT IS CCC
-   	    if ($this->input->post('bank_account_type_id') == 1 ) {
-   	    	$this->grocery_crud->set_rules('bank_account_number',lang('bank_account_number'),'callback_ccc_valido['. $complete_ccc . ']');	
+   	    if ($this->input->post($this->current_table.'_type_id') == 1 ) {
+   	    	$this->grocery_crud->set_rules($this->current_table.'_number',lang($this->current_table.'_number'),'callback_ccc_valido['. $complete_ccc . ']');	
    	    }
    	    
-   	    $this->grocery_crud->set_relation('bank_account_owner_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} ');    
-    		$this->grocery_crud->set_relation('bank_account_type_id','bank_account_type','{bank_account_type_name}');
-        $this->grocery_crud->set_relation('bank_account_entity_code','bank','{bank_code}-{bank_name}');
-        //$this->grocery_crud->set_relation('bank_account_office_code','bank_office','{bank_office_code}-{bank_office_name}');
+   	    $this->grocery_crud->set_relation($this->current_table.'_owner_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} ');    
+    		$this->grocery_crud->set_relation($this->current_table.'_type_id',$this->current_table.'_type','{bank_account_type_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_entity_code','bank','{bank_code}-{bank_name}');
+        //$this->grocery_crud->set_relation($this->current_table.'_office_code','bank_office','{bank_office_code}-{bank_office_name}');
 
     $this->common_callbacks($this->current_table);
 		
@@ -266,16 +263,13 @@ class banks extends skeleton_main {
     $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
     $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
 
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);    
+
     //SPECIFIC COLUMNS
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));        
     $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));
 
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
     $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
     $this->userCreation_userModification($this->current_table);
@@ -309,16 +303,13 @@ class banks extends skeleton_main {
     $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
     $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
 
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);    
+
     //SPECIFIC COLUMNS
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));        
     $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));    
 
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
     //RELATIONS
     //$this->grocery_crud->set_relation($this->current_table.'_bank_id','bank','{bank_code}-{bank_name}');
@@ -332,12 +323,6 @@ class banks extends skeleton_main {
 
     $this->renderitzar($this->current_table,$header_data);
 
-/*
-		
-		//Establish subject:
-        $this->grocery_crud->set_subject("Tipus de Compte");
-
-*/
 	}
 	
 	public function bank_office() {
@@ -361,17 +346,13 @@ class banks extends skeleton_main {
     $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
     $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
 
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);    
+
     //SPECIFIC COLUMNS
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));        
     $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));
     $this->grocery_crud->display_as($this->current_table.'_bank_id',lang($this->current_table.'_bank_id'));    
-
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
     //RELATIONS
     $this->grocery_crud->set_relation($this->current_table.'_bank_id','bank','{bank_code}-{bank_name}');
@@ -494,6 +475,13 @@ $header_data= $this->add_css_to_html_header_data(
         return $header_data;
 }
 
-
+function set_common_columns_name($table_name){
+    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+}
 
 }

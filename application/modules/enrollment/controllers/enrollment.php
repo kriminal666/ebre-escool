@@ -43,22 +43,10 @@ class enrollment extends skeleton_main {
 
 	public function enrollment() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
+        $this->check_logged_user();
 		
         /* Ace */
         $header_data = $this->load_ace_files();
-
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
 
 		/* Grocery Crud */
 		$this->current_table="enrollment";
@@ -67,58 +55,34 @@ class enrollment extends skeleton_main {
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment'));       
-
-		//Mandatory fields
-        
-
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_last_update',array($this,'edit_callback_last_update'));
-
-        //Express fields
-        
+ 
+        $this->common_callbacks($this->current_table);
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
 
-        $this->grocery_crud->display_as('enrollment_periodid',lang('enrollment_periodid'));        
-        $this->grocery_crud->display_as('enrollment_personid',lang('enrollment_personid'));
+        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));        
+        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
 
-        $this->grocery_crud->display_as('enrollment_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('enrollment_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('enrollment_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('enrollment_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('enrollment_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('enrollment_markedForDeletionDate',lang('markedForDeletionDate'));        		
+        //RELACIONS
+        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('enrollment_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('enrollment_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_creationUserId',$this->session->userdata('user_id'));
-
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('enrollment_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_lastupdateUserId',$this->session->userdata('user_id'));
+        $this->userCreation_userModification($this->current_table);
         
-        $this->grocery_crud->unset_dropdowndetails("enrollment_creationUserId","study_submodules_lastupdateUserId");
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
-        //Default values:
-//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
-        //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
         $this->renderitzar($this->current_table,$header_data);                   
 
@@ -130,22 +94,10 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_studies() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
+        $this->check_logged_user();
+        
         /* Ace */
         $header_data = $this->load_ace_files();
-
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_studies";
@@ -154,58 +106,35 @@ class enrollment extends skeleton_main {
         
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment_studies'));       
-
-		//Mandatory fields
         
-
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_studies_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_studies_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_studies_last_update',array($this,'edit_callback_last_update'));
-
-        //Express fields
-        
+        $this->common_callbacks($this->current_table);
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('enrollment_studies_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('enrollment_studies_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('enrollment_studies_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('enrollment_studies_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('enrollment_studies_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('enrollment_studies_markedForDeletionDate',lang('markedForDeletionDate'));        		
+        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));          
+        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));   
+        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));        		
 
-        $this->grocery_crud->display_as('enrollment_studies_periodid',lang('enrollment_studies_periodid'));          
-        $this->grocery_crud->display_as('enrollment_studies_personid',lang('enrollment_studies_personid'));   
-        $this->grocery_crud->display_as('enrollment_studies_study_id',lang('enrollment_studies_study_id'));        		
+        //RELACIONS
+        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('enrollment_studies_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
    		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('enrollment_studies_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_studies_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('enrollment_studies_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_studies_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("enrollment_studies_creationUserId","study_submodules_lastupdateUserId");
+        $this->userCreation_userModification($this->current_table);        
    
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
         
-        //Default values:
-//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
-        //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_studies_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
                    
         $this->renderitzar($this->current_table,$header_data);
 	}
@@ -216,22 +145,10 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_class_group() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
+        $this->check_logged_user();
+        
         /* Ace */
         $header_data = $this->load_ace_files();
-
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_class_group";
@@ -241,58 +158,35 @@ class enrollment extends skeleton_main {
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment_class_group'));       
 
-		//Mandatory fields
-        
-
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_class_group_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_class_group_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_class_group_last_update',array($this,'edit_callback_last_update'));
-
-        //Express fields
-        
+        $this->common_callbacks($this->current_table);
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('enrollment_class_group_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('enrollment_class_group_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('enrollment_class_group_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('enrollment_class_group_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('enrollment_class_group_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('enrollment_class_group_markedForDeletionDate',lang('markedForDeletionDate'));        		
+        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));
+        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));          
+        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));   
+        $this->grocery_crud->display_as($this->current_table.'_group_id',lang('group_id'));        		
 
-        $this->grocery_crud->display_as('enrollment_class_group_periodid',lang('enrollment_class_group_periodid'));
-        $this->grocery_crud->display_as('enrollment_class_group_personid',lang('enrollment_class_group_personid'));          
-        $this->grocery_crud->display_as('enrollment_class_group_study_id',lang('enrollment_class_group_study_id'));   
-        $this->grocery_crud->display_as('enrollment_class_group_group_id',lang('enrollment_class_group_group_id'));        		
+        //RELACIONS
+        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        //$this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');        
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('enrollment_class_group_last_update');
-   		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('enrollment_class_group_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_class_group_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('enrollment_class_group_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_class_group_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("enrollment_class_group_creationUserId","study_submodules_lastupdateUserId");
-   
+        $this->userCreation_userModification($this->current_table);
+           
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
-        
-        //Default values:
-//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
-        //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_class_group_markedForDeletion','n');
+
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
                    
         $this->renderitzar($this->current_table,$header_data);	
 	}
@@ -303,22 +197,10 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_modules() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
+        $this->check_logged_user();
+        
         /* Ace */
         $header_data = $this->load_ace_files();
-
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_modules";
@@ -328,61 +210,39 @@ class enrollment extends skeleton_main {
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment_modules'));       
 
-		//Mandatory fields
-        
-
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_modules_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_modules_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_modules_last_update',array($this,'edit_callback_last_update'));
-
-        //Express fields
-        
+        $this->common_callbacks($this->current_table);
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('enrollment_modules_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('enrollment_modules_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('enrollment_modules_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('enrollment_modules_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('enrollment_modules_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('enrollment_modules_markedForDeletionDate',lang('markedForDeletionDate'));        		
+        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));
+        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
+        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));          
+        $this->grocery_crud->display_as($this->current_table.'_group_id',lang('group_id'));   
+        $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));        		
 
-        $this->grocery_crud->display_as('enrollment_modules_periodid',lang('enrollment_modules_periodid'));
-        $this->grocery_crud->display_as('enrollment_modules_personid',lang('enrollment_modules_personid'));
-        $this->grocery_crud->display_as('enrollment_modules_study_id',lang('enrollment_modules_study_id'));          
-        $this->grocery_crud->display_as('enrollment_modules_group_id',lang('enrollment_modules_group_id'));   
-        $this->grocery_crud->display_as('enrollment_modules_moduleid',lang('enrollment_modules_moduleid'));        		
+        //RELACIONS
+        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        //$this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');      
+        //$this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('enrollment_modules_last_update');
-   		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('enrollment_modules_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_modules_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('enrollment_modules_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_modules_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("enrollment_modules_creationUserId","study_submodules_lastupdateUserId");
-   
+        $this->userCreation_userModification($this->current_table);
+           
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
-        
-        //Default values:
-//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
-        //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_modules_markedForDeletion','n');
+
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
                    
-        $this->renderitzar($this->current_table,$header_data);
+        $this->renderitzar($this->current_table,$header_data);  ;
 	}
 
 /* FI ENROLLMENT MODULES */
@@ -391,22 +251,10 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_submodules() {
 
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-		
+        $this->check_logged_user();
+        
         /* Ace */
         $header_data = $this->load_ace_files();
-        
-		//CHECK IF USER IS READONLY --> unset add, edit & delete actions
-		$readonly_group = $this->config->item('readonly_group');
-		if ($this->skeleton_auth->in_group($readonly_group)) {
-			$this->grocery_crud->unset_add();
-			$this->grocery_crud->unset_edit();
-			$this->grocery_crud->unset_delete();
-		}
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_submodules";
@@ -416,62 +264,41 @@ class enrollment extends skeleton_main {
         //ESTABLISH SUBJECT
         $this->grocery_crud->set_subject(lang('enrollment_submodules'));       
 
-		//Mandatory fields
-        
-
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field('enrollment_submodules_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field('enrollment_submodules_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field('enrollment_submodules_last_update',array($this,'edit_callback_last_update'));
-
-        //Express fields
-        
+        $this->common_callbacks($this->current_table);
 
         //COMMON_COLUMNS               
-        $this->set_common_columns_name();
+        $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('enrollment_submodules_entryDate',lang('entryDate'));        
-        $this->grocery_crud->display_as('enrollment_submodules_last_update',lang('last_update'));
-        $this->grocery_crud->display_as('enrollment_submodules_creationUserId',lang('creationUserId'));
-        $this->grocery_crud->display_as('enrollment_submodules_lastupdateUserId',lang('lastupdateUserId'));          
-        $this->grocery_crud->display_as('enrollment_submodules_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('enrollment_submodules_markedForDeletionDate',lang('markedForDeletionDate'));        		
+        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));
+        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
+        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));          
+        $this->grocery_crud->display_as($this->current_table.'_group_id',lang('group_id'));   
+        $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));        		
+		$this->grocery_crud->display_as($this->current_table.'_submoduleid',lang('submoduleid'));        		
 
-        $this->grocery_crud->display_as('enrollment_submodules_periodid',lang('enrollment_submodules_periodid'));
-        $this->grocery_crud->display_as('enrollment_submodules_personid',lang('enrollment_submodules_personid'));
-        $this->grocery_crud->display_as('enrollment_submodules_study_id',lang('enrollment_submodules_study_id'));          
-        $this->grocery_crud->display_as('enrollment_submodules_group_id',lang('enrollment_submodules_group_id'));   
-        $this->grocery_crud->display_as('enrollment_submodules_moduleid',lang('enrollment_submodules_moduleid'));        		
-		$this->grocery_crud->display_as('enrollment_submodules_submoduleid',lang('enrollment_submodules_submoduleid'));        		
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');      
+        $this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
+        $this->grocery_crud->set_relation($this->current_table.'_submoduleid','study_submodules','{study_submodules_name}');      
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
 		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields('enrollment_submodules_last_update');
-   		
-   		//USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
-        $this->grocery_crud->set_relation('enrollment_submodules_creationUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_submodules_creationUserId',$this->session->userdata('user_id'));
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
 
-        //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
-        $this->grocery_crud->set_relation('enrollment_submodules_lastupdateUserId','users','{username}',array('active' => '1'));
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_submodules_lastupdateUserId',$this->session->userdata('user_id'));
-        
-        $this->grocery_crud->unset_dropdowndetails("enrollment_submodules_creationUserId","study_submodules_lastupdateUserId");
-   
+        $this->userCreation_userModification($this->current_table);
+           
         $this->set_theme($this->grocery_crud);
         $this->set_dialogforms($this->grocery_crud);
-        
-        //Default values:
-//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
-        //markedForDeletion
-        $this->grocery_crud->set_default_value($this->current_table,'enrollment_submodules_markedForDeletion','n');
+
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
                    
-        $this->renderitzar($this->current_table,$header_data);
+        $this->renderitzar($this->current_table,$header_data);  ;
 	}
 
 /* FI ENROLLMENT SUBMODULES */
@@ -565,6 +392,45 @@ function before_update_object_callback($post_array, $primary_key) {
         return $post_array;
 }
 
+function check_logged_user()
+{
+    if (!$this->skeleton_auth->logged_in())
+    {
+        //redirect them to the login page
+        redirect($this->skeleton_auth->login_page, 'refresh');
+    }
+
+    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+    $readonly_group = $this->config->item('readonly_group');
+    if ($this->skeleton_auth->in_group($readonly_group)) {
+        $this->grocery_crud->unset_add();
+        $this->grocery_crud->unset_edit();
+        $this->grocery_crud->unset_delete();
+    }
+}
+
+
+function common_callbacks()
+{
+        //CALLBACKS        
+        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
+        
+        //Camps last update no editable i automàtic        
+        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+function userCreation_userModification($table_name)
+{   
+    //USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_insert_object_callback
+    $this->grocery_crud->set_relation($table_name.'_creationUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_creationUserId',$this->session->userdata('user_id'));
+
+    //LAST UPDATE USER ID: show only active users and by default select current userid. IMPORTANT: Field is not editable, always forced to current userid by before_update_object_callback
+    $this->grocery_crud->set_relation($table_name.'_lastupdateUserId','users','{username}',array('active' => '1'));
+    $this->grocery_crud->set_default_value($table_name,$table_name.'_lastupdateUserId',$this->session->userdata('user_id'));
+}
+
 function renderitzar($table_name,$header_data)
 {
        $output = $this->grocery_crud->render();
@@ -588,6 +454,15 @@ function renderitzar($table_name,$header_data)
        //      FOOTER     
        $this->_load_body_footer();  
 
+}
+
+function set_common_columns_name($table_name){
+    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
 function load_ace_files(){

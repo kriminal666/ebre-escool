@@ -62,14 +62,9 @@ class employees extends skeleton_main {
     $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
     $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
     $this->grocery_crud->display_as($this->current_table.'_type_id',lang($this->current_table.'_type_id'));  
-
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));             
-    
+     
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);        
        	
     //UPDATE AUTOMATIC FIELDS
     $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -102,19 +97,16 @@ class employees extends skeleton_main {
     //Establish subject:
     $this->grocery_crud->set_subject(lang($this->current_table.'_subject'));
         
+    //COMMON_COLUMNS               
+    $this->set_common_columns_name($this->current_table);    
+
     $this->common_callbacks($this->current_table);
 
     //COLUMN NAMES
     $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
     $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));  
     $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));          
-
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));             
+           
     
         
     //UPDATE AUTOMATIC FIELDS
@@ -285,6 +277,15 @@ function common_callbacks()
         
         //Camps last update no editable i automàtic        
         $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
+}
+
+function set_common_columns_name($table_name){
+    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
+    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
+    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
+    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
+    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
+    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
 }
