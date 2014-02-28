@@ -80,6 +80,9 @@ $lang['course_markedForDeletionDate']   = "Data de baixa";
 //Classroom_group
 $lang['mentor_code']="Codi Tutor"; 
 $lang['classroom_group_shift']="Torn (matí/tarda)";
+$lang['classroom_group_parentLocation']="Espai Pare";
+$lang['classroom_group_educationalLevelId']="Nivell Educatiu";
+
 $lang['classroom_group_entryDate']   = "Data de creació";
 $lang['classroom_group_lastupdate']   = "Data última modificació";
 $lang['classroom_group_creationUserId']   = "Usuari de creació";
