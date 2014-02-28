@@ -74,6 +74,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_location',lang('location'));            
         $this->grocery_crud->display_as($this->current_table.'_externalCode',lang('external_code'));
         $this->grocery_crud->display_as($this->current_table.'_parent',lang($this->current_table.'_parent'));
+
         $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
         $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));

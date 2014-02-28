@@ -288,11 +288,16 @@
               </button>
             </a>
 
-            <a href="#">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
               <button class="btn btn-small btn-info">
                 <i class="icon-flag"></i>
               </button>
             </a>
+            <ul class="dropdown-menu light-blue dropdown-closer" style="margin-top:35px;margin-left:45px">
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/catalan"><?php echo lang('catalan');?></a></li>
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/spanish"><?php echo lang('spanish');?></a></li>
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/english"><?php echo lang('english');?></a></li>                           
+            </ul>
              
             <a href="#">    
               <button class="btn btn-small btn-warning">
