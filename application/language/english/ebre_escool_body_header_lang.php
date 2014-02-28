@@ -19,7 +19,7 @@
 //MENUS
 
 //BODY HEADER MENUS & SUBMENUS
-$lang['check_attendance']   = 'Pasar lista';
+$lang['check_attendance']   = 'Check Attendance';
 $lang['mentoring']   = 'Tutoria';
  $lang['mentoring_groups_mentoring']   = 'Tutoritza els teus grups';
  $lang['mentoring_attendance_by_student']   = 'Llistat de faltes per alumne';

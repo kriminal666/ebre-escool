@@ -299,13 +299,13 @@
               <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/english"><?php echo lang('english');?></a></li>                           
             </ul>
              
-            <a href="#">    
+            <a href="<?php echo base_url('index.php/skeleton/users');?>">    
               <button class="btn btn-small btn-warning">
                 <i class="icon-group"></i>
               </button>
             </a>  
 
-            <a href="#">
+            <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
               <button class="btn btn-small btn-danger">
                 <i class="icon-cogs"></i>
               </button>
