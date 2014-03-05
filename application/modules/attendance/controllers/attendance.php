@@ -284,13 +284,6 @@ class attendance extends skeleton_main {
 	public function mentoring_groups ( $class_room_group_id = null ) {
 
     $this->check_logged_user();
-	/*
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-	*/
 
 		$header_data = $this->load_header_data();
         $this->_load_html_header($header_data);
@@ -323,14 +316,6 @@ class attendance extends skeleton_main {
 	public function mentoring_attendance_by_student () {
 
     $this->check_logged_user();
-
-	/*
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-	*/
 
 		$header_data = $this->load_header_data();
         $this->_load_html_header($header_data);
@@ -369,14 +354,6 @@ class attendance extends skeleton_main {
 	$pdf=new PDF();
 
     $this->check_logged_user();
-
-    /*
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-	*/
 
 	/* Ace */
     $header_data = $this->load_ace_files();  	

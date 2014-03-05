@@ -1,25 +1,21 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
- *  Name:  attendance lang - English
+ *  Name:  managment module lang - English
  *
  * Author: Sergi Tur Badenas
  * 		   sergitur@ebretic.com
  *
  * Created:  15.09.2013
  *
- * Description:  English language file for skeleton
+ * Description:  English language file for managment module
  *
  */
  
-$lang['massive_change_password']   = 'Canvi massiu de paraules de pas';
 $lang['select_data_source']   = 'Escolliu origen de les dades';
-$lang['users_in_group'] = 'Usuaris per grups';
 $lang['lessons'] = 'Lliçons | Classes';
 
 $lang['select_group']   = 'Escolliu un grup';
-$lang['statistics_checkings']   = 'Estadístiques. Comprovacions';
-$lang['statistics_checkings_groups']   = 'Grups';
 
 
 //statistics_checkings_groups VIEW
@@ -100,10 +96,32 @@ $lang['classrom_code']="Codi del grup de classe";
 $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
 
+
+$lang['study_module_hoursPerWeek']="Hores Setmanals";
+$lang['study_module_teacher_id']="Codi Professor";
+$lang['study_module_initialDate']="Data inici";
+$lang['study_module_endDate']="Data fí";          
+$lang['type']="Tipus";   
+$lang['subtype']="Subtipus";     
+
 //Matrícules
-	$lang['periodid']="Periode";
-	$lang['personid']="Persona";
-	$lang['study_id']="Estudi";
-	$lang['group_id']="Grup";
-	$lang['moduleid']="Mòdul";
-	$lang['submoduleid']="Sub-Mòdul";
+	$lang['enrollment_periodid']="Periode de Matrícula";
+	$lang['enrollment_personid']="Matrícula id Persona";
+	$lang['enrollment_studies_periodid']="Id Periode";
+	$lang['enrollment_studies_personid']="Id Persona";
+	$lang['enrollment_studies_study_id']="Id estudi";
+	$lang['enrollment_class_group_periodid']="Id Periode";
+	$lang['enrollment_class_group_personid']="Id Persona";
+	$lang['enrollment_class_group_study_id']="Id estudi";
+	$lang['enrollment_class_group_group_id']="Id Grup";
+	$lang['enrollment_modules_periodid']="Id Periode";
+	$lang['enrollment_modules_personid']="Id Persona";
+	$lang['enrollment_modules_study_id']="Id estudi";
+	$lang['enrollment_modules_group_id']="Id Grup";
+	$lang['enrollment_modules_moduleid']="Id Mòdul";
+	$lang['enrollment_submodules_periodid']="Id Periode";
+	$lang['enrollment_submodules_personid']="Id Persona";
+	$lang['enrollment_submodules_study_id']="Id estudi";
+	$lang['enrollment_submodules_group_id']="Id Grup";
+	$lang['enrollment_submodules_moduleid']="Id Mòdul";
+	$lang['enrollment_submodules_submoduleid']="Id Sub-Mòdul";

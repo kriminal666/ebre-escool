@@ -154,6 +154,8 @@ CREATE TABLE IF NOT EXISTS `location` (
   `location_name` varchar(150) NOT NULL,
   `location_shortName` varchar(150) NOT NULL,
   `location_description` text,
+  `location_department_id` int(11) NOT NULL,
+  `location_organizational_unit_id` int(11) NOT NULL,
   `location_entryDate` datetime NOT NULL,
   `location_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `location_creationUserId` int(11) DEFAULT NULL,
@@ -355,6 +357,7 @@ CREATE TABLE IF NOT EXISTS `department` (
   `department_head` int(11) NOT NULL,
   `department_parent_department_id` int(11) NOT NULL,
   `department_organizational_unit_id` int(11) NOT NULL,
+  `department_location_id` int(11) NOT NULL,
   `department_entryDate` datetime NOT NULL,
   `department_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `department_creationUserId` int(11) DEFAULT NULL,
@@ -1683,4 +1686,69 @@ CREATE TABLE IF NOT EXISTS `barcode` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
 
+--
+-- Table structure for table `teacher`
+--
 
+DROP TABLE IF EXISTS `teacher`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `teacher` (
+  `teacher_id` int(11) NOT NULL AUTO_INCREMENT,
+  `teacher_person_id` int(11) NOT NULL,
+  `teacher_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `teacher_entryDate` datetime NOT NULL,
+  `teacher_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `teacher_creationUserId` int(11) DEFAULT NULL,
+  `teacher_lastupdateUserId` int(11) DEFAULT NULL,
+  `teacher_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `teacher_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`teacher_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `employees`
+--
+
+DROP TABLE IF EXISTS `employees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `employees` (
+  `employees_id` int(11) NOT NULL AUTO_INCREMENT,
+  `employees_person_id` int(11) NOT NULL,
+  `employees_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `employees_id` int(11) NOT NULL,
+  `employees_entryDate` datetime NOT NULL,
+  `employees_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `employees_creationUserId` int(11) DEFAULT NULL,
+  `employees_lastupdateUserId` int(11) DEFAULT NULL,
+  `employees_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `employees_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`employees_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `employees_type`
+--
+
+DROP TABLE IF EXISTS `employees_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `employees_type` (
+  `employees_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `employees_type_name` varchar(150) NOT NULL,
+  `employees_type_shortName` varchar(150) NOT NULL,
+  `employees_type_code` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `employees_type_entryDate` datetime NOT NULL,
+  `employees_type_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `employees_type_creationUserId` int(11) DEFAULT NULL,
+  `employees_type_lastupdateUserId` int(11) DEFAULT NULL,
+  `employees_type_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `employees_type_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`employees_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;

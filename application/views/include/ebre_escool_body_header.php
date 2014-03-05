@@ -288,19 +288,24 @@
               </button>
             </a>
 
-            <a href="#">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
               <button class="btn btn-small btn-info">
                 <i class="icon-flag"></i>
               </button>
             </a>
+            <ul class="dropdown-menu light-blue dropdown-closer" style="margin-top:35px;margin-left:45px">
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/catalan"><?php echo lang('catalan');?></a></li>
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/spanish"><?php echo lang('spanish');?></a></li>
+              <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/english"><?php echo lang('english');?></a></li>                           
+            </ul>
              
-            <a href="#">    
+            <a href="<?php echo base_url('index.php/skeleton/users');?>">    
               <button class="btn btn-small btn-warning">
                 <i class="icon-group"></i>
               </button>
             </a>  
 
-            <a href="#">
+            <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
               <button class="btn btn-small btn-danger">
                 <i class="icon-cogs"></i>
               </button>
@@ -542,6 +547,18 @@
                       <?php echo lang('teachers');?>
                     </a>
                   </li>
+
+                  <li>
+                    <a href="<?php echo base_url('/index.php/employees'); ?>">
+                      <?php echo lang('employees');?>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="<?php echo base_url('/index.php/employees/employees_type'); ?>">
+                      <?php echo lang('employees_type');?>
+                    </a>
+                  </li>                  
 
                   <li>
                     <a href="<?php echo base_url('/index.php/students'); ?>">

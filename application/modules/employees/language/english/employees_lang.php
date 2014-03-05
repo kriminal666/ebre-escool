@@ -14,7 +14,6 @@
 
 // TODO
 
-$lang['teacher'] = 'Professor';
-$lang['teacher_person_id'] = 'ID Persona';
-$lang['teacher_department_id'] = 'Departament';
-$lang['teacher_code'] = 'Codi Professor';
+$lang['employee'] = 'Empleat';
+$lang['employee_person_id'] = 'ID Persona';
+$lang['employee_code'] = 'Codi Empleat';
