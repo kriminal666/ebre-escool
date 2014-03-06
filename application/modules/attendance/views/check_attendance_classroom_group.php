@@ -1,5 +1,4 @@
 <div class="main-content">
- 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
   try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
@@ -25,6 +24,11 @@
 
  </ul>
 </div>
+
+<?php //echo "Departaments: ";echo  "<pre>";print_r($departments);echo "</pre>";?>
+<?php //echo "Grups de Classe: ";echo  "<pre>";print_r($classroom_groups);echo "</pre>";?>
+<?php //echo "Lliçons: ";echo  "<pre>";print_r($all_lessons);echo "</pre>";?>
+<?php //echo "Timeslots Lective: ";echo  "<pre>";print_r($timeslots['time_slots_lective']);echo "</pre>";?>
 
 <div class="page-content">
 <div class="page-header position-relative">
@@ -290,7 +294,7 @@
                     <?php $student_fullname = $student->givenName . " " . $student->sn1 . " " . $student->sn2;?>
                     <tr>
                       <td>
-                        <img data-rel="tooltip" title="<?php echo $student_fullname;?>" src="<?php echo base_url($student->photo_url)?>" class="msg-photo" alt="Pepe's Avatar" />
+                        <img data-rel="tooltip" width="200%" title="<?php echo $student_fullname;?>" src="<?php echo base_url($student->photo_url)?>" class="msg-photo" alt="<?php echo $student_fullname;?>" />
                       </td>
                       <td>
                         <a href="#"><?php echo $student_key;?></a>

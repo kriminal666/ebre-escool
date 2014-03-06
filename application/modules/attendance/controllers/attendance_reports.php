@@ -518,7 +518,7 @@ class attendance_reports extends skeleton_main {
 /**/
 
 
-//        $this->load_header();  
+//      $this->load_header();  
         if(!$_POST){
             $this->load->view('attendance_reports/class_list_report.php', $data); 
         } else {

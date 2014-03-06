@@ -53,7 +53,7 @@ class attendance_model  extends CI_Model  {
 	function get_teacher_departmentName($teacherId,$orderby="asc") {
 		$this->db->from('department');
         $this->db->select('department_id,department_shortName,department_name');
-   		$this->db->join('teacher', 'department.department_id = teacher.teacher_departmentid');
+   		$this->db->join('teacher', 'department.department_id = teacher.teacher_department_id');
 
 		$this->db->order_by('department_shortName', $orderby);
 
@@ -73,7 +73,7 @@ class attendance_model  extends CI_Model  {
 	function get_teacher_departments($teacherId,$orderby="asc") {
 		$this->db->from('department');
         $this->db->select('department_id,department_shortName,department_name');
-   		$this->db->join('teacher', 'department.department_id = teacher.teacher_departmentid');
+   		$this->db->join('teacher', 'department.department_id = teacher.teacher_department_id');
 
 		$this->db->order_by('department_shortName', $orderby);
 
@@ -354,10 +354,61 @@ class attendance_model  extends CI_Model  {
 		$this->db->order_by('time_slot_order', $orderby);
 		$this->db->where('lesson_day', $day);
 		$this->db->where('lesson_teacher_id', $teacher_id);
-		
+
 
 		$query = $this->db->get();
+		if ($query->num_rows() > 0)	{
+			
+			$lessons_array = array();
 
+			foreach ($query->result_array() as $row)	{
+
+				$lesson = new stdClass();
+				$lesson->group_code = $row['classroom_group_code'];
+				$lesson->base_url = base_url("index.php?/attendance/check_attendance/" . $row['classroom_group_code']);
+				$lesson->group_shortname = $row['classroom_group_shortName'];
+				$lesson->group_name = $row['classroom_group_name'];
+				$lesson->study_module_id = $row['study_module_id'];
+				$lesson->classroom_group_code = $row['classroom_group_code'];				
+				$lesson->lesson_code = $row['lesson_code'];
+				$lesson->lesson_shortname = $row['study_module_shortname'];
+				$lesson->lesson_name = $row['study_module_name'];
+				$lesson->lesson_location = $row['location_shortName'];
+				$lesson->classroom_group_location_id = $row['classroom_group_location_id'];
+
+   				$lessons_array[$row['time_slot_id']] = $lesson;
+
+			}
+			return $lessons_array;
+		}
+		else
+			return false;
+	}
+
+
+//OSCAR: Obtenir les lliçons d'un dia
+	function getAllLessonsByDay($day,$classroom_group_id,$orderby = "asc") {
+		/*
+		SELECT `lesson_id`,`lesson_code`,classroom_group_code,classroom_group_shortName,classroom_group_name
+		FROM lesson
+		INNER JOIN classroom_group ON lesson.`lesson_classroom_group_id`= classroom_group.classroom_group_id
+		WHERE `lesson_day`=1 AND `lesson_teacher_id`=38
+		*/
+		$this->db->select('time_slot_order,time_slot_id,lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,
+						  classroom_group_name,study_module_id,study_module_shortname,study_module_name,location_shortName,classroom_group_location_id');
+		$this->db->from('lesson');
+		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id');
+		$this->db->join('location', 'lesson.lesson_location_id = location.location_id','left');
+		$this->db->order_by('time_slot_order', $orderby);
+		$this->db->where('lesson_day', $day);
+		$where = "classroom_group_id = '$classroom_group_id'";
+		
+		$this->db->where($where);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
 		if ($query->num_rows() > 0)	{
 			
 			$lessons_array = array();

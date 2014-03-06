@@ -19,7 +19,7 @@ $(function() {
 
     });
 
-});
+
 
 //***********************
   //* Datepicker         **
@@ -33,7 +33,7 @@ $(function() {
       autoclose: true,
       todayHighlight: true
     });
-
+});
 </script>
 
 <div class="main-content">
