@@ -12,6 +12,8 @@ class inventory extends skeleton_main {
 
 
 function __construct()	{
+		
+
 		parent::__construct();
 
 		$this->load->model('inventory_model');
@@ -22,7 +24,7 @@ function __construct()	{
         $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
 		$this->load->library('image_CRUD');  
 
-		$this->load->library('session');
+		
 
 		/* Set language */
 		$current_language=$this->session->userdata("current_language");
@@ -80,7 +82,7 @@ public function images(){
 
 public function index()	{
 
-	$this->check_logged_user();
+	//$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  

@@ -13,6 +13,8 @@ class skeleton extends skeleton_main {
 
 	public $body_footer_view ='include/ebre_escool_body_footer' ;
 
+    public $error_page_404 = "include/404.php"; 
+
 	public $header_data;
 
 	function __construct()
@@ -30,6 +32,23 @@ class skeleton extends skeleton_main {
 		
 	}
 
+    public function error404() {
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+        parent::error404();
+    }
+
+    protected function _get_html_header_data() {
+
+        $header_data = parent::_get_html_header_data();
+        $header_data = $this->load_ace_files($header_data); 
+
+        return $header_data;
+    }
+
 	public function groups() {
 
 		$this->header_data = $this->load_ace_files();  
@@ -37,10 +56,10 @@ class skeleton extends skeleton_main {
 		parent::groups();
 	}
 
-	function load_ace_files(){
+	function load_ace_files($init_header_data){
 
 		$header_data= $this->add_css_to_html_header_data(
-            $this->_get_html_header_data(),
+            $init_header_data,
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 
         $header_data= $this->add_css_to_html_header_data(
