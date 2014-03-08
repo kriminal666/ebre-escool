@@ -12,7 +12,7 @@ class inventory extends skeleton_main {
 
 
 function __construct()	{
-		
+
 
 		parent::__construct();
 
@@ -80,9 +80,9 @@ public function images(){
 	    $this->image_crud_render($this->current_table,$header_data);
 	}	
 
-public function index()	{
+public function inventory_object()	{
 
-	//$this->check_logged_user();
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
@@ -339,8 +339,14 @@ public function index()	{
 
 
 	$this->renderitzar($this->current_table,$header_data,$data);
-                
-	}
+}
+
+
+public function index()	{
+
+	redirect(base_url('index.php/inventory/inventory_object'), 'refresh');
+
+}
 	
  
 public function externalIDType()	{
