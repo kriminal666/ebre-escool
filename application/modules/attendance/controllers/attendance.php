@@ -151,6 +151,7 @@ class attendance extends skeleton_main {
         parent::__construct();
         
         $this->load->model('attendance_model');
+        $this->load->model('timetables_model');
         $this->load->library('ebre_escool_ldap');
 
         //GROCERY CRUD
@@ -456,6 +457,10 @@ class attendance extends skeleton_main {
 
 		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
 
+		// Obtenir el departament al que pertany un professor (Oscar)
+	    //$teacher_departments = $this->attendance_model->get_teacher_departments($teacher_id);
+	    //$data['department_id'] = $teacher_departments[1];
+
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";   
 
@@ -472,7 +477,7 @@ class attendance extends skeleton_main {
 	    } else {
 	    	$data['departments']= $this->attendance_model->get_teacher_departments($teacher_id);
 	    }
-            
+        
 	    #Obtain class_room_groups
 	    //TODO:
 	    $data['classroom_groups']=array();
@@ -484,8 +489,33 @@ class attendance extends skeleton_main {
 	    	if($user_is_teacher) {
 	    		$data['classroom_groups']=$this->attendance_model->get_all_groupscodenameByTeacher($teacher_id);
 	    	}
-			$data['classroom_groups']=array();
+			//$data['classroom_groups']=array(); //OSCAR
 	    }
+
+	    //OSCAR: Obtenint dades dinàmiques de la BD
+		$day = '1';	//dilluns    
+	    $data['selected_classroom_group_key']=25; //2ASIX
+	    $data['all_lessons'] =array();
+	    if ($user_is_admin){
+	    	$all_lessons = $this->attendance_model->getAllLessonsByDay($day,$data['selected_classroom_group_key']);
+	    	$data['all_lessons'] = $all_lessons;	    	
+	    } else {
+	    	$all_lessons = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,$day);
+	    	$data['all_lessons'] = $all_lessons;	    	
+	    }
+
+	    //OSCAR: Time Slots
+		$timeslots = $this->get_time_slots($data['selected_classroom_group_key'],1);	  
+
+		$data['timeslots'] = $timeslots;
+		$data['time_slots_lective'] = $timeslots['time_slots_lective'];
+
+		//OSCAR: ldap
+		$selected_group="2DAM";
+		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($selected_group);
+		$all_students_in_group= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+
+
 
 	    $data['study_modules']=array();
 	    if ($user_is_admin) {
@@ -551,7 +581,7 @@ class attendance extends skeleton_main {
 
 	    $data['selected_classroom_group_key']= 25;
 	    $data['selected_classroom_group_shortname'] = "2ASIX";
-		$data['selected_classroom_group'] = "2n Desenvolupament d'Aplicacions Multiplataforma";
+		$data['selected_classroom_group'] = "2n Administració de Sistemes Informàtics en Xarxa";
 
 		$data['selected_study_module_key']= 2;
 	    $data['selected_study_module_shortname'] = "M 9";
@@ -563,11 +593,47 @@ class attendance extends skeleton_main {
 	    $data['selected_day'] = "20/01/2014";;
 	    $data['selected_time_slot'] = "19:00 - 20:00";
 
-	    $data['total_number_of_students'] = 3;
+	    //$data['total_number_of_students'] = 3;
+	    $data['total_number_of_students'] = count($all_students_in_group);
 		$data['selected_module_shortname'] = "M 9";
 
 		//classroom_group_students
 
+		$i=1;
+		$data['classroom_group_students'] = array ();
+		$photo_url = "/assets/avatars/avatar";
+		foreach($all_students_in_group as $estudiant){
+
+			$res = ($i%3)+1;
+			$student = new stdClass;
+			$student->givenName = $estudiant->givenName;
+			$student->sn1 = $estudiant->sn1;
+			$student->sn2 = $estudiant->sn2;
+			$student->username = $estudiant->uid;
+			$student->email = $estudiant->highSchoolPersonalEmail;
+			$student->notes = "nota";
+
+/* Detectar tipus d'imatge (PNG o JPG) */
+$tipus = substr($estudiant->jpegPhoto,0,10);
+
+$isJPG  = strpos($tipus, 'JFIF');
+if($isJPG){
+	$extensio = ".jpg";
+} else {
+	$isPNG  = strpos($tipus, 'PNG');
+	if($isPNG){
+	$extensio = ".png";
+	}
+}
+
+//$student->photo_url = '/assets/img/alumnes/'.$estudiant->irisPersonalUniqueID.$extensio;
+$student->photo_url = '/assets/img/alumnes/foto.png';
+
+	$data['classroom_group_students'][]=$student;
+$i++;
+}
+
+/*
 		$student1 = new stdClass;
 		$student1->givenName = "Julia";
 		$student1->sn1 = "Adell";
@@ -600,7 +666,7 @@ class attendance extends skeleton_main {
 			2 => $student2,
 			3 => $student3
 			);
-
+*/
 	    
 
 		/* fi llista alumnes grup */
@@ -975,6 +1041,55 @@ class attendance extends skeleton_main {
 
     }	
 	
+//OSCAR: GET TIME SLOTS
+    public function get_time_slots($classroom_group_id=null,$lective)
+    {
+            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            $data['complete_time_slots_count'] = count($complete_time_slots_array);            
+            if($classroom_group_id){
+                $shift = $this->timetables_model->get_group_shift($classroom_group_id);
+			    $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+
+                $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+            } else {
+                $time_slots_array = $complete_time_slots_array;
+            }
+
+            $data['time_slots_array'] = $time_slots_array;
+
+            //Get first and last time slot order
+            $keys = array_keys($time_slots_array);
+            $first_time_slot_order = $time_slots_array[$keys[0]]['time_slot_order'];
+            $data['first_time_slot_order'] = $first_time_slot_order;            
+            $last_time_slot_order = $time_slots_array[$keys[count($time_slots_array)-1]]['time_slot_order'];
+            $data['last_time_slot_order'] = $last_time_slot_order;
+
+            foreach ($time_slots_array as $time_slot)   {
+                $time_slot_data = new stdClass;
+                $time_slot_data->time_slot_start_time = $time_slot['time_slot_start_time'];
+                $time_slot_data->time_interval = $time_slot['time_slot_start_time'] . " - " . $time_slot['time_slot_end_time'];
+                $time_slot_data->time_slot_lective = $time_slot['time_slot_lective'];
+
+                $time_slots[$time_slot['time_slot_id']] = $time_slot_data;
+            }
+            $time_slots_lective = array();
+            $data['time_slots'] = $time_slots;
+            foreach($time_slots as $time_slot){
+            	if($time_slot->time_slot_lective == $lective){
+            		$time_slots_lective[] = $time_slot;
+            	}
+            }
+            $data['time_slots_lective'] = $time_slots_lective;
+            $data['time_slots_count'] = count($time_slots);
+
+            return $data;
+    }    
+
+
+
+
+
+
 public function add_callback_last_update(){  
    
     return '<input type="text" class="datetime-input hasDatepicker" maxlength="19" name="'.$this->session->flashdata('table_name').'_last_update" id="field-last_update" readonly>';
