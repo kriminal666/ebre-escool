@@ -26,7 +26,7 @@ class inventory_Model  extends CI_Model  {
 		} 	
 		return false;
 	}
-	
+
 	function get_last_added_value($table_name,$primary_key=null) {
 		$primary_key_field_name;
 		if ($primary_key==null)
@@ -209,6 +209,21 @@ class inventory_Model  extends CI_Model  {
 		}
 		
 		return $all_inventory_objects_array;
+	}
+
+	function getUserMainOrganizationalUnit($userid) {
+
+		$this->db->select('organizational_unit_Id,organizational_unit_name,organizational_unit_shortName');
+		$this->db->from('users');
+		$this->db->join('organizational_unit', 'users.mainOrganizationaUnitId = organizational_unit.organizational_unit_Id','left');
+		$this->db->where('id', $userid);
+
+		$query = $this->db->get();
+
+		$row = $query->row();
+
+		return $row;
+
 	}
 
 	function getUserNameByUserId($userid) {	
