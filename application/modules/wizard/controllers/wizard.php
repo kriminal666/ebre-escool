@@ -13,11 +13,8 @@ class wizard extends skeleton_main {
     {
         parent::__construct();
         
-        //GROCERY CRUD
-//		    $this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
-//        $this->load->library('grocery_CRUD');
-//        $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
-//    		$this->load->library('image_CRUD');  
+            /* Model */
+            $this->load->model('wizard_model');
 
 		    /* Set language */
 		    $current_language=$this->session->userdata("current_language");
@@ -32,7 +29,7 @@ class wizard extends skeleton_main {
 
 
 
-	public function wizard() {
+	public function wizard($study=false,$classroom_group=false,$study_modules=false) {
 
     $this->check_logged_user(); 
 
@@ -42,19 +39,54 @@ class wizard extends skeleton_main {
     /* Wizard */
     $header_data= $this->load_wizard_files($header_data);    
 
+    if(!$study){
+        $study = 2;
+    }    
+    
+    if(!$classroom_group){
+        $classroom_group = 3;  
+    }
+    
+    if(!$study_modules){
+        $study_modules = array();
+        $study_modules[]=282;   //  "M1"
+        $study_modules[]=268;   //  "M2";
+    }    
 
        $this->_load_html_header($header_data); 
-    
-       // BODY       
+       $data = array();
+       $enrollment_studies = $this->wizard_model->get_enrollment_studies();
+       $data['enrollment_studies'] = $enrollment_studies;
+       $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
+       $data['enrollment_classroom_groups'] = $enrollment_classroom_groups;
+       $enrollment_study_modules = $this->wizard_model->get_enrollment_study_modules($classroom_group);
+       $data['enrollment_study_modules'] = $enrollment_study_modules;
+       $enrollment_study_submodules = $this->wizard_model->get_enrollment_study_submodules($study_modules);
+       $data['enrollment_study_submodules'] = $enrollment_study_submodules;       
+       $enrollment_students = $this->wizard_model->get_students();
+       $data['enrollment_students'] = $enrollment_students;              
 
+       // BODY       
        $this->_load_body_header();
-       $this->load->view('wizard.php');     
+       $this->load->view('wizard.php',$data);     
        
-       //      FOOTER     
+       // FOOTER     
        $this->_load_body_footer(); 
 
-
 	}
+
+    public function classroom_group($study = false) {
+        echo $study;
+
+        $resultat = array();
+
+        $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
+        foreach($enrollment_classroom_groups as $key => $value){
+            $resultat[$key]=$value;
+        }
+        print_r(json_encode($resultat));
+
+    }
 
    
 	public function index() {
@@ -119,7 +151,6 @@ function load_ace_files(){
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-fonts.css'));
@@ -132,7 +163,6 @@ function load_ace_files(){
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));
-                      
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
@@ -156,26 +186,6 @@ function load_ace_files(){
                 base_url('assets/js/ace.min.js'));    
 
         return $header_data;
-}
-
-  //CALLBACKS
-function common_callbacks()
-{
-        //CALLBACKS        
-        $this->grocery_crud->callback_add_field($this->session->flashdata('table_name').'_entryDate',array($this,'add_field_callback_entryDate'));
-        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_entryDate',array($this,'edit_field_callback_entryDate'));
-        
-        //Camps last update no editable i automàtic        
-        $this->grocery_crud->callback_edit_field($this->session->flashdata('table_name').'_last_update',array($this,'edit_callback_last_update'));
-}
-
-function set_common_columns_name($table_name){
-    $this->grocery_crud->display_as($table_name.'_entryDate',lang('entryDate'));
-    $this->grocery_crud->display_as($table_name.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($table_name.'_creationUserId',lang('creationUserId'));                  
-    $this->grocery_crud->display_as($table_name.'_lastupdateUserId',lang('lastupdateUserId'));   
-    $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
-    $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
 }
