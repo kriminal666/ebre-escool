@@ -12,6 +12,8 @@ class inventory extends skeleton_main {
 
 
 function __construct()	{
+
+
 		parent::__construct();
 
 		$this->load->model('inventory_model');
@@ -22,7 +24,7 @@ function __construct()	{
         $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
 		$this->load->library('image_CRUD');  
 
-		$this->load->library('session');
+		
 
 		/* Set language */
 		$current_language=$this->session->userdata("current_language");
@@ -78,9 +80,9 @@ public function images(){
 	    $this->image_crud_render($this->current_table,$header_data);
 	}	
 
-public function index()	{
+public function inventory_object()	{
 
-    $this->check_logged_user();
+	$this->check_logged_user();
 
 	/* Ace */
     $header_data = $this->load_ace_files();  
@@ -253,6 +255,24 @@ public function index()	{
 	$data= array();
 	$organizational_units = array();
 
+	$user_main_organizational_unit = "La meva unitat organitzativa principal";
+	//TODO: getuserid from session
+	$userid=12;
+	$user_main_organizational_unit = $this->inventory_model->getUserMainOrganizationalUnit($userid);
+
+	$user_main_organizational_unit_name = $user_main_organizational_unit->organizational_unit_name;
+	$user_main_organizational_unit_id = $user_main_organizational_unit->organizational_unit_Id;
+
+	//TODO: Get values from config file
+	$default_user_main_organizational_unit_name = "ERROR. PENDENT DEFINIR DEFAULT";
+	$default_user_main_organizational_unit_id = 99; 
+
+
+	if ($user_main_organizational_unit_name == "" || $user_main_organizational_unit_id == "") {
+		$user_main_organizational_unit_name = $default_user_main_organizational_unit_name;
+		$user_main_organizational_unit_id = $default_user_main_organizational_unit_id;
+	}
+
 	//TODO
 	$user_is_admin = true;
 
@@ -260,16 +280,19 @@ public function index()	{
 		$all_organizational_units = $this->inventory_model->getAllorganizationalUnits();
 		$organizational_units = $all_organizational_units;
 	} else {
-		$organizational_units[] = "La meva unitat organitzativa principal";
+		$organizational_units[] = $user_main_organizational_unit;
 	}
 
 	$data['organizational_units'] = $organizational_units;
-	$data['selected_organizational_unit'] = "Manteniment d'informàtica";
-	$data['selected_organizational_unit_key'] = 3;
+	$data['selected_organizational_unit'] = $user_main_organizational_unit_name;
+
+	$data['selected_organizational_unit_key'] = $user_main_organizational_unit_id;
 
 	//Providers
-	$data['selected_provider_name'] = "Departament d'Ensenyament" ;	
-	$data['selected_provider_id'] = 2 ;
+	//TODO: Get values from config file
+	$data['default_selected_provider_name'] = "Tots" ;
+	$data['selected_provider_name'] = "Tots" ;	
+	$data['selected_provider_id'] = 0 ;
 
 	$data['providers'] = array();
 
@@ -281,14 +304,15 @@ public function index()	{
 
 	$data['providers'] = $providers;
 
-	$data['selected_material_name'] = "Cartutxos Tinta";
-	$data['selected_material_id'] = 4;
+	$data['default_selected_material_name'] = "Tots";
+	$data['selected_material_name'] = "Tots";
+	$data['selected_material_id'] = 0;
 
 	$data['materials'] = $this->inventory_model->getAllMaterials();
 
-
-	$data['selected_location_name'] = "Altell 1";
-	$data['selected_location_id'] = 3;
+	$data['default_selected_location_name'] = "Totes";
+	$data['selected_location_name'] = "Totes";
+	$data['selected_location_id'] = 0;
 
 	$data['locations'] = $this->inventory_model->getAllLocations();
 
@@ -297,15 +321,32 @@ public function index()	{
 	//Material
 	//location
 	//Provider
+
+
 	//$this->grocery_crud->where('inventory_object_mainOrganizationalUnitId','TODO');
-	//$this->grocery_crud->where('inventory_object_materialId','TODO');
-	//$this->grocery_crud->where('inventory_object_materialId','TODO');
-	//$this->grocery_crud->where('inventory_object_location','TODO');
-	//$this->grocery_crud->where('inventory_object_providerId','TODO');
+	if ( $data['selected_organizational_unit_key'] != 0 ) {
+		$this->grocery_crud->where('inventory_object.inventory_object_mainOrganizationalUnitId', $data['selected_organizational_unit_key']);
+	}
+	if ( $data['selected_material_id'] !=0 ) {
+		$this->grocery_crud->where('inventory_object_materialId', $data['selected_material_id']);
+	}
+	if ( $data['selected_location_id'] !=0 ) {
+		$this->grocery_crud->where('inventory_object_location', $data['selected_location_id']);
+	}
+	if ( $data['selected_provider_id'] !=0 ) {
+		$this->grocery_crud->where('inventory_object_providerId', $data['selected_provider_id']);
+	}
+
 
 	$this->renderitzar($this->current_table,$header_data,$data);
-                
-	}
+}
+
+
+public function index()	{
+
+	redirect(base_url('index.php/inventory/inventory_object'), 'refresh');
+
+}
 	
  
 public function externalIDType()	{

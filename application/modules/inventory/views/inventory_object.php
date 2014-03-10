@@ -238,10 +238,10 @@
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                            <li> 
-                              <a href="#">
+                            <li <?php if ($data['selected_material_id'] == 0 ) { echo 'class="active"';} ?>> 
+                              <a href="#" <?php if ($data['selected_material_id'] == 0 ) { echo 'class="blue"';}?> >
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                Tots
+                                <?php echo $data['default_selected_material_name']; ?>
                               </a>
                             </li>  
                           <?php foreach ($data['materials'] as $material_key => $material): ?>
@@ -264,10 +264,10 @@
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                            <li> 
-                              <a href="#">
+                            <li <?php if ($data['selected_location_id'] == 0 ) { echo 'class="active"';}?> > 
+                              <a href="#" <?php if ($data['selected_location_id'] == 0) { echo 'class="blue"';}?>>
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                Totes
+                                <?php echo $data['default_selected_location_name']; ?>
                               </a>
                             </li>  
                           <?php foreach ($data['locations'] as $location_key => $location): ?>
@@ -290,10 +290,10 @@
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                            <li> 
-                              <a href="#">
+                            <li <?php if ($data['selected_provider_id'] == 0 ) { echo 'class="active"';} ?> >
+                              <a href="#"  <?php if ($data['selected_provider_id'] == 0 ) { echo 'class="blue"';}?>>
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                Tots
+                                <?php echo $data['default_selected_provider_name']; ?>
                               </a>
                             </li>                              
                           <?php foreach ($data['providers'] as $provider_key => $provider_name): ?>
