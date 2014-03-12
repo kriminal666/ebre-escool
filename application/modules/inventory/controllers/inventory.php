@@ -82,10 +82,13 @@ public function images(){
 
 public function inventory_object()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#inventory';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	$data = array();
 
@@ -351,10 +354,15 @@ public function index()	{
  
 public function externalIDType()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#externalIDType';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="externalIDType";
@@ -403,10 +411,15 @@ public function externalIDType()	{
 	
 public function material()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#material_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="material";
@@ -455,10 +468,15 @@ public function material()	{
 
 public function brand()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#brand_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="brand";
@@ -505,10 +523,15 @@ public function brand()	{
 
 public function model()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#model_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="model";
@@ -555,10 +578,15 @@ public function model()	{
 
 public function provider()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#provider_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="provider";
@@ -604,10 +632,15 @@ public function provider()	{
 
 public function money_source()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#money_source_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="moneySource";
@@ -654,10 +687,15 @@ public function money_source()	{
 	
 public function barcode()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#barcode_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="barcode";
@@ -727,7 +765,7 @@ function image_crud_render($table_name,$header_data)
 
 }
 	
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -768,6 +806,8 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
+
+		$header_data['menu']= $active_menu;        
 
         return $header_data;
 }

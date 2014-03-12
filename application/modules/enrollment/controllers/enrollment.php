@@ -43,10 +43,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment';
+
         $this->check_logged_user();
 		
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment";
@@ -94,10 +99,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_studies() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_studies';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_studies";
@@ -145,10 +155,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_class_group() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_class_group';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_class_group";
@@ -197,10 +212,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_modules() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_modules';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_modules";
@@ -251,10 +271,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_submodules() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_submodules';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_submodules";
@@ -465,7 +490,7 @@ function set_common_columns_name($table_name){
     $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -506,6 +531,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu']= $active_menu;
         return $header_data;
 }
 

@@ -12,8 +12,9 @@ class timetables extends skeleton_main {
 
     //public $body_footer_view ='include/ebre_escool_body_footer' ;
 
-    public function load_header_data(){
+    public function load_header_data($active_menu){
 
+              
             // CSS
             $header_data= $this->add_css_to_html_header_data(
                 $this->_get_html_header_data(),
@@ -102,6 +103,7 @@ class timetables extends skeleton_main {
                     $header_data,
                     base_url('assets/js/ace.min.js'));            
 
+        $header_data['menu']= $active_menu;
             return $header_data;
     }
 
@@ -129,10 +131,14 @@ class timetables extends skeleton_main {
 	}
 
     public function allteacherstimetables($teacher_code = null,$compact = "") {
+        $active_menu = array();
+        $active_menu['menu']='#timetables';
+        $active_menu['submenu1']='#allteacherstimetables';
+
 
             $this->check_logged_user();
 
-            $header_data = $this->load_header_data();
+            $header_data = $this->load_header_data($active_menu);
 
             $this->_load_html_header($header_data);
             $this->_load_body_header();
@@ -248,10 +254,15 @@ class timetables extends skeleton_main {
     }
 
     public function allgroupstimetables($classroom_group_id = null) {
-            
+        
+            $active_menu = array();
+            $active_menu['menu']='#timetables';
+            $active_menu['submenu1']='#allgroupstimetables';
+
+
             $this->check_logged_user();
 
-            $header_data = $this->load_header_data();            
+            $header_data = $this->load_header_data($active_menu);            
             $this->_load_html_header($header_data);
             $this->_load_body_header();
 
@@ -305,6 +316,10 @@ class timetables extends skeleton_main {
 	
 	public function mytimetables($compact = "") {
 
+            $active_menu = array();
+            $active_menu['menu']='#timetables';
+            $active_menu['submenu1']='#mytimetables';
+
             if (!$this->skeleton_auth->logged_in())
             {
                 //redirect them to the login page
@@ -313,7 +328,7 @@ class timetables extends skeleton_main {
 
             $this->check_logged_user();
 
-            $header_data = $this->load_header_data();
+            $header_data = $this->load_header_data($active_menu);
             $this->_load_html_header($header_data);
 
             $this->_load_body_header();
@@ -657,10 +672,15 @@ class timetables extends skeleton_main {
 
     public function non_lective_hours() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#timetable';
+        $active_menu['submenu2']='#non_lective_hours';
+
         $this->check_logged_user(true); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="non_lective_hours";
@@ -715,10 +735,15 @@ class timetables extends skeleton_main {
 
     public function non_lective_lessons() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#timetable';
+        $active_menu['submenu2']='#non_lective_lessons';
+
         $this->check_logged_user(true); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="non_lective_lessons";
@@ -785,10 +810,15 @@ class timetables extends skeleton_main {
 
     public function shift() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#timetable';
+        $active_menu['submenu2']='#shift';
+
         $this->check_logged_user(true); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="shift";
@@ -948,7 +978,7 @@ function renderitzar($table_name,$header_data=false)
 
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -988,6 +1018,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu'] = $active_menu;
         return $header_data;
 }
 

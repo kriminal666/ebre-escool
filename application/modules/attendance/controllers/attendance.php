@@ -12,7 +12,9 @@ class attendance extends skeleton_main {
 	//public $body_footer_view ='include/ebre_escool_body_footer' ;
 
 
-	public function load_header_data(){
+	public function load_header_data($menu){
+
+		$active_menu = $menu;
 
 		//CSS URLS
 		$jquery_ui_css_url = "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
@@ -142,6 +144,7 @@ class attendance extends skeleton_main {
                     $header_data,
                     base_url('assets/js/chosen.jquery.min.js'));
 
+		$header_data['menu']= $active_menu;
 		return $header_data; 
         
     }
@@ -241,10 +244,15 @@ class attendance extends skeleton_main {
 
 	public function time_slots () {
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#attendance_managment';
+	$active_menu['submenu2']='#time_slots';
+
     $this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
     // Grocery Crud 
     $this->current_table="time_slot";
@@ -284,9 +292,13 @@ class attendance extends skeleton_main {
 	
 	public function mentoring_groups ( $class_room_group_id = null ) {
 
-    $this->check_logged_user();
+		$active_menu = array();
+		$active_menu['menu']='#mentoring';
+		$active_menu['submenu1']='#mentoring_groups';
 
-		$header_data = $this->load_header_data();
+    	$this->check_logged_user();
+
+		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 		
 		$this->_load_body_header();
@@ -316,9 +328,13 @@ class attendance extends skeleton_main {
 
 	public function mentoring_attendance_by_student () {
 
-    $this->check_logged_user();
+		$active_menu = array();
+		$active_menu['menu']='#mentoring';
+		$active_menu['submenu1']='#mentoring_attendance_by_student';
 
-		$header_data = $this->load_header_data();
+    	$this->check_logged_user();
+
+		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
 		$this->_load_body_header();
@@ -347,6 +363,11 @@ class attendance extends skeleton_main {
 
 
 	public function classroom_groups() {
+
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#attendance_managment';
+	$active_menu['submenu2']='#classroom_groups';
 	
 	//Cargar la llibreria fpdf
 	$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
@@ -357,7 +378,7 @@ class attendance extends skeleton_main {
     $this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  	
+    $header_data = $this->load_ace_files($active_menu);  	
 
     // Grocery Crud 
 	$this->current_table="classroom_group";
@@ -681,17 +702,23 @@ $i++;
 
 	public function check_attendance(
 
-		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
-    $this->check_logged_user();
-	/*	
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-	*/
 
-		$header_data = $this->load_header_data();
+		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
+  
+		$active_menu = array();
+		$active_menu['menu']='#check_attendance';
+		//$this->session->set_flashdata('menu', $active_menu);
+
+    	$this->check_logged_user();
+		/*	
+			if (!$this->skeleton_auth->logged_in())
+			{
+				//redirect them to the login page
+				redirect($this->skeleton_auth->login_page, 'refresh');
+			}
+		*/
+
+		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
 		/*******************
@@ -1130,7 +1157,7 @@ function before_update_object_callback($post_array, $primary_key) {
         return $post_array;
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -1172,6 +1199,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu']= $active_menu;
         return $header_data;
 }
 
