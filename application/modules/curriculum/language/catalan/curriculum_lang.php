@@ -61,6 +61,8 @@ $lang['study_module_endDate']="Data fí";
 $lang['study_module_external_code']="Codi extern";          
 $lang['type']="Tipus";   
 $lang['subtype']="Subtipus";   
+$lang['study_submodules_study_module_id']="Mòdul Professional";   
+
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 $lang['study_module_teacher_id']="Codi Professor";

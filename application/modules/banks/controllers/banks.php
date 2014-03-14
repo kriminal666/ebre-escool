@@ -91,10 +91,15 @@ class banks extends skeleton_main {
 	
 	public function bank_account() {
 
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#bank_data'; 
+    $active_menu['submenu2']='#bank_account';
+
     $this->check_logged_user();
 
     /* Ace */
-    $header_data = $this->load_ace_files();   
+    $header_data = $this->load_ace_files($active_menu);   
 
     /* Grocery Crud */
     $this->current_table="bank_account";
@@ -244,10 +249,15 @@ class banks extends skeleton_main {
 	
 	public function bank() {
 
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#bank_data'; 
+    $active_menu['submenu2']='#bank';
+
     $this->check_logged_user();
 
     /* Ace */
-    $header_data = $this->load_ace_files();   
+    $header_data = $this->load_ace_files($active_menu);   
 
     /* Grocery Crud */
     $this->current_table="bank";
@@ -283,11 +293,15 @@ class banks extends skeleton_main {
 	
 	public function bank_account_type() {
 
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#bank_data'; 
+    $active_menu['submenu2']='#bank_account_type';
 
     $this->check_logged_user();
 
     /* Ace */
-    $header_data = $this->load_ace_files();   
+    $header_data = $this->load_ace_files($active_menu);   
 
     /* Grocery Crud */
     $this->current_table="bank_account_type";
@@ -327,10 +341,15 @@ class banks extends skeleton_main {
 	
 	public function bank_office() {
 
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#bank_data'; 
+    $active_menu['submenu2']='#bank_office';
+
     $this->check_logged_user();
 
     /* Ace */
-    $header_data = $this->load_ace_files();   
+    $header_data = $this->load_ace_files($active_menu);   
 
     /* Grocery Crud */
     $this->current_table="bank_office";
@@ -431,7 +450,7 @@ function renderitzar($table_name,$header_data)
 
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -472,6 +491,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu'] = $active_menu;
         return $header_data;
 }
 

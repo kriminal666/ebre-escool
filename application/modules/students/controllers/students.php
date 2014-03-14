@@ -36,7 +36,12 @@ class students extends skeleton_main {
 
 	public function student() {
 		
- $header_data= $this->load_ace_template();    
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#persons';
+        $active_menu['submenu2']='#students';
+
+        $header_data= $this->load_ace_template($active_menu);    
 
         $table_name="student";
         $this->session->set_flashdata('table_name', $table_name.'_');    
@@ -202,7 +207,7 @@ public function add_field_callback_entryDate(){
 		$this->student();
 	}
 
-  public function load_ace_template() {
+  public function load_ace_template($active_menu) {
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
                 base_url('assets/css/ace-fonts.css'));
@@ -230,6 +235,8 @@ public function add_field_callback_entryDate(){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js')); 
+
+        $header_data['menu']= $active_menu;
         return $header_data;
 
   }    

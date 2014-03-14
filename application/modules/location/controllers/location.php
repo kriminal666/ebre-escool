@@ -37,9 +37,13 @@ class location extends skeleton_main {
 
 	public function location() {
 		
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#location';
+
         $this->check_logged_user(); 
 
-        $header_data= $this->load_ace_template();  
+        $header_data= $this->load_ace_template($active_menu);  
 
 		/* Grocery Crud */
 		$this->current_table="location";
@@ -201,7 +205,7 @@ function renderitzar($table_name,$header_data = null)
 
 }
 
-  public function load_ace_template() {
+  public function load_ace_template($active_menu) {
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
                 base_url('assets/css/ace-fonts.css'));
@@ -229,6 +233,8 @@ function renderitzar($table_name,$header_data = null)
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js')); 
+
+        $header_data['menu']= $active_menu;
         return $header_data;
 
   }
