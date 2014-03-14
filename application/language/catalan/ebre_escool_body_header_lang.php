@@ -119,6 +119,7 @@ $lang['shift'] = "Torn";
 
 //Inventari
 $lang['inventory']="Inventari";
+$lang['material']="Material";
 
 //Dades Bancàries
 $lang['bank']="Bancs";
@@ -126,3 +127,7 @@ $lang['bank_data']="Dades bancàries";
 $lang['bank_account']="Comptes";
 $lang['bank_office']="Oficines";
 $lang['bank_account_type']="Tipus de compte";
+
+//Usuaris
+$lang['creation_user']="Usuari de Creació";
+$lang['modification_user']="Usuari de Modificació";

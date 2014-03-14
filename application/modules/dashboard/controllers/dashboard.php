@@ -74,11 +74,11 @@ class dashboard extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/ace-skins.min.css'));
-
+/*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));
-
+*/
 		//JS
 		//Jquery already load by skeleton main!!!
 		//$header_data= $this->add_javascript_to_html_header_data(

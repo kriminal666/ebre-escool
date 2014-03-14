@@ -35,7 +35,7 @@
 
 
     <center>
-        <select id="teachers" style="width: 400px">
+        <select id="teacher" style="width: 400px">
             <option></option>
             <?php foreach( (array) $teachers as $teacher_id => $teacher): ?>
             <?php if( $teacher_id == $default_teacher): ?>
@@ -347,16 +347,15 @@
 <script>
 
 $(function() {
-
     //*****************************
     //* CLASSROOMGROUP DROPDOWN  **
     //*****************************
 
     //Jquery select plugin: http://ivaynberg.github.io/select2/
-    $("#teachers").select2(); 
+    $("#teacher").select2();
 
-    $('#teachers').on("change", function(e) {   
-        selectedValue = $("#teachers").select2("val");
+    $('#teacher').on("change", function(e) {  
+        var selectedValue = $("#teacher").select2("val");
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";

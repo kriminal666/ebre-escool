@@ -1,6 +1,22 @@
 <div id="skeleton_body_footer">
 
-<style type="text/css">	  
+<style type="text/css">
+.footer {
+	color:#666; 
+	background:#fff !important; 
+	padding: 5px 0 5px 0;
+	border-top:1px solid #ccc !important;
+}
+.footer a:link, .footer a:visited {
+	color:#444 !important;
+}
+.footer a:hover {
+	color:#666 !important; 
+	border-bottom: 1px dotted #666 !important;
+	text-decoration: none;
+}
+
+/*	  
     .footer {		   
 		color: #666;
 		background: #222;
@@ -15,6 +31,8 @@
     .footer a:hover {
          	color: #efefef;
     }	
+*/
+
 </style>
 <div style="clear:both"></div>
 <div class="navbar navbar-fixed-bottom">
