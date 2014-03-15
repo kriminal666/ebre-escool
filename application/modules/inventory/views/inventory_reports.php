@@ -4,6 +4,18 @@
  <script type="text/javascript">
   try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
  </script>
+
+<script>
+
+  $(document).ready(function(){
+    $(".dd2-content").click(function(){
+      alert($(this).text());
+
+    });
+  });
+
+</script>
+
  <ul class="breadcrumb">
   <li>
    <i class="icon-home home-icon"></i>
@@ -156,39 +168,107 @@
                       <div class="widget-main">                        
 
                     <ol class="dd-list">
+
+                      <!-- Unitat Organitzativa --> 
                       <li class="dd-item dd2-item" data-id="13">
-                        <div class="dd-handle dd2-handle">
-                          <i class="normal-icon icon-download-alt blue bigger-130"></i>
-
-                          <i class="drag-icon icon-move bigger-125"></i>
-                        </div>
-                        <div class="dd2-content"><a href="#">Informe 1 TODO</a></div>
+                        <?php echo lang("organizational_unit");?><br />
+                        <select id="organizational_unit_name" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $organizational_units as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
                       </li>
 
-                      <li class="dd-item dd2-item" data-id="15">
-                        <div class="dd-handle dd2-handle">
-                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
-
-                          <i class="drag-icon icon-move bigger-125"></i>
-                        </div>
-                        <div class="dd2-content"><a href="#">Informe 2 TODO</a></div>
-
+                      <!-- Materials --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("material_menu");?><br />
+                        <select id="material" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $materials as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
                       </li>
 
-                      <li class="dd-item dd2-item" data-id="19">
-                        <div class="dd-handle dd2-handle">
-                          <i class="normal-icon icon-download-alt blue bigger-130"></i>
-
-                          <i class="drag-icon icon-move bigger-125"></i>
-                        </div>
-                        <div class="dd2-content"><a href="#">INFORME 3 TODO</a></div>
+                      <!-- Espais --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("location");?><br />
+                        <select id="location_name" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $locations as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select>
                       </li>
+
+                      <!-- Marca --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("brand_menu");?><br />
+                        <select id="brands" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $brands as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Model --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("model_menu");?><br />
+                        <select id="model" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $models as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Proveïdor --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("provider_menu");?><br />
+                        <select id="provider" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $providers as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Usuari de Creació --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("creation_user");?><br />
+                        <select id="creation_user" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $users as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Usuari de Modificació --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("modification_user");?><br />
+                        <select id="modification_user" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $users as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Origen dels Diners --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <?php echo lang("money_source_menu");?><br />
+                        <select id="money_source" style="width: 400px">
+                          <option value="all"></option>
+                          <?php foreach( (array) $money_sources as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
                     </ol>
-
-
-
-
-
 
                         </p>
                       </div>
@@ -314,6 +394,77 @@
 
 $(document).ready(function() {
   
+  function selected_values(){
+
+    $("#organizational_unit_name").select2();
+    var organizational_unit = "organizational_unit/"+$("#organizational_unit_name").select2("val");   
+    $("#material").select2();
+    var material = "material/"+$("#material").select2("val"); 
+    $("#location_name").select2();
+    var location = "location/"+$("#location_name").select2("val"); 
+    $("#brands").select2();
+    var brand = "brand/"+$("#brands").select2("val");
+    $("#model").select2();
+    var model = "model/"+$("#model").select2("val"); 
+    $("#provider").select2();
+    var provider = "provider/"+$("#provider").select2("val"); 
+    $("#creation_user").select2();
+    var creation_user = "creation_user/"+$("#creation_user").select2("val"); 
+    $("#modification_user").select2();
+    var modification_user = "modification_user/"+$("#modification_user").select2("val"); 
+    $("#money_source").select2();
+    var money_source = "money_source/"+$("#money_source").select2("val"); 
+    var full_path=organizational_unit+"/"+material+"/"+location+"/"+brand+"/"+model+"/"+provider+"/"+creation_user+"/"+modification_user+"/"+money_source;
+    return full_path;
+  }
+
+  
+
+
+  $('#organizational_unit_name').on("change", function(e) {  
+      var selectedValue = $("#organizational_unit_name").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+
+  $('#material').on("change", function(e) {  
+      var selectedValue = $("#material").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+
+  $('#location_name').on("change", function(e) {  
+      var selectedValue = $("#location_name").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+
+  $('#brands').on("change", function(e) {  
+      var selectedValue = $("#brands").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+
   $('#inventory_report_table').dataTable({
     "sScrollX": "100%",
     "bScrollCollapse": true,

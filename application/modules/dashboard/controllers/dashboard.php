@@ -13,8 +13,9 @@ class dashboard extends skeleton_main {
 
 	public $body_footer_view ='include/ebre_escool_body_footer' ;
 
-	public function load_header_data(){
+	public function load_header_data($menu){
 
+		$active_menu = $menu;
 		//CSS URLS
 		$jquery_ui_css_url = "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
 		$jquery_ui_editable_css_url = "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css";
@@ -73,11 +74,11 @@ class dashboard extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/ace-skins.min.css'));
-
+/*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));
-
+*/
 		//JS
 		//Jquery already load by skeleton main!!!
 		//$header_data= $this->add_javascript_to_html_header_data(
@@ -135,6 +136,7 @@ class dashboard extends skeleton_main {
                     $header_data,
                     base_url('assets/js/ace.min.js'));
 
+		$header_data['menu']= $active_menu;
 		return $header_data; 
         
     }
@@ -147,19 +149,25 @@ class dashboard extends skeleton_main {
 	}
 	
 	public function index() {		
+
+		$active_menu = array();
+		$active_menu['menu']='#dashboard';
+		//$this->session->set_flashdata('menu', $active_menu);
+
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-
-		$header_data = $this->load_header_data();
+		//$this->session->set_flashdata('categoria','dashboard');
+		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
         /*******************
 		/*      BODY     *
 		/******************/
 		$this->_load_body_header();
+
 		$this->load->view('dashboard'); 
                 
 		/*******************

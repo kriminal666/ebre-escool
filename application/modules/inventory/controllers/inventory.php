@@ -13,7 +13,9 @@ class inventory extends skeleton_main {
 
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 
+    public $html_header_view ='include/ebre_escool_html_header' ;
 
+    public $body_footer_view ='include/ebre_escool_body_footer' ;   
 
 function __construct()	{
 
@@ -86,10 +88,13 @@ public function images(){
 
 public function inventory_object($organizational_unit="")	{
 
+	$active_menu = array();
+	$active_menu['menu']='#inventory';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	$data = array();
 
@@ -356,10 +361,15 @@ public function index()	{
  
 public function externalIDType()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#externalIDType';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="externalIDType";
@@ -408,10 +418,15 @@ public function externalIDType()	{
 	
 public function material()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#material_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="material";
@@ -460,10 +475,15 @@ public function material()	{
 
 public function brand()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#brand_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="brand";
@@ -510,10 +530,15 @@ public function brand()	{
 
 public function model()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#model_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="model";
@@ -560,10 +585,15 @@ public function model()	{
 
 public function provider()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#provider_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="provider";
@@ -609,10 +639,15 @@ public function provider()	{
 
 public function money_source()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#money_source_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="moneySource";
@@ -659,10 +694,15 @@ public function money_source()	{
 	
 public function barcode()	{
 
+	$active_menu = array();
+	$active_menu['menu']='#maintenances';
+	$active_menu['submenu1']='#inventory_menu';	
+	$active_menu['submenu2']='#barcode_menu';
+
 	$this->check_logged_user();
 
 	/* Ace */
-    $header_data = $this->load_ace_files();  
+    $header_data = $this->load_ace_files($active_menu);  
 
 	// Grocery Crud 
 	$this->current_table="barcode";
@@ -762,7 +802,7 @@ protected function _get_html_header_data() {
 		return $header_data;
 	}
 	
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 		$header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -799,6 +839,8 @@ function load_ace_files(){
             $header_data,
                 base_url('assets/js/select2.min.js')); 
                   
+
+		$header_data['menu']= $active_menu;        
 
         return $header_data;
 }

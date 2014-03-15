@@ -9,9 +9,9 @@ class teachers extends skeleton_main {
 
     public $body_header_lang_file ='ebre_escool_body_header' ;
 
-    //public $html_header_view ='include/ebre_escool_html_header' ;
+    public $html_header_view ='include/ebre_escool_html_header' ;
 
-    //public $body_footer_view ='include/ebre_escool_body_footer' ;
+    public $body_footer_view ='include/ebre_escool_body_footer' ;
 
 	
 	function __construct()
@@ -37,10 +37,15 @@ class teachers extends skeleton_main {
 
 	public function teacher() {
     
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#persons';
+    $active_menu['submenu2']='#teachers';
+
     $this->check_logged_user(); 
 
     /* Ace */
-    $header_data= $this->load_ace_files();  
+    $header_data= $this->load_ace_files($active_menu);  
 
     /* Grocery Crud */ 
     $this->current_table="teacher";
@@ -197,7 +202,7 @@ function renderitzar($table_name,$header_data)
 
 }    
 
-  public function load_ace_files() {
+  public function load_ace_files($active_menu) {
         $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
                 base_url('assets/css/ace-fonts.css'));
@@ -210,11 +215,11 @@ function renderitzar($table_name,$header_data)
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));      
-
+/*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-
+*/
         //JS
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
@@ -225,6 +230,8 @@ function renderitzar($table_name,$header_data)
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js')); 
+
+        $header_data['menu']= $active_menu;
         return $header_data;
 
   }

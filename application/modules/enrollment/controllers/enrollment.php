@@ -8,6 +8,10 @@ class enrollment extends skeleton_main {
     public $body_header_view ='include/ebre_escool_body_header.php' ;
     public $body_header_lang_file ='ebre_escool_body_header' ;
 
+    public $html_header_view ='include/ebre_escool_html_header' ;
+
+    public $body_footer_view ='include/ebre_escool_body_footer' ;       
+
 	function __construct()
     {
         parent::__construct();
@@ -43,10 +47,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment';
+
         $this->check_logged_user();
 		
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment";
@@ -67,7 +76,7 @@ class enrollment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -94,10 +103,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_studies() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_studies';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_studies";
@@ -118,8 +132,8 @@ class enrollment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));        		
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
-        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -145,10 +159,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_class_group() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_class_group';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_class_group";
@@ -170,9 +189,9 @@ class enrollment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_group_id',lang('group_id'));        		
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
-        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
-        //$this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');        
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');        
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -197,10 +216,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_modules() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_modules';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_modules";
@@ -223,10 +247,10 @@ class enrollment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));        		
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
-        //$this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
-        //$this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');      
-        //$this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
+        $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');      
+        $this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -251,10 +275,15 @@ class enrollment extends skeleton_main {
 
 	public function enrollment_submodules() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_submodules';
+
         $this->check_logged_user();
         
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="enrollment_submodules";
@@ -465,7 +494,7 @@ function set_common_columns_name($table_name){
     $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -483,11 +512,11 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));      
-                      
+/*                      
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-        
+*/
         //JS
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
@@ -506,6 +535,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu']= $active_menu;
         return $header_data;
 }
 

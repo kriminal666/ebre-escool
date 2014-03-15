@@ -63,7 +63,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Tipus Identificadors externs</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/externalIDType'><?php echo lang('externalid_menu');?></a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="15">
@@ -72,7 +72,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Tipus Material</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/material'><?php echo lang('material_menu');?></a></div>
 
                       </li>
 
@@ -82,7 +82,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Marques</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/brand'><?php echo lang('brand_menu');?></a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="19">
@@ -91,7 +91,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Models</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/model'><?php echo lang('model_menu');?></a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="19">
@@ -100,7 +100,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Proveïdors</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/provider'><?php echo lang('provider_menu');?></a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="19">
@@ -109,7 +109,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Origen dels diners</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/money_source'><?php echo lang('money_source_menu');?></a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="19">
@@ -118,7 +118,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Codis de barres</a></div>
+                        <div class="dd2-content"><a href='<?=base_url()?>index.php/inventory/barcode'><?php echo lang('barcode_menu');?></a></div>
                       </li>
                     </ol>
 

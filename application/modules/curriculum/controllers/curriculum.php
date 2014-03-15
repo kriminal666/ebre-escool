@@ -8,6 +8,10 @@ class curriculum extends skeleton_main {
     public $body_header_view ='include/ebre_escool_body_header.php' ;
     public $body_header_lang_file ='ebre_escool_body_header' ;
 
+    public $html_header_view ='include/ebre_escool_html_header' ;
+
+    public $body_footer_view ='include/ebre_escool_body_footer' ;       
+
 	function __construct()
     {
         parent::__construct();
@@ -40,10 +44,14 @@ class curriculum extends skeleton_main {
 
     public function organizational_unit() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#organizational_unit';
+        
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();        
+        $header_data = $this->load_ace_files($active_menu);        
 
         /* Grocery Crud */
         $this->current_table="organizational_unit";
@@ -101,10 +109,15 @@ class curriculum extends skeleton_main {
 
     public function studies_organizational_unit() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#studies_organizational_unit';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();        
+        $header_data = $this->load_ace_files($active_menu);        
 
         /* Grocery Crud */
         $this->current_table="studies_organizational_unit";
@@ -153,10 +166,15 @@ class curriculum extends skeleton_main {
 
     public function departments_families() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#departments_families';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
         
 
         /* Grocery Crud */
@@ -216,10 +234,15 @@ class curriculum extends skeleton_main {
 
     public function studies() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#studies';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="studies";
@@ -279,10 +302,15 @@ class curriculum extends skeleton_main {
 
     public function cycle() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#cycle';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="cycle";
@@ -333,10 +361,15 @@ class curriculum extends skeleton_main {
 
     public function course() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#course';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="course";
@@ -404,10 +437,15 @@ class curriculum extends skeleton_main {
 
     public function classroom_group() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#classroom_group';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="classroom_group";
@@ -491,10 +529,15 @@ class curriculum extends skeleton_main {
 
     public function study_module() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#study_module';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="study_module";
@@ -566,10 +609,15 @@ class curriculum extends skeleton_main {
 
     public function study_submodules() {
 
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#study_submodules';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
         /* Grocery Crud */
         $this->current_table="study_submodules";
@@ -594,6 +642,11 @@ class curriculum extends skeleton_main {
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_study_module_id',lang($this->current_table.'_study_module_id'));        
+
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({nom_grup} - {study_module_name})');
+        //$this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_id} - {study_module_name})');
 
         //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -625,10 +678,15 @@ class curriculum extends skeleton_main {
 
 	public function lessons($department_code=null) {
 		
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#lessons';
+
         $this->check_logged_user(); 
 
         /* Ace */
-        $header_data = $this->load_ace_files();
+        $header_data = $this->load_ace_files($active_menu);
 
 		/* Grocery Crud */
 		$this->current_table="lesson";
@@ -801,7 +859,7 @@ function set_common_columns_name($table_name){
     $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
-function load_ace_files(){
+function load_ace_files($active_menu){
 
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
@@ -819,11 +877,11 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));
-                      
+/*                      
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-
+*/
 
         //JS
         $header_data= $this->add_javascript_to_html_header_data(
@@ -843,6 +901,7 @@ $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+        $header_data['menu']= $active_menu;
         return $header_data;
 }
 
