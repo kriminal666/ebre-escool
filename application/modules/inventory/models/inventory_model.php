@@ -255,7 +255,7 @@ class inventory_Model  extends CI_Model  {
 		$this->db->select('location_id, location_shortName');
 		$this->db->order_by("location_shortName", "asc"); 
 		$query = $this->db->get('location');
-		
+
 		$locations_array = array();
 
 		foreach ($query->result_array() as $row)	{
@@ -277,6 +277,57 @@ class inventory_Model  extends CI_Model  {
 		return $materials_array;
 	}
 
+	function getAllBrands() {
+		$this->db->select('brand_id, brand_shortName');
+		$this->db->order_by("brand_shortName", "asc");
+		$query = $this->db->get('brand');
+		
+		$brands_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$brands_array[$row['brand_id']] = $row['brand_shortName'];
+		}
+		return $brands_array;
+	}
+
+	function getAllModels() {
+		$this->db->select('model_id, model_shortName');
+		$this->db->order_by("model_shortName", "asc");
+		$query = $this->db->get('model');
+		
+		$models_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$models_array[$row['model_id']] = $row['model_shortName'];
+		}
+		return $models_array;
+	}
+
+	function getAllUsers() {
+		$this->db->select('id, first_name, last_name');
+		$this->db->order_by("first_name", "asc");
+		$query = $this->db->get('users');
+		
+		$users_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$users_array[$row['id']] = $row['first_name']." ".$row['last_name'];
+		}
+		return $users_array;
+	}
+
+	function getAllMoneySources() {
+		$this->db->select('moneySource_id, moneySource_shortName');
+		$this->db->order_by("moneySource_shortName", "asc");
+		$query = $this->db->get('moneySource');
+		
+		$money_sources_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$money_sources_array[$row['moneySource_id']] = $row['moneySource_shortName'];
+		}
+		return $money_sources_array;
+	}
 	
 	function get_main_organizational_unit_from_userid($userid){
 		
