@@ -112,6 +112,7 @@ class inventory_Model  extends CI_Model  {
 
 	function getAllorganizationalUnits(){
 		$this->db->select('organizational_unit_Id, organizational_unit_name');
+		$this->db->order_by("organizational_unit_name", "asc");
 		$query = $this->db->get('organizational_unit');
 		
 		$organizational_units_array = array();
@@ -248,6 +249,20 @@ class inventory_Model  extends CI_Model  {
 		foreach ($query->result_array() as $row)	{
    			$providers_array[$row['provider_id']] = $row['provider_shortName'];
 		}
+		return $providers_array;
+	}
+
+	function getAllProvidersByOrganizationalUnit($organizational_unit_id) {
+		$this->db->select('provider_id, provider_shortName');
+		$this->db->order_by("provider_shortName", "asc"); 
+		$query = $this->db->get('provider');
+		
+		$providers_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$providers_array[$row['provider_id']] = $row['provider_shortName'];
+		}
+
 		return $providers_array;
 	}
 

@@ -201,8 +201,38 @@
               <div class="span2"></div>
             </div>
 
-  <?php if ($data['grocery_crud_state'] == "list"): ?>         
+        <div class="row-fluid">
+          <div class="span4"></div>
+          
+          <div class="span4">
+          
+          <i class="icon-group"></i> Unitat organitzativa: 
+        <select id="organizational_units" style="width: 400px">
+            <option></option>
+            <?php foreach( (array) $data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
+            <?php if( $data['selected_organizational_unit_key'] == $organizational_unit_key ): ?>
+            <option value="<?php echo $organizational_unit_key; ?>" selected="selected"><?php echo $organizational_unit; ?></option>
+            <?php else: ?> 
+            <option value="<?php echo $organizational_unit_key; ?>" ><?php echo $organizational_unit; ?></option>
+           <?php endif; ?> 
+        <?php endforeach; ?> 
+        </select> 
+          </div>
+          
+          <div class="span4"></div>
+
+        </div>
+        
+
+    <div style="height: 10px;"></div>
+
+
+  <?php if ($data['grocery_crud_state'] == "list"): ?>       
+
+    
+
   <div class="table-header">
+    <!--
     <i class="icon-group"></i> 
     <div class="inline position-relative">
               Unitat organitzativa principal:
@@ -212,12 +242,14 @@
                           </button>
 
                           <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                            <li> 
-                              <a href="#">
-                                <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                Totes
-                              </a>
-                            </li>      
+                            <?php if (count($data['organizational_units']) > 1): ?>
+                              <li> 
+                                <a href="#">
+                                  <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                  Totes
+                                </a>
+                              </li>      
+                            <?php endif; ?>
                           <?php foreach ($data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
                             <li <?php if ($data['selected_organizational_unit_key'] == $organizational_unit_key ) { echo 'class="active"';} ?> >
                               <a href="#" 
@@ -229,6 +261,7 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+    
     <i class="icon-double-angle-right"></i> 
     <div class="inline position-relative">
               Tipus de material:
@@ -255,7 +288,8 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
-    <i class="icon-double-angle-right"></i> 
+    <i class="icon-double-angle-right" ></i> 
+    
     <div class="inline position-relative">
               Ubicació:
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -281,7 +315,7 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
-
+    
     <div class="inline position-relative" style="float:right;">
               Proveidors: 
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -307,13 +341,14 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+    -->
   </div>
   <!-- End table header> -->
   <?php endif; ?>
 
 
         <!-- Load Grocery Crud -->
-      <?php echo $output; ?>
+      <?php //echo $output; ?>
 
 
 
@@ -322,3 +357,24 @@
 
 
 </div>
+
+<script>
+
+$(function() {
+
+  //Jquery select plugin: http://ivaynberg.github.io/select2/
+    $("#organizational_units").select2(); 
+
+    $('#organizational_units').on("change", function(e) {   
+        selectedValue = $("#organizational_units").select2("val");
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+
+    });
+
+});
+
+</script>

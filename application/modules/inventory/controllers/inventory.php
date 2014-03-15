@@ -7,6 +7,10 @@ class inventory extends skeleton_main {
 
 	public $body_header_view ='include/ebre_escool_body_header.php' ;
 
+	public $html_header_view ='/include/ebre_escool_html_header.php';
+
+	public $body_footer_view ='include/ebre_escool_body_footer.php' ;
+
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 
 
@@ -80,7 +84,7 @@ public function images(){
 	    $this->image_crud_render($this->current_table,$header_data);
 	}	
 
-public function inventory_object()	{
+public function inventory_object($organizational_unit="")	{
 
 	$this->check_logged_user();
 
@@ -98,11 +102,7 @@ public function inventory_object()	{
     $this->grocery_crud->set_table($this->current_table);
         
     $this->session->set_flashdata('table_name', $this->current_table); 
-
-    //EXAMPLE FILTER BY ORGANIZATIONAL UNIT
-	//Relation n a n table: inventory_object_organizational_unit
-	//$crud->where('status','active');->where('status','active');
-        
+       
     //Establish subject:
     $this->grocery_crud->set_subject(lang('object_subject'));
                         
@@ -231,6 +231,9 @@ public function inventory_object()	{
     $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
     
     /* 
+
+    TODO TODO TODO TODO Sobra?
+
 	$current_organizational_unit = $this->session->userdata("current_organizational_unit");
     if ($current_organizational_unit != "all")
 		$this->grocery_crud->where('`inventory_object`.inventory_object_mainOrganizationalUnitId',$current_organizational_unit);    
@@ -256,6 +259,7 @@ public function inventory_object()	{
 	$organizational_units = array();
 
 	$user_main_organizational_unit = "La meva unitat organitzativa principal";
+	
 	//TODO: getuserid from session
 	$userid=12;
 	$user_main_organizational_unit = $this->inventory_model->getUserMainOrganizationalUnit($userid);
@@ -280,10 +284,11 @@ public function inventory_object()	{
 		$all_organizational_units = $this->inventory_model->getAllorganizationalUnits();
 		$organizational_units = $all_organizational_units;
 	} else {
-		$organizational_units[] = $user_main_organizational_unit;
+		$organizational_units[] = $user_main_organizational_unit_name;
 	}
-
+	
 	$data['organizational_units'] = $organizational_units;
+
 	$data['selected_organizational_unit'] = $user_main_organizational_unit_name;
 
 	$data['selected_organizational_unit_key'] = $user_main_organizational_unit_id;
@@ -299,7 +304,7 @@ public function inventory_object()	{
 	if ($user_is_admin) {
 		$providers = $this->inventory_model->getAllProviders();
 	} else {
-		$providers[] = $this->inventory_model->getAllProvidersByOrganizationalUnit($data['selected_organizational_unit_key']);
+		$providers = $this->inventory_model->getAllProvidersByOrganizationalUnit($data['selected_organizational_unit_key']);
 	}
 
 	$data['providers'] = $providers;
@@ -726,10 +731,40 @@ function image_crud_render($table_name,$header_data)
        $this->_load_body_footer();  
 
 }
+
+protected function _get_html_header_data() {
+
+		$skeleton_css_files=array();
+		
+		$bootstrap_min=base_url("assets/css/bootstrap.min.css");
+		$bootstrap_responsive=base_url("assets/css/bootstrap-responsive.min.css");
+		$font_awesome=base_url("assets/css/font-awesome.min.css");
+				
+		array_push($skeleton_css_files, $bootstrap_min, $bootstrap_responsive,$font_awesome);
+		$header_data['skeleton_css_files']=$skeleton_css_files;			
+		
+		$skeleton_js_files=array();
+
+		$lodash_js="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/1.2.1/lodash.min.js";
+		$jquery_js="http://code.jquery.com/jquery-1.10.2.min.js";
+
+		if (defined('ENVIRONMENT') && ENVIRONMENT=="development") {
+			$lodash_js= base_url('assets/js/lodash.min.js');
+			$jquery_js= base_url('assets/js/jquery-1.10.2.min.js');
+		}
+		
+		//$lazyload_js=base_url("assets/grocery_crud/js/common/lazyload-min.js");
+		$bootstrap_js=base_url("assets/js/bootstrap.min.js");
+		
+		array_push($skeleton_js_files, $lodash_js ,$jquery_js , $bootstrap_js);
+		$header_data['skeleton_js_files']=$skeleton_js_files;	
+		
+		return $header_data;
+	}
 	
 function load_ace_files(){
 
-$header_data= $this->add_css_to_html_header_data(
+		$header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 
@@ -738,27 +773,19 @@ $header_data= $this->add_css_to_html_header_data(
                 base_url('assets/css/ace-fonts.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
+            base_url('assets/css/select2.css'));  
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
                 base_url('assets/css/ace.min.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-responsive.min.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
-                base_url('assets/css/ace-skins.min.css'));      
-
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-            base_url('assets/css/no_padding_top.css'));  
-
+                base_url('assets/css/ace-skins.min.css'));              
         
         //JS
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/jquery-1.9.1.js");
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
-
+        
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/ace-extra.min.js'));
@@ -768,6 +795,10 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/select2.min.js')); 
+                  
 
         return $header_data;
 }
@@ -866,7 +897,7 @@ function renderitzar($table_name,$header_data = null, $data=array())
     
 
        $output = $this->grocery_crud->render();
-
+       
        // HTML HEADER
        
         $this->_load_html_header($header_data,$output); 
