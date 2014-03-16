@@ -212,6 +212,19 @@ class inventory_Model  extends CI_Model  {
 		return $all_inventory_objects_array;
 	}
 
+	function getUserOrganizationalUnitNameFromId($ouid) {
+		$this->db->select('organizational_unit_name');
+		$this->db->from('organizational_unit');
+		$this->db->where('organizational_unit_id', $ouid);
+
+		$query = $this->db->get();
+
+		$row = $query->row();
+
+		return $row->organizational_unit_name;
+
+	}
+
 	function getUserMainOrganizationalUnit($userid) {
 
 		$this->db->select('organizational_unit_Id,organizational_unit_name,organizational_unit_shortName');

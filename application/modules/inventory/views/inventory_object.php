@@ -205,18 +205,30 @@
           <div class="span4"></div>
           
           <div class="span4">
-          
-          <i class="icon-group"></i> Unitat organitzativa: 
-        <select id="organizational_units" style="width: 250px">
-            <option></option>
-            <?php foreach( (array) $data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
-            <?php if( $data['selected_organizational_unit_key'] == $organizational_unit_key ): ?>
-            <option value="<?php echo $organizational_unit_key; ?>" selected="selected"><?php echo $organizational_unit; ?></option>
-            <?php else: ?> 
-            <option value="<?php echo $organizational_unit_key; ?>" ><?php echo $organizational_unit; ?></option>
-           <?php endif; ?> 
-        <?php endforeach; ?> 
-        </select> 
+          <i class="icon-group"></i> <b>Unitat organitzativa</b>: 
+          <?php if($data['user_is_admin']): ?>
+            <select id="organizational_units" style="width: 250px">
+             <option></option>
+             <?php if( $data['selected_organizational_unit_key'] == "All" ): ?>
+                <option value="All" selected="selected"><?php echo $data['all_organizational_units_text'];?></option>
+             <?php else: ?> 
+                <option value="All"><?php echo $data['all_organizational_units_text'];?></option>
+             <?php endif; ?> 
+
+             
+             <?php foreach( (array) $data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
+              <?php if( $data['selected_organizational_unit_key'] == $organizational_unit_key ): ?>
+               <option value="<?php echo $organizational_unit_key; ?>" selected="selected"><?php echo $organizational_unit; ?></option>
+              <?php else: ?> 
+                <option value="<?php echo $organizational_unit_key; ?>" ><?php echo $organizational_unit; ?></option>
+              <?php endif; ?> 
+             <?php endforeach; ?> 
+            </select> 
+          <?php else: ?>          
+            <?php echo $data['organizational_units'][$data['selected_organizational_unit_key']] ?>
+          <?php endif; ?>
+
+        
           </div>
           
           <div class="span4"></div>
@@ -363,17 +375,14 @@
 <script>
   $(document).ready(function(){
 
-    console.log("Ok!");
-
-  //Jquery select plugin: http://ivaynberg.github.io/select2/
+    //Jquery select plugin: http://ivaynberg.github.io/select2/
     $("#organizational_units").select2(); 
 
-    console.log("No s'executa mai!");
     $('#organizational_units').on("change", function(e) {   
         selectedValue = $("#organizational_units").select2("val");
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_object";
         //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
 

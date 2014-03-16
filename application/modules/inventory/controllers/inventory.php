@@ -260,11 +260,24 @@ public function inventory_object($organizational_unit="")	{
 	$data= array();
 	$organizational_units = array();
 
-	$user_main_organizational_unit = "La meva unitat organitzativa principal";
+	$user_main_organizational_unit = array();
+	$selected_organizational_unit = array();
+	$selected_organizational_unit_name = "";
+	$data['all_organizational_units_text'] = "Totes les unitats organitzatives";
 	
 	//TODO: getuserid from session
 	$userid=12;
+
 	$user_main_organizational_unit = $this->inventory_model->getUserMainOrganizationalUnit($userid);
+
+	if ( $organizational_unit != "") {
+		if ( $organizational_unit != "All") {
+			$selected_organizational_unit_name = $this->inventory_model->getUserOrganizationalUnitNameFromId($organizational_unit);
+		}	else {
+			$selected_organizational_unit_name = $data['all_organizational_units_text'];
+		}
+		$selected_organizational_unit = array ( $organizational_unit => $selected_organizational_unit_name);
+	}
 
 	$user_main_organizational_unit_name = $user_main_organizational_unit->organizational_unit_name;
 	$user_main_organizational_unit_id = $user_main_organizational_unit->organizational_unit_Id;
@@ -280,20 +293,28 @@ public function inventory_object($organizational_unit="")	{
 	}
 
 	//TODO
-	$user_is_admin = true;
+	$user_is_admin = false;
+	$data['user_is_admin'] = $user_is_admin;
 
 	if ($user_is_admin) {
 		$all_organizational_units = $this->inventory_model->getAllorganizationalUnits();
 		$organizational_units = $all_organizational_units;
 	} else {
-		$organizational_units[] = $user_main_organizational_unit_name;
+		$organizational_units = array ( $user_main_organizational_unit_id => $user_main_organizational_unit_name );
 	}
 	
 	$data['organizational_units'] = $organizational_units;
 
-	$data['selected_organizational_unit'] = $user_main_organizational_unit_name;
+	if ( $organizational_unit != "" && $user_is_admin) {
+		$data['selected_organizational_unit'] = $selected_organizational_unit;
+		$data['selected_organizational_unit_key'] = $organizational_unit;
+	} else {
+		$data['selected_organizational_unit'] = $user_main_organizational_unit_name;	
+		$data['selected_organizational_unit_key'] = $user_main_organizational_unit_id;
+	}
+	
 
-	$data['selected_organizational_unit_key'] = $user_main_organizational_unit_id;
+	
 
 	//Providers
 	//TODO: Get values from config file
