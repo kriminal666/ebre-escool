@@ -17,6 +17,18 @@ class skeleton extends skeleton_main {
 
     public $users_view = "include/users_view.php";
 
+    public $groups_view = "include/groups_view.php";
+
+    public $preferences_page = "skeleton/user_preferences";
+
+    public $skeleton_grocery_crud_default_view = 'include/skeleton_object_view.php';
+
+    public $preferences_view = 'include/preferences.php';
+
+    public $user_preferences_NOT_yet_header_view = "include/user_preferences_NOT_yet_header.php";
+
+    public $user_preferences_for_admin_header_view = "include/user_preferences_for_admin_header.php";
+
 	public $header_data;
 
 	function __construct()
@@ -50,13 +62,6 @@ class skeleton extends skeleton_main {
 
         return $header_data;
     }
-
-	public function groups() {
-
-		$this->header_data = $this->load_ace_files();  
-
-		parent::groups();
-	}
 
 	function load_ace_files($init_header_data){
 
