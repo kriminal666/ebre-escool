@@ -15,6 +15,8 @@ class skeleton extends skeleton_main {
 
     public $error_page_404 = "include/404.php"; 
 
+    public $users_view = "include/users_view.php";
+
 	public $header_data;
 
 	function __construct()
