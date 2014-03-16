@@ -783,12 +783,13 @@ protected function _get_html_header_data() {
 		$skeleton_js_files=array();
 
 		$lodash_js="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/1.2.1/lodash.min.js";
-		$jquery_js="http://code.jquery.com/jquery-1.10.2.min.js";
 
 		if (defined('ENVIRONMENT') && ENVIRONMENT=="development") {
-			$lodash_js= base_url('assets/js/lodash.min.js');
-			$jquery_js= base_url('assets/js/jquery-1.10.2.min.js');
+			$lodash_js= base_url('assets/js/lodash.min.js');	
 		}
+
+		//Sergi Tur: 16/03/2014: Need to use jquery-1.10.2.min.js from Grocery Crud it have incorporated Jquery Migrate 1.2.1 
+		$jquery_js= base_url('assets/grocery_crud/js/jquery-1.10.2.min.js');
 		
 		//$lazyload_js=base_url("assets/grocery_crud/js/common/lazyload-min.js");
 		$bootstrap_js=base_url("assets/js/bootstrap.min.js");
@@ -934,6 +935,7 @@ function renderitzar($table_name,$header_data = null, $data=array())
 
 	   $state = $this->grocery_crud->getState();
     
+       //echo "state: $state <br/>";
 
        $output = $this->grocery_crud->render();
        
@@ -945,7 +947,14 @@ function renderitzar($table_name,$header_data = null, $data=array())
        $default_values=$this->_get_default_values();
        $default_values["table_name"]=$table_name;
        $default_values["field_prefix"]=$table_name."_";
-       $this->load->view('defaultvalues_view.php',$default_values); 
+
+
+       if ($state != "list" ) {
+       		$this->load->view('defaultvalues_view.php',$default_values); 	
+       }	else {
+       		//echo "test";
+       }
+       
 
 	   //example:
 	   //$output->content_view='crud_content_view'; //we add a new attribute called content_view

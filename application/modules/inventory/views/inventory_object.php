@@ -207,7 +207,7 @@
           <div class="span4">
           
           <i class="icon-group"></i> Unitat organitzativa: 
-        <select id="organizational_units" style="width: 400px">
+        <select id="organizational_units" style="width: 250px">
             <option></option>
             <?php foreach( (array) $data['organizational_units'] as $organizational_unit_key => $organizational_unit): ?>
             <?php if( $data['selected_organizational_unit_key'] == $organizational_unit_key ): ?>
@@ -347,8 +347,8 @@
   <?php endif; ?>
 
 
-        <!-- Load Grocery Crud -->
-      <?php //echo $output; ?>
+      <!-- Load Grocery Crud -->
+      <?php echo $output; ?>
 
 
 
@@ -358,13 +358,17 @@
 
 </div>
 
-<script>
 
-$(function() {
+
+<script>
+  $(document).ready(function(){
+
+    console.log("Ok!");
 
   //Jquery select plugin: http://ivaynberg.github.io/select2/
     $("#organizational_units").select2(); 
 
+    console.log("No s'executa mai!");
     $('#organizational_units').on("change", function(e) {   
         selectedValue = $("#organizational_units").select2("val");
         var pathArray = window.location.pathname.split( '/' );
@@ -375,6 +379,8 @@ $(function() {
 
     });
 
-});
+
+
+  });
 
 </script>

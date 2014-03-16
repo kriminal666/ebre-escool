@@ -1,4 +1,4 @@
-<script type="text/javascript" id="defaultvalues_view_script">
+<script type="text/javascript" id="defaultvalues_view_script_inventory">
 
 $('.qr_button').each(function () {
     $(this).replaceWith($(this).text());

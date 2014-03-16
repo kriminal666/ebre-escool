@@ -40,7 +40,11 @@
       
       <?php if (isset($js_files)): ?>
      <?php foreach($js_files as $js_file): ?>
-        <script src="<?php echo $js_file; ?>"></script>
+        <?php if (in_array($js_file, $skeleton_js_files)): ?>
+        <!-- NOT INCLUDED BECAUSE IT'S ALREADY INCLUDED <script src="<?php echo $js_file; ?>"></script>  -->
+        <?php else: ?>  
+          <script src="<?php echo $js_file; ?>"></script>
+        <?php endif; ?>
        <?php endforeach; ?>
       <?php endif; ?>
       
