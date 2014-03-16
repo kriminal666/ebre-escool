@@ -31,6 +31,8 @@ class skeleton extends skeleton_main {
 
 	public $header_data;
 
+    public $active_menu = array();
+
 	function __construct()
     {
 		parent::__construct();
@@ -45,6 +47,42 @@ class skeleton extends skeleton_main {
 		redirect('dashboard','refresh');
 		
 	}
+
+    public function users() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_users';
+
+        parent::users();
+
+    }
+
+    public function groups() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_groups';
+
+        parent::groups();
+
+    }
+
+    public function preferences() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_preferences';
+
+        parent::preferences();
+
+    }
+
+    public function user_preferences() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_preferences';
+
+        parent::user_preferences();
+
+    }
 
     public function error404() {
         if (!$this->skeleton_auth->logged_in())
@@ -105,6 +143,8 @@ class skeleton extends skeleton_main {
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+
+        $header_data['menu']= $this->active_menu;
         return $header_data;
 }
 

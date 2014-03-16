@@ -748,33 +748,34 @@
 
             <ul class="submenu">
 
-              <li id="users">
+              <li id="managment_users">
                 <a href="<?php echo base_url('index.php/skeleton/users');?>">
                   <i class="icon-double-angle-right"></i>
                   Usuaris
                 </a>
               </li>
 
-              <li id="groups">
+              <li id="managment_groups">
                 <a href="<?php echo base_url('index.php/skeleton/groups');?>">
                   <i class="icon-double-angle-right"></i>
                   Grups
                 </a>
               </li>
 
-              <li id="preferences">
+              <li id="managment_preferences">
                 <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
                   <i class="icon-double-angle-right"></i>
                   Preferències
                 </a>
               </li>
-
+              <!--
               <li id="faq">
                 <a href="faq.html">
                   <i class="icon-double-angle-right"></i>
                   FAQ
                 </a>
               </li>
+              -->
             </ul>
           </li>
 
