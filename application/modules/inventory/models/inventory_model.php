@@ -182,7 +182,7 @@ class inventory_Model  extends CI_Model  {
 
 
 */
-	function getAllInventoryObjects() {
+	function getAllInventoryObjects($selected = false) {
 		$this->db->select('inventory_objectId,inventory_object_publicId, inventory_object_externalID, inventory_object_externalIDType,externalIDType_shortName,inventory_object_mainOrganizationalUnitId,organizational_unit_shortName,
 			inventory_object_name,inventory_object_shortName,inventory_object_description,inventory_object_location,location_shortName,inventory_object_materialId,material_shortName,inventory_object_brandId,brand_shortName,
 			inventory_object_modelId,model_shortName,inventory_object_moneySourceId,moneySource_shortName,inventory_object_providerId,provider_shortName,
@@ -198,9 +198,13 @@ class inventory_Model  extends CI_Model  {
 		$this->db->join('model', 'model.model_id = inventory_object.inventory_object_modelId','left');
 		$this->db->join('moneySource', 'moneySource.moneySource_id = inventory_object.inventory_object_moneySourceId','left');
 		$this->db->join('provider', 'provider.provider_id = inventory_object.inventory_object_providerId','left');
-		
+
+		if($selected){
+
+			$this->db->where($selected);
+		}
 		$query = $this->db->get();
-		
+		//echo $this->db->last_query();
 		$all_inventory_objects_array = array();
 
 		foreach ($query->result() as $row)	{

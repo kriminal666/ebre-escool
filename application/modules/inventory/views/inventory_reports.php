@@ -173,9 +173,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("organizational_unit");?><br />
                         <select id="organizational_unit_name" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $organizational_units as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["organizational_unit"]){?> selected <?php } ?> ><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -184,9 +184,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("material_menu");?><br />
                         <select id="material" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $materials as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["material"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -195,9 +195,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("location");?><br />
                         <select id="location_name" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $locations as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["location"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select>
                       </li>
@@ -206,9 +206,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("brand_menu");?><br />
                         <select id="brands" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $brands as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["brand"]){?> selected <?php } ?> ><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -217,9 +217,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("model_menu");?><br />
                         <select id="model" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $models as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["model"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -228,9 +228,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("provider_menu");?><br />
                         <select id="provider" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $providers as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["provider"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -239,9 +239,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("creation_user");?><br />
                         <select id="creation_user" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $users as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["creation_user"]){?> selected <?php } ?> ><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -250,9 +250,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("modification_user");?><br />
                         <select id="modification_user" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $users as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["modification_user"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -261,9 +261,9 @@
                       <li class="dd-item dd2-item" data-id="13">
                         <?php echo lang("money_source_menu");?><br />
                         <select id="money_source" style="width: 400px">
-                          <option value="all"></option>
+                          <option value="all">Tots</option>
                           <?php foreach( (array) $money_sources as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" ><?php echo $value; ?></option>
+                              <option value="<?php echo $key; ?>" <?php if($key == $selected["money_source"]){?> selected <?php } ?>><?php echo $value; ?></option>
                           <?php endforeach; ?> 
                         </select> 
                       </li>
@@ -393,7 +393,7 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-  
+  selected_values();
   function selected_values(){
 
     $("#organizational_unit_name").select2();
@@ -417,8 +417,6 @@ $(document).ready(function() {
     var full_path=organizational_unit+"/"+material+"/"+location+"/"+brand+"/"+model+"/"+provider+"/"+creation_user+"/"+modification_user+"/"+money_source;
     return full_path;
   }
-
-  
 
 
   $('#organizational_unit_name').on("change", function(e) {  
@@ -456,6 +454,57 @@ $(document).ready(function() {
 
   $('#brands').on("change", function(e) {  
       var selectedValue = $("#brands").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+
+  $('#model').on("change", function(e) {  
+      var selectedValue = $("#model").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+  $('#provider').on("change", function(e) {  
+      var selectedValue = $("#provider").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+  $('#creation_user').on("change", function(e) {  
+      var selectedValue = $("#creation_user").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+  $('#modification_user').on("change", function(e) {  
+      var selectedValue = $("#modification_user").select2("val");
+      var pathArray = window.location.pathname.split( '/' );
+      var secondLevelLocation = pathArray[1];
+      var path = selected_values();
+      var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/inventory/inventory_reports/inventory";
+      window.location.href = baseURL + "/" + path;
+
+  });
+
+  $('#money_source').on("change", function(e) {  
+      var selectedValue = $("#money_source").select2("val");
       var pathArray = window.location.pathname.split( '/' );
       var secondLevelLocation = pathArray[1];
       var path = selected_values();
