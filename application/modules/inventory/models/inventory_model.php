@@ -112,6 +112,7 @@ class inventory_Model  extends CI_Model  {
 
 	function getAllorganizationalUnits(){
 		$this->db->select('organizational_unit_Id, organizational_unit_name');
+		$this->db->order_by("organizational_unit_name", "asc");
 		$query = $this->db->get('organizational_unit');
 		
 		$organizational_units_array = array();
@@ -211,6 +212,19 @@ class inventory_Model  extends CI_Model  {
 		return $all_inventory_objects_array;
 	}
 
+	function getUserOrganizationalUnitNameFromId($ouid) {
+		$this->db->select('organizational_unit_name');
+		$this->db->from('organizational_unit');
+		$this->db->where('organizational_unit_id', $ouid);
+
+		$query = $this->db->get();
+
+		$row = $query->row();
+
+		return $row->organizational_unit_name;
+
+	}
+
 	function getUserMainOrganizationalUnit($userid) {
 
 		$this->db->select('organizational_unit_Id,organizational_unit_name,organizational_unit_shortName');
@@ -248,6 +262,20 @@ class inventory_Model  extends CI_Model  {
 		foreach ($query->result_array() as $row)	{
    			$providers_array[$row['provider_id']] = $row['provider_shortName'];
 		}
+		return $providers_array;
+	}
+
+	function getAllProvidersByOrganizationalUnit($organizational_unit_id) {
+		$this->db->select('provider_id, provider_shortName');
+		$this->db->order_by("provider_shortName", "asc"); 
+		$query = $this->db->get('provider');
+		
+		$providers_array = array();
+
+		foreach ($query->result_array() as $row)	{
+   			$providers_array[$row['provider_id']] = $row['provider_shortName'];
+		}
+
 		return $providers_array;
 	}
 

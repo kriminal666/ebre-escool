@@ -4,7 +4,8 @@ include "application/third_party/skeleton/application/controllers/skeleton_main.
 
 class attendance extends skeleton_main {
 
-	public $body_header_view ='include/ebre_escool_body_header.php' ;
+	public $body_header_view ='include/ebre_escool_body_header.php';
+	public $html_header_view ='/include/ebre_escool_html_header.php';
 
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 

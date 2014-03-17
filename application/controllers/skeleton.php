@@ -15,7 +15,23 @@ class skeleton extends skeleton_main {
 
     public $error_page_404 = "include/404.php"; 
 
+    public $users_view = "include/users_view.php";
+
+    public $groups_view = "include/groups_view.php";
+
+    public $preferences_page = "skeleton/user_preferences";
+
+    public $skeleton_grocery_crud_default_view = 'include/skeleton_object_view.php';
+
+    public $preferences_view = 'include/preferences.php';
+
+    public $user_preferences_NOT_yet_header_view = "include/user_preferences_NOT_yet_header.php";
+
+    public $user_preferences_for_admin_header_view = "include/user_preferences_for_admin_header.php";
+
 	public $header_data;
+
+    public $active_menu = array();
 
 	function __construct()
     {
@@ -31,6 +47,42 @@ class skeleton extends skeleton_main {
 		redirect('dashboard','refresh');
 		
 	}
+
+    public function users() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_users';
+
+        parent::users();
+
+    }
+
+    public function groups() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_groups';
+
+        parent::groups();
+
+    }
+
+    public function preferences() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_preferences';
+
+        parent::preferences();
+
+    }
+
+    public function user_preferences() {
+        
+        $this->active_menu['menu']='#managment';
+        $this->active_menu['submenu1']='#managment_preferences';
+
+        parent::user_preferences();
+
+    }
 
     public function error404() {
         if (!$this->skeleton_auth->logged_in())
@@ -48,13 +100,6 @@ class skeleton extends skeleton_main {
 
         return $header_data;
     }
-
-	public function groups() {
-
-		$this->header_data = $this->load_ace_files();  
-
-		parent::groups();
-	}
 
 	function load_ace_files($init_header_data){
 
@@ -98,6 +143,8 @@ class skeleton extends skeleton_main {
             $header_data,
                 base_url('assets/js/ace.min.js'));    
 
+
+        $header_data['menu']= $this->active_menu;
         return $header_data;
 }
 
