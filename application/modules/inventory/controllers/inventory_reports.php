@@ -38,7 +38,17 @@ public function inventory($filter=null)	{
 
 public function index($filter=null)	{
 
-$array = $this->uri->uri_to_assoc(4);
+    //Get selected options from URL
+    $options = $this->uri->uri_to_assoc(4);
+    $selected =array();
+    foreach($options as $key=>$value){
+        if($value != 'all'){
+            $selected[$key] = $value;
+        } else {
+            $selected[$key] = '';
+        }
+    }
+    //print_r($selected);
 
     $active_menu = array();
     $active_menu['menu']='#reports';
@@ -55,19 +65,52 @@ $array = $this->uri->uri_to_assoc(4);
     $all_inventory_objects = array();
     $all_inventory_objects = $this->inventory_model->getAllInventoryObjects();
 
+    $filter = array();
+    if($selected['material']){
+        $filter['inventory_object_materialId'] = $selected['material'];
+    }
+    if($selected['brand']){
+        $filter['inventory_object_brandId'] = $selected['brand'];
+    }
+    if($selected['model']){
+        $filter['inventory_object_modelId'] = $selected['model'];
+    }
+    if($selected['money_source']){
+        $filter['inventory_object_moneySourceId'] = $selected['money_source'];
+    }
+    if($selected['provider']){
+        $filter['inventory_object_providerId'] = $selected['provider'];
+    }
+    if($selected['creation_user']){
+        $filter['inventory_object_creationUserId'] = $selected['creation_user'];
+    }    
+    if($selected['modification_user']){
+        $filter['inventory_object_lastupdateUserId'] = $selected['modification_user'];
+    }    
+    if($selected['organizational_unit']){
+        $filter['inventory_object_mainOrganizationalUnitId'] = $selected['organizational_unit'];
+    }
+    if($selected['location']){
+        $filter['inventory_object_location'] = $selected['location'];
+    }
+
+    //print_r($filter);
+        
     $all_organizational_units = array();
     $all_organizational_units = $this->inventory_model->getAllorganizationalUnits();    
 
+    $filtered_inventory_object = array();
+    $filtered_inventory_object = $this->inventory_model->getAllInventoryObjects($filter);
+    //print_r($filtered_inventory_object);
+
     $all_materials = array();
-    $all_materials = $this->inventory_model->getAllMaterials();    
+    $all_materials = $this->inventory_model->getAllMaterials();
 
     $all_locations = array();
     $all_locations = $this->inventory_model->getAllLocations();    
 
     $all_brands = array();
     $all_brands = $this->inventory_model->getAllBrands(); 
-
-
 
     $all_models = array();
     $all_models = $this->inventory_model->getAllModels(); 
@@ -84,8 +127,12 @@ $array = $this->uri->uri_to_assoc(4);
 
 
     //Aply filters TODO
-
-	$output['inventory_objects'] = $all_inventory_objects;
+    if (count(array_filter($selected)) == 0){
+	   $output['inventory_objects'] = $all_inventory_objects;
+    } else {
+        $output['inventory_objects'] = $filtered_inventory_object;
+    }
+    //echo count(array_filter($selected));
     $output['organizational_units'] = $all_organizational_units;
     $output['materials'] = $all_materials;
     $output['locations'] = $all_locations;
@@ -94,6 +141,7 @@ $array = $this->uri->uri_to_assoc(4);
     $output['providers'] = $all_providers;
     $output['users'] = $all_users;
     $output['money_sources'] = $all_money_sources;
+    $output['selected'] = $selected;
 
 
 	$this->_load_html_header($header_data,$output); 
