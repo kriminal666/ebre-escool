@@ -362,7 +362,7 @@
       <!-- Load Grocery Crud -->
       <?php echo $output; ?>
 
-    <div style="height: 20px;"></div>
+    <div style="height: 30px;"></div>
 
 
 </div>
