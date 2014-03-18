@@ -198,10 +198,10 @@ class inventory_Model  extends CI_Model  {
 		$this->db->join('model', 'model.model_id = inventory_object.inventory_object_modelId','left');
 		$this->db->join('moneySource', 'moneySource.moneySource_id = inventory_object.inventory_object_moneySourceId','left');
 		$this->db->join('provider', 'provider.provider_id = inventory_object.inventory_object_providerId','left');
-
+		//print_r($selected);
 		if($selected){
 
-			$this->db->where($selected);
+			$this->db->where(array_filter($selected));
 		}
 		$query = $this->db->get();
 		//echo $this->db->last_query();

@@ -52,7 +52,7 @@
                     <div class="widget-header widget-header-small header-color-orange">
                       <h6>
                         <i class="icon-sort"></i>
-                        Informes d'inventari
+                        Filtres
                       </h6>
 
                       <div class="widget-toolbar">
@@ -95,7 +95,7 @@
                         </select> 
                       </li>
 
-                      <!-- Espais --> 
+                      <!-- Ubicació --> 
                       <li class="dd-item dd2-item" data-id="13">
                         <i class="normal-icon icon-download-alt blue bigger-130"></i>
                         <?php echo lang("location");?><br />
@@ -277,11 +277,6 @@
                       </li>
                     </ol>
 
-
-
-
-
-
                         </p>
                       </div>
                     </div>
@@ -419,9 +414,9 @@ $(document).ready(function() {
     var organizational_unit_path = "organizational_unit/"+organizational_unit;
     if(organizational_unit != "all"){
       $("#organizational_unit_name").siblings("i").removeClass("blue").addClass("orange"); 
-      $("#selected_filters").append("<p class='organizational_unit'>Unitat Organitzativa: "+$("#organizational_unit_name option:selected").text()+"</p>");     
+      $("#selected_filters").append("<span class='organizational_unit' style='margin-right:25px;'><b><?php echo lang("organizational_unit");?></b>: "+$("#organizational_unit_name option:selected").text()+"</span>");     
     } else {
-      $("#selected_filters p.organizational_unit").text("");
+      $("#selected_filters span.organizational_unit").text("");
     }
 
     $("#material").select2();
@@ -429,9 +424,9 @@ $(document).ready(function() {
     var material_path = "material/"+material; 
     if(material != "all"){
       $("#material").siblings("i").removeClass("blue").addClass("orange");
-      $("#selected_filters").append("<p class='material'>Material: "+$("#material option:selected").text()+"</p>");             
+      $("#selected_filters").append("<span class='material' style='margin-right:25px;'><b><?php echo lang("material_menu");?></b>: "+$("#material option:selected").text()+"</span>");             
     } else {
-      $("#selected_filters p.material").text("");
+      $("#selected_filters span.material").text("");
     }
 
     $("#location_name").select2();
@@ -439,9 +434,9 @@ $(document).ready(function() {
     var location_path = "location/"+location;
     if(location != "all"){
       $("#location_name").siblings("i").removeClass("blue").addClass("orange");    
-      $("#selected_filters").append("<p class='location'>Ubicació: "+$("#location_name option:selected").text()+"</p>");    
+      $("#selected_filters").append("<span class='location' style='margin-right:25px;'><b><?php echo lang("location");?></b>: "+$("#location_name option:selected").text()+"</span>");    
     } else {
-      $("#selected_filters p.location").text("");
+      $("#selected_filters span.location").text("");
     }
 
     $("#brands").select2();
@@ -449,9 +444,9 @@ $(document).ready(function() {
     var brand_path = "brand/"+ brand;
     if(brand != "all"){
       $("#brands").siblings("i").removeClass("blue").addClass("orange");     
-      $("#selected_filters").append("<p class='brand'>Marca: "+$("#brands option:selected").text()+"</p>"); 
+      $("#selected_filters").append("<span class='brand' style='margin-right:25px;'><b><?php echo lang("brand_menu");?></b>: "+$("#brands option:selected").text()+"</span>"); 
     } else {
-      $("#selected_filters p.brand").text("");
+      $("#selected_filters span.brand").text("");
     }
 
     $("#model").select2();
@@ -459,9 +454,9 @@ $(document).ready(function() {
     var model_path = "model/"+ model;
     if(model != "all"){
       $("#model").siblings("i").removeClass("blue").addClass("orange");    
-      $("#selected_filters").append("<p class='model'>Model: "+$("#model option:selected").text()+"</p>");   
+      $("#selected_filters").append("<span class='model' style='margin-right:25px;'><b><?php echo lang("model_menu");?></b>: "+$("#model option:selected").text()+"</span>");   
     } else {
-      $("#selected_filters p.model").text("");
+      $("#selected_filters span.model").text("");
     }
 
     $("#provider").select2();
@@ -469,9 +464,9 @@ $(document).ready(function() {
     var provider_path = "provider/"+ provider;
     if(provider != "all"){
       $("#provider").siblings("i").removeClass("blue").addClass("orange");     
-      $("#selected_filters").append("<p class='provider'>Proveïdor: "+$("#provider option:selected").text()+"</p>");
+      $("#selected_filters").append("<span class='provider' style='margin-right:25px;'><b><?php echo lang("provider_menu");?></b>: "+$("#provider option:selected").text()+"</span>");
     } else {
-      $("#selected_filters p.provider").text("");
+      $("#selected_filters span.provider").text("");
     }
 
     $("#creation_user").select2();
@@ -479,9 +474,9 @@ $(document).ready(function() {
     var creation_user_path = "creation_user/"+ creation_user;
     if(creation_user != "all"){
       $("#creation_user").siblings("i").removeClass("blue").addClass("orange");     
-      $("#selected_filters").append("<p class='creation_user'>Usuari de Creació: "+$("#creation_user option:selected").text()+"</p>");
+      $("#selected_filters").append("<span class='creation_user' style='margin-right:25px;'><b><?php echo lang("creation_user");?></b>: "+$("#creation_user option:selected").text()+"</span>");
     } else {
-      $("#selected_filters p.creation_user").text("");  
+      $("#selected_filters span.creation_user").text("");  
     }
 
     $("#modification_user").select2();
@@ -489,9 +484,9 @@ $(document).ready(function() {
     var modification_user_path = "modification_user/"+ modification_user;
     if(modification_user != "all"){
       $("#modification_user").siblings("i").removeClass("blue").addClass("orange");      
-      $("#selected_filters").append("<p class='modification_user'>Usuari de Modificació: "+$("#modification_user option:selected").text()+"</p>");
+      $("#selected_filters").append("<span class='modification_user' style='margin-right:25px;'><b><?php echo lang("modification_user");?></b>: "+$("#modification_user option:selected").text()+"</span>");
     } else {
-      $("#selected_filters p.modification_user").text("");  
+      $("#selected_filters span.modification_user").text("");  
     }
 
     $("#money_source").select2();
@@ -499,9 +494,9 @@ $(document).ready(function() {
     var money_source_path = "money_source/"+ money_source;
     if(money_source != "all"){
       $("#money_source").siblings("i").removeClass("blue").addClass("orange");      
-      $("#selected_filters").append("<p class='money_source'>Orígen dels Diners: "+$("#money_source option:selected").text()+"</p>");
+      $("#selected_filters").append("<span class='money_source' style='margin-right:25px;'><b><?php echo lang("money_source_menu");?></b>: "+$("#money_source option:selected").text()+"</span>");
     } else {
-      $("#selected_filters p.money_source").text("");  
+      $("#selected_filters span.money_source").text("");  
     }
 
     var full_path=organizational_unit_path+"/"+material_path+"/"+location_path+"/"+brand_path+"/"+model_path+"/"+provider_path+"/"+creation_user_path+"/"+modification_user_path+"/"+money_source_path;
