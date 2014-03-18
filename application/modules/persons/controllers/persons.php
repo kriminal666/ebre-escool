@@ -35,6 +35,24 @@ class persons extends skeleton_main {
         $this->load->helper('language');
 	}
 
+  public function profile() {
+
+    $active_menu = array();
+    $active_menu['menu']='#managment';
+    $active_menu['submenu1']='#user_profile';
+
+    $header_data= $this->load_ace_files($active_menu); 
+
+    $output = array();    
+
+    $this->_load_html_header($header_data,$output); 
+    $this->_load_body_header();      
+  
+    $this->load->view('profile',$output); 
+                
+    $this->_load_body_footer(); 
+  }
+
 	public function person_official_id_type() {
     
     $active_menu = array();
@@ -639,6 +657,10 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/jquery.slimscroll.min.js'));    
+
 
         $header_data['menu']= $active_menu;
         return $header_data;
