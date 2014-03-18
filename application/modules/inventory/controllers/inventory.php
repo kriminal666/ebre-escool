@@ -293,7 +293,7 @@ public function inventory_object($organizational_unit="")	{
 	}
 
 	//TODO
-	$user_is_admin = false;
+	$user_is_admin = true;
 	$data['user_is_admin'] = $user_is_admin;
 
 	if ($user_is_admin) {
