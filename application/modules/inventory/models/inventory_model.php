@@ -223,9 +223,14 @@ class inventory_Model  extends CI_Model  {
 
 		$query = $this->db->get();
 
-		$row = $query->row();
+		if ($query->num_rows() == 1) {
+			$row = $query->row();
+			return $row->organizational_unit_name;
+		}			
+		else {
+			return "";
+		}
 
-		return $row->organizational_unit_name;
 
 	}
 
