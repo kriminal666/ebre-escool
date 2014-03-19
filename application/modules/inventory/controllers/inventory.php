@@ -27,7 +27,9 @@ function __construct()	{
         $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
 		$this->load->library('image_CRUD');  
 
-		
+        
+    	$this->load->library('ebre_escool_auth');
+
 
 		/* Set language */
 		$current_language=$this->session->userdata("current_language");
@@ -293,7 +295,8 @@ public function inventory_object($organizational_unit="")	{
 	}
 
 	//TODO
-	$user_is_admin = true;
+	$user_is_admin = $this->ebre_escool_auth->user_is_admin();
+
 	$data['user_is_admin'] = $user_is_admin;
 
 	if ($user_is_admin) {
