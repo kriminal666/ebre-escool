@@ -228,7 +228,7 @@
                 <img class="nav-user-photo" src="<?php echo base_url('/assets/avatars/user.jpg')?>" alt="Sergi's Photo" />
                 <span class="user-info">
                   <small>Benvingut,</small>
-                  Sergi
+                  <?php echo $this->session->userdata('username');?>
                 </span>
 
                 <i class="icon-caret-down"></i>
@@ -243,7 +243,7 @@
                 </li>
 
                 <li>
-                  <a href="#">
+                  <a href="<?php echo base_url('/index.php/persons/persons/profile')?>" alt="Sergi's Photo">
                     <i class="icon-user"></i>
                     Perfil
                   </a>
@@ -252,7 +252,7 @@
                 <li class="divider"></li>
 
                 <li>
-                  <a href="<?php echo base_url('/index.php/skeleton_auth/auth/logout'); ?>">
+                  <a href="<?php echo base_url('/index.php/skeleton_auth/ebre_escool_auth/logout'); ?>">
                     <i class="icon-off"></i>
                     Sortir
                   </a>
@@ -768,6 +768,14 @@
                   Preferències
                 </a>
               </li>
+
+              <li id="user_profile">
+                <a href="<?php echo base_url('index.php/persons/persons/profile');?>">
+                  <i class="icon-double-angle-right"></i>
+                  Perfil del usuari
+                </a>
+              </li>
+
               <!--
               <li id="faq">
                 <a href="faq.html">

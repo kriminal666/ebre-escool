@@ -36,6 +36,13 @@ class skeleton extends skeleton_main {
 	function __construct()
     {
 		parent::__construct();
+
+        //$params = array('model' => "skeleton_auth_model");
+        //$this->load->library('skeleton_auth',$params);
+        
+        //CONFIG skeleton_auth library:
+        $this->skeleton_auth->login_page="skeleton_auth/ebre_escool_auth/login";
+        
 	}
 	
 	public function index() {
@@ -61,6 +68,8 @@ class skeleton extends skeleton_main {
         
         $this->active_menu['menu']='#managment';
         $this->active_menu['submenu1']='#managment_groups';
+
+        //echo "TEST1";
 
         parent::groups();
 
