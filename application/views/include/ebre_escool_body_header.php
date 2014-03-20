@@ -225,7 +225,7 @@
 
             <li class="light-blue">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                <img class="nav-user-photo" src="<?php echo base_url('/assets/avatars/user.jpg')?>" alt="Sergi's Photo" />
+                <img class="nav-user-photo" src="<?php echo base_url('/assets/avatars/user.jpg')?>" alt="Foto de <?php echo $this->session->userdata('username');?>" />
                 <span class="user-info">
                   <small>Benvingut,</small>
                   <?php echo $this->session->userdata('username');?>
@@ -243,7 +243,7 @@
                 </li>
 
                 <li>
-                  <a href="<?php echo base_url('/index.php/persons/persons/profile')?>" alt="Sergi's Photo">
+                  <a href="<?php echo base_url('/index.php/persons/persons/profile')?>" alt="Foto de <?php echo $this->session->userdata('username');?>">
                     <i class="icon-user"></i>
                     Perfil
                   </a>

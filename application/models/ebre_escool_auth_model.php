@@ -19,7 +19,8 @@ class ebre_escool_auth_model  extends CI_Model  {
     public function getSessionData($username) {
 
     	$this->db->from('users');
-        $this->db->select('id,username,mainOrganizationaUnitId,email,secondary_email,users.person_id,mainOrganizationaUnitId,person.person_id,person_givenName,person_sn1,person_sn2');
+        $this->db->select('id,username,mainOrganizationaUnitId,email,secondary_email,users.person_id,mainOrganizationaUnitId,
+        	person.person_id,person_givenName,person_sn1,person_sn2');
 
         // 	first_name 	last_name and others from table person: person table (person_id)	
 		$this->db->join('person', 'users.person_id = person.person_id','left');
@@ -39,12 +40,13 @@ class ebre_escool_auth_model  extends CI_Model  {
                    'email'     			=> $row->email,
                    'secondary_email'    => $row->secondary_email,
                    'person_id'   		=> $row->person_id,
-                   'fullname'           => "Sergi Tur Badenas",  
                    'mainOrganizationaUnitId' => $row->mainOrganizationaUnitId,    
                    'person_id' => $row->person_id,
                    'givenName' => $row->person_givenName,
                    'sn1' => $row->person_sn1,
                    'sn2' => $row->person_sn2,
+                   'fullname'  => $row->person_givenName . " " . $row->person_sn1 . " " .  $row->person_sn2,
+                   'alt_fullname'  => $row->person_sn1 . " " . $row->person_sn2 . ", " . $row->person_givenName,
                    'logged_in' => TRUE
                );
 		}

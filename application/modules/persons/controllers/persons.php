@@ -15,7 +15,7 @@ class persons extends skeleton_main {
 	
 	function __construct()
     {
-        parent::__construct();
+    parent::__construct();
 
         //GROCERY CRUD
 		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
@@ -32,7 +32,9 @@ class persons extends skeleton_main {
 
 		
         //LANGUAGE HELPER:
-        $this->load->helper('language');
+    $this->load->helper('language');
+
+    $this->load->model('persons_model');
 	}
 
   public function profile() {
@@ -44,6 +46,8 @@ class persons extends skeleton_main {
     $header_data= $this->load_ace_files($active_menu); 
 
     $output = array();    
+
+    $output['organizational_unit_name'] = $this->persons_model->getOrganizationalNameById($this->session->userdata('mainOrganizationaUnitId'));
 
     $this->_load_html_header($header_data,$output); 
     $this->_load_body_header();      

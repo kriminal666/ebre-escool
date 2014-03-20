@@ -27,7 +27,9 @@ function __construct()	{
         $this->load->add_package_path(APPPATH.'third_party/image-crud/application/');
 		$this->load->library('image_CRUD');  
 
-		
+        
+    	$this->load->library('ebre_escool');
+
 
 		/* Set language */
 		$current_language=$this->session->userdata("current_language");
@@ -144,7 +146,9 @@ public function inventory_object($organizational_unit="")	{
     //$this->grocery_crud->columns($this->session->userdata('inventory_object_current_fields_to_show'));       
         
     //Mandatory fields
-    $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortName',$this->current_table.'_location',$this->current_table.'_markedForDeletion',$this->current_table.'_quantityInStock');
+    $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortName',
+    	$this->current_table.'_location',$this->current_table.'_markedForDeletion',$this->current_table.'_quantityInStock',
+    	$this->current_table.'_mainOrganizationalUnitId');
     //$this->grocery_crud->required_fields('externalCode','name','shortName','location','markedForDeletion');
         
     //Express fields
@@ -265,13 +269,13 @@ public function inventory_object($organizational_unit="")	{
 	$selected_organizational_unit_name = "";
 	$data['all_organizational_units_text'] = "Totes les unitats organitzatives";
 	
-	//TODO: getuserid from session
-	$userid=12;
+	$userid=$this->session->userdata('id');
 
 	$user_main_organizational_unit = $this->inventory_model->getUserMainOrganizationalUnit($userid);
 
 	if ( $organizational_unit != "") {
 		if ( $organizational_unit != "All") {
+			//echo "$organizational_unit";
 			$selected_organizational_unit_name = $this->inventory_model->getUserOrganizationalUnitNameFromId($organizational_unit);
 		}	else {
 			$selected_organizational_unit_name = $data['all_organizational_units_text'];
@@ -293,7 +297,8 @@ public function inventory_object($organizational_unit="")	{
 	}
 
 	//TODO
-	$user_is_admin = true;
+	$user_is_admin = $this->ebre_escool->user_is_admin();
+
 	$data['user_is_admin'] = $user_is_admin;
 
 	if ($user_is_admin) {

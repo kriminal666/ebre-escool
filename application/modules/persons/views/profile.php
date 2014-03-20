@@ -259,10 +259,10 @@
                       </div>
 
                       <div class="profile-info-row">
-                        <div class="profile-info-name"> Unitat organitzativa principal </div>
+                        <div class="profile-info-name"> Unitat </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="mainOrganizationaUnitId"><?php echo $this->session->userdata('mainOrganizationaUnitId'); ?></span>
+                          <span class="editable" id="mainOrganizationaUnitId"><?php echo $this->session->userdata('mainOrganizationaUnitId') . " " . $organizational_unit_name; ?></span>
                         </div>
                       </div>
 
