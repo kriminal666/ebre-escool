@@ -2,13 +2,27 @@
 
 $(function() {
 
+  //***********************
+  //* Datepicker         **
+  //***********************
+  $('.input-append.date').datepicker({
+      format: "dd/mm/yyyy",
+      weekStart: 1,
+      todayBtn: true,
+      language: "ca",
+      daysOfWeekDisabled: "0,6",
+      autoclose: true,
+      todayHighlight: true
+    });
+
+
     //*****************************
     //* CLASSROOMGROUP DROPDOWN  **
     //*****************************
 
     //Jquery select plugin: http://ivaynberg.github.io/select2/
-    $("#classroom_groups").select2(); 
 
+    $("#classroom_groups").select2(); 
     $('#classroom_groups').on("change", function(e) {   
         selectedValue = $("#classroom_groups").select2("val");
         var pathArray = window.location.pathname.split( '/' );
@@ -21,18 +35,6 @@ $(function() {
 
 
 
-//***********************
-  //* Datepicker         **
-  //***********************
-  $('.input-append.date').datepicker({
-      format: "dd/mm/yyyy",
-      weekStart: 1,
-      todayBtn: true,
-      language: "ca",
-      daysOfWeekDisabled: "0,6",
-      autoclose: true,
-      todayHighlight: true
-    });
 });
 </script>
 
