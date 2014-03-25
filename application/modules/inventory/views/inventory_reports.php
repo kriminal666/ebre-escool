@@ -14,7 +14,7 @@
     });
   });
 
-</script>
+</script> 
 
  <ul class="breadcrumb">
   <li>
@@ -45,6 +45,149 @@
               <div class="row-fluid">
                 
                 <div class="span1"></div>
+
+
+                <div class="span5 widget-container-span">
+                  <div class="widget-box collapsed">
+                    <div class="widget-header widget-header-small header-color-orange">
+                      <h6>
+                        <i class="icon-sort"></i>
+                        Filtres
+                      </h6>
+
+                      <div class="widget-toolbar">
+                        <a href="#" data-action="collapse">
+                          <i class="icon-chevron-down"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                          <i class="icon-remove"></i>
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">                        
+
+                    <ol class="dd-list">
+
+                      <!-- Unitat Organitzativa --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("organizational_unit");?><br />
+                        <select id="organizational_unit_name" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $organizational_units as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["organizational_unit"])&&($key == $selected["organizational_unit"])){?> selected <?php } ?> ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Materials --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("material_menu");?><br />
+                        <select id="material" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $materials as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["material"])&&($key == $selected["material"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Ubicació --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("location");?><br />
+                        <select id="location_name" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $locations as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["location"])&&($key == $selected["location"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select>
+                      </li>
+
+                      <!-- Marca --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("brand_menu");?><br />
+                        <select id="brands" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $brands as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["brand"])&&($key == $selected["brand"])){?> selected <?php } ?> ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Model --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("model_menu");?><br />
+                        <select id="model" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $models as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["model"])&&($key == $selected["model"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Proveïdor --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("provider_menu");?><br />
+                        <select id="provider" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $providers as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["provider"])&&($key == $selected["provider"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Usuari de Creació --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("creation_user");?><br />
+                        <select id="creation_user" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $users as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["creation_user"])&&($key == $selected["creation_user"])){?> selected <?php } ?> ><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Usuari de Modificació --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("modification_user");?><br />
+                        <select id="modification_user" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $users as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["modification_user"])&&($key == $selected["modification_user"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                      <!-- Origen dels Diners --> 
+                      <li class="dd-item dd2-item" data-id="13">
+                        <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                        <?php echo lang("money_source_menu");?><br />
+                        <select id="money_source" style="width: 400px">
+                          <option value="all">Tots</option>
+                          <?php foreach( (array) $money_sources as $key => $value): ?>
+                              <option value="<?php echo $key; ?>" <?php if(isset($selected["money_source"])&&($key == $selected["money_source"])){?> selected <?php } ?>><?php echo $value; ?></option>
+                          <?php endforeach; ?> 
+                        </select> 
+                      </li>
+
+                    </ol>
+
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
 
                 <div class="span5 widget-container-span">
                   <div class="widget-box collapsed">
@@ -134,149 +277,17 @@
                       </li>
                     </ol>
 
-
-
-
-
-
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
                       
-                <div class="span5 widget-container-span">
-                  <div class="widget-box collapsed">
-                    <div class="widget-header widget-header-small header-color-orange">
-                      <h6>
-                        <i class="icon-sort"></i>
-                        Informes d'inventari
-                      </h6>
 
-                      <div class="widget-toolbar">
-                        <a href="#" data-action="collapse">
-                          <i class="icon-chevron-down"></i>
-                        </a>
-
-                        <a href="#" data-action="close">
-                          <i class="icon-remove"></i>
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="widget-body">
-                      <div class="widget-main">                        
-
-                    <ol class="dd-list">
-
-                      <!-- Unitat Organitzativa --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("organizational_unit");?><br />
-                        <select id="organizational_unit_name" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $organizational_units as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["organizational_unit"]){?> selected <?php } ?> ><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Materials --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("material_menu");?><br />
-                        <select id="material" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $materials as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["material"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Espais --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("location");?><br />
-                        <select id="location_name" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $locations as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["location"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select>
-                      </li>
-
-                      <!-- Marca --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("brand_menu");?><br />
-                        <select id="brands" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $brands as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["brand"]){?> selected <?php } ?> ><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Model --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("model_menu");?><br />
-                        <select id="model" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $models as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["model"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Proveïdor --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("provider_menu");?><br />
-                        <select id="provider" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $providers as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["provider"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Usuari de Creació --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("creation_user");?><br />
-                        <select id="creation_user" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $users as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["creation_user"]){?> selected <?php } ?> ><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Usuari de Modificació --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("modification_user");?><br />
-                        <select id="modification_user" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $users as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["modification_user"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                      <!-- Origen dels Diners --> 
-                      <li class="dd-item dd2-item" data-id="13">
-                        <?php echo lang("money_source_menu");?><br />
-                        <select id="money_source" style="width: 400px">
-                          <option value="all">Tots</option>
-                          <?php foreach( (array) $money_sources as $key => $value): ?>
-                              <option value="<?php echo $key; ?>" <?php if($key == $selected["money_source"]){?> selected <?php } ?>><?php echo $value; ?></option>
-                          <?php endforeach; ?> 
-                        </select> 
-                      </li>
-
-                    </ol>
-
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               <div class="span2"></div>
             </div>
+
+<div id="selected_filters"></div>
 
   <div class="table-header">
     Objectes de l'Inventari
@@ -393,28 +404,102 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+  
   selected_values();
+  
   function selected_values(){
 
     $("#organizational_unit_name").select2();
-    var organizational_unit = "organizational_unit/"+$("#organizational_unit_name").select2("val");   
+    var organizational_unit = $("#organizational_unit_name").select2("val");
+    var organizational_unit_path = "organizational_unit/"+organizational_unit;
+    if(organizational_unit != "all"){
+      $("#organizational_unit_name").siblings("i").removeClass("blue").addClass("orange"); 
+      $("#selected_filters").append("<span class='organizational_unit' style='margin-right:25px;'><b><?php echo lang("organizational_unit");?></b>: "+$("#organizational_unit_name option:selected").text()+"</span>");     
+    } else {
+      $("#selected_filters span.organizational_unit").text("");
+    }
+
     $("#material").select2();
-    var material = "material/"+$("#material").select2("val"); 
+    var material = $("#material").select2("val"); 
+    var material_path = "material/"+material; 
+    if(material != "all"){
+      $("#material").siblings("i").removeClass("blue").addClass("orange");
+      $("#selected_filters").append("<span class='material' style='margin-right:25px;'><b><?php echo lang("material_menu");?></b>: "+$("#material option:selected").text()+"</span>");             
+    } else {
+      $("#selected_filters span.material").text("");
+    }
+
     $("#location_name").select2();
-    var location = "location/"+$("#location_name").select2("val"); 
+    var location = $("#location_name").select2("val"); 
+    var location_path = "location/"+location;
+    if(location != "all"){
+      $("#location_name").siblings("i").removeClass("blue").addClass("orange");    
+      $("#selected_filters").append("<span class='location' style='margin-right:25px;'><b><?php echo lang("location");?></b>: "+$("#location_name option:selected").text()+"</span>");    
+    } else {
+      $("#selected_filters span.location").text("");
+    }
+
     $("#brands").select2();
-    var brand = "brand/"+$("#brands").select2("val");
+    var brand = $("#brands").select2("val");
+    var brand_path = "brand/"+ brand;
+    if(brand != "all"){
+      $("#brands").siblings("i").removeClass("blue").addClass("orange");     
+      $("#selected_filters").append("<span class='brand' style='margin-right:25px;'><b><?php echo lang("brand_menu");?></b>: "+$("#brands option:selected").text()+"</span>"); 
+    } else {
+      $("#selected_filters span.brand").text("");
+    }
+
     $("#model").select2();
-    var model = "model/"+$("#model").select2("val"); 
+    var model = $("#model").select2("val"); 
+    var model_path = "model/"+ model;
+    if(model != "all"){
+      $("#model").siblings("i").removeClass("blue").addClass("orange");    
+      $("#selected_filters").append("<span class='model' style='margin-right:25px;'><b><?php echo lang("model_menu");?></b>: "+$("#model option:selected").text()+"</span>");   
+    } else {
+      $("#selected_filters span.model").text("");
+    }
+
     $("#provider").select2();
-    var provider = "provider/"+$("#provider").select2("val"); 
+    var provider = $("#provider").select2("val"); 
+    var provider_path = "provider/"+ provider;
+    if(provider != "all"){
+      $("#provider").siblings("i").removeClass("blue").addClass("orange");     
+      $("#selected_filters").append("<span class='provider' style='margin-right:25px;'><b><?php echo lang("provider_menu");?></b>: "+$("#provider option:selected").text()+"</span>");
+    } else {
+      $("#selected_filters span.provider").text("");
+    }
+
     $("#creation_user").select2();
-    var creation_user = "creation_user/"+$("#creation_user").select2("val"); 
+    var creation_user = $("#creation_user").select2("val"); 
+    var creation_user_path = "creation_user/"+ creation_user;
+    if(creation_user != "all"){
+      $("#creation_user").siblings("i").removeClass("blue").addClass("orange");     
+      $("#selected_filters").append("<span class='creation_user' style='margin-right:25px;'><b><?php echo lang("creation_user");?></b>: "+$("#creation_user option:selected").text()+"</span>");
+    } else {
+      $("#selected_filters span.creation_user").text("");  
+    }
+
     $("#modification_user").select2();
-    var modification_user = "modification_user/"+$("#modification_user").select2("val"); 
+    var modification_user = $("#modification_user").select2("val"); 
+    var modification_user_path = "modification_user/"+ modification_user;
+    if(modification_user != "all"){
+      $("#modification_user").siblings("i").removeClass("blue").addClass("orange");      
+      $("#selected_filters").append("<span class='modification_user' style='margin-right:25px;'><b><?php echo lang("modification_user");?></b>: "+$("#modification_user option:selected").text()+"</span>");
+    } else {
+      $("#selected_filters span.modification_user").text("");  
+    }
+
     $("#money_source").select2();
-    var money_source = "money_source/"+$("#money_source").select2("val"); 
-    var full_path=organizational_unit+"/"+material+"/"+location+"/"+brand+"/"+model+"/"+provider+"/"+creation_user+"/"+modification_user+"/"+money_source;
+    var money_source = $("#money_source").select2("val"); 
+    var money_source_path = "money_source/"+ money_source;
+    if(money_source != "all"){
+      $("#money_source").siblings("i").removeClass("blue").addClass("orange");      
+      $("#selected_filters").append("<span class='money_source' style='margin-right:25px;'><b><?php echo lang("money_source_menu");?></b>: "+$("#money_source option:selected").text()+"</span>");
+    } else {
+      $("#selected_filters span.money_source").text("");  
+    }
+
+    var full_path=organizational_unit_path+"/"+material_path+"/"+location_path+"/"+brand_path+"/"+model_path+"/"+provider_path+"/"+creation_user_path+"/"+modification_user_path+"/"+money_source_path;
     return full_path;
   }
 

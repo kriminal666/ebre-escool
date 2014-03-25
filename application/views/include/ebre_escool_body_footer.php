@@ -34,6 +34,7 @@
 */
 
 </style>
+<div style="height: 35px;"></div>
 <div style="clear:both"></div>
 <div class="navbar navbar-fixed-bottom">
 	<div class="navbar-inner footer">

@@ -14,7 +14,7 @@
   </li>
   <li class="active"><?php echo lang('timetable');?></li>
  </ul>
-</div>
+</div><!-- /.breadcrumbs -->
        
 
         <div class="page-content">
@@ -40,7 +40,8 @@
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
             data-off="danger">
-            <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
+            <?php echo lang('show_legend'); ?> 
+            <input id="hide_show_legend" type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
@@ -159,7 +160,7 @@
 
         <?php //echo $all_teacher_groups_count;?>
 
-        <div style="height: px;"></div>
+        <div style="height: 10px;"></div>
          
          <center>
             <?php echo lang('show_teacher_data');?> <input id="hide_show_teacher_legend" type="checkbox" class="switch-small" 

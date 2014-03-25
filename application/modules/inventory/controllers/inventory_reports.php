@@ -48,8 +48,8 @@ public function index($filter=null)	{
             $selected[$key] = '';
         }
     }
-    //print_r($selected);
 
+    // Active menu element 
     $active_menu = array();
     $active_menu['menu']='#reports';
     $active_menu['submenu1']='#inventory_reports';
@@ -57,7 +57,7 @@ public function index($filter=null)	{
 
     $this->check_logged_user();
 
-	/* Ace */
+	// Ace 
     $header_data = $this->load_ace_files($active_menu);  
 
     $output = array();   
@@ -65,43 +65,44 @@ public function index($filter=null)	{
     $all_inventory_objects = array();
     $all_inventory_objects = $this->inventory_model->getAllInventoryObjects();
 
+    // Filter conditions
     $filter = array();
-    if($selected['material']){
+    if(isset($selected['material'])){
         $filter['inventory_object_materialId'] = $selected['material'];
     }
-    if($selected['brand']){
+    if(isset($selected['brand'])){
         $filter['inventory_object_brandId'] = $selected['brand'];
     }
-    if($selected['model']){
+    if(isset($selected['model'])){
         $filter['inventory_object_modelId'] = $selected['model'];
     }
-    if($selected['money_source']){
+    if(isset($selected['money_source'])){
         $filter['inventory_object_moneySourceId'] = $selected['money_source'];
     }
-    if($selected['provider']){
+    if(isset($selected['provider'])){
         $filter['inventory_object_providerId'] = $selected['provider'];
     }
-    if($selected['creation_user']){
+    if(isset($selected['creation_user'])){
         $filter['inventory_object_creationUserId'] = $selected['creation_user'];
     }    
-    if($selected['modification_user']){
+    if(isset($selected['modification_user'])){
         $filter['inventory_object_lastupdateUserId'] = $selected['modification_user'];
     }    
-    if($selected['organizational_unit']){
+    if(isset($selected['organizational_unit'])){
         $filter['inventory_object_mainOrganizationalUnitId'] = $selected['organizational_unit'];
     }
-    if($selected['location']){
+    if(isset($selected['location'])){
         $filter['inventory_object_location'] = $selected['location'];
     }
 
-    //print_r($filter);
-        
+    // Get all inventory objects
     $all_organizational_units = array();
     $all_organizational_units = $this->inventory_model->getAllorganizationalUnits();    
 
+
+    // Get only filtered objects from Database
     $filtered_inventory_object = array();
     $filtered_inventory_object = $this->inventory_model->getAllInventoryObjects($filter);
-    //print_r($filtered_inventory_object);
 
     $all_materials = array();
     $all_materials = $this->inventory_model->getAllMaterials();
@@ -125,13 +126,14 @@ public function index($filter=null)	{
     $all_money_sources = $this->inventory_model->getAllMoneySources(); 
 
 
-
     //Aply filters TODO
+    // If no element selected from dropdowns show all, else show filtered
     if (count(array_filter($selected)) == 0){
 	   $output['inventory_objects'] = $all_inventory_objects;
     } else {
-        $output['inventory_objects'] = $filtered_inventory_object;
+       $output['inventory_objects'] = $filtered_inventory_object;
     }
+    
     //echo count(array_filter($selected));
     $output['organizational_units'] = $all_organizational_units;
     $output['materials'] = $all_materials;

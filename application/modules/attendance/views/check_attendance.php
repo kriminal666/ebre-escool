@@ -27,8 +27,11 @@
  </h1>
 </div>
 
- <center>
-  <select id="teachers" style="width: 400px">
+<div class="row-fluid">
+          <div class="span4"></div>
+<div class="span4">
+
+  <select id="teacher" style="width: 400px">
   		   <option></option>
    <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
 		   <?php if( $teacher_id == $default_teacher): ?>
@@ -38,8 +41,11 @@
            <?php endif; ?> 
    <?php endforeach; ?>	
   </select> 
+</div>
+  <div class="span4"></div>
+</div>
   <div style="height: 10px;"></div>
-
+<center>
   <div class="input-append date">
     	<input type="text" class="span2" value="<?php echo $check_attendance_date;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
   </div>
@@ -53,8 +59,8 @@
             data-off="danger">
   
   <div style="height: 10px;"></div>
+</center>
 
- </center>
 
  <div id ="check_attendance_table_reduced">
 
@@ -216,10 +222,10 @@ $(function() {
   //***********************
 
   //Jquery select plugin: http://ivaynberg.github.io/select2/
-  $("#teachers").select2(); 
+  $("#teacher").select2(); 
 
-  $('#teachers').on("change", function(e) { 
-    teacher_code = $("#teachers").select2("val");
+  $('#teacher').on("change", function(e) { 
+    teacher_code = $("#teacher").select2("val");
     selected_date = $('.input-append.date').datepicker('getDate');
     day= selected_date.getDate();
     month = parseInt(selected_date.getMonth());
@@ -247,7 +253,7 @@ $(function() {
       autoclose: true,
       todayHighlight: true
     }).on("changeDate", function(e){
-        teacher_code = $("#teachers").select2("val");
+        teacher_code = $("#teacher").select2("val");
         selected_date = $('.input-append.date').datepicker('getDate');
         day=selected_date.getDate();
         month = parseInt(selected_date.getMonth());

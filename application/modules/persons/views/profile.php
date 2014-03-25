@@ -271,8 +271,10 @@
 
                         <div class="profile-info-value">
                           <i class="icon-map-marker light-orange bigger-110"></i>
-                          <span class="editable" id="country">Netherlands</span>
-                          <span class="editable" id="city">Amsterdam</span>
+                          <span class="editable" id="city"><?php echo $person['person_locality_name']; ?></span>
+
+                          <!--<span class="editable" id="country">Netherlands</span>
+                          <span class="editable" id="city">Amsterdam</span>-->
                         </div>
                       </div>
 
@@ -280,7 +282,7 @@
                         <div class="profile-info-name"> Edad </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="age">38</span>
+                          <span class="editable" id="age"> 38 </span>
                         </div>
                       </div>
 
@@ -288,7 +290,8 @@
                         <div class="profile-info-name"> Data Alta </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="signup">20/06/2010</span>
+                          <span class="editable" id="signup"><?php echo $person['person_entryDate']; ?></span>
+                          <!--<span class="editable" id="signup">20/06/2010</span>-->
                         </div>
                       </div>
 

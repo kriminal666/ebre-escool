@@ -48,6 +48,7 @@ class persons extends skeleton_main {
     $output = array();    
 
     $output['organizational_unit_name'] = $this->persons_model->getOrganizationalNameById($this->session->userdata('mainOrganizationaUnitId'));
+    $output['person'] = $this->persons_model->getPersonalDataByPersonId($this->session->userdata('person_id'));
 
     $this->_load_html_header($header_data,$output); 
     $this->_load_body_header();      

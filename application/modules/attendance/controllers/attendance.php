@@ -5,7 +5,7 @@ include "application/third_party/skeleton/application/controllers/skeleton_main.
 class attendance extends skeleton_main {
 
 	public $body_header_view ='include/ebre_escool_body_header.php';
-	public $html_header_view ='/include/ebre_escool_html_header.php';
+	//public $html_header_view ='/include/ebre_escool_html_header.php';
 
 	public $body_header_lang_file ='ebre_escool_body_header' ;
 
@@ -13,7 +13,7 @@ class attendance extends skeleton_main {
 	public $body_footer_view ='include/ebre_escool_body_footer' ;
 
 
-	public function load_header_data($menu){
+	public function load_header_data($menu = false){
 
 		$active_menu = $menu;
 
@@ -32,7 +32,8 @@ class attendance extends skeleton_main {
   			$jquery_ui_editable_css_url = base_url('assets/css/jqueryui-editable.css');
   			$select2_css_url = base_url('assets/css/select2.css');
 
-  			$jquery_url= base_url('assets/js/jquery-1.9.1.js');
+  			//$jquery_url= base_url('assets/js/jquery-1.9.1.js');
+  			$jquery_url= base_url('assets/js/jquery-1.10.2.min.js');
 			$jquery_ui_url= base_url('assets/js/jquery-ui.js');
 			$select2_url= base_url('assets/js/select2.js');
 			$jquery_ui_editable_url= base_url('assets/js/jqueryui-editable.min.js');
@@ -41,26 +42,34 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$this->_get_html_header_data(),
 			$jquery_ui_css_url);
+
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			$jquery_ui_editable_css_url);
+
 		$header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/datepicker.css'));  
+
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			$select2_css_url);
+
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
             base_url('assets/css/tribal-timetable.css')); 
+
 		
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/bootstrap-switch.min.css'));
+
+
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/bootstrap.min.extracolours.css')); 
 
+//ACE
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/ace-fonts.css'));
@@ -76,62 +85,92 @@ class attendance extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/ace-skins.min.css'));
+
 /*        
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));        
-*/
+
+
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/chosen.min.css'));        
-
+*/
 		//JS Already load at skeleton main!!!
-		//$header_data= $this->add_javascript_to_html_header_data(
-		//	$header_data,
-		//	$jquery_url);
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			$jquery_url);
 
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			$jquery_ui_url);	
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			$select2_url);
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			$jquery_ui_editable_url);
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url('assets/js/bootstrap-datepicker.js'));
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url('assets/js/bootstrap-datepicker.ca.js'));
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url('assets/js/bootstrap-datepicker.es.js'));
+
+
 		$header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/bootstrap-tooltip.js'));
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/bootstrap-collapse.js'));                
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/tribal.js'));
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/tribal-shared.js'));        
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/tribal-timetable.js'));
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/jquery.dataTables.min.js'));
+
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/jquery.dataTables.bootstrap.js'));
+
+
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/bootstrap-switch.min.js'));
+
+ //ACE        
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ace-extra.min.js'));
@@ -141,10 +180,12 @@ class attendance extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ace.min.js'));
+                    
+/*
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/chosen.jquery.min.js'));
-
+*/
 		$header_data['menu']= $active_menu;
 		return $header_data; 
         
@@ -300,6 +341,7 @@ class attendance extends skeleton_main {
     	$this->check_logged_user();
 
 		$header_data = $this->load_header_data($active_menu);
+
         $this->_load_html_header($header_data);
 		
 		$this->_load_body_header();
@@ -316,7 +358,6 @@ class attendance extends skeleton_main {
 		if ( $class_room_group_id != null ) {
 			$data['default_classroom_group_id'] = $class_room_group_id;			
 		}
-
 		
 		//$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
 		$data['classroom_groups'] = $this->attendance_model->get_all_groups();
@@ -1176,11 +1217,11 @@ $header_data= $this->add_css_to_html_header_data(
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));      
-
+/*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/no_padding_top.css'));  
-
+*/
         
         //JS
         $header_data= $this->add_javascript_to_html_header_data(

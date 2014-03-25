@@ -723,10 +723,10 @@
           </a>
 
             <ul class="submenu">
-              <li id="bank_account"><a href='<?=base_url()?>index.php/banks/bank_account')?><?php echo lang('bank_account');?></a></li>
-              <li id="bank"><a href='<?=base_url()?>index.php/banks/bank')?><?php echo lang('bank');?></a></li>
-              <li id="bank_office"><a href='<?=base_url()?>index.php/banks/bank_office')?><?php echo lang('bank_office');?></a></li>
-              <li id="bank_account_type"><a href='<?=base_url()?>index.php/banks/bank_account_type')?><?php echo lang('bank_account_type');?></a></li>
+              <li id="bank_account"><a href='<?=base_url()?>index.php/banks/bank_account'><?php echo lang('bank_account');?></a></li>
+              <li id="bank"><a href='<?=base_url()?>index.php/banks/bank'><?php echo lang('bank');?></a></li>
+              <li id="bank_office"><a href='<?=base_url()?>index.php/banks/bank_office'><?php echo lang('bank_office');?></a></li>
+              <li id="bank_account_type"><a href='<?=base_url()?>index.php/banks/bank_account_type'><?php echo lang('bank_account_type');?></a></li>
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>
 
@@ -824,36 +824,6 @@
       } else {
         $(menu['menu']).addClass("active");
       }
-
-
-
-/*
-      switch(menu_count)
-      {
-        case 1:
-          $(menu['menu']).addClass("active");
-        break;
-
-        case 2:
-          $(menu['menu']).addClass("open active");
-          $(menu['submenu1']).addClass("active");
-        break;
-
-        case 3:
-          $(menu['menu']).addClass("open active");
-          $(menu['submenu1']).addClass("open active");
-          $(menu['submenu2']).addClass("active");
-        break;
-
-        case 4:
-          $(menu['menu']).addClass("open active");
-          $(menu['submenu1']).addClass("open active");
-          $(menu['submenu2']).addClass("open active");
-          $(menu['submenu3']).addClass("active");
-        break;        
-
-      }
-  */ 
 
   });
 
