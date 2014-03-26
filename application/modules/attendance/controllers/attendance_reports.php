@@ -60,11 +60,11 @@ class attendance_reports extends skeleton_main {
 
         // Hores de classe
         /*
-        $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
-                                 5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
-                                 9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+        array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
+               5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
+               9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
         */
-        $data['hores'] = $this->attendance_model->getAllTimeSlots()->result_array();
+        $data['time_slots'] = $this->attendance_model->getAllTimeSlots()->result_array();
 
         $falta ='';
 
@@ -74,107 +74,53 @@ class attendance_reports extends skeleton_main {
                 $falta .= $key." ";
             }
         }
-
-        $teacher_groups_current_day=array();
         
-        // Guardem la data i hora sel·leccionades
+        // Guardem la data i hora sel·leccionades, si ho hi ha data i hora selecionades per defecte és la data d'avui i el primer timeslot
         $group = new stdClass;
         if(isset($_POST['data'])){
-            $group->data=$_POST['data'];
+            $selected_date=$_POST['data'];
         } else {
-            $group->data=date("d-m-Y");
+            $selected_date=date("d-m-Y");
         }
         if(isset($_POST['hora'])){
-            $group->hora=$_POST['hora'];            
+            $selected_hour=$_POST['hora'];            
         } else {
-            $group->hora=1;
+            $selected_hour=1;
         }
 
-        $faltes = $this->attendance_model->getAllIncidentsByGroup_id($group->data,$group->hora);
-        //print_r($faltes);
+        $faltes = $this->attendance_model->getAllIncidentsByGroup_id($selected_date,$selected_hour);
+
+        $num_faltes = count($faltes);
+
         $i=0;
+        if($faltes){
         foreach($faltes as $falta){
-            $data['incidencia'][$i]['estudiant'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
-            $data['incidencia'][$i]['professor'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
+            $data['incident'][$i]['student'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
+            $data['incident'][$i]['teacher'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
             switch($falta->type){
-                case 1: $data['incidencia'][$i]['incidencia'] = 'F'; break;
-                case 2: $data['incidencia'][$i]['incidencia'] = 'FJ'; break;
-                case 3: $data['incidencia'][$i]['incidencia'] =  'R'; break;
-                case 4: $data['incidencia'][$i]['incidencia'] = 'RJ'; break;
-                case 5: $data['incidencia'][$i]['incidencia'] =  'E'; break;
+                case 1: $data['incident'][$i]['incident'] = 'F'; break;
+                case 2: $data['incident'][$i]['incident'] = 'FJ'; break;
+                case 3: $data['incident'][$i]['incident'] =  'R'; break;
+                case 4: $data['incident'][$i]['incident'] = 'RJ'; break;
+                case 5: $data['incident'][$i]['incident'] =  'E'; break;
+                default: $data['incident'][$i]['incident'] =  ''; break;
             }
 
             //$data['incidencia'][$i]['incidencia'] = $falta->type;
-            $data['incidencia'][$i]['dia'] = date("d-m-Y", strtotime($falta->day));
-            $data['incidencia'][$i]['hora'] = $falta->timeslot;
-            /* obtenir de la bd */
-            $data['incidencia'][$i]['grup'] = "1AF";
-            $data['incidencia'][$i]['credit'] = "M1";
+            $data['incident'][$i]['day'] = date("d-m-Y", strtotime($falta->day));
+            $data['incident'][$i]['hour'] = $falta->timeslot;
+
+            $data['incident'][$i]['start_time'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_start_time'];
+            $data['incident'][$i]['end_time'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_end_time'];
+
+            $data['incident'][$i]['group'] = $falta->group;
+            $data['incident'][$i]['study_module'] = $falta->study_module;
 
             $i++;
-            //print_r($faltes[0]->student);
+            }
+        } else {
+            $data['incident'] = false;
         }
-        //print_r($data['incidencia']);
-
-
-        
-        // Guardem les faltes
-        $group->faltes=$falta;
-
-        /* La informació de grup és de l'estil:
-        
-            [data] => 26-11-2013 
-            [hora] => 8:00-9:00 
-            [faltes] => F R E  
-        
-        */
-
-        // Incidències simulades, mentre no estigui llesta la base de dades
-/*            
-        $data['incidencia'] = array(
-            array(
-            'grup' => '1AF',
-            'dia'  => '26-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Patricia Favà Marti',
-            'incidencia' => 'FJ',
-            'credit' => 'M1',
-            'professor' => 'Ferran Sabaté Borras'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => '28-11-2012',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ignacio Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            ),  
-            array(
-            'grup' => '2ASIX',
-            'dia'  => '27-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Oscar Adán Valls',
-            'incidencia' => 'R',
-            'credit' => 'M6',
-            'professor' => 'David Caminero Baubí'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => '28-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ignacio Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            )
-
-        );
-*/
-
-//  echo "<br /><br />";
-//  print_r($data['incidencia']);        
-        
 
         //$this->load_header();  
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     

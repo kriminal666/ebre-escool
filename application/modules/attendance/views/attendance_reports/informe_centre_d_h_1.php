@@ -30,17 +30,17 @@ $(document).ready( function () {
 						"sButtonText": "<?php echo lang("Copy");?>"
 					},
 					{
-						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$incident[0]['start_time']."-".$incident[0]['end_time'];?>",
 						"sExtends": "csv",
 						"sButtonText": "CSV"
 					},
 					{
-						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$incident[0]['start_time']."-".$incident[0]['end_time'];?>",
 						"sExtends": "xls",
 						"sButtonText": "XLS"
 					},
 					{
-						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$_POST['hora'];?>",
+						"sTitle": "<?php echo lang('incidents_by_day_and_hour_1').$_POST['data'].lang('incidents_by_day_and_hour_2').$incident[0]['start_time']."-".$incident[0]['end_time'];?>",
 						"sExtends": "pdf",
 						"sPdfOrientation": "portrait",
 						"sButtonText": "PDF"
@@ -134,8 +134,9 @@ padding: 0.3em;
 	<div style="margin:10px; text-align:center;">
 		<h2><?php echo $title; ?></h2>
 	</div>    
+
 	<!-- FORM -->    
-	<div style="width:50%; margin:20px auto;">
+	<div style="width:70%; margin:20px auto;">
 		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
@@ -146,9 +147,9 @@ padding: 0.3em;
 				</div>		
 				<div class="form-group">
 					<tr>
-						<td><laber for="hora_informe"><?php echo lang('select_time');?></label></td>
+						<td><label for="hora_informe"><?php echo lang('select_time');?></label></td>
 						<td><select  id="hora_informe" name="hora" style="width:150px;">
-							<?php foreach ($hores as $hora) { ?>
+							<?php foreach ($time_slots as $hora) { ?>
 							<?php $rang=$hora['time_slot_start_time']."-".$hora['time_slot_end_time']; ?>
 								<option value="<?php echo $hora['time_slot_id']; ?>" <?php if(isset($_POST['hora']) && $hora['time_slot_id'] == $_POST['hora']){ ?> selected <?php } else {if($hora['time_slot_id']==1){?> selected <?php }} ?> ><?php echo $rang; ?></option>
 							<?php } ?>
@@ -160,11 +161,11 @@ padding: 0.3em;
 					<tr>
 						<td valign="top"><label for="incident"><?php echo lang('select_type_of_incident');?></label></td>
 						<td>
-							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F</input><br />
-							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ</input><br />
-							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?> > R</input><br />
-							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?> > RJ</input><br />
-							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?> > E</input>
+							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?>> F <br />
+							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?>> FJ <br />
+							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?>> R <br />
+							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?>> RJ <br />
+							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?>> E 
 						</td>
 					</tr>	
 				</div>
@@ -179,13 +180,21 @@ if($_POST){
 
 	$contador = count($_POST);	
 	$i=0;
-	foreach($incidencia as $falta):
+
+
+	$num_incidents = count($incident)." incidències.";
+
+	if($num_incidents>0 and $incident!=false){
+
+	$rang_horari = $incident[0]['start_time']."-".$incident[0]['end_time'];
+
+	foreach($incident as $falta):
 		// Si la data, hora i tipus d'incidència sel·leccionades coincideixen amb alguna de les incidències
-		if($_POST['data']==$falta['dia'] && $_POST['hora']==$falta['hora'] && array_key_exists($falta['incidencia'], $_POST)){
+		if($_POST['data']==$falta['day'] && $_POST['hora']==$falta['hour'] && array_key_exists($falta['incident'], $_POST)){
 			// La primera iteració mostrem el títol i les capçaleres de la taula
 			if($i==0){
 				echo "<h4><center>".lang('incidents_by_day_and_hour_1').$_POST['data'].
-					lang('incidents_by_day_and_hour_2').$_POST['hora']."</center></h4>";
+					lang('incidents_by_day_and_hour_2').$rang_horari."</center></h4>";
 
 // Mostrem la taula amb els resultats
 ?>
@@ -194,9 +203,9 @@ if($_POST){
  <thead style="background-color: #d9edf7;">
   <tr>
      <th>Grup</th>
+     <th>Crèdit</th>
      <th>Alumne</th>
      <th>Incidència</th>
-     <th>Crèdit</th>
      <th>Professor</th>
   </tr>
  </thead>
@@ -206,11 +215,11 @@ if($_POST){
 			} // if($i==0)
    ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-	 <td><?php echo $falta['grup'];?></td>     
-     <td><?php echo $falta['estudiant'];?></td>
-     <td><?php echo $falta['incidencia'];?></td>
-     <td><?php echo $falta['credit'];?></td>
-     <td><?php echo $falta['professor'];?></td>
+	 <td><?php echo $falta['group'];?></td>   
+	 <td><?php echo $falta['study_module'];?></td>  
+     <td><?php echo $falta['student'];?></td>
+     <td><?php echo $falta['incident'];?></td>
+     <td><?php echo $falta['teacher'];?></td>
    </tr>
   <?php 
   	// mirem si hem arribat al últim element
@@ -222,6 +231,7 @@ if($_POST){
 	} // últim element
 } // Hi ha incidències;
 	endforeach;
+} // fi num_incidents > 0
 if($i==0) { echo "No hi ha incidències per a aquesta data i hora."; }
 } ?>
 
