@@ -148,8 +148,9 @@ padding: 0.3em;
 					<tr>
 						<td><laber for="hora_informe"><?php echo lang('select_time');?></label></td>
 						<td><select  id="hora_informe" name="hora" style="width:150px;">
-							<?php foreach ($hores as $key => $value) { ?>
-								<option value="<?php echo $value ?>" <?php if(isset($_POST['hora']) && $value == $_POST['hora']){ ?> selected <?php } else {if($key==1){?> selected <?php }} ?> ><?php echo $value ?></option>
+							<?php foreach ($hores as $hora) { ?>
+							<?php $rang=$hora['time_slot_start_time']."-".$hora['time_slot_end_time']; ?>
+								<option value="<?php echo $hora['time_slot_id']; ?>" <?php if(isset($_POST['hora']) && $hora['time_slot_id'] == $_POST['hora']){ ?> selected <?php } else {if($hora['time_slot_id']==1){?> selected <?php }} ?> ><?php echo $rang; ?></option>
 							<?php } ?>
 							</select>		
 						</td>
@@ -174,7 +175,8 @@ padding: 0.3em;
 <!-- DATATABLE -->
 <?php 
 
-if($_POST){  
+if($_POST){
+
 	$contador = count($_POST);	
 	$i=0;
 	foreach($incidencia as $falta):

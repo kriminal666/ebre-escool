@@ -58,6 +58,14 @@ class attendance_reports extends skeleton_main {
         $data['title']=lang('reports_educational_center_reports_incidents_by_day_and_hour');
         $data['post'] = $_POST;
 
+        // Hores de classe
+        /*
+        $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
+                                 5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
+                                 9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+        */
+        $data['hores'] = $this->attendance_model->getAllTimeSlots()->result_array();
+
         $falta ='';
 
         // Mirar als elements del $_POST si hi ha algun tipus de falta sel·leccionat
@@ -74,13 +82,41 @@ class attendance_reports extends skeleton_main {
         if(isset($_POST['data'])){
             $group->data=$_POST['data'];
         } else {
-            $group->data='';
+            $group->data=date("d-m-Y");
         }
         if(isset($_POST['hora'])){
             $group->hora=$_POST['hora'];            
         } else {
-            $group->hora='';
+            $group->hora=1;
         }
+
+        $faltes = $this->attendance_model->getAllIncidentsByGroup_id($group->data,$group->hora);
+        //print_r($faltes);
+        $i=0;
+        foreach($faltes as $falta){
+            $data['incidencia'][$i]['estudiant'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
+            $data['incidencia'][$i]['professor'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
+            switch($falta->type){
+                case 1: $data['incidencia'][$i]['incidencia'] = 'F'; break;
+                case 2: $data['incidencia'][$i]['incidencia'] = 'FJ'; break;
+                case 3: $data['incidencia'][$i]['incidencia'] =  'R'; break;
+                case 4: $data['incidencia'][$i]['incidencia'] = 'RJ'; break;
+                case 5: $data['incidencia'][$i]['incidencia'] =  'E'; break;
+            }
+
+            //$data['incidencia'][$i]['incidencia'] = $falta->type;
+            $data['incidencia'][$i]['dia'] = date("d-m-Y", strtotime($falta->day));
+            $data['incidencia'][$i]['hora'] = $falta->timeslot;
+            /* obtenir de la bd */
+            $data['incidencia'][$i]['grup'] = "1AF";
+            $data['incidencia'][$i]['credit'] = "M1";
+
+            $i++;
+            //print_r($faltes[0]->student);
+        }
+        //print_r($data['incidencia']);
+
+
         
         // Guardem les faltes
         $group->faltes=$falta;
@@ -94,6 +130,7 @@ class attendance_reports extends skeleton_main {
         */
 
         // Incidències simulades, mentre no estigui llesta la base de dades
+/*            
         $data['incidencia'] = array(
             array(
             'grup' => '1AF',
@@ -133,11 +170,11 @@ class attendance_reports extends skeleton_main {
             )
 
         );
+*/
+
+//  echo "<br /><br />";
+//  print_r($data['incidencia']);        
         
-        // Hores de classe
-        $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
-                                 5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
-                                 9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
 
         //$this->load_header();  
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
