@@ -99,7 +99,7 @@ padding: 0.3em;
 }
 </style>
 
-<div class="main-content" >
+<div class="main-content" style="padding-bottom:100px;">
 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
