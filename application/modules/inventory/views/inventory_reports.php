@@ -624,7 +624,7 @@ $(document).ready(function() {
           "sExtends": "pdf",
           "sPdfOrientation": "landscape",
           "sPdfMessage": "TODO",
-          "sTitle": "TODO",
+          "sTitle": "inventari_data",
           "sButtonText": "PDF"
         },
         {

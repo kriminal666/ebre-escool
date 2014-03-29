@@ -386,6 +386,92 @@ class attendance_model  extends CI_Model  {
 	}
 
 
+//OSCAR: Obtenir les incidències d'un grup
+	function getAllIncidentsByGroup_id($data, $hora, $classroom_group_id = false,$orderby = "asc") {
+		
+/*
+SELECT `attendance_incident_id`, `student_id`, `teacher_id`, `st`.`person_givenName` as "student_name", `st`.`person_sn1` as "student_sn1", 
+`st`.`person_sn2` as "student_sn2", `teach`.`person_givenName` as "teacher_name", `teach`.`person_sn1` as "teacher_sn1", 
+`teach`.`person_sn2` as "teacher_sn2", `data_incidencia`, `attendance_incident_timeslot_id`, `attendance_incident_lesson_id`, 
+`attendance_incident_type`, `observacions`, 
+`classroom_group_code`, `study_module_shortname` 
+FROM (`attendance_incident`) 
+JOIN `student` ON `attendance_incident_student_id`=`student_id` 
+JOIN `person` as st ON `student_person_id`=`st`.`person_id` 
+JOIN `teacher` ON `attendance_incident_teacher_id`=`teacher_id` 
+JOIN `person` as teach ON `teacher_person_id`=`teach`.`person_id` 
+JOIN `lesson` ON `lesson_teacher_id` = `teacher_id`
+JOIN `classroom_group` ON `lesson_classroom_group_id` = `classroom_group_id`
+JOIN `study_module` ON `lesson_study_module_id` = `study_module_id`
+WHERE `attendance_incident_timeslot_id` = '1' AND `data_incidencia` = '2013-09-26' 
+*/
+		$this->db->select('student_id,teacher_id,st.person_givenName as "student_name",st.person_sn1 as "student_sn1",st.person_sn2 as "student_sn2",
+			teach.person_givenName as "teacher_name",teach.person_sn1 as "teacher_sn1",teach.person_sn2 as "teacher_sn2",
+			data_incidencia,attendance_incident_timeslot_id,attendance_incident_lesson_id, attendance_incident_type,observacions,
+			classroom_group_code,study_module_shortname');
+		$this->db->from('attendance_incident');
+		$this->db->join('student','attendance_incident_student_id=student_id');
+		$this->db->join('person as st','student_person_id=st.person_id');
+		$this->db->join('teacher','attendance_incident_teacher_id=teacher_id');
+		$this->db->join('person as teach','teacher_person_id=teach.person_id');		
+		$this->db->join('lesson','lesson_teacher_id=teacher_id');
+		$this->db->join('classroom_group','lesson_classroom_group_id=classroom_group_id');
+		$this->db->join('study_module','lesson_study_module_id=study_module_id');	
+
+		$this->db->where('attendance_incident_timeslot_id',$hora);
+		$this->db->where('data_incidencia',date("Y-m-d", strtotime($data)));
+
+		$this->db->distinct();
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+		if ($query->num_rows() > 0)	{
+			
+			$incident = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				$incident = new stdClass();
+				$incident->student_id = $row['student_id'];
+
+				$incident->student_name = $row['student_name'];
+				$incident->student_sn1 = $row['student_sn1'];
+				$incident->student_sn2 = $row['student_sn2'];
+
+				$incident->teacher_id = $row['teacher_id'];
+				$incident->teacher_name = $row['teacher_name'];
+				$incident->teacher_sn1 = $row['teacher_sn1'];
+				$incident->teacher_sn2 = $row['teacher_sn2'];				
+
+				$incident->group = $row['classroom_group_code'];
+				$incident->study_module = $row['study_module_shortname'];				
+				$incident->type = $row['attendance_incident_type'];
+				$incident->timeslot = $row['attendance_incident_timeslot_id'];
+				$incident->day = $row['data_incidencia'];
+				
+   				$incidents_array[] = $incident;
+
+			}
+			//print_r($incidents_array);
+			return $incidents_array;
+		}
+		else
+			return false;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //OSCAR: Obtenir les lliçons d'un dia
 	function getAllLessonsByDay($day,$classroom_group_id,$orderby = "asc") {
 		/*

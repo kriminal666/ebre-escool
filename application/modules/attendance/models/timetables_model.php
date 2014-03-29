@@ -435,7 +435,7 @@ where lesson_teacher_id=7
 		$this->db->order_by('time_slot_order', $orderby);
 
 		$query = $this->db->get();
-
+		//echo $this->db->last_query();
 		if ($query->num_rows() > 0)
 			return $query;
 		else

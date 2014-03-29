@@ -58,6 +58,14 @@ class attendance_reports extends skeleton_main {
         $data['title']=lang('reports_educational_center_reports_incidents_by_day_and_hour');
         $data['post'] = $_POST;
 
+        // Hores de classe
+        /*
+        array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
+               5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
+               9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+        */
+        $data['time_slots'] = $this->attendance_model->getAllTimeSlots()->result_array();
+
         $falta ='';
 
         // Mirar als elements del $_POST si hi ha algun tipus de falta sel·leccionat
@@ -66,78 +74,53 @@ class attendance_reports extends skeleton_main {
                 $falta .= $key." ";
             }
         }
-
-        $teacher_groups_current_day=array();
         
-        // Guardem la data i hora sel·leccionades
+        // Guardem la data i hora sel·leccionades, si ho hi ha data i hora selecionades per defecte és la data d'avui i el primer timeslot
         $group = new stdClass;
         if(isset($_POST['data'])){
-            $group->data=$_POST['data'];
+            $selected_date=$_POST['data'];
         } else {
-            $group->data='';
+            $selected_date=date("d-m-Y");
         }
         if(isset($_POST['hora'])){
-            $group->hora=$_POST['hora'];            
+            $selected_hour=$_POST['hora'];            
         } else {
-            $group->hora='';
+            $selected_hour=1;
         }
-        
-        // Guardem les faltes
-        $group->faltes=$falta;
 
-        /* La informació de grup és de l'estil:
-        
-            [data] => 26-11-2013 
-            [hora] => 8:00-9:00 
-            [faltes] => F R E  
-        
-        */
+        $faltes = $this->attendance_model->getAllIncidentsByGroup_id($selected_date,$selected_hour);
 
-        // Incidències simulades, mentre no estigui llesta la base de dades
-        $data['incidencia'] = array(
-            array(
-            'grup' => '1AF',
-            'dia'  => '26-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Patricia Favà Marti',
-            'incidencia' => 'FJ',
-            'credit' => 'M1',
-            'professor' => 'Ferran Sabaté Borras'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => '28-11-2012',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ignacio Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            ),  
-            array(
-            'grup' => '2ASIX',
-            'dia'  => '27-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Oscar Adán Valls',
-            'incidencia' => 'R',
-            'credit' => 'M6',
-            'professor' => 'David Caminero Baubí'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => '28-11-2013',
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ignacio Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            )
+        $num_faltes = count($faltes);
 
-        );
-        
-        // Hores de classe
-        $data['hores'] = array( 1 => '8:00-9:00', 2 => '9:00-10:00', 3 => '10:00-11:00', 4 => '11:30-12:30', 
-                                 5 => '12:30-13:30', 6 => '13:30-14:30', 7 => '15:30-16:30', 8 => '16:30-17:30',
-                                 9 => '17:30-18:30', 10 => '19:00-20:00', 11 => '20:00-21:00', 12 => '21:00-22:00');
+        $i=0;
+        if($faltes){
+        foreach($faltes as $falta){
+            $data['incident'][$i]['student'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
+            $data['incident'][$i]['teacher'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
+            switch($falta->type){
+                case 1: $data['incident'][$i]['incident'] = 'F'; break;
+                case 2: $data['incident'][$i]['incident'] = 'FJ'; break;
+                case 3: $data['incident'][$i]['incident'] =  'R'; break;
+                case 4: $data['incident'][$i]['incident'] = 'RJ'; break;
+                case 5: $data['incident'][$i]['incident'] =  'E'; break;
+                default: $data['incident'][$i]['incident'] =  ''; break;
+            }
+
+            //$data['incidencia'][$i]['incidencia'] = $falta->type;
+            $data['incident'][$i]['day'] = date("d-m-Y", strtotime($falta->day));
+            $data['incident'][$i]['hour'] = $falta->timeslot;
+
+            $data['incident'][$i]['start_time'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_start_time'];
+            $data['incident'][$i]['end_time'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_end_time'];
+
+            $data['incident'][$i]['group'] = $falta->group;
+            $data['incident'][$i]['study_module'] = $falta->study_module;
+
+            $i++;
+            }
+        } else {
+            $data['incident'] = false;
+        }
 
         //$this->load_header();  
         $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
