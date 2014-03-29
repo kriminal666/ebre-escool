@@ -27,6 +27,137 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 
+/* Get All Group Students Info 
+
+	public function getAllGroupStudentsInfo($groupdn) {
+		$allGroupStudentsInfo=array();
+
+		// Imatge Genèrica
+		$img_file = APPPATH.'third_party/skeleton/assets/img/foto.png';
+		$imgData = file_get_contents($img_file);
+		$src = 'data: '.mime_content_type($img_file).';base64,'.$imgData;
+
+
+		if ($this->_bind()) {
+			$filter = '(&  (objectClass=posixAccount)(!(objectClass=gosaUserTemplate)))';		
+			$required_attributes= array("irisPersonalUniqueID","irisPersonalUniqueIDType","highSchoolTSI","highSchoolUserId","employeeNumber","sn","sn1","sn2",
+										"givenName","gender","homePostalAddress","l","postalCode","st","mobile","homePhone","dateOfBirth","uid","uidnumber","highSchoolPersonalEmail",
+										"jpegPhoto","gidNumber","homeDirectory","loginShell","sambaDomainName","sambaHomeDrive","sambaHomePath","sambaLogonScript","sambaSID","sambaPrimaryGroupSID");
+			$search = @ldap_search($this->ldapconn, $groupdn, $filter,$required_attributes);
+        	$allGroupStudentsDNsentries = @ldap_get_entries($this->ldapconn, $search);
+      		$this->ldap_multi_sort($allGroupStudentsDNsentries, array("sn","givenname"));
+      		
+      		$students = array();
+			$i=0;
+			
+			$this->init_all_groups();
+			
+			if (count($allGroupStudentsDNsentries) != 0) {
+				foreach ($allGroupStudentsDNsentries as $studententry){		
+					if ($i == 0) {
+						$i++;
+						continue;
+					}
+					$student = new stdClass;
+					
+					$dn=$studententry['dn'];
+					
+					$group_dn=$this->obtainGroupDNfromUserDN($dn);
+					
+					$group_name = $this->extractGroupNameFromDN($group_dn);
+					$group_code = $this->extractGroupCodeFromDN($group_dn);
+					
+					$student->dn = $dn;		
+					$student->group_code = $group_code;
+					$student->group_name = $group_name;
+					$student->irisPersonalUniqueID = (isset($studententry['irispersonaluniqueid'])) ? $studententry['irispersonaluniqueid'][0] : "";	
+					$student->irisPersonalUniqueIDType = (isset($studententry['irispersonaluniqueidtype'])) ? $studententry['irispersonaluniqueidtype'][0] : "";
+					$student->highSchoolTSI = (isset($studententry['highschooltsi'])) ? $studententry['highschooltsi'][0] : "";
+					$student->highSchoolUserId = (isset($studententry['highschooluserid'])) ? $studententry['highschooluserid'][0] : "";
+					$student->employeeNumber = (isset($studententry['employeenumber'])) ? $studententry['employeenumber'][0] : "";
+					$student->sn = (isset($studententry['sn'])) ? $studententry['sn'][0] : "";
+					$student->sn1 = (isset($studententry['sn1'])) ? $studententry['sn1'][0] : "";
+					$student->sn2 = (isset($studententry['sn2'])) ? $studententry['sn2'][0] : "";
+					$student->givenName = (isset($studententry['givenname'])) ? $studententry['givenname'][0] : "";
+					$student->gender = (isset($studententry['gender'])) ? $studententry['gender'][0] : "";
+					$student->homePostalAddress = (isset($studententry['homepostaladdress'])) ? $studententry['homepostaladdress'][0] : "";
+					$student->location = (isset($studententry['l'])) ? $studententry['l'][0] : "";
+					$student->postalCode = (isset($studententry['postalcode'])) ? $studententry['postalcode'][0] : "";
+					$student->st = (isset($studententry['st'])) ? $studententry['st'][0] : "";
+					$student->state = (isset($studententry['st'])) ? $studententry['st'][0] : "";
+					$student->mobile = (isset($studententry['mobile'])) ? $studententry['mobile'][0] : "";
+					$student->homePhone = (isset($studententry['homephone'])) ? $studententry['homephone'][0] : "";
+					$student->dateOfBirth = (isset($studententry['dateofbirth'])) ? $studententry['dateofbirth'][0] : "";
+					$student->uid = (isset($studententry['uid'])) ? $studententry['uid'][0] : "";
+					$student->uidnumber = (isset($studententry['uidnumber'])) ? $studententry['uidnumber'][0] : "";
+					$student->highSchoolPersonalEmail = (isset($studententry['highschoolpersonalemail'])) ? $studententry['highschoolpersonalemail'][0] : "";
+					//$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : "";
+					$student->jpegPhoto = (isset($studententry['jpegphoto'])) ? $studententry['jpegphoto'][0] : $imgData;
+
+					$student->gidNumber = (isset($studententry['gidnumber'])) ? $studententry['gidnumber'][0] : "";
+					$student->homeDirectory = (isset($studententry['homedirectory'])) ? $studententry['homedirectory'][0] : "";
+					$student->loginShell = (isset($studententry['loginshell'])) ? $studententry['loginshell'][0] : "";
+					$student->sambaDomainName = (isset($studententry['sambadomainname'])) ? $studententry['sambadomainname'][0] : "";
+					$student->sambaHomeDrive = (isset($studententry['sambahomedrive'])) ? $studententry['sambahomedrive'][0] : "";
+					$student->sambaHomePath = (isset($studententry['sambahomepath'])) ? $studententry['sambahomepath'][0] : "";
+					$student->sambaLogonScript = (isset($studententry['sambalogonscript'])) ? $studententry['sambalogonscript'][0] : "";
+					$student->sambaSID = (isset($studententry['sambasid'])) ? $studententry['sambasid'][0] : "";
+					$student->sambaPrimaryGroupSID = (isset($studententry['sambaprimarygroupsid'])) ? $studententry['sambaprimarygroupsid'][0] : "";
+		
+					array_push($allGroupStudentsInfo,$student);
+				}
+			}
+		}
+		return $allGroupStudentsInfo;
+	}
+*/
+
+function getAllGroupStudentInfo($group){
+
+/* 
+SELECT distinct(classroom_group_code), person_givenName, person_sn1, person_sn2 
+FROM enrollment_modules 
+JOIN person ON person.person_id = enrollment_modules.enrollment_modules_personid 
+JOIN classroom_group ON enrollment_modules.enrollment_modules_group_id = classroom_group.classroom_group_id 
+WHERE classroom_group.classroom_group_id = 3 
+ORDER BY person.person_sn1
+*/
+
+		$this->db->select('classroom_group_code,person_givenName,person_sn1,person_sn2,person_official_id,person_photo');
+		$this->db->from('enrollment_modules');
+		$this->db->join('person','person.person_id = enrollment_modules.enrollment_modules_personid');
+		$this->db->join('classroom_group','enrollment_modules.enrollment_modules_group_id = classroom_group.classroom_group_id');
+		$this->db->where('classroom_group.classroom_group_code',$group);
+		$this->db->order_by('person_sn1');
+		$this->db->distinct();
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$student_info_array = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				//$student_info_array[] = $row;
+   				$student = new stdClass();
+				$student->givenName = $row['person_givenName'];
+				$student->sn1 = $row['person_sn1'];
+				$student->sn2 = $row['person_sn2'];
+				$student->irisPersonalUniqueID = $row['person_official_id'];
+				$student->jpegPhoto = $row['person_photo'];
+				$student_info_array[] = $student;
+
+			}
+
+			return $student_info_array;
+		}			
+		else
+			return false;
+
+
+}
+
 	function get_all_groups($orderby="asc") {
 		$this->db->from('classroom_group');
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
@@ -40,7 +171,8 @@ class attendance_model  extends CI_Model  {
 			$groups_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
+   				//$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
+   				$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
 			}
 			return $groups_array;
 		}			
@@ -386,25 +518,9 @@ class attendance_model  extends CI_Model  {
 	}
 
 
-//OSCAR: Obtenir les incidències d'un grup
-	function getAllIncidentsByGroup_id($data, $hora, $classroom_group_id = false,$orderby = "asc") {
+//OSCAR: Obtenir les incidències d'una data i hora
+	function getAllIncidentsByDateTime($data, $hora,$tipus_falta,$orderby = "asc") {
 		
-/*
-SELECT `attendance_incident_id`, `student_id`, `teacher_id`, `st`.`person_givenName` as "student_name", `st`.`person_sn1` as "student_sn1", 
-`st`.`person_sn2` as "student_sn2", `teach`.`person_givenName` as "teacher_name", `teach`.`person_sn1` as "teacher_sn1", 
-`teach`.`person_sn2` as "teacher_sn2", `data_incidencia`, `attendance_incident_timeslot_id`, `attendance_incident_lesson_id`, 
-`attendance_incident_type`, `observacions`, 
-`classroom_group_code`, `study_module_shortname` 
-FROM (`attendance_incident`) 
-JOIN `student` ON `attendance_incident_student_id`=`student_id` 
-JOIN `person` as st ON `student_person_id`=`st`.`person_id` 
-JOIN `teacher` ON `attendance_incident_teacher_id`=`teacher_id` 
-JOIN `person` as teach ON `teacher_person_id`=`teach`.`person_id` 
-JOIN `lesson` ON `lesson_teacher_id` = `teacher_id`
-JOIN `classroom_group` ON `lesson_classroom_group_id` = `classroom_group_id`
-JOIN `study_module` ON `lesson_study_module_id` = `study_module_id`
-WHERE `attendance_incident_timeslot_id` = '1' AND `data_incidencia` = '2013-09-26' 
-*/
 		$this->db->select('student_id,teacher_id,st.person_givenName as "student_name",st.person_sn1 as "student_sn1",st.person_sn2 as "student_sn2",
 			teach.person_givenName as "teacher_name",teach.person_sn1 as "teacher_sn1",teach.person_sn2 as "teacher_sn2",
 			data_incidencia,attendance_incident_timeslot_id,attendance_incident_lesson_id, attendance_incident_type,observacions,
@@ -420,6 +536,11 @@ WHERE `attendance_incident_timeslot_id` = '1' AND `data_incidencia` = '2013-09-2
 
 		$this->db->where('attendance_incident_timeslot_id',$hora);
 		$this->db->where('data_incidencia',date("Y-m-d", strtotime($data)));
+		if($tipus_falta!=''){
+			$this->db->where_in('attendance_incident_type', $tipus_falta);
+		} else {
+			$this->db->where('attendance_incident_type','');
+		}
 
 		$this->db->distinct();
 		$query = $this->db->get();
@@ -452,23 +573,74 @@ WHERE `attendance_incident_timeslot_id` = '1' AND `data_incidencia` = '2013-09-2
    				$incidents_array[] = $incident;
 
 			}
-			//print_r($incidents_array);
 			return $incidents_array;
 		}
 		else
 			return false;
 	}
 
+//OSCAR: Obtenir les incidències entre 2 dates
+	function getAllIncidentsBetweenDates($data_ini, $data_fi,$tipus_falta,$limit=false,$orderby = "asc") {
+		
+		$this->db->select('student_id,teacher_id,st.person_givenName as "student_name",st.person_sn1 as "student_sn1",st.person_sn2 as "student_sn2",
+			teach.person_givenName as "teacher_name",teach.person_sn1 as "teacher_sn1",teach.person_sn2 as "teacher_sn2",
+			data_incidencia,attendance_incident_timeslot_id,attendance_incident_lesson_id, attendance_incident_type,observacions,
+			classroom_group_code,study_module_shortname');
+		$this->db->from('attendance_incident');
+		$this->db->join('student','attendance_incident_student_id=student_id');
+		$this->db->join('person as st','student_person_id=st.person_id');
+		$this->db->join('teacher','attendance_incident_teacher_id=teacher_id');
+		$this->db->join('person as teach','teacher_person_id=teach.person_id');		
+		$this->db->join('lesson','lesson_teacher_id=teacher_id');
+		$this->db->join('classroom_group','lesson_classroom_group_id=classroom_group_id');
+		$this->db->join('study_module','lesson_study_module_id=study_module_id');	
 
+		$this->db->where('data_incidencia >=', date("Y-m-d", strtotime($data_ini)));
+		$this->db->where('data_incidencia <=', date("Y-m-d", strtotime($data_fi)));
+		if($tipus_falta!=''){
+			$this->db->where_in('attendance_incident_type', $tipus_falta);
+		} else {
+			$this->db->where('attendance_incident_type','');
+		}
 
+		$this->db->distinct();
+		if($limit){
+			$this->db->limit($limit);
+		}
+		$query = $this->db->get();
 
+		//echo $this->db->last_query();
+		if ($query->num_rows() > 0)	{
+			
+			$incident = array();
 
+			foreach ($query->result_array() as $row)	{
 
+				$incident = new stdClass();
+				$incident->student_id = $row['student_id'];
+				$incident->student_name = $row['student_name'];
+				$incident->student_sn1 = $row['student_sn1'];
+				$incident->student_sn2 = $row['student_sn2'];
 
+				$incident->teacher_id = $row['teacher_id'];
+				$incident->teacher_name = $row['teacher_name'];
+				$incident->teacher_sn1 = $row['teacher_sn1'];
+				$incident->teacher_sn2 = $row['teacher_sn2'];				
 
+				$incident->group = $row['classroom_group_code'];
+				$incident->study_module = $row['study_module_shortname'];				
+				$incident->type = $row['attendance_incident_type'];
+				$incident->timeslot = $row['attendance_incident_timeslot_id'];
+				$incident->day = $row['data_incidencia'];
+				
+   				$incidents_array[] = $incident;
 
-
-
+			}
+			return $incidents_array;
+		}
+		else
+			return false;
+	}
 
 
 
@@ -557,7 +729,7 @@ WHERE `attendance_incident_timeslot_id` = '1' AND `data_incidencia` = '2013-09-2
 		$this->db->order_by('classroom_group_code', $orderby);
 		
 		$query = $this->db->get();
-		
+		//echo $this->db->last_query();
 		if ($query->num_rows() > 0)
 			return $query;
 		else

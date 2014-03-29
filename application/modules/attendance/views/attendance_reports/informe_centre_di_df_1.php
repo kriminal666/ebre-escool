@@ -5,7 +5,6 @@ $(function() {
 	$( "#data_final" ).datepicker({ dateFormat: 'dd-mm-yy' });
 });
 </script>
-</script>
 <!-- Data Table -->
 <script>
 $(document).ready( function () {
@@ -15,19 +14,6 @@ $(document).ready( function () {
 		"bInfo": false,
 		"sDom": 'T<"clear">lfrtip',
 		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],
-	
-	// El primer element de la taula l'utilitzem per a ordenar la taula, però no es visualitza.
-	// Si no ho fem així la taula no s'ordena correctament
-    "aoColumns": [
-    { "bVisible": false },
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-  ],
-
 		"oTableTools": {
 			"sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
 				"aButtons": [
@@ -96,7 +82,7 @@ $(document).ready( function () {
 		$data_fi = strtotime($_POST['data_final']);
 	}	
 ?>
-<div class="main-content" >
+<div class="main-content" style="padding-bottom:100px;">
 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
@@ -132,7 +118,7 @@ $(document).ready( function () {
 		<h2><?php echo $title; ?></h2>
 	</div>    
 	<!-- FORM -->    
-	<div style="width:60%; margin:20px auto;">
+	<div style="width:75%; margin:20px auto;">
 		<form method="post" action="informe_centre_di_df_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
@@ -153,11 +139,11 @@ $(document).ready( function () {
 					<tr>
 						<td valign="top"><label for="incident"><?php echo lang('select_type_of_incident');?></label></td>
 						<td>
-							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F</input><br />
-							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ</input><br />
-							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?> > R</input><br />
-							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?> > RJ</input><br />
-							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?> > E</input>
+							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F<br />
+							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ<br />
+							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?> > R<br />
+							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?> > RJ<br />
+							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?> > E
 						</td>
 					</tr>	
 				</div>
@@ -170,12 +156,17 @@ $(document).ready( function () {
 <?php
 
 if($_POST){  
-	$contador = count($_POST);	
+	//$contador = count($_POST);	
 	$i=0;
-	foreach($incidencia as $falta):
+
+	$num_incidents = count($incident);
+
+	if($num_incidents>0 and $incident!=false){
+
+	foreach($incident as $falta):
 
 		// Si hi ha incidències entre les dates indicades
-		if( ($falta['dia'] >= $data_ini) && ($falta['dia'] <= $data_fi) && array_key_exists($falta['incidencia'], $_POST)){
+		//if( ($falta['day'] >= $data_ini) && ($falta['day'] <= $data_fi) && array_key_exists($falta['incident'], $_POST)){
 			// La primera iteració mostrem el títol i les capçaleres de la taula
 			if($i==0){
 				echo "<h4><center>".$title."</center></h4>";
@@ -186,12 +177,12 @@ if($_POST){
 <table class="table table-striped table-bordered table-hover table-condensed" id="initial_date_end_date">
  <thead style="background-color: #d9edf7;">
   <tr>
-     <th>datetime</th>   	
      <th>Dia</th> 
+     <th>Hora</th> 
      <th>Grup</th>
+     <th>Crèdit</th>     
      <th>Alumne</th>
      <th>Incidència</th>
-     <th>Crèdit</th>
      <th>Professor</th>
   </tr>
  </thead>
@@ -203,25 +194,26 @@ if($_POST){
 
    ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">
-     <td><?php echo $falta['dia'];?></td>   	
-     <td><?php echo date("d-m-Y",$falta['dia']);?></td>
-	 <td><?php echo $falta['grup'];?></td>     
-     <td><?php echo $falta['estudiant'];?></td>
-     <td><?php echo $falta['incidencia'];?></td>
-     <td><?php echo $falta['credit'];?></td>
-     <td><?php echo $falta['professor'];?></td>
+     <td><?php echo date("d-m-Y",strtotime($falta['day']));?></td>
+     <td><?php echo $falta['hour'];?></td>
+	 <td><?php echo $falta['group'];?></td>     
+     <td><?php echo $falta['study_module'];?></td>
+     <td><?php echo $falta['student'];?></td>
+     <td><?php echo $falta['incident'];?></td>
+     <td><?php echo $falta['teacher'];?></td>
    </tr>
   <?php 
   	// mirem si hem arribat al últim element  
-  	if($i==$contador){
+  	if($i==$num_incidents){
   ?>
  </tbody>
 </table>
 <?php $i++; 
 	} // Ultim element
-} // Hi ha incidències
+//} // Hi ha incidències
 endforeach;
-if($i==0) { echo "No hi ha incidències per a aquest rang de dades."; }
+} // fi num_incidents > 0
+if($i==0) { echo "No hi ha incidències per a aquest rang de dates."; }
 } ?>
 
 </div>	

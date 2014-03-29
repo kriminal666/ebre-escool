@@ -136,7 +136,7 @@ padding: 0.3em;
 	</div>    
 
 	<!-- FORM -->    
-	<div style="width:70%; margin:20px auto;">
+	<div style="width:75%; margin:20px auto;">
 		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
@@ -182,7 +182,7 @@ if($_POST){
 	$i=0;
 
 
-	$num_incidents = count($incident)." incidències.";
+	$num_incidents = count($incident);
 
 	if($num_incidents>0 and $incident!=false){
 
@@ -190,7 +190,7 @@ if($_POST){
 
 	foreach($incident as $falta):
 		// Si la data, hora i tipus d'incidència sel·leccionades coincideixen amb alguna de les incidències
-		if($_POST['data']==$falta['day'] && $_POST['hora']==$falta['hour'] && array_key_exists($falta['incident'], $_POST)){
+		//if($_POST['data']==$falta['day'] && $_POST['hora']==$falta['hour'] && array_key_exists($falta['incident'], $_POST)){
 			// La primera iteració mostrem el títol i les capçaleres de la taula
 			if($i==0){
 				echo "<h4><center>".lang('incidents_by_day_and_hour_1').$_POST['data'].
@@ -229,7 +229,7 @@ if($_POST){
 </table>
 <?php $i++; 
 	} // últim element
-} // Hi ha incidències;
+//} // Hi ha incidències;
 	endforeach;
 } // fi num_incidents > 0
 if($i==0) { echo "No hi ha incidències per a aquesta data i hora."; }

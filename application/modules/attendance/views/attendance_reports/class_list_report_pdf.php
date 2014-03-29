@@ -16,32 +16,28 @@ foreach($all_students_in_group as $student){
 
 if($photo){
 	/* Detectar tipus d'imatge (PNG o JPG) */
-	$tipus = substr($student->jpegPhoto,0,10);
+	
+	//$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
+	$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
+	$type = pathinfo(base_url("/assets/img/alumnes")."/".$student->jpegPhoto, PATHINFO_EXTENSION);
+	$extensio = ".".$type;
 
-	$isJPG  = strpos($tipus, 'JFIF');
-	if($isJPG){
-		$extensio = ".jpg";
-	} else {
-		$isPNG  = strpos($tipus, 'PNG');
-		if($isPNG){
-		$extensio = ".png";
-		}
-	}
-
-	$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
-	$jpeg_file[$contador]=$student->irisPersonalUniqueID.$extensio;
-	$alumne[$contador]['jpegPhoto']=$student->irisPersonalUniqueID.$extensio;
-	$outjpeg = fopen($jpeg_filename, "wb");
+	//$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$jpeg_filename=base_url("/assets/img/alumnes")."/".$student->jpegPhoto;
+	$jpeg_file[$contador]=$student->jpegPhoto;
+	$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
+	$outjpeg = fopen($jpeg_filename, "rb");
 	fwrite($outjpeg, $student->jpegPhoto);
 	fclose ($outjpeg);
-	$jpeg_data_size = filesize( $jpeg_filename );
+	$jpeg_data_size = filesize( $imagedata );
 
 	if( $jpeg_data_size < 6 ) {
-		$jpeg_file[$contador]='foto.png';
-		$alumne[$contador]['jpegPhoto']='foto.png';
+		$jpeg_file[$contador]=$student->jpegPhoto;
+		$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
 	}
 
 }
+//print_r($student);
 $alumne[$contador]['givenName']=$student->givenName;
 $alumne[$contador]['sn1']=$student->sn1;
 $alumne[$contador]['sn2']=$student->sn2;
@@ -110,7 +106,7 @@ for($t=0;$t<$number_returned;$t++){
 
 	$pdf->Cell(10,8,utf8_decode($t+1),1,0,'C',$fill);
 	if($photo){
-		$pdf->Cell(8,8,$pdf->Image("/tmp/".$alumne[$t]['jpegPhoto'],$pdf->GetX(),$pdf->GetY(),6),1,0,'C',$fill);
+		$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
 		$pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
 		$pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);		
 	} else {	

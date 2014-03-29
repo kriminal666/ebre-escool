@@ -50,13 +50,6 @@ $(document).ready( function () {
 },
         "iDisplayLength": 50,
         "aaSorting": [[ 4, "desc" ]],
-	    "aoColumns": [
-	    { "bVisible": false },
-	    null,
-	    null,
-	    null,
-	    null
-	  ],        
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",
@@ -86,14 +79,9 @@ $(document).ready( function () {
 	if(isset($_POST['data_final'])){
 		$data_fi=strtotime($_POST['data_final']);
 	}	
-	if(isset($_POST['top'])){
-		$top=$_POST['top'];
-	} else {
-		$top = 10;
-	}	
 
 ?>
-<div class="main-content" >
+<div class="main-content" style="padding-bottom:100px;">
 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
@@ -130,7 +118,7 @@ $(document).ready( function () {
 	</div>    
 
 	<!-- FORM -->    
-	<div style="width:50%; margin:20px auto;">
+	<div style="width:75%; margin:20px auto;">
 		<form method="post" action="informe_centre_ranking_di_df_1" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
@@ -154,6 +142,18 @@ $(document).ready( function () {
 					</tr>
 				</div>
 
+				<div class="form-group">
+					<tr>
+						<td valign="top"><label for="incident"><?php echo lang('select_type_of_incident');?></label></td>
+						<td>
+							<input type="checkbox" name="F" value="1" <?php if(isset($_POST['F'])){ ?>checked <?php } ?> > F<br />
+							<input type="checkbox" name="FJ" value="2" <?php if(isset($_POST['FJ'])){ ?>checked <?php } ?> > FJ<br />
+							<input type="checkbox" name="R" value="3" <?php if(isset($_POST['R'])){ ?>checked <?php } ?> > R<br />
+							<input type="checkbox" name="RJ" value="4" <?php if(isset($_POST['RJ'])){ ?>checked <?php } ?> > RJ<br />
+							<input type="checkbox" name="E" value="5" <?php if(isset($_POST['E'])){ ?>checked <?php } ?> > E
+						</td>
+					</tr>	
+				</div>
 				<tr><td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td></tr>
 			</table>
 		</form>
@@ -163,12 +163,17 @@ $(document).ready( function () {
 <?php
 
 if($_POST){  
-	$contador = count($_POST);	
+	//$contador = count($_POST);	
 	$i=0;
-	foreach($faltes as $falta):
+
+	$num_incidents = count($incident);
+
+	if($num_incidents>0 and $incident!=false){
+
+	foreach($incident as $falta):
 
 		// Si hi ha resultats entre les dates indicades
-		if( ($falta['data'] >= $data_ini) && ($falta['data'] <= $data_fi)){
+		//if( ($falta['data'] >= $data_ini) && ($falta['data'] <= $data_fi)){
 			// La primera iteració mostrem el títol i les capçaleres de la taula
 			if($i==0){
 				echo "<h4><center>".lang('ranking_incidents_by_date_1').$_POST['data_inicial'].lang('incidents_by_date_2').$_POST['data_final']."</center></h4>";
@@ -180,11 +185,14 @@ if($_POST){
 <table class="table table-striped table-bordered table-hover table-condensed" id="ranking_initial_date_end_date">
  <thead style="background-color: #d9edf7;">
   <tr>
-  	 <th>Data</th>
-     <th>Posició</th>
-     <th>Alumne</th>
+	 <th>Posició</th>   	
+     <th>Dia</th> 
+     <th>Hora</th> 
      <th>Grup</th>
-     <th>Total faltes No Justificades</th>     
+     <th>Crèdit</th>     
+     <th>Alumne</th>
+     <th>Incidència</th>
+     <th>Professor</th>   
   </tr>
  </thead>
  <tbody>
@@ -195,16 +203,20 @@ if($_POST){
 	// Si no hem arribat al max. elements a mostrar continuem mostrant		
 	if($posicio <= $top){ ?>
 		<tr align="center" class="{cycle values='tr0,tr1'}">
-			<td><?php echo $falta['data'];?></td>
 			<td><?php echo $posicio;$posicio++;?></td>
-			<td><?php echo $falta['estudiant'];?></td>
-			<td><?php echo $falta['grup'];?></td>     
-			<td><?php echo $falta['total'];?></td>
+     		<td><?php echo date("d-m-Y",strtotime($falta['day']));?></td>
+     		<td><?php echo $falta['hour'];?></td>
+	 		<td><?php echo $falta['group'];?></td>     
+     		<td><?php echo $falta['study_module'];?></td>
+     		<td><?php echo $falta['student'];?></td>
+     		<td><?php echo $falta['incident'];?></td>
+     		<td><?php echo $falta['teacher'];?></td>
 		</tr>
    <?php 
 	} // if($posicio <= $top)
-} // Hi ha resultats
+//} // Hi ha resultats
 endforeach; 
+} // fi num_incidents > 0
 if($i==0) { echo "No hi ha incidències per a aquest rang de dades."; }
 } ?>
  </tbody>
