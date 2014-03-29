@@ -271,7 +271,7 @@
 
                         <div class="profile-info-value">
                           <i class="icon-map-marker light-orange bigger-110"></i>
-                          <span class="editable" id="city"><?php echo $person['person_locality_name']; ?></span>
+                          <span class="editable" id="city"><?php if ( isset ($person['person_locality_name']) ) { echo $person['person_locality_name']; } ?></span>
 
                           <!--<span class="editable" id="country">Netherlands</span>
                           <span class="editable" id="city">Amsterdam</span>-->
@@ -290,7 +290,8 @@
                         <div class="profile-info-name"> Data Alta </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="signup"><?php echo $person['person_entryDate']; ?></span>
+                          <span class="editable" id="signup"><?php if ( isset ($person['person_entryDate']) ) { echo $person['person_entryDate']; } ?>
+                          </span>
                           <!--<span class="editable" id="signup">20/06/2010</span>-->
                         </div>
                       </div>

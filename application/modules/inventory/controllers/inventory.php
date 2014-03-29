@@ -236,22 +236,6 @@ public function inventory_object($organizational_unit="")	{
         
     $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
     
-    /* 
-
-    TODO TODO TODO TODO Sobra?
-
-	$current_organizational_unit = $this->session->userdata("current_organizational_unit");
-    if ($current_organizational_unit != "all")
-		$this->grocery_crud->where('`inventory_object`.inventory_object_mainOrganizationalUnitId',$current_organizational_unit);    
-		
-	$current_role_id   = $this->session->userdata('role');	
-	$current_role_name = $this->_get_rolename_byId($current_role_id);
-        
-    if ($current_role_name == $this->config->item('organizationalunit_group') ) {
-		$this->grocery_crud->field_type('inventory_object_mainOrganizationalUnitId', 'hidden', $current_organizational_unit);
-	}
-	*/
-		
 	//DEFAULT VALUES
 	//$this->grocery_crud->set_default_value($table_name,"materialId","2");
 	$this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_preservationState','Good');

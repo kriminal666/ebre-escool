@@ -48,7 +48,10 @@ class persons extends skeleton_main {
     $output = array();    
 
     $output['organizational_unit_name'] = $this->persons_model->getOrganizationalNameById($this->session->userdata('mainOrganizationaUnitId'));
-    $output['person'] = $this->persons_model->getPersonalDataByPersonId($this->session->userdata('person_id'));
+    
+    $person = $this->persons_model->getPersonalDataByPersonId($this->session->userdata('person_id'));
+
+    $output['person'] = $person;
 
     $this->_load_html_header($header_data,$output); 
     $this->_load_body_header();      
@@ -247,16 +250,17 @@ class persons extends skeleton_main {
           $table_name.'_email',
           $table_name.'_telephoneNumber',
           $table_name.'_mobile',
+          $table_name.'_photo',
           $table_name.'_bank_account_id');
 
         //$this->grocery_crud->add_fields($table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_entryDate');
         //$this->grocery_crud->edit_fields($table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_entryDate',$table_name.'_last_update');
 
-        $this->grocery_crud->add_fields($table_name.'_official_id_type',$table_name.'_official_id',$table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_email',$table_name.'_homePostalAddress',$table_name.'_gender',
+        $this->grocery_crud->add_fields($table_name.'_official_id_type',$table_name.'_official_id',$table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_email',$table_name.'_homePostalAddress',$table_name.'_photo',$table_name.'_gender',
           $table_name.'_locality_id',$table_name.'_telephoneNumber',$table_name.'_mobile',$table_name.'_date_of_birth',$table_name.'_bank_account_id',$table_name.'_notes',$table_name.'_entryDate',$table_name.'_creationUserId',
           $table_name.'_lastupdateUserId',$table_name.'_markedForDeletion',$table_name.'_markedForDeletionDate');
 
-        $this->grocery_crud->edit_fields($table_name.'_official_id_type',$table_name.'_official_id',$table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_email',$table_name.'_homePostalAddress',$table_name.'_gender',
+        $this->grocery_crud->edit_fields($table_name.'_official_id_type',$table_name.'_official_id',$table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_email',$table_name.'_homePostalAddress',$table_name.'_photo',$table_name.'_gender',
           $table_name.'_locality_id',$table_name.'_telephoneNumber',$table_name.'_mobile',$table_name.'_date_of_birth',$table_name.'_bank_account_id',$table_name.'_notes',$table_name.'_entryDate',$table_name.'_last_update',$table_name.'_creationUserId',
           $table_name.'_lastupdateUserId',$table_name.'_markedForDeletion',$table_name.'_markedForDeletionDate');
 
@@ -316,6 +320,8 @@ class persons extends skeleton_main {
         $this->grocery_crud->callback_edit_field($table_name.'_entryDate',array($this,'edit_field_callback_entryDate'));
         $this->grocery_crud->callback_edit_field($table_name.'_last_update',array($this,'edit_callback_last_update'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_last_update'));
+
+        $this->grocery_crud->set_field_upload('person_photo','assets/uploads/person_photos');
 
         $output = $this->grocery_crud->render();
 

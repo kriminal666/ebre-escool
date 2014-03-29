@@ -15,7 +15,7 @@ class attendance_model  extends CI_Model  {
         parent::__construct();
         $this->load->database();
     }
-    
+
     function get_primary_key($table_name) {
 		$fields = $this->db->field_data($table_name);
 		
@@ -24,6 +24,34 @@ class attendance_model  extends CI_Model  {
 					return $field->name;
 			}
 		} 	
+		return false;
+	}
+
+	function is_user_a_teacher ($person_id) {
+
+		$this->db->select('teacher_id');
+		$this->db->from('teacher');
+		$this->db->where('teacher.teacher_person_id',$person_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			return true;
+		}			
+		return false;
+	}
+
+	function getTeacherCode($person_id) {
+		$this->db->select('teacher_code');
+		$this->db->from('teacher');
+		$this->db->where('teacher.teacher_person_id',$person_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->teacher_code;
+		}			
 		return false;
 	}
 

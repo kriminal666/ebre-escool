@@ -489,15 +489,8 @@ class attendance extends skeleton_main {
 
 	public function check_attendance_classroom_group() {
 
-    $this->check_logged_user();	
-	/*
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
-		}
-	*/
-
+    	$this->check_logged_user();	
+	
 		$header_data = $this->load_header_data();
         $this->_load_html_header($header_data);
 
@@ -743,37 +736,50 @@ $i++;
 
 
 	public function check_attendance(
-
-
 		$teacher_code = null, $day = null, $month = null, $year = null ,$url_group_code = null) {
   
+		$this->check_logged_user();
+
 		$active_menu = array();
 		$active_menu['menu']='#check_attendance';
-		//$this->session->set_flashdata('menu', $active_menu);
+		//$this->session->set_flashdata('menu', $active_menu);    	
 
-    	$this->check_logged_user();
-		/*	
-			if (!$this->skeleton_auth->logged_in())
-			{
-				//redirect them to the login page
-				redirect($this->skeleton_auth->login_page, 'refresh');
-			}
-		*/
 
 		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
-		/*******************
-		/*      BODY     *
-		/******************/
-		$this->_load_body_header();
+		/***************************
+		/*      BODY               *
+		/***************************/
+
+		$data=array();
+
+		$userid=$this->session->userdata('id');
+		$person_id=$this->session->userdata('person_id');
+		
+		//Check if user is a teacher
+		$user_is_a_teacher = $this->attendance_model->is_user_a_teacher($person_id);
+
+		$data['is_teacher']=$user_is_a_teacher;
+		$this->_load_body_header($data);
+
+		if ( !$user_is_a_teacher ) {
+			//TODO: Return a not allowed page!
+			return null;
+		}		
+
+		$user_teacher_code = $this->attendance_model->getTeacherCode($person_id);
+		
+		//TODO:
+		$user_is_admin = true;
+
 
 		if ($teacher_code == null) {
-	    	//TODO: Default teacher: current logged user
-	    	$teacher_code = 41;
+	    	$teacher_code = $user_teacher_code;
 	    } else {
-	    	//TODO: Check if user is admin: if not admin it could not select the teacher: Force teacher to be himself
-	    	if (false) { $teacher_code = 41; }
+	    	if (!$user_is_admin) { 
+	    		$teacher_code = $user_teacher_code; 
+	    	}
 	    }
 
 	    $teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
@@ -781,8 +787,7 @@ $i++;
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";       
         
-		//TODO: USER IS ADMIN: Show all teachers dropdown
-		if (true) {
+		if ($user_is_admin) {
 			//Load teachers from Model
 			$teachers_array = $this->attendance_model->get_all_teachers_ids_and_names();
 

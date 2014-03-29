@@ -41,17 +41,16 @@ class persons_model  extends CI_Model  {
 	       
         $query = $this->db->get();
 
+        $person = array();
+
 		if ($query->num_rows() == 1) {
 			$row = $query->row();
 			$person['person_locality_name'] = $row->person_locality_name;
 			$person['person_date_of_birth'] = $row->person_date_of_birth;
 			$person['person_entryDate'] = $row->person_entryDate;
-
-			return $person;
 		}			
-		else {
-			return "";
-		}    
+
+		return $person;	
 
     }
 
