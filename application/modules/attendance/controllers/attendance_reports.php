@@ -66,6 +66,17 @@ class attendance_reports extends skeleton_main {
         */
         $data['time_slots'] = $this->attendance_model->getAllTimeSlots()->result_array();
 
+        // Guardo els tipus de falta que s'han sel·leccionat
+        $selected_incident_type = array();
+        foreach($_POST as $k=>$v){
+            if($k!="data" && $k!="hora"){
+                $selected_incident_type[] = $v;    
+            }    
+        }
+        if(count($selected_incident_type)==0){
+            $selected_incident_type='';
+        }
+
         $falta ='';
 
         // Mirar als elements del $_POST si hi ha algun tipus de falta sel·leccionat
@@ -88,7 +99,7 @@ class attendance_reports extends skeleton_main {
             $selected_hour=1;
         }
 
-        $faltes = $this->attendance_model->getAllIncidentsByGroup_id($selected_date,$selected_hour);
+        $faltes = $this->attendance_model->getAllIncidentsByDateTime($selected_date,$selected_hour,$selected_incident_type);
 
         $num_faltes = count($faltes);
 
@@ -140,7 +151,20 @@ class attendance_reports extends skeleton_main {
         $data['title']=lang('reports_educational_center_reports_incidents_by_date');
         $data['post'] = $_POST;
 
+        // Guardo els tipus de falta que s'han sel·leccionat
+        $selected_incident_type = array();
+        foreach($_POST as $k=>$v){
+            if($k!="data_inicial" && $k!="data_final"){
+                $selected_incident_type[] = $v;    
+            }    
+        }
+        if(count($selected_incident_type)==0){
+            $selected_incident_type='';
+        }
+
         $falta ='';
+
+        $data['time_slots'] = $this->attendance_model->getAllTimeSlots()->result_array();        
 
         // Mirar als elements del $_POST si hi ha algun tipus de falta sel·leccionat
         foreach ($_POST as $key=>$val){
@@ -148,77 +172,55 @@ class attendance_reports extends skeleton_main {
                 $falta .= $key." ";
             }
         }
-
-        $teacher_groups_current_day=array();
-
-        // Guardem la data inicial i data final sel·leccionades        
+        
+        // Guardem la data i hora sel·leccionades, si ho hi ha data i hora selecionades per defecte és la data d'avui i el primer timeslot
         $group = new stdClass;
         if(isset($_POST['data_inicial'])){
-            $group->data_ini=$_POST['data_inicial'];
+            $first_selected_date=$_POST['data_inicial'];
         } else {
-            $group->data_ini='';
+            $first_selected_date=date("d-m-Y");
         }
         if(isset($_POST['data_final'])){
-            $group->data_fi=$_POST['data_final'];
+            $last_selected_date=$_POST['data_final'];            
         } else {
-            $group->data_fi='';
+            $last_selected_date=date("d-m-Y");
         }
-        
-        // Guardem les faltes
-        $group->faltes=$falta;
-        
-        /* La informació de grup és de l'estil:
-        
-            [data_ini] => 02-12-2013
-            [data_fi] => 17-12-2013
-            [faltes] => FJ RJ 
-        
-        */
 
-        // Incidències simulades, mentre no estigui llesta la base de dades
-        $data['incidencia'] = array(
-            array(
-            'grup' => '1AF',
-            'dia'  => strtotime('26-11-2013'),
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Patricia Favà Marti',
-            'incidencia' => 'FJ',
-            'credit' => 'M1',
-            'professor' => 'Ferran Sabaté Borras'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => strtotime('28-11-2012'),
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ignacio Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            ),  
-            array(
-            'grup' => '2ASIX',
-            'dia'  => strtotime('27-11-2013'),
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Oscar Adán Valls',
-            'incidencia' => 'R',
-            'credit' => 'M6',
-            'professor' => 'David Caminero Baubí'
-            ),
-            array(
-            'grup' => '1APD',
-            'dia'  => strtotime('28-11-2013'),
-            'hora' => '8:00-9:00',
-            'estudiant' => 'Ramón Bel Rodriguez',
-            'incidencia' => 'F',
-            'credit' => 'M4',
-            'professor' => 'Ricard Gonzàlez Castelló'
-            )
+        $faltes = $this->attendance_model->getAllIncidentsBetweenDates($first_selected_date,$last_selected_date,$selected_incident_type);
 
-        );
+        $num_faltes = count($faltes);
 
-        //$this->load_header();   
+        $i=0;
+        if($faltes){
+        foreach($faltes as $falta){
+            $data['incident'][$i]['student'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
+            $data['incident'][$i]['teacher'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
+            switch($falta->type){
+                case 1: $data['incident'][$i]['incident'] = 'F'; break;
+                case 2: $data['incident'][$i]['incident'] = 'FJ'; break;
+                case 3: $data['incident'][$i]['incident'] =  'R'; break;
+                case 4: $data['incident'][$i]['incident'] = 'RJ'; break;
+                case 5: $data['incident'][$i]['incident'] =  'E'; break;
+                default: $data['incident'][$i]['incident'] =  ''; break;
+            }
+
+            //$data['incidencia'][$i]['incidencia'] = $falta->type;
+            $data['incident'][$i]['day'] = date("d-m-Y", strtotime($falta->day));
+            $data['incident'][$i]['hour'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_start_time']."-".$data['time_slots'][($falta->timeslot)-1]['time_slot_end_time'];
+            $data['incident'][$i]['group'] = $falta->group;
+            $data['incident'][$i]['study_module'] = $falta->study_module;
+
+            $i++;
+            }
+        } else {
+            $data['incident'] = false;
+        }
+
+        //$this->load_header();  
         $this->load->view('attendance_reports/informe_centre_di_df_1.php',$data);     
         $this->load_footer();
+
+
     }
 
     function informe_centre_ranking_di_df_1() { // Rànquing incidències del centre entre una data inicial i una data final
@@ -234,99 +236,70 @@ class attendance_reports extends skeleton_main {
         $data['title']=lang('reports_educational_center_reports_incidents_by_date_ranking');
         $data['post'] = $_POST;
 
-        $top = '';
+        $top = 10;
 
         // $top = nº incidències a mostrar
         if(isset($_POST['top']))
         {
             $top = $_POST['top'];
         }
+        $data['top'] = $top;
 
-        // Incidències simulades, mentre no estigui llesta la base de dades
-        $data['faltes'] = array(
-            array(
-            'data' => strtotime('10-11-2013'),
-            'estudiant'  => 'Ramón Rodriguez Murillo',
-            'grup' => '1GAD',
-            'total' => 82,
-            ),
-            array(
-            'data' => strtotime('10-11-2013'),      
-            'estudiant'  => 'Cristina Lizana Roche',
-            'grup' => '1LDC',
-            'total' => 80,
-            ),
-            array(
-            'data' => strtotime('11-11-2013'),      
-            'estudiant'  => 'Cristina Oleinic',
-            'grup' => '1DIE',
-            'total' => 79,
-            ),  
-            array(
-            'data' => strtotime('8-10-2013'),       
-            'estudiant'  => 'Monika Aleknaite',
-            'grup' => '1DIE',
-            'total' => 74,
-            ),
-            array(
-            'data' => strtotime('20-10-2013'),      
-            'estudiant'  => 'Saboora Kabir',
-            'grup' => '1FAR',
-            'total' => 73,
-            ),
-            array(
-            'data' => strtotime('01-12-2013'),      
-            'estudiant'  => 'Aycha Nafaa Rubio',
-            'grup' => '1GAD',
-            'total' => 67,
-            ),
-            array(
-            'data' => strtotime('10-11-2013'),      
-            'estudiant'  => 'Sira Sowe',
-            'grup' => '2DIE',
-            'total' => 65,
-            ),
-            array(
-            'data' => strtotime('08-10-2012'),      
-            'estudiant'  => 'Nerea Pellicer Montesó',
-            'grup' => '1LDC',
-            'total' => 63,
-            ),
-            array(
-            'data' => strtotime('5-11-2013'),       
-            'estudiant'  => 'Aura Peris Aldea',
-            'grup' => '1FAR',
-            'total' => 63,
-            ),
-            array(
-            'data' => strtotime('30-11-2013'),      
-            'estudiant'  => 'Venecia Sotillo Diaz',
-            'grup' => '1AF',
-            'total' => 63
-            )
-        );  
+        // Guardo els tipus de falta que s'han sel·leccionat
+        $selected_incident_type = array();
+        foreach($_POST as $key=>$val){
+            if($key!="data_inicial" && $key!="data_final" && $key!='top'){
+                $selected_incident_type[] = $val;    
+            }    
+        }
+        if(count($selected_incident_type)==0){
+            $selected_incident_type='';
+        }
+
+        $data['time_slots'] = $this->attendance_model->getAllTimeSlots()->result_array();        
         
+        // Guardem la data i hora sel·leccionades, si ho hi ha data i hora selecionades per defecte és la data d'avui i el primer timeslot
         $group = new stdClass;
         if(isset($_POST['data_inicial'])){
-            $group->data_ini=$_POST['data_inicial'];
+            $first_selected_date=$_POST['data_inicial'];
         } else {
-            $group->data_ini='';
+            $first_selected_date=date("d-m-Y");
         }
         if(isset($_POST['data_final'])){
-            $group->data_fi=$_POST['data_final'];
+            $last_selected_date=$_POST['data_final'];            
         } else {
-            $group->data_fi='';
+            $last_selected_date=date("d-m-Y");
         }
-        
-        $group->top=$top;
 
-        /* La informació de grup és de l'estil:
-        
-            [data_ini] => 05-12-2013
-            [data_fi] => 05-12-2013
-            [top] => 10
-        
-        */
+        $faltes = $this->attendance_model->getAllIncidentsBetweenDates($first_selected_date,$last_selected_date,$selected_incident_type,$top);
+
+        $num_faltes = count($faltes);
+
+        $i=0;
+        if($faltes){
+        foreach($faltes as $falta){
+            $data['incident'][$i]['student'] = "(".$falta->student_id.") ".$falta->student_name." ".$falta->student_sn1." ".$falta->student_sn2;
+            $data['incident'][$i]['teacher'] = "(".$falta->teacher_id.") ".$falta->teacher_name." ".$falta->teacher_sn1." ".$falta->teacher_sn2;
+            switch($falta->type){
+                case 1: $data['incident'][$i]['incident'] = 'F'; break;
+                case 2: $data['incident'][$i]['incident'] = 'FJ'; break;
+                case 3: $data['incident'][$i]['incident'] =  'R'; break;
+                case 4: $data['incident'][$i]['incident'] = 'RJ'; break;
+                case 5: $data['incident'][$i]['incident'] =  'E'; break;
+                default: $data['incident'][$i]['incident'] =  ''; break;
+            }
+
+            //$data['incidencia'][$i]['incidencia'] = $falta->type;
+            $data['incident'][$i]['day'] = date("d-m-Y", strtotime($falta->day));
+            $data['incident'][$i]['hour'] = $data['time_slots'][($falta->timeslot)-1]['time_slot_start_time']."-".$data['time_slots'][($falta->timeslot)-1]['time_slot_end_time'];
+            $data['incident'][$i]['group'] = $falta->group;
+            $data['incident'][$i]['study_module'] = $falta->study_module;
+
+            $i++;
+            }
+        } else {
+            $data['incident'] = false;
+        }
 
         //$this->load_header();   
         $this->load->view('attendance_reports/informe_centre_ranking_di_df_1.php',$data);     
@@ -419,6 +392,7 @@ class attendance_reports extends skeleton_main {
         $active_menu['submenu1']='#report_group';
         $active_menu['submenu2']='#report_class_list';
 
+/*
         $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
                                 "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
                                 "1ASIX-DAM" => "1ASIX-DAM - *1r Inform. superior (S)L - CF",
@@ -475,7 +449,7 @@ class attendance_reports extends skeleton_main {
                                 "GCM" => "GCM - Ges. Comer. Mar.(S) - CF",
                                 "SE" => "SE - Secretariat (S) - CF"
             );
-
+*/
         $data['title']=lang('reports_group_reports_class_list');
         
         $this->load_datatables_data($active_menu);
@@ -485,7 +459,11 @@ class attendance_reports extends skeleton_main {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
-        
+
+        // Get All groups
+        $grups = $this->attendance_model->get_all_groups();
+        $data['grups'] = $grups;
+
         $default_group_code = $this->config->item('default_group_code');
         $group_code=$default_group_code;
 
@@ -505,7 +483,7 @@ class attendance_reports extends skeleton_main {
         $data['photo'] = false;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
-            if ($_POST['foto']){
+            if (isset($_POST['foto'])){
                 $data['photo'] = true;
             }
         }   else {
@@ -521,23 +499,23 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-        
-       $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-        //print_r($data['all_students_in_group']);       
-        //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
-        //Total de professors
+  
+        $estudiants_grup = $this->attendance_model->getAllGroupStudentInfo($data['selected_group']);
+        $data['all_students_in_group'] = $estudiants_grup;
+        //print_r($estudiants_grup);
+      /* $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);*/
+        //Total Alumnes
         $data['count_alumnes'] = count($data['all_students_in_group']);
         //$data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
 
-/**/
-
-
 //      $this->load_header();  
+
         if(!$_POST){
             $this->load->view('attendance_reports/class_list_report.php', $data); 
         } else {
             $this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
         } 
+        
         $this->load_footer();      
     }
 
