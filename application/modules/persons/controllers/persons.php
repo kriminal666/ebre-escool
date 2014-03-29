@@ -321,7 +321,7 @@ class persons extends skeleton_main {
         $this->grocery_crud->callback_edit_field($table_name.'_last_update',array($this,'edit_callback_last_update'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_last_update'));
 
-        $this->grocery_crud->set_field_upload('person_photo','assets/uploads/person_photos');
+        $this->grocery_crud->set_field_upload('person_photo','uploads/person_photos');
 
         $output = $this->grocery_crud->render();
 
