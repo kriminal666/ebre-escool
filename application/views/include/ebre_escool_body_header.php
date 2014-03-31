@@ -328,7 +328,11 @@
   //print_r($menu); 
   $menu = json_encode($menu);
   echo "<script>var menu = ". $menu . ";</script>";
- 
+
+  if ( ! isset($is_teacher) ) {
+    $is_teacher = $this->session->userdata('is_teacher');
+  }
+
   ?>
 
         <ul class="nav nav-list">
@@ -342,8 +346,8 @@
           <!-- PASSAR LLISTA -->
           
 
-          <?php if (isset($is_teacher)): ?>
-           <?php if ($is_teacher): ?>
+          <?php if ( isset( $is_teacher ) ): ?>
+           <?php if ( $is_teacher ) : ?>
             <li id="check_attendance">
               <a href="<?php echo base_url('/index.php/attendance/check_attendance'); ?>">
                 <i class="icon-bell"></i>

@@ -6,7 +6,7 @@
  <ul class="breadcrumb">
   <li>
    <i class="icon-home home-icon"></i>
-   <a href="#">Home</a>
+   <a href="<?php echo base_url();?>">Home</a>
    <span class="divider">
     <i class="icon-angle-right arrow-icon"></i>
    </span>
@@ -36,7 +36,7 @@
   Grup classe
   <small>
    <i class="icon-double-angle-right"></i>
-    <?php echo "(" . $selected_classroom_group_shortname . ") " . $selected_classroom_group;?>
+    <?php echo "( " . $selected_classroom_group_code . " ) " . $selected_classroom_group . " ( Id: " . $selected_classroom_group_key . " )";?>
   </small>
  </h1>
 </div>
@@ -47,7 +47,7 @@
 
                 <div class="widget-box span5 collapsed">
                         <div class="widget-header widget-header-small header-color-green">
-                          <h6>Data i franja horaria: <?php echo $selected_day . " " . $selected_time_slot;?></h6>
+                          <h6>Data i franja horaria: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date . " " . $selected_time_slot;?></h6>
 
                           <span class="widget-toolbar">
                             <a href="#" data-action="collapse">
@@ -62,17 +62,18 @@
 
                         <div class="widget-body">
                           <div class="widget-main">
-                            <label for="id-date-picker-1">Escolliu la data:</label>
-
-                                <div class="input-group">
-                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $selected_day;?>" />
-                                  <span class="input-group-addon">
+                            <label for="id-date-picker-1"><span class="input-group-addon">
                                     <i class="icon-calendar bigger-110"></i>
-                                  </span>
+                                  </span>Escolliu la data:</label>
+
+                                <div class="input-group">                                  
+                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $check_attendance_date;?>" />                                  
                                 </div>
                             
 
-                            <label for="timepicker1">Escolliu la franja horaria</label>
+                            <label for="timepicker1"><span class="input-group-addon">
+                                <i class="icon-time bigger-110"></i>
+                              </span>Escolliu la franja horaria</label>
 
                             <div class="input-group bootstrap-timepicker">
                               <select id="time_slots" data-placeholder="Escolliu la franja horaria">                                
@@ -84,9 +85,7 @@
                                 <?php endforeach;?>
                               </select>  
 
-                              <span class="input-group-addon">
-                                <i class="icon-time bigger-110"></i>
-                              </span>
+                              
                             </div>
 
                           </div>
@@ -227,7 +226,10 @@
 
     <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
 
+    <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?>
+
     <div class="inline position-relative" style="float:right;">
+              Professor: <strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong> | 
               Professors del grup: 
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_group_teacher;?>
@@ -240,14 +242,13 @@
                               <a href="#" 
                                 <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="blue"';}?> >
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $group_teacher; ?>
+                                <?php echo $group_teacher->sn1 . " " . $group_teacher->sn2 . ", " . $group_teacher->givenName; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
                           </ul>
     </div>
   </div>
-
 
 
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">
@@ -268,16 +269,19 @@
 
                       <?php foreach ( $time_slots as $time_slot_key => $time_slot): ?>
 
-                        <th><center>
-                             <span data-rel="tooltip" title="<?php echo $time_slot->range;?>">
-                               <?php if ( $selected_time_slot_key == $time_slot_key ):?>
+                        <th <?php if ( $selected_time_slot_id == $time_slot->id ) { echo 'class="red"';}?> ><center>
+                             <span data-rel="tooltip" title="<?php echo $time_slot->range;?>" <?php if ( $selected_time_slot_id == $time_slot->id ) { echo 'class="bigger-120"';}?>>
+                               <?php if ( $selected_time_slot_id == $time_slot->id ):?>
                                     <i class="icon-check bigger-120"></i>
                                <?php endif; ?>
                                <?php echo $time_slot->hour;?>
                              </span>
-                             <span class="label label-purple" data-rel="tooltip" title="<?php echo $time_slot->study_module_name . ". " . $time_slot->teacher_name;?>">
-                              <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
-                             </span>
+                             <?php if (isset ($time_slot->study_module_id)): ?>
+                              <span class="label label-purple" data-rel="tooltip" 
+                                title="<?php echo $time_slot->study_module_name . ". " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>">
+                               <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
+                              </span>
+                             <?php endif; ?>                             
                         </th>  
 
                       <?php endforeach; ?>
@@ -297,7 +301,7 @@
                         <img data-rel="tooltip" width="200%" title="<?php echo $student_fullname;?>" src="<?php echo base_url($student->photo_url)?>" class="msg-photo" alt="<?php echo $student_fullname;?>" />
                       </td>
                       <td>
-                        <a href="#"><?php echo $student_key;?></a>
+                        <a href="#"><?php echo $student->person_id;?></a>
                       </td>
                       <td>
                         <a href="#"><?php echo $student->sn1;?></a>
@@ -314,31 +318,36 @@
                       <th>
                         <a href="#"><?php echo $student->email;?></a>                      
                       </th> 
-                      <td><select id="form-field-select-1" width="50" style="width: 50px">
+
+                      <?php foreach ( $time_slots as $time_slot_key => $time_slot): ?>
+
+                        <td>
+                          <?php //echo print_r($time_slot);?>
+
+                          <?php if (isset ($time_slot->study_module_id)): ?>
+                            <center>
+                             <select id="form-field-select-1" width="50" style="width: 50px">
                               <option value="">&nbsp;</option>
                               <option value="1">F</option>
                               <option value="2">FJ</option>
                               <option value="3">R</option>
                               <option value="4">RJ</option>
                               <option value="5">E</option>                              
-                            </select></td>
-                      <td> <center>F</center></td>
-                      <td> <center>FJ</center></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                            <select id="form-field-select-1" width="50" style="width: 50px">
-                              <option value="">&nbsp;</option>
-                              <option value="1">F</option>
-                              <option value="2">FJ</option>
-                              <option value="3">R</option>
-                              <option value="4">RJ</option>
-                              <option value="5">E</option>                              
-                            </select>
-                      </td>
+                             </select>
+                            <?php if ( $selected_time_slot_id == $time_slot->id ):?>
+                              <i class="icon-star red smaller-80"></i>      
+                            <?php endif; ?>
+                            </center>
+                          <?php else: ?>                          
+                              <center><i class="icon-remove gray smaller-80"></center></i>
+                          <?php endif; ?>
+
+                        </td>                        
+
+                      <?php endforeach; ?>
 
                       <td class="hidden-480">
-                        <textarea id="comments" class="autosize-transition span12" rows="1"><?php echo $student->notes;?></textarea>
+                        <textarea id="comments" class="autosize-transition span12" rows="1">TODO</textarea>
                       </td>
 
                       <td>

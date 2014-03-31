@@ -487,33 +487,81 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function check_attendance_classroom_group() {
+	protected function getTimeSlotKeyByTimeSlotId($time_slots,$time_slot_id) {
+		foreach ($time_slots as $time_slot_key => $time_slot) {
+			if ($time_slot->id == $time_slot_id) {
+				return $time_slot_key;
+			}
+		}
+		return -1;
+    }
 
-    	$this->check_logged_user();	
-	
-		$header_data = $this->load_header_data();
+	/*$selected_time_slot_id
+	    	$time_slots
+
+	    	$selected_time_slot_key = */
+
+	public function check_attendance_classroom_group( $selected_group_id = 0, $teacher_code = "" , $selected_study_module_id = 0, 
+		$lesson_id = 0, $day = 0, $month = 0, $year = 0 ) {
+
+		$this->check_logged_user();	
+		$active_menu = array();
+		$active_menu['menu']='#check_attendance';
+		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
-        /*******************
-		/*      BODY     *
-		/******************/
-		$this->_load_body_header();
+		$userid=$this->session->userdata('id');
+		$person_id=$this->session->userdata('person_id');
+		
+		//Check if user is a teacher
+		$user_is_a_teacher = $this->attendance_model->is_user_a_teacher($person_id);
 
-		$teacher_code = null;
+		$data['is_teacher'] = $user_is_a_teacher;
+		
+		/*******************
+		/*      BODY       *
+		/*******************/
+		$this->_load_body_header($data);
+
+
+		if ( !$user_is_a_teacher ) {
+			//TODO: Return not allowed page!
+			return null;
+		}		
+
+		$user_teacher_code = $this->attendance_model->getTeacherCode($person_id);
+		
+		//TODO:
+		$user_is_admin = true;
 
 		if ($teacher_code == null) {
-	    	//TODO: Default teacher: current logged user
-	    	$teacher_code = 41;
+	    	$teacher_code = $user_teacher_code;
 	    } else {
-	    	//TODO: Check if user is admin: if not admin it could not select the teacher: Force teacher to be himself
-	    	if (false) { $teacher_code = 41; }
+	    	if (!$user_is_admin) { 
+	    		$teacher_code = $user_teacher_code; 
+	    	}
 	    }
+
+	    //Teacher info to view
+	    $data['teacher_code']= $teacher_code;
+
+	    $teacher_info = $this->attendance_model->get_teacher_info_from_teacher_code($teacher_code);  
 
 	    $teacher_department_id = 2;
 
-		$teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
+		$teacher_id = $teacher_info['teacher_id'];  
+		$teacher_givenName = $teacher_info['givenName'];
+		$teacher_sn1 = $teacher_info['sn1'];
+		$teacher_sn2 = $teacher_info['sn2'];
 
-		// Obtenir el departament al que pertany un professor (Oscar)
+		//Teacher info to view
+	    $data['teacher_code']= $teacher_code;   
+	    $data['teacher_id']= $teacher_id;
+	    $data['teacher_givenName']= $teacher_givenName;
+	    $data['teacher_sn1']= $teacher_sn1;
+	    $data['teacher_sn2']= $teacher_sn2;
+
+	    // Obtenir el departament al que pertany un professor (Oscar)
 	    //$teacher_departments = $this->attendance_model->get_teacher_departments($teacher_id);
 	    //$data['department_id'] = $teacher_departments[1];
 
@@ -524,9 +572,10 @@ class attendance extends skeleton_main {
 	    $user_is_teacher=true;
 
 	    //Departaments
-	    $data['departments']=array();
-	    $data['selected_department_key']=2;
-	    $data['selected_department_name']=$this->attendance_model->get_teacher_departmentName($teacher_id);
+	    $data['departments'] = array();
+	    $department_info = $this->attendance_model->get_teacher_departmentInfo($teacher_id);
+	    $data['selected_department_key'] = $department_info['id'];
+	    $data['selected_department_name'] = $department_info['name'];
 		if ($user_is_admin) {
 	    	//Get all classroom_groups
 	    	$data['departments']= $this->attendance_model->get_all_departments();
@@ -535,7 +584,6 @@ class attendance extends skeleton_main {
 	    }
         
 	    #Obtain class_room_groups
-	    //TODO:
 	    $data['classroom_groups']=array();
 	    if (false) {
 	    	//Get all classroom_groups
@@ -548,15 +596,65 @@ class attendance extends skeleton_main {
 			//$data['classroom_groups']=array(); //OSCAR
 	    }
 
-	    //OSCAR: Obtenint dades dinàmiques de la BD
-		$day = '1';	//dilluns    
-	    $data['selected_classroom_group_key']=25; //2ASIX
+	    if ($day == 0 ) {
+	    	//obtain day from current date
+			$day = date("d");
+	    }
+	    if ($month == 0 ) {
+	    	//obtain month from current date
+			$month = date("m");
+	    }
+	    if ($year == 0 ) {
+	    	//obtain year from current date
+			$year = date("y");
+	    }
+
+	    //isodate format: YYYY-MM-DD
+		$iso_date = null;
+		$data['check_attendance_date'] = "";
+
+	    if ( ($day != null) && ($month != null) && ($year != null) ) {
+	    	$data['check_attendance_date'] = $day . "/" . $month . "/" .$year;
+	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
+	    } else {
+	    	$data['check_attendance_date'] = date('d/m/Y');	
+	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
+	    }
+
+	    
+	    $day_of_week_number = date('N', strtotime($iso_date));
+
+		$days_of_week = array();
+		$timestamp = strtotime('next Monday');
+		for ($i = 1; $i < 8; $i++) {
+ 			$days_of_week[$i] = strftime('%A', $timestamp);
+ 			$timestamp = strtotime('+1 day', $timestamp);
+		}
+
+		$data['days_of_week'] = $days_of_week;
+
+		$data['day_of_week_number'] = $day_of_week_number;
+		$data['day'] = $day;
+		$data['month'] = $month;
+		$data['year'] = $year;
+
+		if ($selected_group_id == 0) {
+			//TODO: Get default group id
+			$selected_group_id = 25; //2ASIX	
+		}	else {
+			//Check if teacher could use this group
+			//TODO
+		}
+
+	    $data['selected_classroom_group_key']=$selected_group_id; //2ASIX
+	    
 	    $data['all_lessons'] =array();
+	    
 	    if ($user_is_admin){
-	    	$all_lessons = $this->attendance_model->getAllLessonsByDay($day,$data['selected_classroom_group_key']);
+	    	$all_lessons = $this->attendance_model->getAllLessonsByDay($day_of_week_number,$data['selected_classroom_group_key']);
 	    	$data['all_lessons'] = $all_lessons;	    	
 	    } else {
-	    	$all_lessons = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,$day);
+	    	$all_lessons = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,$day_of_week_number);
 	    	$data['all_lessons'] = $all_lessons;	    	
 	    }
 
@@ -566,166 +664,145 @@ class attendance extends skeleton_main {
 		$data['timeslots'] = $timeslots;
 		$data['time_slots_lective'] = $timeslots['time_slots_lective'];
 
-		//OSCAR: ldap
-		$selected_group="2DAM";
-		$default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($selected_group);
-		$all_students_in_group= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+
+		
+
+		$all_students_in_group= $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
+		$selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
+
+		$selected_group_id = $selected_group_info['id'];
+		$selected_group_name = $selected_group_info['name'];
+		$selected_group_shortname = $selected_group_info['shortname'];
+		$selected_group_code = $selected_group_info['code'];
+
+		$data['selected_group_id'] = $selected_group_id;
+		$data['selected_classroom_group_code'] = $selected_group_code;
+	    $data['selected_classroom_group_shortname'] = $selected_group_code;
+		$data['selected_classroom_group'] = $selected_group_name;
+
+		/*echo "selected_group_name: $selected_group_name<br/>";
+		echo "selected_group_shortname: $selected_group_shortname<br/>";
+		echo "selected_group_code: $selected_group_code<br/>";*/
+
+		if ($selected_study_module_id == 0) {
+			//TODO: Get default group id
+			$selected_study_module_id = 274;	
+		}	else {
+			//Check if teacher could use this group
+			//TODO
+		}
+
+		$data['selected_study_module_key']= $selected_study_module_id;
+
+		$selected_study_module_info = $this->attendance_model->getStudyModuleInfoByModuleId($selected_study_module_id);
+
+		$selected_study_module_name = $selected_study_module_info['name'];
+		$selected_study_module_shortname = $selected_study_module_info['shortname'];
+		$selected_study_module_code = $selected_study_module_info['code'];
 
 
+		/*
+		echo "selected_study_module_name: $selected_study_module_name<br/>";
+		echo "selected_study_module_shortname: $selected_study_module_shortname<br/>";
+		echo "selected_study_module_code: $selected_study_module_code<br/>";*/
 
-	    $data['study_modules']=array();
+		$data['selected_study_module_code'] = $selected_study_module_code;
+	    $data['selected_study_module_shortname'] = $selected_study_module_shortname;
+		$data['selected_study_module'] = $selected_study_module_name;
+
+
+	    $data['study_modules'] = array();
 	    if ($user_is_admin) {
-	    	$data['study_modules']= array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
+	    	//Get all group study modules
+	    	$all_group_study_modules = $this->attendance_model->getAllGroupStudymodules( $selected_group_id);
+	    	$data['study_modules'] = $all_group_study_modules;
 	    } else {
-			$data['study_modules']=array();
+	    	//Get current teacher study modules
+	    	$current_teacher_study_modules = $this->attendance_model->getAllTeacherStudymodules( $teacher_id );
+			$data['study_modules'] = $current_teacher_study_modules;
 	    }
 
 	    if ($user_is_admin) {
-	    	$time_slot1 = new stdClass;
-			$time_slot1->hour = "15:30";
-			$time_slot1->range = "15:30 - 16:30";
-			$time_slot1->study_module_shortname = "M9";
-			$time_slot1->study_module_name = "Mòdul 9";
-			$time_slot1->teacher_name = "Sergi Tur Badenas";
 
-			$time_slot2 = new stdClass;
-			$time_slot2->hour = "16:30";
-			$time_slot2->range = "16:30 - 17:30";
-			$time_slot2->study_module_shortname = "M10";
-			$time_slot2->study_module_name = "Mòdul 10";
-			$time_slot2->teacher_name = "Mireia Consarnau";
+	    	$data['time_slots']=array();
 
-			$time_slot3 = new stdClass;
-			$time_slot3->hour = "17:30";
-			$time_slot3->range = "17:30 - 18:30";
-			$time_slot3->study_module_shortname = "M11";
-			$time_slot3->study_module_name = "Mòdul 11";
-			$time_slot3->teacher_name = "Jordi Varas";
+	    	$time_slots = $this->attendance_model->getTimeSlotsByClassgroupId($selected_group_id,$day_of_week_number);
 
-			$time_slot4 = new stdClass;
-			$time_slot4->hour = "19:00";
-			$time_slot4->range = "19:00 - 20:00";
-			$time_slot4->study_module_shortname = "M3";
-			$time_slot4->study_module_name = "Mòdul 3";
-			$time_slot4->teacher_name = "Manu Macias";
+	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+	    	$selected_time_slot_key = $this->getTimeSlotKeyByTimeSlotId($time_slots,$selected_time_slot_id);
 
-			$time_slot5 = new stdClass;
-			$time_slot5->hour = "20:00";
-			$time_slot5->range = "20:00 - 21:00";
-			$time_slot5->study_module_shortname = "M1";
-			$time_slot5->study_module_name = "Mòdul 1";
-			$time_slot5->teacher_name = "TODO";
+			$data['selected_time_slot_key'] = $selected_time_slot_key;		
+			$data['selected_time_slot_id'] = $selected_time_slot_id;
 
-			$time_slot6 = new stdClass;
-			$time_slot6->hour = "21:00";
-			$time_slot6->range = "21:00 - 22:00";
-			$time_slot6->study_module_shortname = "M4";
-			$time_slot6->study_module_name = "Mòdul 4";
-			$time_slot6->teacher_name = "TODO 1";
-
-		    $data['time_slots']=array();
-		    $data['selected_time_slot_key'] = 4;
-			
-	    	$data['time_slots'] = array ( 1 => $time_slot1, 2 => $time_slot2, 3 => $time_slot3, 4 => $time_slot4, 5 => $time_slot5, 6 => $time_slot6 );
+			if (is_array($time_slots)) {
+	    		$data['time_slots'] = $time_slots;
+	    	}
 	    } else {
 			$data['time_slots'] = array();
 	    }
 
-	    $data['group_teachers']= array ( 1 => "Mireia Consarnau (tutora)", 2 => "Sergi Tur", 3 => "Santi Sabaté", 4 => "Manu Macias");
-	    $data['selected_group_teacher']= "Mireia Consarnau (tutora)";
-	    $data['group_teachers_default_teacher_key']= 1;
+	    $group_teachers_array = $this->attendance_model->getAllTeachersFromClassgroupId( $selected_group_id );
+	    $data['group_teachers']= $group_teachers_array;
 
-	    $data['selected_classroom_group_key']= 25;
-	    $data['selected_classroom_group_shortname'] = "2ASIX";
-		$data['selected_classroom_group'] = "2n Administració de Sistemes Informàtics en Xarxa";
+	    //Tutor is default selected_group_teacher 	    
+	    $tutor_teacher_id = $this->attendance_model->getTutorFromClassgroupId( $selected_group_id );
 
-		$data['selected_study_module_key']= 2;
-	    $data['selected_study_module_shortname'] = "M 9";
-		$data['selected_study_module'] = "Mòdul 9 bla bla bla";
-        
+	    //echo "tutor_teacher_id: $tutor_teacher_id<br/>";
+
+	    if ($tutor_teacher_id != "") {
+	    	if (array_key_exists($tutor_teacher_id,$group_teachers_array)) {
+	    		$selected_group_teacher = $group_teachers_array[$tutor_teacher_id]->sn1 . " " . $group_teachers_array[$tutor_teacher_id]->sn2 . ", " . 	
+	    			$group_teachers_array[$tutor_teacher_id]->givenName . "( Tutor/a )";
+	    	} else {
+	    		$selected_group_teacher = "Error. No s'ha trobat el codi $tutor_teacher_id";
+	    	}
+	    		
+	    } else {
+	    	$selected_group_teacher = "Error. No hi ha tutor del grup";
+	    }
+	    
+	    	
+
+	    $data['selected_group_teacher']= $selected_group_teacher;
+	    
+	    $data['group_teachers_default_teacher_key']= $tutor_teacher_id;
+
+	    
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
-	    $data['selected_day'] = "20/01/2014";;
-	    $data['selected_time_slot'] = "19:00 - 20:00";
+	    $data['selected_time_slot'] = $time_slots[$selected_time_slot_key]->range;
 
-	    //$data['total_number_of_students'] = 3;
 	    $data['total_number_of_students'] = count($all_students_in_group);
-		$data['selected_module_shortname'] = "M 9";
 
-		//classroom_group_students
-
-		$i=1;
 		$data['classroom_group_students'] = array ();
-		$photo_url = "/assets/avatars/avatar";
-		foreach($all_students_in_group as $estudiant){
+		$base_photo_url = "uploads/person_photos";
+		
+		foreach($all_students_in_group as $student)	{
 
-			$res = ($i%3)+1;
-			$student = new stdClass;
-			$student->givenName = $estudiant->givenName;
-			$student->sn1 = $estudiant->sn1;
-			$student->sn2 = $estudiant->sn2;
-			$student->username = $estudiant->uid;
-			$student->email = $estudiant->highSchoolPersonalEmail;
-			$student->notes = "nota";
+			$studentObject = new stdClass;
+			
+			$studentObject->person_id = $student->person_id;
+			$studentObject->givenName = $student->givenName;
+			$studentObject->sn1 = $student->sn1;
+			$studentObject->sn2 = $student->sn2;
+			$studentObject->username = $student->username;
+			$studentObject->email = $student->email;
+			
+			//TODO: get incident notes!
+			$studentObject->notes = "nota";
 
-/* Detectar tipus d'imatge (PNG o JPG) */
-$tipus = substr($estudiant->jpegPhoto,0,10);
+			if ($student->photo_url != "") {
+				$student->photo_url = $base_photo_url."/".$student->photo_url;	
+			}	else {
+				$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
+			}
+			
 
-$isJPG  = strpos($tipus, 'JFIF');
-if($isJPG){
-	$extensio = ".jpg";
-} else {
-	$isPNG  = strpos($tipus, 'PNG');
-	if($isPNG){
-	$extensio = ".png";
-	}
-}
+			$data['classroom_group_students'][]=$student;
+		}
 
-//$student->photo_url = '/assets/img/alumnes/'.$estudiant->irisPersonalUniqueID.$extensio;
-$student->photo_url = '/assets/img/alumnes/foto.png';
 
-	$data['classroom_group_students'][]=$student;
-$i++;
-}
-
-/*
-		$student1 = new stdClass;
-		$student1->givenName = "Julia";
-		$student1->sn1 = "Adell";
-		$student1->sn2 = "Girbes";
-		$student1->photo_url = "/assets/avatars/avatar3.png";
-		$student1->username = "juliaadell";
-		$student1->email = "juliaadell@email.com";
-		$student1->notes = "Esta setmana està faltant molt";
-
-		$student2 = new stdClass;
-		$student2->givenName = "Manuel";
-		$student2->sn1 = "Blanch";
-		$student2->sn2 = "Garzon";
-		$student2->photo_url = "/assets/avatars/avatar1.png";
-		$student2->username = "manuelblanch";
-		$student2->email = "manuelblanch@email.com";
-		$student2->notes = "";
-
-		$student3 = new stdClass;
-		$student3->givenName = "Josep Francesc";
-		$student3->sn1 = "Borrell";
-		$student3->sn2 = "Girbes";
-		$student3->photo_url = "/assets/avatars/avatar2.png";
-		$student3->username = "josepborrell";
-		$student3->email = "josepborrell@email.com";
-		$student3->notes = "";
-
-		$data['classroom_group_students'] = array (
-			1 => $student1,
-			2 => $student2,
-			3 => $student3
-			);
-*/
-	    
-
-		/* fi llista alumnes grup */
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 
 		/*******************
@@ -742,9 +819,7 @@ $i++;
 
 		$active_menu = array();
 		$active_menu['menu']='#check_attendance';
-		//$this->session->set_flashdata('menu', $active_menu);    	
-
-
+		
 		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
 
@@ -764,7 +839,7 @@ $i++;
 		$this->_load_body_header($data);
 
 		if ( !$user_is_a_teacher ) {
-			//TODO: Return a not allowed page!
+			//TODO: Return not allowed page!
 			return null;
 		}		
 
@@ -782,7 +857,10 @@ $i++;
 	    	}
 	    }
 
-	    $teacher_id = $this->attendance_model->get_teacher_id_from_teacher_code($teacher_code);     
+	    $teacher_info = $this->attendance_model->get_teacher_info_from_teacher_code($teacher_code);   
+
+	    $teacher_id = $teacher_info['teacher_id'];
+	    $teacher_full_name = $teacher_info['givenName'] . " " . $teacher_info['sn1'] . " " . $teacher_info['sn2'];
 
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";       
@@ -798,12 +876,11 @@ $i++;
 			$data['teachers'] = $teachers_array;
 		}
 
-		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
-
 		$data['check_attendance_date'] = null;
-		//YYYY-MM-DD
+
+		//isodate format: YYYY-MM-DD
 		$iso_date = null;
 
 	    if ( ($day != null) && ($month != null) && ($year != null) ) {
@@ -826,8 +903,13 @@ $i++;
 
 		$data['days_of_week'] = $days_of_week;
 
-	    
-	    //Obtain Time Slots
+		$data['teacher_code'] = $teacher_code;
+		$data['teacher_full_name'] = $teacher_full_name;
+		$data['day'] = $day;
+		$data['month'] = $month;
+		$data['year'] = $year;
+
+		//Obtain Time Slots
     	$time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
     	$time_slots_array_byteacher_and_day = null;
 
@@ -856,12 +938,13 @@ $i++;
 		$study_modules_colours = $this->_assign_colours($lessons_array_byteacher_and_day,"study_module_id");
 
 	    foreach ($time_slots_array as $time_slot)	{
+	    	$group_id = 0;
 	    	$group_code = "";
 			$base_url =  "";
 			$group_shortname =  "";
 			$group_name =  "";
 			
-			
+			$lesson_id =  "";
 			$lesson_code =  "";
 			$lesson_shortname =  "";
 			$lesson_name =  "";
@@ -877,11 +960,13 @@ $i++;
 			$time_slot_data->lesson_colour = "btn-default";
 			if (is_array($lessons_array_byteacher_and_day)) {
 				if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
+    				$group_id = $lessons_array_byteacher_and_day[$time_slot_id]->group_id;
     				$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
 					$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
 					$group_shortname = $lessons_array_byteacher_and_day[$time_slot_id]->group_shortname;	
 					$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;
 					$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
+					$lesson_id = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_id;
 					$lesson_code = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_code;
 					$lesson_shortname = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_shortname;
 					$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
@@ -889,11 +974,15 @@ $i++;
 				} 
 			}
 			
+			$time_slot_data->group_id = $group_id;
 			$time_slot_data->group_code = $group_code;
 			$time_slot_data->group_url= $base_url;
 			$time_slot_data->group_shortname = $group_shortname;
 			$time_slot_data->group_name = $group_name;
 			
+			$time_slot_data->study_module_id = $study_module_id;
+
+			$time_slot_data->lesson_id = $lesson_id;
 			$time_slot_data->lesson_location = $lesson_location;
 			$time_slot_data->lesson_code = $lesson_code;
 			$time_slot_data->lesson_shortname = $lesson_shortname;
@@ -915,11 +1004,13 @@ $i++;
 		}
 
 		foreach ($time_slots_array_byteacher_and_day as $time_slot)	{
+			$group_id = 0;
 			$group_code = "";
 			$base_url =  "";
 			$group_shortname =  "";
 			$group_name =  "";
 			
+			$lesson_id = 0;
 			$lesson_code =  "";
 			$lesson_shortname =  "";
 			$lesson_name =  "";
@@ -935,21 +1026,28 @@ $i++;
 			$study_module_id = null;
 			$time_slot_data->lesson_colour = "btn-default";
 			if (array_key_exists($time_slot_id, $lessons_array_byteacher_and_day)) {
+				$group_id = $lessons_array_byteacher_and_day[$time_slot_id]->group_id;
 				$group_code = $lessons_array_byteacher_and_day[$time_slot_id]->group_code;
 				$base_url = $lessons_array_byteacher_and_day[$time_slot_id]->base_url;
 				$group_shortname = $lessons_array_byteacher_and_day[$time_slot_id]->group_shortname;
 				$group_name = $lessons_array_byteacher_and_day[$time_slot_id]->group_name;
 				$study_module_id = $lessons_array_byteacher_and_day[$time_slot_id]->study_module_id;
+				$lesson_id = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_id;
 				$lesson_code = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_code;
 				$lesson_shortname = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_shortname;
 				$lesson_name = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_name;
 				$lesson_location = $lessons_array_byteacher_and_day[$time_slot_id]->lesson_location;
 			}
 
+			$time_slot_data->group_id = $group_id;
 			$time_slot_data->group_code = $group_code;
 			$time_slot_data->group_url= $base_url;
 			$time_slot_data->group_shortname = $group_shortname;
 			$time_slot_data->group_name = $group_name;
+
+			$time_slot_data->study_module_id = $study_module_id;
+
+			$time_slot_data->lesson_id = $lesson_id;
 			$time_slot_data->lesson_code = $lesson_code;
 			$time_slot_data->lesson_shortname = $lesson_shortname;
 			$time_slot_data->lesson_name = $lesson_name;

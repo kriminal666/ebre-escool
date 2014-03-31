@@ -7,25 +7,43 @@
  <ul class="breadcrumb">
   <li>
    <i class="icon-home home-icon"></i>
-   <a href="#">Home</a>
+   <a href="<?php echo base_url();?>">Home</a>
    <span class="divider">
     <i class="icon-angle-right arrow-icon"></i>
    </span>
   </li>
-  <li class="active"><?php echo lang('check_attendance');?></li>
+  <li class="active"><i class="icon-bell bell-icon"></i> <strong><?php echo lang('check_attendance');?></strong></li>
  </ul>
 </div>
 
 <div class="page-content">
 <div class="page-header position-relative">
- <h1>
-  Lliçons
+ <h1>Lliçons
   <small>
-   <i class="icon-double-angle-right"></i>
-    TODO Nom professor
+   <i class="icon-double-angle-right"></i> <strong><?php echo $teacher_full_name . " ( codi: " . $teacher_code . ")";?></strong>
   </small>
  </h1>
 </div>
+
+  <?php if (count($all_time_slots_reduced) == 0) : ?>
+
+      <div class="alert alert-block alert-warning">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <strong>
+                 <i class="icon-remove"></i>
+                  Atenció!
+                </strong>
+                , no s'ha trobat cap registre pel dia <strong><?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?></strong>! Proveu d'escollir un altre data. 
+      </div>
+
+
+  <?php endif; ?> 
+
+
+
 
 <div class="row-fluid">
           <div class="span4"></div>
@@ -115,7 +133,10 @@
 
      </td>
      <td>
-        <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group";?>" class="btn btn-primary">
+        <?php
+        $url_part = $time_slot->group_id . "/" . $teacher_code . "/" . $time_slot->study_module_id . "/" . $time_slot->lesson_id . "/" . $day . "/" . $month . "/" . $year;
+        ?>
+        <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group/" . $url_part;?>" class="btn btn-primary">
           <i class="icon-bell icon-white"></i> Passar llista
         </a>
      </td>
@@ -178,9 +199,15 @@
 
 	 </td>
 	 <td>
-    <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group";?>" class="btn btn-primary">
+    <?php if ($time_slot->time_slot_lective == 1 && ($time_slot->group_code != "")): ?>
+        <?php
+        $url_part = $time_slot->group_id . "/" . $teacher_code . "/" . $time_slot->study_module_id . "/" . $time_slot->lesson_id . "/" . $day . "/" . $month . "/" . $year;
+        ?>
+    <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group/" . $url_part;?>" class="btn btn-primary">
   			<i class="icon-bell icon-white"></i> Passar llista
 		</a>
+    <?php endif; ?>
+
 	 </td>
    </tr>
   <?php endforeach; ?>
