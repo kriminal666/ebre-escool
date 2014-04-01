@@ -477,7 +477,7 @@ class attendance_reports extends skeleton_main {
 
         $data['group_code']=$group_code;
 
-        $data['all_groups']=$all_groups->result();
+       // $data['all_groups']=$all_groups->result();
 
         $data['all_groups']=$all_groups->result();
         $data['photo'] = false;
@@ -527,7 +527,7 @@ class attendance_reports extends skeleton_main {
         $active_menu['submenu2']='#report_class_sheet';
 
         $data['title'] = lang('reports_group_reports_student_sheet');
-
+/*
         $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
                                 "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
                                 "1ASIX-DAM" => "1ASIX-DAM - *1r Inform. superior (S)L - CF",
@@ -585,7 +585,7 @@ class attendance_reports extends skeleton_main {
                                 "SE" => "SE - Secretariat (S) - CF"
             );
 
-/**/
+*/
         $this->load_datatables_data($active_menu);
 
         if (!$this->skeleton_auth->logged_in())
@@ -593,6 +593,10 @@ class attendance_reports extends skeleton_main {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
+
+        // Get All groups
+        $grups = $this->attendance_model->get_all_groups();
+        $data['grups'] = $grups;
         
         $default_group_code = $this->config->item('default_group_code');
         $group_code=$default_group_code;
@@ -609,17 +613,30 @@ class attendance_reports extends skeleton_main {
 
         $data['all_groups']=$all_groups->result();
 
+        $dada['photo'] = true;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
         }   else {
             $data['selected_group']=$default_group_code;
         }
 
-        
-
        // echo $data['selected_group'];
        // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
        // $default_group_dn=$students_base_dn;
+
+        if ($data['selected_group']!="ALL_GROUPS")
+            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+        
+        if ($data['selected_group']=="ALL_GROUPS")
+            $data['selected_group_names']= array (lang("all_tstudents"),"");
+        else
+            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
+  
+        $estudiants_grup = $this->attendance_model->getAllGroupStudentInfo($data['selected_group']);
+
+        $data['all_students_in_group'] = $estudiants_grup;
+
+        /*
         if ($data['selected_group']!="ALL_GROUPS")
             $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
         
@@ -629,9 +646,10 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
         
        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-       
+       */
+
         //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
-        //Total de professors
+        //Total d'alumnes
         $data['count_alumnes'] = count($data['all_students_in_group']);
         //$data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
 

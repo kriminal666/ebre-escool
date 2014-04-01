@@ -6,8 +6,8 @@ $contador=0;
 $alumne =array();
 
 foreach($all_students_in_group as $student){
-
-/* Detectar tipus d'imatge (PNG o JPG) */
+/*
+// Detectar tipus d'imatge (PNG o JPG) 
 $tipus = substr($student->jpegPhoto,0,10);
 
 $isJPG  = strpos($tipus, 'JFIF');
@@ -53,14 +53,40 @@ $jpeg_data_size = filesize( $jpeg_filename );
 		            //$cmd="/usr/bin/convert $jpeg_filename -background white -flatten +matte /tmp/$alumne[$contador]['jpegPhoto']";
 		            //echo "$cmd"."</br>";
 		            //exec($cmd);
+*/
+
+//if($photo){
+	/* Detectar tipus d'imatge (PNG o JPG) */
+	
+	//$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
+	$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
+	$type = pathinfo(base_url("/assets/img/alumnes")."/".$student->jpegPhoto, PATHINFO_EXTENSION);
+	$extensio = ".".$type;
+
+	//$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+	$jpeg_filename=base_url("/assets/img/alumnes")."/".$student->jpegPhoto;
+	$jpeg_file[$contador]=$student->jpegPhoto;
+	$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
+	$outjpeg = fopen($jpeg_filename, "rb");
+	fwrite($outjpeg, $student->jpegPhoto);
+	fclose ($outjpeg);
+	$jpeg_data_size = filesize( $imagedata );
+
+	if( $jpeg_data_size < 6 ) {
+		$jpeg_file[$contador]=$student->jpegPhoto;
+		$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
+	}
+
+//}
+//print_r($student);
+$alumne[$contador]['givenName']=$student->givenName;
+$alumne[$contador]['sn1']=$student->sn1;
+$alumne[$contador]['sn2']=$student->sn2;
+
+
 $contador++;
 }
 
-/*
-echo "<pre>";
-print_r($alumne);
-echo "</pre>";
-*/
 //Crido la classe
 $pdf = new FPDF();
 //Defineixo els marges
@@ -138,7 +164,7 @@ for($j=0; $j<$number_returned;$j++){
 	}
 
 	}
-			$pdf->Cell(28.75,38.5,$pdf->Image("/tmp/".$alumne[$j]['jpegPhoto'],$pdf->GetX(),$pdf->GetY(),28.75),1,0,'C',$fill);					
+			$pdf->Cell(28.75,38.5,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$j]['jpegPhoto']/*"/tmp/".$alumne[$j]['jpegPhoto']*/,$pdf->GetX(),$pdf->GetY(),28.75),1,0,'C',$fill);					
 			$z++;
 	}
 

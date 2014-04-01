@@ -49,7 +49,7 @@ $(document).ready( function () {
 				]
 },
         "iDisplayLength": 50,
-        "aaSorting": [[ 4, "desc" ]],
+        "aaSorting": [[ 1, "desc" ]],
 		"oLanguage": {
 			"sProcessing":   "Processant...",
 			"sLengthMenu":   "Mostra _MENU_ registres",

@@ -1203,15 +1203,10 @@ ORDER BY person.person_sn1
 	} 
 
 	function getAllGroupStudymodules ( $class_group_id ) {
-		/*
-		SELECT `study_module_id`, `study_module_external_code`, `study_module_shortname`, `study_module_name`
-		FROM `study_module` 
-		WHERE `study_module_classroom_group_id`=25
-		ORDER BY `study_module_shortname`
-		*/
+
 
 		$this->db->select('lesson_teacher_id, person_givenName, person_sn1, person_sn2');
-		$this->db->from('study_module');
+		$this->db->from('lesson');
 		$this->db->join('teacher', 'teacher.teacher_id = lesson.lesson_teacher_id');
 		$this->db->join('person', 'teacher.teacher_id = person.person_id');
 		

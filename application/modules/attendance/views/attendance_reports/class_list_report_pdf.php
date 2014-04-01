@@ -1,11 +1,4 @@
 <?php
-/*
-if($photo){
-	echo "si";
-} else {
-	echo "no";
-}
-*/
 $number_returned = $count_alumnes;
 $codi_grup = $selected_group;
 $contador=0;
