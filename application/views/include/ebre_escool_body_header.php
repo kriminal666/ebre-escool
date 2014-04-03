@@ -225,8 +225,9 @@
 
             <li class="light-blue">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                <img class="nav-user-photo" src="<?php echo base_url('/assets/avatars/user.jpg')?>" alt="Foto de <?php echo $this->session->userdata('username');?>" />
-                <span class="user-info">
+                <img class="nav-user-photo" src="<?php echo base_url('uploads/person_photos/' . $this->session->userdata('photo'));?>" 
+                  style="max-height: 36px !important;" alt="Foto de <?php echo $this->session->userdata('username');?>" />
+                <span class="user-info" style="line-height: 16px;">
                   <small>Benvingut,</small>
                   <?php echo $this->session->userdata('username');?>
                 </span>

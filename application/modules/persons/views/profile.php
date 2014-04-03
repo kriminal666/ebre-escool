@@ -51,7 +51,7 @@
                   <div class="span3 center">
                     <div>
                       <span class="profile-picture">
-                        <img id="avatar" class="editable" alt="<?php echo $this->session->userdata('username'); ?> Avatar" src="<?php echo base_url('assets/avatars/profile-pic.jpg');?>" />
+                        <img id="avatar" class="editable" alt="<?php echo $this->session->userdata('username'); ?> Avatar" src="<?php echo base_url('uploads/person_photos/' . $this->session->userdata('photo'));?>" />
                       </span>
 
                       <div class="space-4"></div>
@@ -262,7 +262,7 @@
                         <div class="profile-info-name"> Unitat </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="mainOrganizationaUnitId"><?php echo $this->session->userdata('mainOrganizationaUnitId') . " " . $organizational_unit_name; ?></span>
+                          <span class="editable" id="mainOrganizationaUnitId"><?php $this->session->userdata('mainOrganizationaUnitId') . " " . $organizational_unit_name; ?></span>
                         </div>
                       </div>
 
