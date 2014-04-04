@@ -78,9 +78,12 @@ public function images(){
 		
 		$this->set_theme($this->grocery_crud);
 		$this->set_dialogforms($this->grocery_crud);
+		
+		$active_menu = array();
+	        $active_menu['menu']='#inventory';
 	
 		/* Ace */
-    	$header_data = $this->load_ace_files(); 
+        	$header_data = $this->load_ace_files( $active_menu ); 
 
 	    $this->image_crud_render($this->current_table,$header_data);
 	}	
