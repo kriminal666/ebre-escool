@@ -50,6 +50,7 @@ $lang['price']                  = 'Preu';
 $lang['moneySourceIdcolumn']    = 'Font dels diners'; 
 $lang['providerId']             = 'Proveïdor'; 
 $lang['preservationState']      = 'Estat de conservació'; 
+$lang['Study']      = 'Estudis';
 $lang['markedForDeletion']      = 'Baixa lògica?'; 
 $lang['markedForDeletionDate']  = 'Data de baixa'; 
 $lang['file_url']               = 'Fitxer principal'; 

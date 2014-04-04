@@ -143,6 +143,8 @@ public function inventory_object($organizational_unit="")	{
     $this->grocery_crud->display_as($this->current_table.'_file_url',lang('file_url'));
     $this->grocery_crud->display_as('OwnerOrganizationalUnit',lang('OwnerOrganizationalUnit'));
     $this->grocery_crud->display_as($this->current_table.'_mainOrganizationaUnitId',lang('mainOrganizationaUnitId'));
+    $this->grocery_crud->display_as($this->current_table.'_study_id',lang('Study'));
+        
         
     //Establish fields/columns order and wich camps to show
     //example: $this->grocery_crud->columns("inventory_objectId","name","shortName");       
@@ -174,9 +176,12 @@ public function inventory_object($organizational_unit="")	{
         
     //ORGANIZATIONAL UNIT
     $this->grocery_crud->set_relation_n_n('OwnerOrganizationalUnit', 'inventory_object_organizational_unit', 'organizational_unit', 'inventory_objectId','organitzational_unitId', 'organizational_unit_name','priority');
-        
+    
     //MAIN ORGANIZATIONAL UNIT
     $this->grocery_crud->set_relation($this->current_table.'_mainOrganizationalUnitId','organizational_unit','{organizational_unit_shortName}',array('organizational_unit_markedForDeletion' => 'n'));
+    
+    //STUDIES
+    $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname} - {studies_name}',array('studies_markedForDeletion' => 'n'));         
         
     //LOCATION
     $this->grocery_crud->set_relation($this->current_table.'_location','location','{location_name}',array('location_markedForDeletion' => 'n'));
