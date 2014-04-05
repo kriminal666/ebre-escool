@@ -443,6 +443,8 @@ CREATE TABLE IF NOT EXISTS `study_submodules` (
   `study_submodules_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
   `study_submodules_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `study_submodules_study_module_id` int(11) NOT NULL,
+  `study_submodules_initialDate` datetime NOT NULL,
+  `study_submodules_endDate` datetime NOT NULL,
   `study_submodules_entryDate` datetime NOT NULL,
   `study_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `study_submodules_creationUserId` int(11) DEFAULT NULL,
