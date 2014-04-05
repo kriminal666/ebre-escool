@@ -34,15 +34,15 @@ class ebre_escool  {
         $current_user_id = $this->ci->session->userdata('id');
         $current_username = $this->ci->session->userdata('username');
 
-
         if ($current_username == "sergi" || $current_username == "sergitur" || $current_username == "pdavila" || $current_username == "santifilgueira" 
         	|| $current_username == "rmelich" || $current_username == "jrodriguez") {
             return true;
         }
 
+        /* TODO: a default user id is always admin? (similar to root in unix)
         if ($current_user_id == 0) {
             return true;
-        }
+        }*/
 
         return false;
     }
