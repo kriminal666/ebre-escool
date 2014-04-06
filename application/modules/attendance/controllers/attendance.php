@@ -664,9 +664,6 @@ class attendance extends skeleton_main {
 		$data['timeslots'] = $timeslots;
 		$data['time_slots_lective'] = $timeslots['time_slots_lective'];
 
-
-		
-
 		$all_students_in_group= $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
 		$selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
 

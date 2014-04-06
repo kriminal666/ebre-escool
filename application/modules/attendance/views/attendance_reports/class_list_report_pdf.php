@@ -1,14 +1,41 @@
 <?php
 $number_returned = $count_alumnes;
-$codi_grup = $selected_group;
+$codi_grup = $group_code;
 $contador=0;
-//print_r($all_students_in_group[1]);
 $alumne =array();
 
+foreach($classroom_group_students as $student){
+
+$jpeg_data_size = filesize($student->photo_url);
+
+if (!file_exists($student->photo_url))
+{
+	$student->photo_url='assets/img/alumnes/foto.png';
+	if ($jpeg_data_size < 6)
+	{
+		$student->photo_url='assets/img/alumnes/foto.png';
+	}
+} else {
+	if( $jpeg_data_size < 6 )
+	{
+		$student->photo_url='assets/img/alumnes/foto.png';
+		//echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";	
+	}
+}
+
+$alumne[$contador]['jpegPhoto']=$student->photo_url;
+$alumne[$contador]['givenName']=$student->givenName;
+$alumne[$contador]['sn1']=$student->sn1;
+$alumne[$contador]['sn2']=$student->sn2;
+
+$contador++;
+}
+
+/*
 foreach($all_students_in_group as $student){
 
 if($photo){
-	/* Detectar tipus d'imatge (PNG o JPG) */
+	// Detectar tipus d'imatge (PNG o JPG) 
 	
 	//$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
 	$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
@@ -37,7 +64,7 @@ $alumne[$contador]['sn2']=$student->sn2;
 
 $contador++;
 }
-
+*/
 //$contador = 1;
 /*
 echo "<pre>";
@@ -69,7 +96,7 @@ $pdf->ln();
 $pdf->Cell(190,6,utf8_decode("Pàgina: ".$pdf->PageNo()),0,0,'R');
 $pdf->ln();
 $pdf->SetFont('Arial','B',10);
-$pdf->Cell(190,6,"Llistat Alumnes Grup",0,0,'C');
+$pdf->Cell(190,6,"Llistat Alumnes Grup: ".utf8_decode($codi_grup." (".$codi_grup.")"),0,0,'C');
 
 /**/
 $pdf->SetFillColor(150,150,150);
@@ -99,7 +126,8 @@ for($t=0;$t<$number_returned;$t++){
 
 	$pdf->Cell(10,8,utf8_decode($t+1),1,0,'C',$fill);
 	if($photo){
-		$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
+		$pdf->Cell(8,8,$pdf->Image($alumne[$t]['jpegPhoto'],$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);	
+		//$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
 		$pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
 		$pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);		
 	} else {	

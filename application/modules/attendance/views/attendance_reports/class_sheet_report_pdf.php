@@ -1,88 +1,83 @@
 <?php
 $number_returned = $count_alumnes;
-$codi_grup = $selected_group;
+$codi_grup = $group_code;
 $contador=0;
-//print_r($all_students_in_group[1]);
 $alumne =array();
 
-foreach($all_students_in_group as $student){
-/*
-// Detectar tipus d'imatge (PNG o JPG) 
-$tipus = substr($student->jpegPhoto,0,10);
+foreach($classroom_group_students as $student){
 
-$isJPG  = strpos($tipus, 'JFIF');
-if($isJPG){
-	$extensio = ".jpg";
+$jpeg_data_size = filesize($student->photo_url);
+
+if (!file_exists($student->photo_url))
+{
+	$student->photo_url='assets/img/alumnes/foto.png';
+	if ($jpeg_data_size < 6)
+	{
+		$student->photo_url='assets/img/alumnes/foto.png';
+	}
 } else {
-	$isPNG  = strpos($tipus, 'PNG');
-	if($isPNG){
-	$extensio = ".png";
+	if( $jpeg_data_size < 6 )
+	{
+		$student->photo_url='assets/img/alumnes/foto.png';
+		//echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";	
 	}
 }
 
-$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
-$jpeg_file[$contador]=$student->irisPersonalUniqueID.$extensio;
-$alumne[$contador]['jpegPhoto']=$student->irisPersonalUniqueID.$extensio;
-$alumne[$contador]['givenName']=$student->givenName;
-$alumne[$contador]['sn1']=$student->sn1;
-$alumne[$contador]['sn2']=$student->sn2;
+//echo "File: ".($student->photo_url)."<br />";
+//$jpeg_data_size = filesize($student->photo_url);
+//echo "Size: ".$jpeg_data_size."<br />";
+/*
+if( $jpeg_data_size < 6 )
+{
+	$student->photo_url='assets/img/alumnes/foto.png';
+	//echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";	
+} else {
+	//echo "<img src='".base_url($student->photo_url)."' /><br />";
+}
+*/
+/* Anterior
 
 $outjpeg = fopen($jpeg_filename, "wb");
 fwrite($outjpeg, $student->jpegPhoto);
 fclose ($outjpeg);
 $jpeg_data_size = filesize( $jpeg_filename );
 
-
-	if( $jpeg_data_size < 6 ) {
-						//echo "jpegPhoto $jpeg_file[$contador] contains errors<br />";
-						//echo '<a href="javascript:deleteJpegPhoto();" style="color:red; font-size: 75%">Delete Photo</a>';
-						//$jpeg_filename="/tmp/foto.jpg";
-						$jpeg_file[$contador]='foto.png';
-						$alumne[$contador]['jpegPhoto']='foto.png';
-						//$outjpeg = fopen($jpeg_filename, "wb");
-						//fwrite($outjpeg, $student->jpegPhoto);
-						//fclose ($outjpeg);
-						//continue;
-					}
-
- //Convert image to image without Alpha Channel: TODO: Try to use TCPDF instead of FPDF		
-		            //We need imagemagick installed on server
-		            //http://acacha.org/mediawiki/index.php/Imagemagick#Eliminar_el_canal_Alfa
-		            //convert 201011-406.png -background white -flatten +matte 201011-406_no.png
-		            //$cmd="/usr/bin/convert $jpeg_filename -background white -flatten +matte /tmp/$jpeg_file[$contador]";
-		            //$cmd="/usr/bin/convert $jpeg_filename -background white -flatten +matte /tmp/$alumne[$contador]['jpegPhoto']";
-		            //echo "$cmd"."</br>";
-		            //exec($cmd);
 */
 
-//if($photo){
-	/* Detectar tipus d'imatge (PNG o JPG) */
-	
-	//$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
-	$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
-	$type = pathinfo(base_url("/assets/img/alumnes")."/".$student->jpegPhoto, PATHINFO_EXTENSION);
+/* Detectar tipus d'imatge (PNG o JPG) */
+/*	
+	$imagedata = file_get_contents(base_url($student->photo_url));
+	$type = pathinfo(base_url($student->photo_url), PATHINFO_EXTENSION);
 	$extensio = ".".$type;
 
-	//$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
-	$jpeg_filename=base_url("/assets/img/alumnes")."/".$student->jpegPhoto;
-	$jpeg_file[$contador]=$student->jpegPhoto;
-	$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
-	$outjpeg = fopen($jpeg_filename, "rb");
-	fwrite($outjpeg, $student->jpegPhoto);
-	fclose ($outjpeg);
+	$jpeg_filename=base_url($student->photo_url);
+
+	$jpeg_file[$contador]=base_url($student->photo_url);
+	$alumne[$contador]['jpegPhoto']=base_url($student->photo_url);
+
 	$jpeg_data_size = filesize( $imagedata );
 
-	if( $jpeg_data_size < 6 ) {
-		$jpeg_file[$contador]=$student->jpegPhoto;
-		$alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
-	}
+	$outjpeg = fopen($jpeg_filename, "wb");
 
-//}
-//print_r($student);
+	fwrite($outjpeg, $student->photo_url);
+	fclose ($outjpeg);
+
+echo $alumne[$contador]['jpegPhoto'];
+
+echo "Data Size: ".$jpeg_data_size;
+
+	if( $jpeg_data_size < 6 ) {
+		echo "La imatge no existeix o te un format incorrecte";
+		$jpeg_filename=base_url('/assets/img/alumnes/foto.png');
+		$jpeg_file[$contador]=base_url('/assets/img/alumnes/foto.png');
+		$alumne[$contador]['jpegPhoto']=$student->photo_url;
+	}
+*/
+
+$alumne[$contador]['jpegPhoto']=$student->photo_url;
 $alumne[$contador]['givenName']=$student->givenName;
 $alumne[$contador]['sn1']=$student->sn1;
 $alumne[$contador]['sn2']=$student->sn2;
-
 
 $contador++;
 }
@@ -122,6 +117,7 @@ $pdf->Ln(7);
 $pdf->SetFont('Arial','',10);
 //$pos = strpos($all_students_in_group[1]->dn,',');
 //$dn = substr($all_students_in_group[1]->dn,($pos+1),strlen($all_students_in_group[1]->dn));
+
 /*
 echo "<pre>";
 print_r($alumne);
@@ -164,7 +160,7 @@ for($j=0; $j<$number_returned;$j++){
 	}
 
 	}
-			$pdf->Cell(28.75,38.5,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$j]['jpegPhoto']/*"/tmp/".$alumne[$j]['jpegPhoto']*/,$pdf->GetX(),$pdf->GetY(),28.75),1,0,'C',$fill);					
+			$pdf->Cell(28.75,38.5,$pdf->Image($alumne[$j]['jpegPhoto'],$pdf->GetX(),$pdf->GetY(),28.75),1,0,'C',$fill);					
 			$z++;
 	}
 
