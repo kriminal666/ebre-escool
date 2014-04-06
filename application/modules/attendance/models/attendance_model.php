@@ -573,13 +573,32 @@ ORDER BY person.person_sn1
 	}	
 
 	function get_all_groupscodenameByDeparment($departmentId,$orderby="asc") {
-		$this->db->from('classroom_group');
-        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+		/*
+		SELECT DISTINCT `classroom_group_code`,`studies_shortname`,`department_name`,department.`department_id`
+		FROM `classroom_group` 
+		INNER JOIN course
+		ON classroom_group.`classroom_group_course_id` = course.course_id
+		INNER JOIN studies
+		ON course.`course_estudies_id` = studies.`studies_id`
+		INNER JOIN study_department
+		ON studies.studies_id = study_department.study_id
+		INNER JOIN department
+		ON study_department.`study_id` = department.`department_id`
+		WHERE department.`department_id` = 2
+		*/
+		$this->db->select('classroom_group_id,classroom_group_code, studies_shortname, department_name, department.department_id');
+		$this->db->from('classroom_group');        
 
+		$this->db->join('course', 'classroom_group.classroom_group_course_id = course.course_id');
+		$this->db->join('studies', 'course.course_estudies_id = studies.studies_id');
+		$this->db->join('study_department', 'studies.studies_id = study_department.study_id');
+		$this->db->join('department', 'study_department.study_id = department.department_id');
+        
+
+		$this->db->where('department.department_id', $departmentId);
 		$this->db->order_by('classroom_group_code', $orderby);
-
-		$this->db->where('classroom_group_departmentid', $departmentId);
 		       
+		$this->db->distinct();       
         $query = $this->db->get();
 		
 		if ($query->num_rows() > 0) {
@@ -1202,45 +1221,93 @@ ORDER BY person.person_sn1
 			return "";
 	} 
 
-	function getAllGroupStudymodules ( $class_group_id ) {
+	function getAllGroupStudymodules ( $class_group_id, $orderby = "ASC" ) {
 
+		/*
+		SELECT DISTINCT `lesson_study_module_id` , `study_module_external_code` , `study_module_shortname` , `study_module_name`
+		FROM `lesson`
+		INNER JOIN study_module ON `lesson`.`lesson_study_module_id` = study_module.`study_module_id`
+		WHERE `lesson_classroom_group_id` =26
+		ORDER BY study_module_order,`study_module_shortname`
+		*/
 
-		$this->db->select('lesson_teacher_id, person_givenName, person_sn1, person_sn2');
+		$this->db->select('lesson_study_module_id,study_module_id,study_module_external_code,study_module_shortname,study_module_name');
 		$this->db->from('lesson');
-		$this->db->join('teacher', 'teacher.teacher_id = lesson.lesson_teacher_id');
-		$this->db->join('person', 'teacher.teacher_id = person.person_id');
+		$this->db->join('study_module', "lesson.lesson_study_module_id = study_module.study_module_id");
 		
-		//$this->db->order_by('time_slot_order', $orderby);
+		$this->db->order_by('study_module_order', $orderby);
+		$this->db->order_by('study_module_shortname', $orderby);
 		
 		$this->db->where("lesson.lesson_classroom_group_id", $class_group_id);
 		
+		$this->db->distinct();
 		$query = $this->db->get();
 		
 		if ($query->num_rows() > 0)	{
 			
-			$group_teachers = array();
+			$study_modules = array();
 
 			foreach ($query->result_array() as $row)	{
 
-				$teacher = new stdClass();
-				$teacher->id = $row['lesson_teacher_id'];
-				$teacher->givenName = $row['person_givenName'];
-				$teacher->sn1 = $row['person_sn1'];
-				$teacher->sn2 = $row['person_sn2'];
+				$study_module = new stdClass();
+				$study_module->id = $row['study_module_id'];
+				$study_module->shortname = $row['study_module_shortname'];				
+				$study_module->name = $row['study_module_name'];
+				$study_module->code = $row['study_module_external_code'];
 				
-   				$group_teachers[$row['lesson_teacher_id']] = $teacher;
+   				$study_modules[$row['study_module_id']] = $study_module;
 
 			}
-			return $group_teachers;
+			return $study_modules;
 		}
 		else
 			return false;
 
-		return array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
 	}
 
-	function getAllTeacherStudymodules ( $teacher_id ) {
-		return array ( 1 => "M 8", 2 => "M 9", 3 => "M 10", 4 => "M 11", 5 => "M 12" );
+	function getAllTeacherStudymodules ( $teacher_id , $orderby = "ASC") {
+		/*
+		SELECT DISTINCT `lesson_study_module_id` , `study_module_external_code` , `study_module_shortname` , `study_module_name`
+		FROM `lesson`
+		INNER JOIN study_module ON `lesson`.`lesson_study_module_id` = study_module.`study_module_id`
+		WHERE `lesson_teacher_id` = 39
+		ORDER BY study_module_order,`study_module_shortname`
+		*/
+
+		$this->db->select('lesson_study_module_id,study_module_id,study_module_external_code,study_module_shortname,study_module_name');
+		$this->db->from('lesson');
+		$this->db->join('study_module', "lesson.lesson_study_module_id = study_module.study_module_id");
+		
+		$this->db->order_by('study_module_order', $orderby);
+		$this->db->order_by('study_module_shortname', $orderby);
+		
+		$this->db->where("lesson.lesson_teacher_id", $teacher_id);
+
+		$this->db->distinct();		
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0)	{
+			
+			$study_modules = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				$study_module = new stdClass();
+				$study_module->id = $row['study_module_id'];
+				$study_module->shortname = $row['study_module_shortname'];				
+				$study_module->name = $row['study_module_name'];
+				$study_module->code = $row['study_module_external_code'];
+				
+   				$study_modules[$row['study_module_id']] = $study_module;
+
+			}
+			return $study_modules;
+		}
+		else
+			return false;
+
 	}
 
 }

@@ -572,6 +572,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_type',lang('type'));   
         $this->grocery_crud->display_as($this->current_table.'_subtype',lang('subtype'));        
         $this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));
+        $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
 
         //RELACIONS
         //$this->grocery_crud->set_relation($this->current_table.'_course_id','course','course_shortname'); 

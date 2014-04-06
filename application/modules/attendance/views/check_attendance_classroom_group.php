@@ -217,7 +217,7 @@
                               <a href="#" 
                                 <?php if ($selected_study_module_key == $study_module_key ) { echo 'class="blue"';}?> >
                                 <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $study_module; ?>
+                                <?php echo $study_module->name; ?>
                               </a>
                             </li>      
                           <?php endforeach; ?>
@@ -298,7 +298,11 @@
                     <?php $student_fullname = $student->givenName . " " . $student->sn1 . " " . $student->sn2;?>
                     <tr>
                       <td>
-                        <img data-rel="tooltip" width="200%" title="<?php echo $student_fullname;?>" src="<?php echo base_url($student->photo_url)?>" class="msg-photo" alt="<?php echo $student_fullname;?>" />
+                        <a class="image-thumbnail" href="<?php echo base_url($student->photo_url)?>">
+                         <img data-rel="tooltip" style="max-width:35px;";
+                          title="<?php echo $student_fullname;?>" class="msg-photo" alt="<?php echo $student_fullname;?>" 
+                          src="<?php echo base_url($student->photo_url)?>"/>
+                        </a>
                       </td>
                       <td>
                         <a href="#"><?php echo $student->person_id;?></a>
@@ -447,10 +451,10 @@
         });
 
   $('[data-rel=tooltip]').tooltip();
-  $('[data-rel=popover]').popover({html:true});        
+  //$('[data-rel=popover]').popover({html:true});        
 
   //Jquery select plugin: http://ivaynberg.github.io/select2/
-  $("#time_slots").select2();  
+  //$("#time_slots").select2();  
 
   //***********************
   //* Datepicker         **
@@ -485,5 +489,9 @@
         //window.location.href = baseURL + "/" + teacher_code + "/" + formated_selectedDate;
     });
         
-      })
+  })
+
+  
+  $('.image-thumbnail').fancybox(); 
+
 </script>

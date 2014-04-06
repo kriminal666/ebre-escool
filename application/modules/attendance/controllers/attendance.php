@@ -86,6 +86,10 @@ class attendance extends skeleton_main {
             $header_data,
             base_url('assets/css/ace-skins.min.css'));
 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/css/jquery_plugins/fancybox/jquery.fancybox.css'));
+
 /*        
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -186,6 +190,11 @@ class attendance extends skeleton_main {
                     $header_data,
                     base_url('assets/js/chosen.jquery.min.js'));
 */
+
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/grocery_crud/js/jquery_plugins/jquery.fancybox-1.3.4.js'));
+
 		$header_data['menu']= $active_menu;
 		return $header_data; 
         
@@ -198,6 +207,8 @@ class attendance extends skeleton_main {
         $this->load->model('attendance_model');
         $this->load->model('timetables_model');
         $this->load->library('ebre_escool_ldap');
+
+        $this->load->library('ebre_escool');
 
         //GROCERY CRUD
 		$this->load->add_package_path(APPPATH.'third_party/grocery-crud/application/');
@@ -531,8 +542,9 @@ class attendance extends skeleton_main {
 
 		$user_teacher_code = $this->attendance_model->getTeacherCode($person_id);
 		
-		//TODO:
-		$user_is_admin = true;
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+		//TODO: Test. DELETE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	    //$user_is_admin=false;
 
 		if ($teacher_code == null) {
 	    	$teacher_code = $user_teacher_code;
@@ -568,7 +580,6 @@ class attendance extends skeleton_main {
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";   
 
-	    $user_is_admin=true;
 	    $user_is_teacher=true;
 
 	    //Departaments
@@ -585,7 +596,8 @@ class attendance extends skeleton_main {
         
 	    #Obtain class_room_groups
 	    $data['classroom_groups']=array();
-	    if (false) {
+	    
+	    if ($user_is_admin) {
 	    	//Get all classroom_groups
 	    	$data['classroom_groups']= $this->attendance_model->get_all_groupscodenameByDeparment($teacher_department_id);
 	    } else {
@@ -709,6 +721,7 @@ class attendance extends skeleton_main {
 
 
 	    $data['study_modules'] = array();
+	    
 	    if ($user_is_admin) {
 	    	//Get all group study modules
 	    	$all_group_study_modules = $this->attendance_model->getAllGroupStudymodules( $selected_group_id);
@@ -719,23 +732,20 @@ class attendance extends skeleton_main {
 			$data['study_modules'] = $current_teacher_study_modules;
 	    }
 
-	    if ($user_is_admin) {
+	    
 
-	    	$data['time_slots']=array();
+	    $data['time_slots']=array();
 
-	    	$time_slots = $this->attendance_model->getTimeSlotsByClassgroupId($selected_group_id,$day_of_week_number);
+	    $time_slots = $this->attendance_model->getTimeSlotsByClassgroupId($selected_group_id,$day_of_week_number);
 
-	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
-	    	$selected_time_slot_key = $this->getTimeSlotKeyByTimeSlotId($time_slots,$selected_time_slot_id);
+	    $selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+	    $selected_time_slot_key = $this->getTimeSlotKeyByTimeSlotId($time_slots,$selected_time_slot_id);
 
-			$data['selected_time_slot_key'] = $selected_time_slot_key;		
-			$data['selected_time_slot_id'] = $selected_time_slot_id;
+		$data['selected_time_slot_key'] = $selected_time_slot_key;		
+		$data['selected_time_slot_id'] = $selected_time_slot_id;
 
-			if (is_array($time_slots)) {
-	    		$data['time_slots'] = $time_slots;
-	    	}
-	    } else {
-			$data['time_slots'] = array();
+		if (is_array($time_slots)) {
+	    	$data['time_slots'] = $time_slots;
 	    }
 
 	    $group_teachers_array = $this->attendance_model->getAllTeachersFromClassgroupId( $selected_group_id );

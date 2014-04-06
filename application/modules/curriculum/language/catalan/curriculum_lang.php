@@ -55,6 +55,7 @@ $lang['studies_departments']   = "Departaments";
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 $lang['study_module_classroom_group_id']="Id Grup";
+$lang['study_module_order']="Ordre";
 $lang['study_module_teacher_id']="Codi Professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          

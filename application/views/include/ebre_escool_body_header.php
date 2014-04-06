@@ -223,11 +223,47 @@
               </ul>
             </li>
 
+
+            <?php if ($this->session->userdata('is_admin')): ?>
+
+              <li class="dark-blue">
+                <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                  Administrador <i class="icon-caret-down"></i>
+                </a>
+
+                <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
+                  <li>
+                    <a href="#">
+                      <i class="icon-cog"></i>
+                      Configuració general (TODO)
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <i class="icon-user"></i>
+                      Suplantació d'identitat
+                    </a>
+                  </li>
+
+                  <li class="divider"></li>
+
+                  <li>
+                    <a href="#">
+                      Altres
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+            <?php endif; ?>
+
             <li class="light-blue">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                <img class="nav-user-photo" src="<?php echo base_url('/assets/avatars/user.jpg')?>" alt="Foto de <?php echo $this->session->userdata('username');?>" />
-                <span class="user-info">
-                  <small>Benvingut,</small>
+                <img class="nav-user-photo" src="<?php echo base_url('uploads/person_photos/' . $this->session->userdata('photo'));?>" 
+                  style="max-height: 36px !important;" alt="Foto de <?php echo $this->session->userdata('username');?>" />
+                <span class="user-info" style="line-height: 16px;">
+                  <small>Benvingut/da,</small>
                   <?php echo $this->session->userdata('username');?>
                 </span>
 
@@ -259,6 +295,8 @@
                 </li>
               </ul>
             </li>
+
+
           </ul><!-- /.ace-nav -->
 
         </div><!-- /.container-fluid -->

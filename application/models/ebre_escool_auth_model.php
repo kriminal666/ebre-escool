@@ -14,6 +14,8 @@ class ebre_escool_auth_model  extends CI_Model  {
     {
         parent::__construct();
         $this->load->database();
+
+        $this->load->library('ebre_escool');
     }
 
     function is_user_a_teacher ($person_id) {
@@ -34,7 +36,7 @@ class ebre_escool_auth_model  extends CI_Model  {
 
     	$this->db->from('users');
       $this->db->select('id,users.username,mainOrganizationaUnitId,email,secondary_email,users.person_id,mainOrganizationaUnitId,
-        	person.person_id,person_givenName,person_sn1,person_sn2');
+        	person.person_id,person_givenName,person_sn1,person_sn2,person_photo');
 
       // 	first_name 	last_name and others from table person: person table (person_id)	
 		  $this->db->join('person', 'users.person_id = person.person_id','left');
@@ -61,7 +63,9 @@ class ebre_escool_auth_model  extends CI_Model  {
                    'sn2' => $row->person_sn2,
                    'fullname'  => $row->person_givenName . " " . $row->person_sn1 . " " .  $row->person_sn2,
                    'alt_fullname'  => $row->person_sn1 . " " . $row->person_sn2 . ", " . $row->person_givenName,
+                   'photo'  => $row->person_photo,
                    'logged_in' => TRUE,
+                   'is_admin' => $this->ebre_escool->user_is_admin(),
                    'is_teacher' => $this->is_user_a_teacher($row->person_id)
                );
 		}
