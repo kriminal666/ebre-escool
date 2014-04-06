@@ -35,6 +35,10 @@ class teachers extends skeleton_main {
         $this->load->helper('language');
 	}
 
+    public function teacher_sheet() {
+        echo "TODO";
+    }
+
 	public function teacher() {
     
     $active_menu = array();

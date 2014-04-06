@@ -465,7 +465,14 @@
             <ul class="submenu">
               <!-- Espais -->
               <li id="teachers_sheet_report">
-                <a href="<?php echo base_url('/index.php/reports/teacher_sheet'); ?>">
+                <a href="<?php echo base_url('/index.php/reports/general_sheet'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo "Llençol general del centre";?>
+                </a>
+              </li>
+
+              <li id="teachers_sheet_report">
+                <a href="<?php echo base_url('/index.php/teachers/teacher_sheet'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo "Llençol de professors";?>
                 </a>
