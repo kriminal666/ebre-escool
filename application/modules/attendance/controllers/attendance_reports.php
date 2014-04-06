@@ -42,7 +42,7 @@ class attendance_reports extends skeleton_main {
 
     /* ASSISTÈNCIA - INFORMES DE CENTRE */
 
-    function informe_centre_d_h_1() { // Incidències del centre del dia d hora h
+    function all_attendance_incidents_at_day_and_hour_report() { // Incidències del centre del dia d hora h
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -131,11 +131,11 @@ class attendance_reports extends skeleton_main {
         }
 
         //$this->load_header();  
-        $this->load->view('attendance_reports/informe_centre_d_h_1.php',$data);     
+        $this->load->view('attendance_reports/all_attendance_incidents_at_day_and_hour_report.php',$data);     
         $this->load_footer();
     }
 
-    function informe_centre_di_df_1() { // Incidències del centre entre una data inicial i una data final
+    function all_attendance_incidents_day_range_report() { // Incidències del centre entre una data inicial i una data final
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -214,13 +214,13 @@ class attendance_reports extends skeleton_main {
         }
 
         //$this->load_header();  
-        $this->load->view('attendance_reports/informe_centre_di_df_1.php',$data);     
+        $this->load->view('attendance_reports/all_attendance_incidents_day_range_report.php',$data);     
         $this->load_footer();
 
 
     }
 
-    function informe_centre_ranking_di_df_1() { // Rànquing incidències del centre entre una data inicial i una data final
+    function all_attendance_incidents_ranking_report() { // Rànquing incidències del centre entre una data inicial i una data final
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -299,76 +299,9 @@ class attendance_reports extends skeleton_main {
         }
 
         //$this->load_header();   
-        $this->load->view('attendance_reports/informe_centre_ranking_di_df_1.php',$data);     
+        $this->load->view('attendance_reports/all_attendance_incidents_ranking_report.php',$data);     
         $this->load_footer();    
     }
-
-    function Llistat_grup_tutor() { // Tutors de Grup
-
-        $active_menu = array();
-        $active_menu['menu']='#reports';
-        $active_menu['submenu1']='#reports_educational_center';
-        $active_menu['submenu2']='#reports_mentor_list';
-
-        $this->load_datatables_data($active_menu);
-
-        if (!$this->skeleton_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect($this->skeleton_auth->login_page, 'refresh');
-        }
-
-        
-        $default_group_code = $this->config->item('default_group_code');
-        $group_code=$default_group_code;
-
-        $organization = $this->config->item('organization','skeleton_auth');
-
-        $header_data['header_title']=lang("all_teachers") . ". " . $organization;
-
-        //Load CSS & JS
-        //$this->set_header_data();
-
-        $all_groups = $this->attendance_model->get_all_classroom_groups();
-        $data['group_code']=$group_code;
-        $data['all_groups']=$all_groups->result();
-        
-        if (isset($group_code)) {
-            $data['selected_group']= urldecode($group_code);
-        }   else {
-            $data['selected_group']=$default_group_code;
-        }
-        
-       // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
-       // $default_group_dn=$students_base_dn;
-        if ($data['selected_group']!="ALL_GROUPS")
-            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
-        
-        if ($data['selected_group']=="ALL_GROUPS")
-            $data['selected_group_names']= array (lang("all_teachers"),"");
-        else
-            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-        
-       // $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-        
-
-        $data['all_teachers']= $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
-        $data['all_conserges']= $this->ebre_escool_ldap->getAllTeachers("ou=Consergeria,ou=Personal,ou=All,dc=iesebre,dc=com");
-        $data['all_secretaria']= $this->ebre_escool_ldap->getAllTeachers("ou=Secretaria,ou=Personal,ou=All,dc=iesebre,dc=com");
-        //Total de professors
-        $data['count_teachers'] = count($data['all_teachers']);
-        $data['count_conserges'] = count($data['all_conserges']);
-        $data['count_secretaria'] = count($data['all_secretaria']);                
-        $data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
-/**/
-        //$this->load_header();  
-        //$this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
-
-        $this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
-
-        $this->load_footer();     
-
-    }     
 
     function mailing_list_report() {
 
@@ -600,7 +533,7 @@ class attendance_reports extends skeleton_main {
         $this->load_footer();       
     }
 
-    function informe_resum_grup_di_df_1() {
+    function attendace_incidents_classgroup_summary_report() {
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -702,11 +635,11 @@ class attendance_reports extends skeleton_main {
 
 
 //        $this->load_header(); 
-        $this->load->view('attendance_reports/informe_resum_grup_di_df_1.php',$data);     
+        $this->load->view('attendance_reports/attendace_incidents_classgroup_summary_report.php',$data);     
         $this->load_footer();    
     }
 
-    function informe_resum_grup_faltes_mes_1() {
+    function attendance_incidents_classroomgroup_month_summary_report() {
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -830,7 +763,7 @@ class attendance_reports extends skeleton_main {
 
 
 //        $this->load_header(); 
-        $this->load->view('attendance_reports/informe_resum_grup_faltes_mes_1.php',$data);     
+        $this->load->view('attendance_reports/attendance_incidents_classroomgroup_month_summary_report.php',$data);     
         $this->load_footer();    
     }
 

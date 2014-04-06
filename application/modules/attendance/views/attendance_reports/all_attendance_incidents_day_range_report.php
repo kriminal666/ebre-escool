@@ -119,7 +119,7 @@ $(document).ready( function () {
 	</div>    
 	<!-- FORM -->    
 	<div style="width:75%; margin:20px auto;">
-		<form method="post" action="informe_centre_di_df_1" class="form-horizontal" role="form">
+		<form method="post" action="all_attendance_incidents_day_range_report" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>

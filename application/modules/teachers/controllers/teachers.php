@@ -39,6 +39,28 @@ class teachers extends skeleton_main {
         echo "TODO";
     }
 
+    function tutors_report() { // Tutors de Grup
+
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+
+        //TODO
+        $active_menu = array();
+        $active_menu['menu']='#reports';
+        $active_menu['submenu1']='#reports_educational_center';
+        $active_menu['submenu2']='#reports_mentor_list';
+
+        echo "TODO";
+        //$this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
+
+        $this->load_footer();     
+
+    }     
+
 	public function teacher() {
     
     $active_menu = array();

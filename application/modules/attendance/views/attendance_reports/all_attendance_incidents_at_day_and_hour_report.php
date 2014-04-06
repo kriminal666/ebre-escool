@@ -137,7 +137,7 @@ padding: 0.3em;
 
 	<!-- FORM -->    
 	<div style="width:75%; margin:20px auto;">
-		<form method="post" action="informe_centre_d_h_1" class="form-horizontal" role="form">
+		<form method="post" action="all_attendance_incidents_at_day_and_hour_report" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>

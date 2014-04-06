@@ -133,7 +133,7 @@ echo "</pre>";
 	</div>  
 	<!-- FORM -->    
 	<div style="width:50%; margin:20px auto;">
-		<form method="post" action="informe_resum_grup_faltes_mes_1" class="form-horizontal" role="form">
+		<form method="post" action="attendance_incidents_classroomgroup_month_summary_report" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group">
 					<tr>

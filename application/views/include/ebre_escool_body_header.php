@@ -463,20 +463,74 @@
               <b class="arrow icon-angle-down"></b>
             </a>
             <ul class="submenu">
-              <!-- Espais -->
-              <li id="teachers_sheet_report">
+              <!-- GENERAL SHEET -->
+              <li id="general_sheet_report">
                 <a href="<?php echo base_url('/index.php/reports/general_sheet'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo "Llençol general del centre";?>
                 </a>
               </li>
 
-              <li id="teachers_sheet_report">
-                <a href="<?php echo base_url('/index.php/teachers/teacher_sheet'); ?>">
+              <!-- TEACHERS REPORTS -->
+              <li id="teachers_reports">
+                <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo "Llençol de professors";?>
+
+                  <?php echo "Professors";?>
+                  <b class="arrow icon-angle-down"></b>
                 </a>
-              </li>
+
+                <ul class="submenu">
+
+                  <!-- TEACHERS SHEET -->
+    
+                  <li id="teachers_sheet_report">
+                    <a href="<?php echo base_url('/index.php/teachers/teacher_sheet'); ?>">
+                      <?php echo "Llençol de professors";?>
+                    </a>
+                  </li>
+
+                  <li id="reports_mentor_list">
+                    <a href="<?php echo base_url('/index.php/teachers/tutors_report'); ?>">
+                      <?php echo lang('reports_educational_center_reports_grup_mentors');?>
+                    </a>
+                  </li>
+
+                </ul>                  
+              </li>  
+
+              <!-- STUDENTS REPORTS -->
+              <li id="reports_educational_center">
+                <a href="#" class="dropdown-toggle">
+                  <i class="icon-double-angle-right"></i>
+
+                  <?php echo "Alumnes";?>
+                  <b class="arrow icon-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+
+                  <li id="report_class_list">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">
+                        <?php echo lang('reports_group_reports_class_list');?>
+                    </a>
+                  </li>
+
+                  <li id="report_class_sheet">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">
+                      <?php echo lang('reports_group_reports_student_sheet');?>
+                    </a>
+                  </li>
+
+                  <!-- STUDENTS MAILING LIST-->    
+                  <li id="report_mailing_list">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/mailing_list_report'); ?>">
+                      <?php echo lang('reports_educational_center_reports_student_emails');?>
+                    </a>
+                  </li>
+
+                </ul>                  
+              </li> 
 
               <!-- Assistència informes del centre -->
               <li id="reports_educational_center">
@@ -489,32 +543,20 @@
 
                 <ul class="submenu">
                   <li id="reports_center_by_d_h_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_d_h_1'); ?>">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_at_day_and_hour_report'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>
                     </a>
                   </li>
 
                   <li id="reports_center_by_id_fd_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_di_df_1'); ?>">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_day_range_report'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_date');?>
                     </a>
                   </li>
                   
                   <li id="reports_center_ranking_id_fd_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_centre_ranking_di_df_1'); ?>">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_ranking_report'); ?>">
                       <?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>
-                    </a>
-                  </li>
-
-                  <li id="reports_mentor_list">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/Llistat_grup_tutor'); ?>">
-                      <?php echo lang('reports_educational_center_reports_grup_mentors');?>
-                    </a>
-                  </li>
-
-                  <li id="report_mailing_list">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/mailing_list_report'); ?>">
-                      <?php echo lang('reports_educational_center_reports_student_emails');?>
                     </a>
                   </li>
                 </ul>
@@ -530,26 +572,15 @@
                 </a>
 
                 <ul class="submenu">
-                  <li id="report_class_list">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">
-                        <?php echo lang('reports_group_reports_class_list');?>
-                    </a>
-                  </li>
-
-                  <li id="report_class_sheet">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">
-                      <?php echo lang('reports_group_reports_student_sheet');?>
-                    </a>
-                  </li>
                   
                   <li id="report_group_incidents_by_id_fd_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_resum_grup_di_df_1'); ?>">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/attendace_incidents_classgroup_summary_report'); ?>">
                       <?php echo lang('reports_group_reports_incidents_by_date');?>
                     </a>
                   </li>
 
                   <li id="report_group_monthly">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informe_resum_grup_faltes_mes_1'); ?>">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/attendance_incidents_classroomgroup_month_summary_report'); ?>">
                       <?php echo lang('reports_group_reports_monthly_report');?>
                     </a>
                   </li>
