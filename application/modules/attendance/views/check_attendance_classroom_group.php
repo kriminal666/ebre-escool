@@ -277,10 +277,25 @@
                                <?php echo $time_slot->hour;?>
                              </span>
                              <?php if (isset ($time_slot->study_module_id)): ?>
-                              <span class="label label-purple" data-rel="tooltip" 
+                              <p>
+                               <span class="label label-purple" data-rel="tooltip" 
                                 title="<?php echo $time_slot->study_module_name . ". " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>">
-                               <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
-                              </span>
+                                <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
+                               </span>
+                              </p>
+                              <div class="btn-group">
+
+                               <?php if (is_array ($time_slot->study_submodules)): ?>  
+                                <?php foreach ( $time_slot->study_submodules as $study_submodule_key => $study_submodule): ?>
+                                 <button style="font-size: x-small;" id="<?php echo $study_submodule_key;?>"
+                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" 
+                                  title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " ( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
+                                  <?php echo $study_submodule->shortname;?>
+                                 </button> 
+                                <?php endforeach; ?>
+                               <?php endif; ?> 
+
+                              </div>
                              <?php endif; ?>                             
                         </th>  
 

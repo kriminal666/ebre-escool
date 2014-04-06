@@ -445,6 +445,8 @@ CREATE TABLE IF NOT EXISTS `study_submodules` (
   `study_submodules_study_module_id` int(11) NOT NULL,
   `study_submodules_initialDate` datetime NOT NULL,
   `study_submodules_endDate` datetime NOT NULL,
+  `study_submodules_totalHours` int(11) NOT NULL,
+  `study_submodules_order` int(11) NOT NULL,
   `study_submodules_entryDate` datetime NOT NULL,
   `study_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `study_submodules_creationUserId` int(11) DEFAULT NULL,
@@ -623,7 +625,7 @@ CREATE TABLE IF NOT EXISTS `locality` (
   `locality_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `locality_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`locality_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=478 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Bolcant dades de la taula `locality`
@@ -1723,7 +1725,7 @@ CREATE TABLE `employees` (
   `employees_id` int(11) NOT NULL AUTO_INCREMENT,
   `employees_person_id` int(11) NOT NULL,
   `employees_code` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `employees_id` int(11) NOT NULL,
+  `employees_type_id` int(11) NOT NULL,
   `employees_entryDate` datetime NOT NULL,
   `employees_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `employees_creationUserId` int(11) DEFAULT NULL,

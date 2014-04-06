@@ -236,6 +236,10 @@ class attendance_model  extends CI_Model  {
 					$time_slot->study_module_shortname = $study_module_info['shortname'];
 					$time_slot->study_module_name = $study_module_info['name'];
 
+					$study_submodules = $this->getStudySubModulesFromStudyModuleId( $time_slot->study_module_id );
+
+					$time_slot->study_submodules = $study_submodules;
+
 					$time_slot->teacher_id = $study_module_info['teacher_id'];
 					$time_slot->teacher_code = $study_module_info['teacher_code'];
 					$time_slot->teacher_name = $study_module_info['teacher_sn1'] . " " . $study_module_info['teacher_sn2'] . ", " . $study_module_info['teacher_givenName'];
@@ -251,6 +255,73 @@ class attendance_model  extends CI_Model  {
 			return false;
 		}
 	}
+
+	public function getStudySubModulesFromStudyModuleId( $study_module_id, $orderby = "ASC" ) {
+		/*
+		SELECT `study_submodules_id`, `study_submodules_shortname`, `study_submodules_name`, `study_submodules_initialDate`, `study_submodules_endDate`, `study_submodules_totalHours`
+		FROM `study_submodules` 
+		INNER JOIN study_module
+		ON `study_module_id` = `study_submodules_study_module_id`
+		WHERE `study_module_id`=273
+		*/
+
+		$this->db->select("study_submodules_id, study_submodules_shortname, study_submodules_name, study_submodules_initialDate, study_submodules_endDate, study_submodules_totalHours");
+		$this->db->from('study_submodules');
+		$this->db->join('study_module','study_module_id = study_submodules_study_module_id');
+		
+		$this->db->where('study_module.study_module_id', $study_module_id);
+		$this->db->order_by('study_submodules_order',$orderby);
+		$this->db->order_by('study_submodules_shortname',$orderby);
+
+		$this->db->distinct();
+		$query = $this->db->get();
+
+		//echo "query:" . $this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+			
+			$study_submodules = array();
+
+			$results_array = $query->result_array();
+			if ( is_array($results_array) ) {
+				foreach ( $results_array as $row)	{
+					$study_submodule = new stdClass();
+
+					$study_submodule->shortname = $row['study_submodules_shortname'];
+					$study_submodule->name = $row['study_submodules_name'];
+
+					$startdate = date_format(new DateTime($row['study_submodules_initialDate']),"d/m/Y");
+					$finaldate = date_format(new DateTime($row['study_submodules_endDate']),"d/m/Y");
+
+					$study_submodule->startdate = $startdate;
+					$study_submodule->finaldate = $finaldate;
+					$study_submodule->totalHours = $row['study_submodules_totalHours'];
+
+					$study_submodule->active = $this->check_in_range($startdate, $finaldate, now());
+					echo "<br/><br/>startdate: " . $startdate ;
+					echo "<br/><br/>finaldate: " . $finaldate ;
+					echo "<br/>$finaldate: " . $study_submodule->active ;
+					
+					$study_submodules[$row['study_submodules_id']] = $study_submodule;
+				}	
+			}
+			
+			return $study_submodules;
+		}			
+		else {
+			return false;
+		}
+	}
+
+	private function check_in_range($start_date, $end_date, $date_from_user) {
+  		// Convert to timestamp
+  		$start_ts = strtotime($start_date);
+  		$end_ts = strtotime($end_date);
+  		$user_ts = strtotime($date_from_user);
+
+  		// Check that user date is between start & end
+  		return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
+}
 
 	public function getTimeSlotsByStudyModuleId($classgroup_id) {
 		/*

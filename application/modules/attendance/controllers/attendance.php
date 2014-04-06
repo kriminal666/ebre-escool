@@ -596,7 +596,7 @@ class attendance extends skeleton_main {
         
 	    #Obtain class_room_groups
 	    $data['classroom_groups']=array();
-	    
+
 	    if ($user_is_admin) {
 	    	//Get all classroom_groups
 	    	$data['classroom_groups']= $this->attendance_model->get_all_groupscodenameByDeparment($teacher_department_id);
@@ -734,8 +734,6 @@ class attendance extends skeleton_main {
 	    	$current_teacher_study_modules = $this->attendance_model->getAllTeacherStudymodules( $teacher_id );
 			$data['study_modules'] = $current_teacher_study_modules;
 	    }
-
-	    
 
 	    $data['time_slots']=array();
 

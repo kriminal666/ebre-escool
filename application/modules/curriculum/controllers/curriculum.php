@@ -644,6 +644,10 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_study_module_id',lang($this->current_table.'_study_module_id'));        
+        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
+        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));
+        $this->grocery_crud->display_as($this->current_table.'_totalHours',lang($this->current_table.'_totalHours'));
+        $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({nom_grup} - {study_module_name})');
