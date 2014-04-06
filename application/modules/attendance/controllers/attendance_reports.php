@@ -23,8 +23,8 @@ class attendance_reports extends skeleton_main {
 
         // Load FPDF        
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
-        $this->load->library('pdf'); // Load library
-		$this->pdf->fontpath = 'font/'; // Specify font folder
+        $params = array ('orientation' => 'P', 'unit' => 'mm', 'size' => 'A4', 'font_path' => 'font/');        
+        $this->load->library('pdf',$params); // Load library
 
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -317,6 +317,7 @@ class attendance_reports extends skeleton_main {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
+
         
         $default_group_code = $this->config->item('default_group_code');
         $group_code=$default_group_code;
@@ -362,8 +363,11 @@ class attendance_reports extends skeleton_main {
 /**/
         //$this->load_header();  
         //$this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
+
         $this->load->view('attendance_reports/Llistat_grup_tutor.php',$data);     
+
         $this->load_footer();     
+
     }     
 
     function mailing_list_report() {

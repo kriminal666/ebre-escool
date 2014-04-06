@@ -463,6 +463,14 @@
               <b class="arrow icon-angle-down"></b>
             </a>
             <ul class="submenu">
+              <!-- Espais -->
+              <li id="teachers_sheet_report">
+                <a href="<?php echo base_url('/index.php/reports/teacher_sheet'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo "Llençol de professors";?>
+                </a>
+              </li>
+
               <!-- Assistència informes del centre -->
               <li id="reports_educational_center">
                 <a href="#" class="dropdown-toggle">
