@@ -2,7 +2,6 @@
 
 include "application/third_party/skeleton/application/controllers/skeleton_main.php";
 
-
 class attendance_reports extends skeleton_main {
 
     public $body_header_view ='include/ebre_escool_body_header.php' ;
@@ -32,11 +31,9 @@ class attendance_reports extends skeleton_main {
         if ($current_language == "") {
             $current_language= $this->config->item('default_language');
         }
-        
 
         $this->lang->load('ebre_escool_ldap', $current_language);
         $this->lang->load('attendance',$current_language);        
-
         
         //LANGUAGE HELPER:
         $this->load->helper('language');
@@ -392,64 +389,6 @@ class attendance_reports extends skeleton_main {
         $active_menu['submenu1']='#report_group';
         $active_menu['submenu2']='#report_class_list';
 
-/*
-        $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
-                                "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
-                                "1ASIX-DAM" => "1ASIX-DAM - *1r Inform. superior (S)L - CF",
-                                "1DIE" => "1DIE - 1r Diet - CF",
-                                "1EE" => "1EE - *1r Efic. Energ.(S) L - CF",
-                                "1EIN" => "1EIN - *1r Educaci - CF",
-                                "1ES" => "1ES - *1r Emerg. Sanit.(M)L - CF",
-                                "1FAR" => "1FAR - *1r Farm - CF",
-                                "1GAD" => "1GAD - *Gesti - CF",
-                                "1IEA" => "1IEA - *1r Ins.Elec. Autom(M)L - CF",
-                                "1IME" => "1IME - *1r Ins. Mant. Elec.(M) - CF",
-                                "1INS A" => "1INS A - *1r Int.Soc.(S)L - CF",
-                                "1INS B" => "1INS B - 1r Int. Soc.(S)L - CF",
-                                "1LDC" => "1LDC - *1r Lab. Diagnosi C (S). - CF",
-                                "1MEC" => "1MEC - *1r Mecanitzaci - CF",
-                                "1PM" => "1PM - *1r Prod. Mecanitza(S)L. - CF",
-                                "1PRO" => "1PRO - *1r D. A. Projec. C (S) L - CF",
-                                "1PRP" => "1PRP - 1r Prev. Riscos Prof.(S) - CF",
-                                "1SEA" => "1SEA - i automa (S) - CF",
-                                "1SMX A" => "1SMX A - *1r Inform Mitj - CF",
-                                "1SMX B" => "1SMX B - *1r Inform. mitj - CF",
-                                "1STI" => "1STI - 1r Sis. Teleco. Infor (S) - CF",
-                                "2AF" => "2AF - 2n Ad. Finan (S) - CF",
-                                "2APD" => "2APD - 2n Atenc. Persones Dep.M) - CF",
-                                "2ASIX" => "2ASIX - 2n Adm Sist Inf xarxa(S)L - CF",
-                                "2DAM" => "2DAM - 2n Desenv Aplic Mult (S)L - CF",
-                                "2DIE" => "2DIE - 2n Diet - CF",
-                                "2EE" => "2EE - 2 Efic.Energ.(S) L - CF",
-                                "2EIN" => "2EIN - 2n Educaci - CF",
-                                "2ES" => "2ES - 2n Emerg. Sanit.(M) - CF",
-                                "2FAR" => "2FAR - 2n Farm - CF",
-                                "2GAD" => "2GAD - 2n Gest. Adm. (M)L - CF",
-                                "2IEA" => "2IEA - *2n Ins.Elec,Autom(M)L - CF",
-                                "2IME" => "2IME - 2n Ins. Mant. Elec.(M) - CF",
-                                "2INS A" => "2INS A - 2n Integraci - CF",
-                                "2INS B" => "2INS B - 2n Integraci - CF",
-                                "2LDC" => "2LDC - 2n Lab. Diagnosi C(S) - CF",
-                                "2MEC" => "2MEC - 2n Mecanitzaci - CF",
-                                "2PM" => "2PM - *2n Prod. Mecanitza.(S) L - CF",
-                                "2PRO" => "2PRO - 2n D. A. Projec. C (S) - CF",
-                                "2PRP" => "2PRP - 2n Prev. Riscos Prof.(S) - CF",
-                                "2SEA" => "2SEA - *2n Sist. Electri i automa (S) - CF",
-                                "2SIC" => "2SIC - 2n Soldadura i caldereria (M)  - CF",
-                                "2SMX" => "2SMX - 2n Inform. Mitj - CF",
-                                "2STI" => "2STI - 2n Sis. teleco. Infor (S) - CF",
-                                "CAIA" => "CAIA - *Cures Auxiliar Inf(M) - CF",
-                                "CAIB" => "CAIB - *Cures Auxiliar Inf(M) - CF",
-                                "CAIC" => "CAIC - Cures Auxiliar Inf(M) - CF",
-                                "CAM" => "CAM - *Curs Acc - CF",
-                                "CAS A" => "CAS A - *Curs Acc - CF",
-                                "CAS B" => "CAS B - *Curs Acc - CF",
-                                "CAS C" => "CAS C - Curs Acc - CF",
-                                "COM" => "COM - *Comer - CF",
-                                "GCM" => "GCM - Ges. Comer. Mar.(S) - CF",
-                                "SE" => "SE - Secretariat (S) - CF"
-            );
-*/
         $data['title']=lang('reports_group_reports_class_list');
         
         $this->load_datatables_data($active_menu);
@@ -465,7 +404,9 @@ class attendance_reports extends skeleton_main {
         $data['grups'] = $grups;
 
         $default_group_code = $this->config->item('default_group_code');
+        $default_group_id = $this->config->item('default_group_id');
         $group_code=$default_group_code;
+        $data['group_code']=$group_code;
 
         $organization = $this->config->item('organization','skeleton_auth');
 
@@ -474,12 +415,8 @@ class attendance_reports extends skeleton_main {
         //Load CSS & JS
         //$this->set_header_data();
         $all_groups = $this->attendance_model->get_all_classroom_groups();
-
-        $data['group_code']=$group_code;
-
-       // $data['all_groups']=$all_groups->result();
-
         $data['all_groups']=$all_groups->result();
+        
         $data['photo'] = false;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
@@ -487,11 +424,9 @@ class attendance_reports extends skeleton_main {
                 $data['photo'] = true;
             }
         }   else {
-            $data['selected_group']=$default_group_code;
+            $data['selected_group']=$default_group_id;
         }
-       // echo $data['selected_group'];
-       // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
-       // $default_group_dn=$students_base_dn;
+
         if ($data['selected_group']!="ALL_GROUPS")
             $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
         
@@ -499,20 +434,56 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-  
-        $estudiants_grup = $this->attendance_model->getAllGroupStudentInfo($data['selected_group']);
-        $data['all_students_in_group'] = $estudiants_grup;
-        //print_r($estudiants_grup);
-      /* $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);*/
+
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+/*  
+        $data['classroom_group_students'] = array ();
+        $base_photo_url = "uploads/person_photos";
+
         //Total Alumnes
-        $data['count_alumnes'] = count($data['all_students_in_group']);
-        //$data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
+        $data['count_alumnes'] = count($all_students_in_group);
+*/
+
+        //print_r($all_students_in_group);
+
+/* Student Object */
+
+        $data['classroom_group_students'] = array ();
+        $base_photo_url = "uploads/person_photos";
+        
+        foreach($all_students_in_group as $student) {
+
+            $studentObject = new stdClass;
+            
+            $studentObject->person_id = $student->person_id;
+            $studentObject->givenName = $student->givenName;
+            $studentObject->sn1 = $student->sn1;
+            $studentObject->sn2 = $student->sn2;
+            $studentObject->username = $student->username;
+            $studentObject->email = $student->email;
+            
+            //TODO: get incident notes!
+            $studentObject->notes = "nota";
+
+            if ($student->photo_url != "") {
+                $student->photo_url = $base_photo_url."/".$student->photo_url;  
+            }   else {
+                $studentObject->photo_url = '/assets/img/alumnes/foto.png';             
+            }
+            
+
+            $data['classroom_group_students'][]=$student;
+        }
+
+        //Total d'alumnes
+        $data['count_alumnes'] = count($all_students_in_group);
 
 //      $this->load_header();  
 
         if(!$_POST){
             $this->load->view('attendance_reports/class_list_report.php', $data); 
         } else {
+            //$this->load->view('attendance_reports/class_list_report.php', $data); 
             $this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
         } 
         
@@ -527,65 +498,7 @@ class attendance_reports extends skeleton_main {
         $active_menu['submenu2']='#report_class_sheet';
 
         $data['title'] = lang('reports_group_reports_student_sheet');
-/*
-        $data['grups'] = array( "1AF" => "1AF - *1r Adm.Finan (S) - CF",
-                                "1APD" => "1APD - *1r Atenc. Persones Dep.M) - CF",
-                                "1ASIX-DAM" => "1ASIX-DAM - *1r Inform. superior (S)L - CF",
-                                "1DIE" => "1DIE - 1r Diet - CF",
-                                "1EE" => "1EE - *1r Efic. Energ.(S) L - CF",
-                                "1EIN" => "1EIN - *1r Educaci - CF",
-                                "1ES" => "1ES - *1r Emerg. Sanit.(M)L - CF",
-                                "1FAR" => "1FAR - *1r Farm - CF",
-                                "1GAD" => "1GAD - *Gesti - CF",
-                                "1IEA" => "1IEA - *1r Ins.Elec. Autom(M)L - CF",
-                                "1IME" => "1IME - *1r Ins. Mant. Elec.(M) - CF",
-                                "1INS A" => "1INS A - *1r Int.Soc.(S)L - CF",
-                                "1INS B" => "1INS B - 1r Int. Soc.(S)L - CF",
-                                "1LDC" => "1LDC - *1r Lab. Diagnosi C (S). - CF",
-                                "1MEC" => "1MEC - *1r Mecanitzaci - CF",
-                                "1PM" => "1PM - *1r Prod. Mecanitza(S)L. - CF",
-                                "1PRO" => "1PRO - *1r D. A. Projec. C (S) L - CF",
-                                "1PRP" => "1PRP - 1r Prev. Riscos Prof.(S) - CF",
-                                "1SEA" => "1SEA - i automa (S) - CF",
-                                "1SMX A" => "1SMX A - *1r Inform Mitj - CF",
-                                "1SMX B" => "1SMX B - *1r Inform. mitj - CF",
-                                "1STI" => "1STI - 1r Sis. Teleco. Infor (S) - CF",
-                                "2AF" => "2AF - 2n Ad. Finan (S) - CF",
-                                "2APD" => "2APD - 2n Atenc. Persones Dep.M) - CF",
-                                "2ASIX" => "2ASIX - 2n Adm Sist Inf xarxa(S)L - CF",
-                                "2DAM" => "2DAM - 2n Desenv Aplic Mult (S)L - CF",
-                                "2DIE" => "2DIE - 2n Diet - CF",
-                                "2EE" => "2EE - 2 Efic.Energ.(S) L - CF",
-                                "2EIN" => "2EIN - 2n Educaci - CF",
-                                "2ES" => "2ES - 2n Emerg. Sanit.(M) - CF",
-                                "2FAR" => "2FAR - 2n Farm - CF",
-                                "2GAD" => "2GAD - 2n Gest. Adm. (M)L - CF",
-                                "2IEA" => "2IEA - *2n Ins.Elec,Autom(M)L - CF",
-                                "2IME" => "2IME - 2n Ins. Mant. Elec.(M) - CF",
-                                "2INS A" => "2INS A - 2n Integraci - CF",
-                                "2INS B" => "2INS B - 2n Integraci - CF",
-                                "2LDC" => "2LDC - 2n Lab. Diagnosi C(S) - CF",
-                                "2MEC" => "2MEC - 2n Mecanitzaci - CF",
-                                "2PM" => "2PM - *2n Prod. Mecanitza.(S) L - CF",
-                                "2PRO" => "2PRO - 2n D. A. Projec. C (S) - CF",
-                                "2PRP" => "2PRP - 2n Prev. Riscos Prof.(S) - CF",
-                                "2SEA" => "2SEA - *2n Sist. Electri i automa (S) - CF",
-                                "2SIC" => "2SIC - 2n Soldadura i caldereria (M)  - CF",
-                                "2SMX" => "2SMX - 2n Inform. Mitj - CF",
-                                "2STI" => "2STI - 2n Sis. teleco. Infor (S) - CF",
-                                "CAIA" => "CAIA - *Cures Auxiliar Inf(M) - CF",
-                                "CAIB" => "CAIB - *Cures Auxiliar Inf(M) - CF",
-                                "CAIC" => "CAIC - Cures Auxiliar Inf(M) - CF",
-                                "CAM" => "CAM - *Curs Acc - CF",
-                                "CAS A" => "CAS A - *Curs Acc - CF",
-                                "CAS B" => "CAS B - *Curs Acc - CF",
-                                "CAS C" => "CAS C - Curs Acc - CF",
-                                "COM" => "COM - *Comer - CF",
-                                "GCM" => "GCM - Ges. Comer. Mar.(S) - CF",
-                                "SE" => "SE - Secretariat (S) - CF"
-            );
 
-*/
         $this->load_datatables_data($active_menu);
 
         if (!$this->skeleton_auth->logged_in())
@@ -596,10 +509,13 @@ class attendance_reports extends skeleton_main {
 
         // Get All groups
         $grups = $this->attendance_model->get_all_groups();
+        //print_r($grups);
         $data['grups'] = $grups;
         
         $default_group_code = $this->config->item('default_group_code');
+        $default_group_id = $this->config->item('default_group_id');
         $group_code=$default_group_code;
+        $data['group_code']=$group_code;
 
         $organization = $this->config->item('organization','skeleton_auth');
 
@@ -608,52 +524,67 @@ class attendance_reports extends skeleton_main {
         //Load CSS & JS
         //$this->set_header_data();
         $all_groups = $this->attendance_model->get_all_classroom_groups();
-
-        $data['group_code']=$group_code;
-
         $data['all_groups']=$all_groups->result();
-
-        $dada['photo'] = true;
+        //$data['photo'] = true;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
         }   else {
-            $data['selected_group']=$default_group_code;
+            $data['selected_group']=$default_group_id;
         }
 
-       // echo $data['selected_group'];
-       // $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
-       // $default_group_dn=$students_base_dn;
+//echo $data['selected_group'];
+
+        $students_base_dn= $this->config->item('students_base_dn','skeleton_auth');
+        $default_group_dn=$students_base_dn;
 
         if ($data['selected_group']!="ALL_GROUPS")
             $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
-        
+        //echo $default_group_dn;
         if ($data['selected_group']=="ALL_GROUPS")
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
   
-        $estudiants_grup = $this->attendance_model->getAllGroupStudentInfo($data['selected_group']);
+        //$estudiants_grup = $this->attendance_model->getAllGroupStudentInfo($data['selected_group']);
+        //$data['all_students_in_group'] = $estudiants_grup;
+        //$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        //$data['all_students_in_group']= $this->attendance_model->getAllGroupStudentsInfo(11);
+         
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
 
-        $data['all_students_in_group'] = $estudiants_grup;
+        //print_r($all_students_in_group);
 
-        /*
-        if ($data['selected_group']!="ALL_GROUPS")
-            $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
+/* Student Object */
+
+        $data['classroom_group_students'] = array ();
+        $base_photo_url = "uploads/person_photos";
         
-        if ($data['selected_group']=="ALL_GROUPS")
-            $data['selected_group_names']= array (lang("all_tstudents"),"");
-        else
-            $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-        
-       $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-       */
+        foreach($all_students_in_group as $student) {
 
-        //$data['all_students']= $this->ebre_escool_ldap->getAllGroupStudentsInfo("ou=Alumnes,ou=All,dc=iesebre,dc=com");
+            $studentObject = new stdClass;
+            
+            $studentObject->person_id = $student->person_id;
+            $studentObject->givenName = $student->givenName;
+            $studentObject->sn1 = $student->sn1;
+            $studentObject->sn2 = $student->sn2;
+            $studentObject->username = $student->username;
+            $studentObject->email = $student->email;
+            
+            //TODO: get incident notes!
+            $studentObject->notes = "nota";
+
+            if ($student->photo_url != "") {
+                $student->photo_url = $base_photo_url."/".$student->photo_url;  
+            }   else {
+                $studentObject->photo_url = '/assets/img/alumnes/foto.png';             
+            }
+            
+
+            $data['classroom_group_students'][]=$student;
+        }
+
         //Total d'alumnes
-        $data['count_alumnes'] = count($data['all_students_in_group']);
-        //$data['empleat']= $this->ebre_escool_ldap->getEmailAndPhotoData("ou=Profes,ou=All,dc=iesebre,dc=com");
-
-/**/
+        $data['count_alumnes'] = count($all_students_in_group);
 
 
         //$this->load_header();

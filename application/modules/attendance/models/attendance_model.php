@@ -453,11 +453,11 @@ WHERE classroom_group.classroom_group_id = 3
 ORDER BY person.person_sn1
 */
 
-		$this->db->select('classroom_group_code,person_givenName,person_sn1,person_sn2,person_official_id,person_photo');
+		$this->db->select('classroom_group_id,person_givenName,person_sn1,person_sn2,person_official_id,person_photo');
 		$this->db->from('enrollment_modules');
 		$this->db->join('person','person.person_id = enrollment_modules.enrollment_modules_personid');
 		$this->db->join('classroom_group','enrollment_modules.enrollment_modules_group_id = classroom_group.classroom_group_id');
-		$this->db->where('classroom_group.classroom_group_code',$group);
+		$this->db->where('classroom_group.classroom_group_id',$group);
 		$this->db->order_by('person_sn1');
 		$this->db->distinct();
 		$query = $this->db->get();
@@ -501,8 +501,8 @@ ORDER BY person.person_sn1
 			$groups_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				//$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
-   				$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
+   				//$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
 			}
 			return $groups_array;
 		}			
@@ -1153,7 +1153,7 @@ ORDER BY person.person_sn1
 		else
 			return false;
 	}
-	
+
 	function getGroupShortNameByGroupCode($group_code) {
 		//classroom_group
 		$this->db->select('classroom_group_shortName');
