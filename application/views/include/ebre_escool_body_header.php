@@ -455,6 +455,27 @@
 
             </ul>
           </li>
+
+          <!-- Matrícula -->
+          <li id="enrrollment">
+            <a href="#" class="dropdown-toggle">
+              <i class="icon-calendar"></i>
+              <span class="menu-text"> <?php echo lang('enrollment');?> </span>
+              <b class="arrow icon-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+              <!-- els meus horaris -->
+              <li id="mytimetables">
+                <a href="<?php echo base_url('/index.php/wizard'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment');?>
+                </a>
+              </li>
+            </ul>
+          </li>
+          
+
           <!-- INFORMES -->
           <li id="reports">
             <a href="#" class="dropdown-toggle">
@@ -531,6 +552,42 @@
 
                 </ul>                  
               </li> 
+
+              <!-- STUDENTS REPORTS -->
+              <li id="curriculum_reports">
+                <a href="#" class="dropdown-toggle">
+                  <i class="icon-double-angle-right"></i>
+
+                  <?php echo "Currículum";?>
+                  <b class="arrow icon-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+
+                  <li id="curriculum_reports_statistics_checkings_groups">
+                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">
+                        Grups de classe
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_users_in_group">
+                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/users_in_group">
+                      Usuaris per grup de classe
+                    </a>
+                  </li>
+
+                  <!-- STUDENTS MAILING LIST-->    
+                  <li id="curriculum_reports_lessons">
+                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/lessons">
+                      Lliçons
+                    </a>
+                  </li>
+
+                </ul>                  
+              </li> 
+
+
+              
 
               <!-- Assistència informes del centre -->
               <li id="reports_educational_center">
@@ -733,9 +790,9 @@
                     </a>
                   </li>
                   
-                  <li id="TODO">
-                    <a href="#">
-                       <?php echo "TODO"?>
+                  <li id="attendance_incidents_managment">
+                    <a href="<?php echo base_url('/index.php/attendance/attendance_incidents_managment'); ?>">
+                       <?php echo "Incidències"?>
                     </a>
                   </li> 
                 </ul>
@@ -858,6 +915,15 @@
                   Grups
                 </a>
               </li>
+
+              <li id="managment_massive_change_password">
+                <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/massive_change_password">
+                  <i class="icon-double-angle-right"></i>
+                  Canvi massiu de paraules de pas
+                </a>
+              </li>
+
+              
 
               <li id="managment_preferences">
                 <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
