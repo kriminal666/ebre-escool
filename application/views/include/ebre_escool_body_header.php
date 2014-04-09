@@ -500,7 +500,7 @@
               </li>  
 
               <!-- STUDENTS REPORTS -->
-              <li id="reports_educational_center">
+              <li id="students_reports">
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
 
