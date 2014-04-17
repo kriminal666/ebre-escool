@@ -297,11 +297,8 @@ class attendance_model  extends CI_Model  {
 					$study_submodule->finaldate = $finaldate;
 					$study_submodule->totalHours = $row['study_submodules_totalHours'];
 
-					$study_submodule->active = $this->check_in_range($startdate, $finaldate, now());
-					echo "<br/><br/>startdate: " . $startdate ;
-					echo "<br/><br/>finaldate: " . $finaldate ;
-					echo "<br/>$finaldate: " . $study_submodule->active ;
-					
+					$study_submodule->active = $this->check_in_range($row['study_submodules_initialDate'], $row['study_submodules_endDate'], now());
+
 					$study_submodules[$row['study_submodules_id']] = $study_submodule;
 				}	
 			}
@@ -314,10 +311,11 @@ class attendance_model  extends CI_Model  {
 	}
 
 	private function check_in_range($start_date, $end_date, $date_from_user) {
-  		// Convert to timestamp
+
+		// Convert to timestamp
   		$start_ts = strtotime($start_date);
   		$end_ts = strtotime($end_date);
-  		$user_ts = strtotime($date_from_user);
+  		$user_ts = $date_from_user;
 
   		// Check that user date is between start & end
   		return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));

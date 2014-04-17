@@ -307,7 +307,7 @@ class attendance_reports extends skeleton_main {
 
         $active_menu = array();
         $active_menu['menu']='#reports';
-        $active_menu['submenu1']='#reports_educational_center';
+        $active_menu['submenu1']='#students_reports';
         $active_menu['submenu2']='#report_mailing_list';
 
         $this->load_header($active_menu);    
@@ -323,7 +323,7 @@ class attendance_reports extends skeleton_main {
 
         $active_menu = array();
         $active_menu['menu']='#reports';
-        $active_menu['submenu1']='#report_group';
+        $active_menu['submenu1']='#students_reports';
         $active_menu['submenu2']='#report_class_list';
 
         $data['title']=lang('reports_group_reports_class_list');
@@ -354,11 +354,11 @@ class attendance_reports extends skeleton_main {
         $all_groups = $this->attendance_model->get_all_classroom_groups();
         $data['all_groups']=$all_groups->result();
         
-        $data['photo'] = false;
+        $photo = false;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
             if (isset($_POST['foto'])){
-                $data['photo'] = true;
+                $photo= true;
             }
         }   else {
             $data['selected_group']=$default_group_id;
@@ -385,7 +385,7 @@ class attendance_reports extends skeleton_main {
 
 /* Student Object */
 
-        $data['classroom_group_students'] = array ();
+        $classroom_group_students = array ();
         $base_photo_url = "uploads/person_photos";
         
         foreach($all_students_in_group as $student) {
@@ -409,11 +409,11 @@ class attendance_reports extends skeleton_main {
             }
             
 
-            $data['classroom_group_students'][]=$student;
+            $classroom_group_students[]=$student;
         }
 
         //Total d'alumnes
-        $data['count_alumnes'] = count($all_students_in_group);
+        $count_alumnes = count($all_students_in_group);
 
 //      $this->load_header();  
 
@@ -421,7 +421,150 @@ class attendance_reports extends skeleton_main {
             $this->load->view('attendance_reports/class_list_report.php', $data); 
         } else {
             //$this->load->view('attendance_reports/class_list_report.php', $data); 
-            $this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
+            //$this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
+            $number_returned = $count_alumnes;
+            $codi_grup = $group_code;
+            $contador=0;
+            $alumne =array();
+
+            foreach($classroom_group_students as $student){
+
+            $jpeg_data_size = @filesize($student->photo_url);
+
+            if (!file_exists($student->photo_url))
+            {
+                $student->photo_url='assets/img/alumnes/foto.png';
+                if ($jpeg_data_size < 6)
+                {
+                    $student->photo_url='assets/img/alumnes/foto.png';
+                }
+            } else {
+                if( $jpeg_data_size < 6 )
+                {
+                    $student->photo_url='assets/img/alumnes/foto.png';
+                    //echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";   
+                }
+            }
+
+            $alumne[$contador]['jpegPhoto']=$student->photo_url;
+            $alumne[$contador]['givenName']=$student->givenName;
+            $alumne[$contador]['sn1']=$student->sn1;
+            $alumne[$contador]['sn2']=$student->sn2;
+
+            $contador++;
+            }
+
+            /*
+            foreach($all_students_in_group as $student){
+
+            if($photo){
+                // Detectar tipus d'imatge (PNG o JPG) 
+                
+                //$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
+                $imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
+                $type = pathinfo(base_url("/assets/img/alumnes")."/".$student->jpegPhoto, PATHINFO_EXTENSION);
+                $extensio = ".".$type;
+
+                //$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
+                $jpeg_filename=base_url("/assets/img/alumnes")."/".$student->jpegPhoto;
+                $jpeg_file[$contador]=$student->jpegPhoto;
+                $alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
+                $outjpeg = fopen($jpeg_filename, "rb");
+                fwrite($outjpeg, $student->jpegPhoto);
+                fclose ($outjpeg);
+                $jpeg_data_size = filesize( $imagedata );
+
+                if( $jpeg_data_size < 6 ) {
+                    $jpeg_file[$contador]=$student->jpegPhoto;
+                    $alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
+                }
+
+            }
+            //print_r($student);
+            $alumne[$contador]['givenName']=$student->givenName;
+            $alumne[$contador]['sn1']=$student->sn1;
+            $alumne[$contador]['sn2']=$student->sn2;
+
+            $contador++;
+            }
+            */
+            //$contador = 1;
+            /*
+            echo "<pre>";
+            print_r($alumne);
+            echo "</pre>";
+            */
+            //Crido la classe
+            $pdf = new FPDF('P', 'mm', 'A4','font/');
+            //Defineixo els marges
+            $pdf->SetMargins(10,10,10);
+            //Obro una pàgina
+            $pdf->AddPage();
+            //$pdf->AddPage("P","A3");
+            //Es la posicio exacta on comença a escriure
+            $x=7;//10
+            $y=15;//24
+            $pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+            //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
+            $pdf->SetFont('Arial','',10);
+            //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
+            $pdf->SetXY(10,10);
+            $any_comencament = 2013;
+            $any_finalitzacio = 2014;
+            $date = date('d-m-Y');
+            $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
+            $pdf->ln();
+            $pdf->Cell(190,6,"Data: ".$date,0,0,'R');
+            $pdf->ln();
+            $pdf->Cell(190,6,utf8_decode("Pàgina: ".$pdf->PageNo()),0,0,'R');
+            $pdf->ln();
+            $pdf->SetFont('Arial','B',10);
+            $pdf->Cell(190,6,"Llistat Alumnes Grup: ".utf8_decode($codi_grup." (".$codi_grup.")"),0,0,'C');
+
+            /**/
+            $pdf->SetFillColor(150,150,150);
+            $fill=true;
+            //Salt de línia
+            $pdf->Ln(7);
+            $pdf->SetFont('Arial','',8);
+
+            $pdf->Cell(10,8,utf8_decode("Núm."),1,0,'C',$fill);
+            if($photo){
+                $pdf->Cell(8,8,utf8_decode("Foto"),1,0,'L',$fill);
+                $pdf->Cell(70,8,utf8_decode("Alumne/a"),1,0,'L',$fill);
+                $pdf->Cell(100,8,utf8_decode("Observacions"),1,0,'C',$fill);    
+            } else {
+                $pdf->Cell(70,8,utf8_decode("Alumne/a"),1,0,'L',$fill);
+                $pdf->Cell(110,8,utf8_decode("Observacions"),1,0,'C',$fill);
+            }
+            $pdf->Ln();
+
+            //Dades
+            $pdf->SetFillColor(219,219,219);
+            $fill=false;
+            $pdf->SetFont('Arial','',8);
+            //recorrem la matriu de dades i imprimim cada camp en una casella
+            $x=0;
+            for($t=0;$t<$number_returned;$t++){
+
+                $pdf->Cell(10,8,utf8_decode($t+1),1,0,'C',$fill);
+                if($photo){
+                    $pdf->Cell(8,8,$pdf->Image($alumne[$t]['jpegPhoto'],$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);  
+                    //$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
+                    $pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);        
+                } else {    
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
+                    $pdf->Cell(110,8,utf8_decode(""),1,0,'C',$fill);
+                }   
+                //$fill=!$fill;
+                $pdf->Ln();
+            }
+            //enviem tot al pdf
+            $today = date('Y_m_d');   
+            //$pdf->Output();
+            $pdf->Output($today."_".$codi_grup.".pdf","I");
+
         } 
         
         $this->load_footer();      
@@ -431,7 +574,7 @@ class attendance_reports extends skeleton_main {
 
         $active_menu = array();
         $active_menu['menu']='#reports';
-        $active_menu['submenu1']='#report_group';
+        $active_menu['submenu1']='#students_reports';
         $active_menu['submenu2']='#report_class_sheet';
 
         $data['title'] = lang('reports_group_reports_student_sheet');
@@ -493,7 +636,7 @@ class attendance_reports extends skeleton_main {
 
 /* Student Object */
 
-        $data['classroom_group_students'] = array ();
+        $classroom_group_students = array ();
         $base_photo_url = "uploads/person_photos";
         
         foreach($all_students_in_group as $student) {
@@ -517,18 +660,214 @@ class attendance_reports extends skeleton_main {
             }
             
 
-            $data['classroom_group_students'][]=$student;
+            $classroom_group_students[]=$student;
         }
 
         //Total d'alumnes
-        $data['count_alumnes'] = count($all_students_in_group);
+        $count_alumnes = count($all_students_in_group);
 
 
         //$this->load_header();
         if(!$_POST){
             $this->load->view('attendance_reports/class_sheet_report.php', $data); 
         } else {
-            $this->load->view('attendance_reports/class_sheet_report_pdf.php', $data); 
+            
+
+
+            $number_returned = $count_alumnes;
+            $codi_grup = $group_code;
+            $contador=0;
+            $alumne =array();
+
+            foreach($classroom_group_students as $student){
+
+            $jpeg_data_size = @filesize($student->photo_url);
+
+            if (!file_exists($student->photo_url))
+            {
+                $student->photo_url='assets/img/alumnes/foto.png';
+                if ($jpeg_data_size < 6)
+                {
+                    $student->photo_url='assets/img/alumnes/foto.png';
+                }
+            } else {
+                if( $jpeg_data_size < 6 )
+                {
+                    $student->photo_url='assets/img/alumnes/foto.png';
+                    //echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";   
+                }
+            }
+
+            //echo "File: ".($student->photo_url)."<br />";
+            //$jpeg_data_size = filesize($student->photo_url);
+            //echo "Size: ".$jpeg_data_size."<br />";
+            /*
+            if( $jpeg_data_size < 6 )
+            {
+                $student->photo_url='assets/img/alumnes/foto.png';
+                //echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";   
+            } else {
+                //echo "<img src='".base_url($student->photo_url)."' /><br />";
+            }
+            */
+            /* Anterior
+
+            $outjpeg = fopen($jpeg_filename, "wb");
+            fwrite($outjpeg, $student->jpegPhoto);
+            fclose ($outjpeg);
+            $jpeg_data_size = filesize( $jpeg_filename );
+
+            */
+
+            /* Detectar tipus d'imatge (PNG o JPG) */
+            /*  
+                $imagedata = file_get_contents(base_url($student->photo_url));
+                $type = pathinfo(base_url($student->photo_url), PATHINFO_EXTENSION);
+                $extensio = ".".$type;
+
+                $jpeg_filename=base_url($student->photo_url);
+
+                $jpeg_file[$contador]=base_url($student->photo_url);
+                $alumne[$contador]['jpegPhoto']=base_url($student->photo_url);
+
+                $jpeg_data_size = filesize( $imagedata );
+
+                $outjpeg = fopen($jpeg_filename, "wb");
+
+                fwrite($outjpeg, $student->photo_url);
+                fclose ($outjpeg);
+
+            echo $alumne[$contador]['jpegPhoto'];
+
+            echo "Data Size: ".$jpeg_data_size;
+
+                if( $jpeg_data_size < 6 ) {
+                    echo "La imatge no existeix o te un format incorrecte";
+                    $jpeg_filename=base_url('/assets/img/alumnes/foto.png');
+                    $jpeg_file[$contador]=base_url('/assets/img/alumnes/foto.png');
+                    $alumne[$contador]['jpegPhoto']=$student->photo_url;
+                }
+            */
+
+            $alumne[$contador]['jpegPhoto']=$student->photo_url;
+            $alumne[$contador]['givenName']=$student->givenName;
+            $alumne[$contador]['sn1']=$student->sn1;
+            $alumne[$contador]['sn2']=$student->sn2;
+
+            $contador++;
+            }
+
+            //Crido la classe
+            $pdf = new FPDF('P', 'mm', 'A4','font/');
+            //Defineixo els marges
+            $pdf->SetMargins(10,10,10);
+            //Obro una pàgina
+            $pdf->AddPage();
+            //$pdf->AddPage("P","A3");
+            //Es la posicio exacta on comença a escriure
+            $x=7;//10
+            $y=15;//24
+            $pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+            //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
+            $pdf->SetFont('Arial','',10);
+            //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
+            $pdf->SetXY(10,10);
+            $any_comencament = 2013;
+            $any_finalitzacio = 2014;
+            $date = date('d-m-Y');
+            $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
+            $pdf->ln();
+            $pdf->Cell(190,6,"Data: ".$date,0,0,'R');
+            $pdf->ln();
+            $pdf->Cell(190,6,utf8_decode("Pàgina: ".$pdf->PageNo()),0,0,'R');
+            $pdf->ln();
+            $pdf->SetFont('Arial','B',10);
+            $pdf->Cell(190,6,"FOTOGRAFIES DELS ALUMNES",0,0,'C');
+            $pdf->Ln(5);
+            $pdf->Cell(120,0,"Grup: ".utf8_decode($codi_grup." (".$codi_grup.")"),0,0,'T');
+            //$pdf->Cell(120,0,utf8_decode("En aquest grup hi ha ".$number_returned." Alumnes"),0,0,'T');
+            //Salt de línia
+            $pdf->Ln(7);
+
+            $pdf->SetFont('Arial','',10);
+            //$pos = strpos($all_students_in_group[1]->dn,',');
+            //$dn = substr($all_students_in_group[1]->dn,($pos+1),strlen($all_students_in_group[1]->dn));
+
+            /*
+            echo "<pre>";
+            print_r($alumne);
+            echo "<br /></pre>";
+            */
+            //Dades
+            $pdf->SetFillColor(219,219,219);
+            $fill=false;
+            $pdf->SetFont('Arial','',8);
+            //recorrem la matriu de dades i imprimim cada camp en una casella
+            $z=0;
+            $pc=0;
+            $test=0;
+            //echo count($alumne);
+
+            for($j=0; $j<$number_returned;$j++){
+
+
+                if(($z%6)==0) {
+                    $pdf->Ln();
+                    for($test=$pc;$test<$z=$j;$test++){
+
+                        $nom_alumne = $alumne[$test]['sn1'].", ".$alumne[$test]['givenName']." ";
+
+                        if(strlen($nom_alumne)>18){
+                            $pdf->SetFont('Arial','',6);
+                        } else if (strlen($nom_alumne)>22) {
+                            $pdf->SetFont('Arial','',5);
+                        } else {
+                            $pdf->SetFont('Arial','',7);
+                        }
+
+                        $pdf->Cell(28.75,8, utf8_decode($nom_alumne),1,0,'L',$fill);
+                        $pc++;
+                    }   
+                    $pdf->Ln();
+
+                if($z==30){
+                    $pdf->AddPage();
+                }
+
+                }
+                        $pdf->Cell(28.75,38.5,$pdf->Image($alumne[$j]['jpegPhoto'],$pdf->GetX(),$pdf->GetY(),28.75),1,0,'C',$fill);                 
+                        $z++;
+                }
+
+            if($z==$number_returned){
+                $pdf->Ln();
+                    for($test=$pc;$test<$z=$j;$test++){
+
+                        $nom_alumne = $alumne[$test]['sn1'].", ".$alumne[$test]['givenName']." ";
+
+                        if(strlen($nom_alumne)>18){
+                            $pdf->SetFont('Arial','',6);
+                        } else if (strlen($nom_alumne)>22) {
+                            $pdf->SetFont('Arial','',5);
+                        } else {
+                            $pdf->SetFont('Arial','',7);
+                        }
+
+                        $pdf->Cell(28.75,8, utf8_decode($nom_alumne),1,0,'L',$fill);
+                        $pc++;
+                    }
+
+
+
+            }
+
+            //enviem tot al pdf
+            $today = date('Y_m_d');   
+            //$pdf->Output();
+            $pdf->Output("Llençol_".$today."_".$codi_grup.".pdf","I");
+
+
+
         }
         $this->load_footer();       
     }
