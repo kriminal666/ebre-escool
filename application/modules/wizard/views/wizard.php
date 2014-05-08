@@ -81,7 +81,7 @@
                             <div class="step-pane active" id="step1">
                               <div class="row-fluid center">
                                 <h3 class="lighter block green"><?php echo lang('enrollment');?></h3>
-                                Persona i període acadèmic
+                                <?php echo lang('person_and_academinc_period'); ?>
                               </div>
                           
                       <!-- Formulari step 1 -->
@@ -89,23 +89,28 @@
                           <form class="form-horizontal" id="validation-form" method="get">
 
                                 <div class="form-group">
-                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="academic_period">Periode Acadèmic</label>
-
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="academic_period"><?php echo lang('academinc_period'); ?>:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <input type="text" name="academic_period" placeholder="Escriu un periode Acadèmic" />
                                   </div>
                                 </div>
 
-
-
-                                <div class="hr hr-dotted"></div>
+                                <br />
 
                                 <div class="form-group">
-                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student">Alumne</label>
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_personal_id">DNI:&nbsp;&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="student_personal_id" placeholder="Escriu el teu DNI" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student"><?php echo lang('student'); ?>:&nbsp;&nbsp;</label>
 
                                   <div class="col-xs-12 col-sm-9">
                                     <select id="student" name="student" class="select2" data-placeholder="Selecciona un Estudiant" style="width:800px;">
-                                      <option value="">&nbsp;</option>
+                                      <option value=""></option>
                                       <?php 
                                         foreach($enrollment_students as $enrollment_student){
                                           ?>
@@ -128,11 +133,12 @@
 
                       <!-- Formulari step 2 -->
                           <form class="form-horizontal" id="enrollment_study-form" method="get">
+                                <div class="step2_selected_student"></div>
                                 <div class="form-group">
-                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="enrollment_study">Estudi</label>
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="enrollment_study">Estudi:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="Selecciona un Estudi">
-                                      <option value="">&nbsp;</option>
+                                      <option value=""></option>
                                       <?php 
                                         foreach($enrollment_studies as $enrollment_study){
                                           ?>
@@ -159,17 +165,18 @@
                       <!-- Formulari step 3 -->
 
                           <form class="form-horizontal" id="classroom_group-form" method="get">
-                                <div id="step3_selected_study"></div>
+                                <div class="step2_selected_student"></div>
+                                <div class="step3_selected_study"></div>
                                 <div id="step3_classroom_group" class="form-group">
-                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="enrollment_study">Grups de Classe</label>
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="enrollment_study">Grups de Classe:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <select id="classroom_group" name="classroom_group" class="select2" data-placeholder="Selecciona un Grup de Classe">
-                                      <option value="">&nbsp;</option>
+                                      <option value=""></option>
                                       <?php 
-                                        foreach($enrollment_classroom_groups as $enrollment_classroom_group){
+                                        //foreach($enrollment_classroom_groups as $enrollment_classroom_group){
                                           ?>
-                                          <option value="<?php echo $enrollment_classroom_group['classroom_group_id']; ?>"><?php echo $enrollment_classroom_group['classroom_group_shortName']; ?></option>
-                                          <?php } ?>
+                                         <!-- <option value="<?php echo $enrollment_classroom_group['classroom_group_id']; ?>"><?php echo $enrollment_classroom_group['classroom_group_shortName']; ?></option> -->
+                                          <?php //} ?>
 
                                     </select>
                                   </div>
@@ -189,15 +196,19 @@
 
                       <!-- Formulari step 4 -->
                           <form class="form-horizontal" id="study_module-form" method="get">
+                                <div class="step2_selected_student"></div>
+                                <div class="step3_selected_study"></div>
+                                <div class="step4_selected_study_module"></div>
                                 <div id="step4_study_module"class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="study_modules">Mòduls Formatius</label><br /><br />
                                   <div class="col-xs-12 col-sm-9">
+                                    <div id="checkbox_study_module">
                                   <?php      
-                                    foreach($enrollment_study_modules as $enrollment_study_module){
+                                    //foreach($enrollment_study_modules as $enrollment_study_module){
                                   ?>
-                                          <input type="checkbox" checked name="<?php echo $enrollment_study_module['study_module_id']; ?>" value="<?php echo $enrollment_study_module['study_module_id']; ?>"/><?php echo " ".$enrollment_study_module['study_module_shortname']." - ".$enrollment_study_module['study_module_name']; ?> <br />
-                                  <?php } ?>
-
+                                      <!--    <input type="checkbox" checked name="<?php echo $enrollment_study_module['study_module_id']; ?>" value="<?php echo $enrollment_study_module['study_module_id']; ?>"/><?php echo " ".$enrollment_study_module['study_module_shortname']." - ".$enrollment_study_module['study_module_name']; ?> <br /> -->
+                                  <?php //} ?>
+                                    </div>
                                   </div>
                                 </div>
 
@@ -216,16 +227,20 @@
 
                       <!-- Formulari step 5 -->
                           <form class="form-horizontal" id="study_submodules-form" method="get">
+                                <div class="step2_selected_student"></div>
+                                <div class="step3_selected_study"></div>
+                                <div class="step4_selected_study_module"></div>                            
+                                <div class="step5_selected_study_submodules"></div>
                                 <div id="step5_study_submodules" class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="study_modules">Unitats Formatives</label><br /><br />
                                   <div class="col-xs-12 col-sm-9">
-                                      
+                                      <div id="checkbox_study_submodules">
                                   <?php      
-                                    foreach($enrollment_study_submodules as $enrollment_study_submodule){
+                                    //foreach($enrollment_study_submodules as $enrollment_study_submodule){
                                   ?>
-                                          <input type="checkbox" checked name="<?php echo $enrollment_study_submodule['study_submodules_id']; ?>" value="<?php echo $enrollment_study_submodule['study_submodules_id']; ?>"/><?php echo " (".$enrollment_study_submodule['study_module_shortname'].") ".$enrollment_study_submodule['study_submodules_shortname']." - ".$enrollment_study_submodule['study_submodules_name']; ?> <br />
-                                  <?php } ?>
-
+                                      <!--    <input type="checkbox" checked name="<?php echo $enrollment_study_submodule['study_submodules_id']; ?>" value="<?php echo $enrollment_study_submodule['study_submodules_id']; ?>"/><?php echo " (".$enrollment_study_submodule['study_module_shortname'].") ".$enrollment_study_submodule['study_submodules_shortname']." - ".$enrollment_study_submodule['study_submodules_name']; ?> <br /> -->
+                                  <?php //} ?>
+                                      </div>
                                   </div>
                                 </div>
 
@@ -258,7 +273,9 @@
     </script>
 
     <script>
-    $(document).ready(function(){
+/*
+      $(document).ready(function(){
+
       study = $("#enrollment_study").val();
       study_name = $("#enrollment_study option:selected").text();
       $("#enrollment_study").change(function(){
@@ -270,17 +287,15 @@
             url:'<?php echo base_url("index.php/wizard/classroom_group");?>'+'/'+study,
             type: 'get',
             datatype: 'json'
-          }).done(function(date){
+          }).done(function(data){
             $.each(data, function(k,v){
               alert("K: "+k+" V: "+v);
             });
           });
-          $("#step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
+          $(".step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
         });
-
-
-
-});
+      });
+*/
 
     </script>
 
@@ -301,7 +316,157 @@
         .on('change', function(){
           $(this).closest('form').validate().element($(this));
         }); 
+  
+        var actual_step = $('ul.wizard-steps').children().hasClass('active');      
+        if(actual_step == false){
+          $('ul.wizard-steps li').first().addClass('active');
+          $('#step-container div').first().addClass('active');
+        } 
+        //alert(actual_step);    
+
+
+      $(".btn-next").click(function(){
+        step = $("#step-container div.active").attr("id");
+        if(step == "step1"){
+
+          academic_period = $("#"+step+" input[name$='academic_period']").val();
+          student_dni = $("#"+step+" input[name$='student_personal_id']").val();
+          student_name = $("#"+step+" option:selected").text();
+          //alert("Periode acadèmic: "+academic_period+"\nDNI: "+student_dni+"\nAlumne: "+student_name );
+          $(".step2_selected_student").html("<h3>Alumne: "+student_name+"</h3>");          
+        
+        } else if(step == "step2"){
+        
+          study = $("#enrollment_study").val();
+          study_name = $("#enrollment_study option:selected").text();
+          $("#enrollment_study").change(function(){
+              study = $("#enrollment_study").val();
+              study_name = $("#enrollment_study option:selected").text();
+          });    
+              //AJAX per obtenir Grup de Classe
+              $.ajax({
+                url:'<?php echo base_url("index.php/wizard/classroom_group");?>'+'/'+study,
+                type: 'get',
+                datatype: 'json'
+              }).done(function(data){
+                console.log(data);
+                var $_classroom_group = $('select#classroom_group');
+                $_classroom_group.empty();
+                $.each(JSON.parse(data), function(idx, obj) {
+                  $_classroom_group.append($('<option></option>').attr("value",obj.classroom_group_id).text(obj.classroom_group_name));
+                  //alert(obj.classroom_group_shortName);
+                });
+
+                /*alert(data);
+                $.each(data, function(){
+                  alert(data['classroom_group_shortName']);
+                });
+                */
+              });
+              $(".step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
+            //});
+
+        } else if(step == "step3") {
+/**/
+         classroom_group = $("select#classroom_group option:selected").text();
+         classroom_group_value = $("select#classroom_group option:selected").val();
+         //   classroom_group = $("#classroom_group option:selected").text();
+          $("#classroom_group").change(function(){
+            classroom_group = $("select#classroom_group option:selected").text();
+            classroom_group_value = $("select#classroom_group option:selected").val();            
+            //classroom_group = $("#classroom_group option:selected").text();
+          }); 
+
+              //alert(classroom_group_value);
+              //AJAX per obtenir Mòduls Formatius
+              $.ajax({
+                url:'<?php echo base_url("index.php/wizard/study_modules");?>'+'/'+classroom_group_value,
+                type: 'get',
+                datatype: 'json'
+              }).done(function(data){
+                console.log(data);
+//                alert(data);
+                var $_study_module = $('#checkbox_study_module');
+                $_study_module.empty();
+                //alert(data);
+                //alert(JSON.parse(data));
+                
+                $.each(JSON.parse(data), function(idx, obj) {
+                $_study_module.append($('<input type="checkbox" checked name="'+obj.study_module_shortname+'" value="'+obj.study_module_id+'"/> '+obj.study_module_shortname+' - '+obj.study_module_name+'<br />'));
+                });
+              
+              });
+              $(".step4_selected_study_module").html("<h3>Grup de classe: "+classroom_group+"</h3>");          
+            //});
+/**/
+
+        } else if(step == "step4") {
+          
+        var checkNames = $('#checkbox_study_module input:checked').map(function(){
+          return this.name;
+        }).get();
+
+        var checkValues = $('#checkbox_study_module input:checked').map(function(){
+          return $(this).val()
+        }).get();
+        checkValues = checkValues.toString().replace(/,/g ,"-");
+
+//        alert("Noms: "+checkNames)
+//        alert("Valors: "+checkValues);
+          
+              //AJAX per obtenir Unitats Formatives
+              $.ajax({
+                url:'<?php echo base_url("index.php/wizard/study_submodules");?>'+'/'+checkValues,
+                type: 'get',
+                datatype: 'json'
+              }).done(function(data){
+                console.log(data);
+
+                //alert(data);
+               var $_study_submodule = $('#checkbox_study_submodules');
+               $_study_submodule.empty();
+               //alert(data);
+                //alert(JSON.parse(data));
+
+                $.each(JSON.parse(data), function(idx, obj) {
+                //alert("index: "+idx+"Objecte: "+obj);
+                  alert(obj);
+                  $_study_submodule.append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+'<br />'));
+                });
+              });
+
+
+        $(".step5_selected_study_submodules").html("<h3>Mòduls sel·leccionats: "+checkNames+"</h3>");
+        //alert(checkValues);
+
+
+
+        }
+      });  
       
+      /*
+          //AJAX per obtenir L'alumne
+          jQuery.ajax({
+            url:'<?php echo base_url("index.php/wizard/student");?>'+'/'+study,
+            type: 'get',
+            datatype: 'json'
+          }).done(function(date){
+            $.each(data, function(k,v){
+              alert("K: "+k+" V: "+v);
+            });
+          });
+          $("#step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
+        });
+      });
+      */
+      /*
+        step = $("#step-container div.active").attr("id");
+        alert(step);
+        $(".btn-next").click(function(){
+          step = $("#step-container div.active").attr("id");
+          alert(step);
+        });
+      */
       
         var $validation = false;
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){

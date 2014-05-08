@@ -22,3 +22,7 @@ $lang['enrollment_modules'] = 'Mòduls Formatius';
 $lang['enrollment_submodules'] = 'Unitats Formatives';
 $lang['new_enrollment'] = 'Nova Matícula';
 $lang['validation'] = 'Validació';
+
+$lang['person_and_academinc_period'] = 'Persona i període acadèmic';
+$lang['academinc_period'] = 'Període acadèmic';
+$lang['student'] = 'Alumne';

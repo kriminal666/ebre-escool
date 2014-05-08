@@ -41,15 +41,15 @@ class wizard extends skeleton_main {
     /* Wizard */
     $header_data= $this->load_wizard_files($header_data);    
 
-    if(!$study){
+    if($study == false){
         $study = 2;
     }    
     
-    if(!$classroom_group){
+    if($classroom_group == false){
         $classroom_group = 3;  
     }
     
-    if(!$study_modules){
+    if($study_modules == false){
         $study_modules = array();
         $study_modules[]=282;   //  "M1"
         $study_modules[]=268;   //  "M2";
@@ -57,6 +57,7 @@ class wizard extends skeleton_main {
 
        $this->_load_html_header($header_data); 
        $data = array();
+       
        $enrollment_studies = $this->wizard_model->get_enrollment_studies();
        $data['enrollment_studies'] = $enrollment_studies;
        $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
@@ -68,6 +69,8 @@ class wizard extends skeleton_main {
        $enrollment_students = $this->wizard_model->get_students();
        $data['enrollment_students'] = $enrollment_students;              
 
+      // print_r($enrollment_students);
+       
        // BODY       
        $this->_load_body_header();
        $this->load->view('wizard.php',$data);     
@@ -78,7 +81,7 @@ class wizard extends skeleton_main {
 	}
 
     public function classroom_group($study = false) {
-        echo $study;
+        //echo $study;
 
         $resultat = array();
 
@@ -90,6 +93,32 @@ class wizard extends skeleton_main {
 
     }
 
+    public function study_modules($classroom_group = false) {
+        //echo $classroom_group;
+
+        $resultat = array();
+
+        $enrollment_study_modules = $this->wizard_model->get_enrollment_study_modules($classroom_group);
+        
+        foreach($enrollment_study_modules as $key => $value){
+            $resultat[$key]=$value;
+        }
+        print_r(json_encode($resultat));
+
+    }
+
+    public function study_submodules($modules = false) {
+        $modules = explode("-",$modules);
+        
+        $resultat = array();
+
+        $enrollment_study_submodules = $this->wizard_model->get_enrollment_study_submodules($modules);
+        
+        foreach($enrollment_study_submodules as $key => $value){
+           $resultat[$key]=$value;
+        }
+        print_r(json_encode($resultat));
+    }
    
 	public function index() {
 		$this->wizard();

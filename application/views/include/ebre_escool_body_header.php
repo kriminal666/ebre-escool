@@ -565,7 +565,8 @@
                 <ul class="submenu">
 
                   <li id="curriculum_reports_statistics_checkings_groups">
-                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">
+                    <!--<a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">-->
+                    <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups'); ?>">
                         Grups de classe
                     </a>
                   </li>
