@@ -18,7 +18,7 @@ $(document).ready( function () {
 
 	$('#groups_fault_reports').dataTable( {
 		"bFilter": false,
-		"bInfo": false,
+		"bInfo": true,
 		"sDom": 'T<"clear">lfrtip',
 		"aLengthMenu": [[10, 25, 50,100,200,500,1000,-1], [10, 25, 50,100,200,500,1000, "All"]],		
 		"oTableTools": {
@@ -92,7 +92,6 @@ if($_POST){
 	$ini = strtotime(date("d-m-Y"));
 	$fi = strtotime(date("d-m-Y"));
 }
-
 
 	foreach($all_students_in_group as $student){
 		$suma = 0;
@@ -193,7 +192,7 @@ if($_POST){
 				<div class="form-group">
 					<tr>
 						<td><label for="grup">Selecciona el grup:</label></td>
-						<td><select data-place_holder="TODO" style="width:200px;" id="grup" name="grup" data-size="5" data-live-search="true">
+						<td><select data-place_holder="TODO" style="width:400px;" id="grup" name="grup" data-size="5" data-live-search="true">
 							<?php foreach ($grups as $key => $value) { ?>
 								<option value="<?php echo $key ?>" ><?php echo $value ?></option>
 							<?php } ?>

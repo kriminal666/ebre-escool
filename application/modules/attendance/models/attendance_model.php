@@ -1304,7 +1304,7 @@ ORDER BY person.person_sn1
 		$this->db->from('lesson');
 		$this->db->join('study_module', "lesson.lesson_study_module_id = study_module.study_module_id");
 		
-		$this->db->order_by('study_module_order', $orderby);
+	/*	$this->db->order_by('study_module_order', $orderby); */
 		$this->db->order_by('study_module_shortname', $orderby);
 		
 		$this->db->where("lesson.lesson_classroom_group_id", $class_group_id);
@@ -1347,7 +1347,7 @@ ORDER BY person.person_sn1
 		$this->db->from('lesson');
 		$this->db->join('study_module', "lesson.lesson_study_module_id = study_module.study_module_id");
 		
-		$this->db->order_by('study_module_order', $orderby);
+	/*	$this->db->order_by('study_module_order', $orderby); */
 		$this->db->order_by('study_module_shortname', $orderby);
 		
 		$this->db->where("lesson.lesson_teacher_id", $teacher_id);

@@ -31,23 +31,56 @@ class reports extends skeleton_main {
 	 */
 	function general_sheet() {
 		
+		
+
 		if (!$this->skeleton_auth->logged_in())
         {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
+		
+		$this->load->model('reports_model');
 
-        
+        $all_teachers = $this->reports_model->get_all_teachers();
+/*
+        echo "<table border=1px>";
+        foreach($all_teachers as $t){
+
+        	$photo = base_url('uploads/person_photos')."/".$t->photo_url;
+        	echo "<tr>";
+        	echo "<td>".$t->teacher_id."</td>";
+        	echo "<td>".$t->givenName." ".$t->sn1." ".$t->sn2."</td>";
+        	echo "<td><img src=". $photo. " /></td>";        	        	
+        	echo "</tr>";
+
+        }
+        echo "</table>";
+*/
+
         $default_group_code = $this->config->item('default_group_code');
+
         $group_code=$default_group_code;
 
         $organization = $this->config->item('organization','skeleton_auth');
 
         $header_data['header_title']=lang("all_teachers") . ". " . $organization;
     
-        $all_teachers = $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
+//        $all_teachers = $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
         $all_conserges = $this->ebre_escool_ldap->getAllTeachers("ou=Consergeria,ou=Personal,ou=All,dc=iesebre,dc=com");
         $all_secretaria = $this->ebre_escool_ldap->getAllTeachers("ou=Secretaria,ou=Personal,ou=All,dc=iesebre,dc=com");
+/*
+echo "Conserges<br/>";
+foreach($all_conserges as $conserge){
+	echo $conserge['name']."<br />";
+}
+
+echo "<br />Secretaries<br />";
+foreach($all_secretaria as $secretaria){
+	echo $secretaria['name']."<br />";
+}
+*/
+
+        //print_r(array_keys($all_teachers[0]));
         
 		$contador = 0;
 		$professor = array();
@@ -141,16 +174,21 @@ class reports extends skeleton_main {
 		// Guardo les dades dels professors en un array
 		foreach($all_teachers as $teacher) {
 
-			$nom = explode(" ",$teacher['name']);
-			if(!array_key_exists(1,$nom)) { $nom[1] = ''; }
-			if(!array_key_exists(2,$nom)) { $nom[2] = ''; }
-			$professor[$contador]['code']=$teacher['code'];
-			$professor[$contador]['name']=$nom[0];
-			$professor[$contador]['sn1']=$nom[1];
-			$professor[$contador]['sn2']=$nom[2];
-			$professor[$contador]['photo']=$teacher['photo'];
-			$professor[$contador]['carrec']="Càrrec ".$professor[$contador]['code'];
+			$professor[$contador]['code']=$teacher->teacher_id;
+			$professor[$contador]['name']=$teacher->givenName;
+			$professor[$contador]['sn1']=$teacher->sn1;
+			$professor[$contador]['sn2']=$teacher->sn2;
 
+			if( file_exists(getcwd().'/uploads/person_photos/'.$teacher->photo_url)) {
+			
+				$professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+			} else {
+				$professor[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
+			}
+
+			$professor[$contador]['carrec']="Càrrec ".$professor[$contador]['code'];
+			
+/*
 			$tipus = substr($professor[$contador]['photo'],0,10);
 
 			if(strlen($tipus)==8){
@@ -174,7 +212,7 @@ class reports extends skeleton_main {
 			fwrite($outjpeg, $professor[$contador]['photo']);
 			fclose ($outjpeg);
 			$jpeg_data_size = filesize( $jpeg_filename );
-
+*/
 			$contador++;
 		}
 
@@ -349,7 +387,8 @@ class reports extends skeleton_main {
 				$pdf->Text($x+22,$y1-1,utf8_decode($professor[$j]['name']));
 				$pdf->Text($x+22,$y2-2,utf8_decode($professor[$j]['sn1']));
 				$pdf->Text($x+22,$y+11,utf8_decode($professor[$j]['sn2']));
-				$pdf->Image($jpeg_file[$j],$x1-2,$y-2,$xx);                
+				//$pdf->Image($jpeg_file[$j],$x1-2,$y-2,$xx);                
+				$pdf->Image($professor[$j]['photo'],$x1-2,$y-2,$xx);                
 			//incremento la fila
 			$row++;
 			//incremento el marge

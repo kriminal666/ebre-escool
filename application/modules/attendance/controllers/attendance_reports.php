@@ -881,6 +881,13 @@ class attendance_reports extends skeleton_main {
 
         $data['title'] = lang('reports_group_reports_incidents_by_date');
 
+        // Get All groups
+        $grups = $this->attendance_model->get_all_groups();
+        //print_r($grups);
+        $data['grups'] = $grups;
+
+
+/*
         $data['grups'] = array( "1AF" => "1AF",
                                 "1APD" => "1APD",
                                 "1ASIX-DAM" => "1ASIX-DAM",
@@ -937,7 +944,7 @@ class attendance_reports extends skeleton_main {
                                 "GCM" => "GCM",
                                 "SE" => "SE"
             );
-
+*/
         $this->load_datatables_data($active_menu);
 
         if (!$this->skeleton_auth->logged_in())
@@ -952,7 +959,6 @@ class attendance_reports extends skeleton_main {
         $organization = $this->config->item('organization','skeleton_auth');
 
         $all_groups = $this->attendance_model->get_all_classroom_groups();
-
         $data['group_code']=$group_code;
         $data['all_groups']=$all_groups->result();
         if ($_POST) {
@@ -968,10 +974,10 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
-        
-        $data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
-        $data['count_alumnes'] = count($data['all_students_in_group']);
 
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+        //$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
+        $data['count_alumnes'] = count($all_students_in_group);
 
 //        $this->load_header(); 
         $this->load->view('attendance_reports/attendace_incidents_classgroup_summary_report.php',$data);     

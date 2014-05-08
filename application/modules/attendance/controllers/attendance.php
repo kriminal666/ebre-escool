@@ -398,6 +398,26 @@ class attendance extends skeleton_main {
 
 		$this->_load_body_footer();		
 	}
+
+	public function attendance_incidents_managment () {
+
+		$active_menu = array();
+		$active_menu['menu']='#mentoring';
+		$active_menu['submenu1']='#attendance_incidents_managment';
+
+    	$this->check_logged_user();
+
+		$header_data = $this->load_header_data($active_menu);
+        $this->_load_html_header($header_data);
+
+		$this->_load_body_header();
+
+		$data = array();
+		
+		$this->load->view('attendance_incidents_managment',$data);	
+
+		$this->_load_body_footer();		
+	}
 	
 	public function pdf_exemple() {
 		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');

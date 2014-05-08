@@ -32,11 +32,11 @@ class Wizard_model  extends CI_Model  {
 
         $this->db->select('student_id,student_person_id,person_givenName,person_sn1,person_sn2');
 		$this->db->from('student');
-		$this->db->join('person','student_person_id','person_id');
+		$this->db->join('person','student_person_id=person_id');
 		$this->db->order_by('student_id', $orderby);
 		       
         $query = $this->db->get();
-		
+
 		if ($query->num_rows() > 0) {
 
 			$student_array = array();
@@ -84,7 +84,7 @@ class Wizard_model  extends CI_Model  {
 
 	/* Grups de classe */
 	public function get_enrollment_classroom_groups($study=false,$orderby="asc") {
-		echo $study;
+
 		if(!$study){
 			$study=2;	//	"ASIX-DAM"
 		}
@@ -122,12 +122,12 @@ class Wizard_model  extends CI_Model  {
 		if(!$classroom_group){
 			//$classroom_group=3;	//	"1ASIX-DAM"
 		}		
-
+//echo $classroom_group."<br />";
         $this->db->select('study_module_id,study_module_shortname,study_module_name');
 		$this->db->from('study_module');
 		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
 		$this->db->where('classroom_group_id',$classroom_group);
-		$this->db->order_by('study_module_id', $orderby);
+		$this->db->order_by('study_module_shortname', $orderby);
 		       
         $query = $this->db->get();
 		//echo $this->db->last_query();
