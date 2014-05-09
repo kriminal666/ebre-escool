@@ -324,149 +324,140 @@
         } 
         //alert(actual_step);    
 
+/*
+      $(".btn-next").attr('disabled','disabled');
 
+      $("input[name=academic_period]").change(function(){
+
+        if($(this).val() == "" ){
+          alert("no hi ha res");
+        }
+      });
+*/
       $(".btn-next").click(function(){
         step = $("#step-container div.active").attr("id");
-        if(step == "step1"){
+        if(step == "step1"){ // Academic period and student data
 
           academic_period = $("#"+step+" input[name$='academic_period']").val();
           student_dni = $("#"+step+" input[name$='student_personal_id']").val();
           student_name = $("#"+step+" option:selected").text();
-          //alert("Periode acadèmic: "+academic_period+"\nDNI: "+student_dni+"\nAlumne: "+student_name );
-          $(".step2_selected_student").html("<h3>Alumne: "+student_name+"</h3>");          
+          student_id = $("#"+step+" option:selected").val();
+          
+          $(".step2_selected_student").html("<h3>Alumne: "+student_name+" ("+student_id+") </h3>");          
         
-        } else if(step == "step2"){
+        } else if(step == "step2"){ // Study data
         
-          study = $("#enrollment_study").val();
+          study_id = $("#enrollment_study").val();
           study_name = $("#enrollment_study option:selected").text();
           $("#enrollment_study").change(function(){
-              study = $("#enrollment_study").val();
+              study_id = $("#enrollment_study").val();
               study_name = $("#enrollment_study option:selected").text();
           });    
-              //AJAX per obtenir Grup de Classe
+              // AJAX get Classroom_Group from Study for step 3
               $.ajax({
-                url:'<?php echo base_url("index.php/wizard/classroom_group");?>'+'/'+study,
+                url:'<?php echo base_url("index.php/wizard/classroom_group");?>'+'/'+study_id,
                 type: 'get',
                 datatype: 'json'
               }).done(function(data){
-                console.log(data);
+                
                 var $_classroom_group = $('select#classroom_group');
                 $_classroom_group.empty();
                 $.each(JSON.parse(data), function(idx, obj) {
                   $_classroom_group.append($('<option></option>').attr("value",obj.classroom_group_id).text(obj.classroom_group_name));
-                  //alert(obj.classroom_group_shortName);
+                 
                 });
 
-                /*alert(data);
-                $.each(data, function(){
-                  alert(data['classroom_group_shortName']);
-                });
-                */
               });
-              $(".step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
-            //});
+              $(".step3_selected_study").html("<h3>Estudi: "+study_name+" ("+study_id+") </h3>");          
 
-        } else if(step == "step3") {
-/**/
-         classroom_group = $("select#classroom_group option:selected").text();
-         classroom_group_value = $("select#classroom_group option:selected").val();
-         //   classroom_group = $("#classroom_group option:selected").text();
+        } else if(step == "step3") { // Classroom Group data
+
+         classroom_group_name = $("select#classroom_group option:selected").text();
+         classroom_group_id = $("select#classroom_group option:selected").val();
+
           $("#classroom_group").change(function(){
-            classroom_group = $("select#classroom_group option:selected").text();
-            classroom_group_value = $("select#classroom_group option:selected").val();            
-            //classroom_group = $("#classroom_group option:selected").text();
+            classroom_group_name = $("select#classroom_group option:selected").text();
+            classroom_group_id = $("select#classroom_group option:selected").val();            
           }); 
 
-              //alert(classroom_group_value);
-              //AJAX per obtenir Mòduls Formatius
+              // AJAX get Study_Modules from Classroom_Group for step 4
               $.ajax({
-                url:'<?php echo base_url("index.php/wizard/study_modules");?>'+'/'+classroom_group_value,
+                url:'<?php echo base_url("index.php/wizard/study_modules");?>'+'/'+classroom_group_id,
                 type: 'get',
                 datatype: 'json'
               }).done(function(data){
-                console.log(data);
-//                alert(data);
+
                 var $_study_module = $('#checkbox_study_module');
                 $_study_module.empty();
-                //alert(data);
-                //alert(JSON.parse(data));
                 
                 $.each(JSON.parse(data), function(idx, obj) {
-                $_study_module.append($('<input type="checkbox" checked name="'+obj.study_module_shortname+'" value="'+obj.study_module_id+'"/> '+obj.study_module_shortname+' - '+obj.study_module_name+'<br />'));
+                $_study_module.append($('<input type="checkbox" checked name="'+obj.study_module_shortname+'" value="'+obj.study_module_id+'"/> '+obj.study_module_shortname+' - '+obj.study_module_name+' ('+obj.study_module_id+')<br />'));
                 });
               
               });
-              $(".step4_selected_study_module").html("<h3>Grup de classe: "+classroom_group+"</h3>");          
-            //});
-/**/
+              $(".step4_selected_study_module").html("<h3>Grup de classe: "+classroom_group_name+"</h3>");          
 
-        } else if(step == "step4") {
+        } else if(step == "step4") { // Study Modules
           
-        var checkNames = $('#checkbox_study_module input:checked').map(function(){
+        study_module_names = $('#checkbox_study_module input:checked').map(function(){
           return this.name;
         }).get();
 
-        var checkValues = $('#checkbox_study_module input:checked').map(function(){
+        study_module_ids = $('#checkbox_study_module input:checked').map(function(){
           return $(this).val()
         }).get();
-        checkValues = checkValues.toString().replace(/,/g ,"-");
+        study_module_ids = study_module_ids.toString().replace(/,/g ,"-");
 
-//        alert("Noms: "+checkNames)
-//        alert("Valors: "+checkValues);
-          
-              //AJAX per obtenir Unitats Formatives
+              //AJAX get Study_Submodules from Study_Modules for step 5
               $.ajax({
-                url:'<?php echo base_url("index.php/wizard/study_submodules");?>'+'/'+checkValues,
+                url:'<?php echo base_url("index.php/wizard/study_submodules");?>'+'/'+study_module_ids,
                 type: 'get',
                 datatype: 'json'
               }).done(function(data){
-                console.log(data);
 
-                //alert(data);
                var $_study_submodule = $('#checkbox_study_submodules');
                $_study_submodule.empty();
-               //alert(data);
-                //alert(JSON.parse(data));
 
                 $.each(JSON.parse(data), function(idx, obj) {
-                //alert("index: "+idx+"Objecte: "+obj);
-                  alert(obj);
-                  $_study_submodule.append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+'<br />'));
+
+                  $_study_submodule.append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
                 });
               });
 
+        $(".step5_selected_study_submodules").html("<h3>Mòduls sel·leccionats: "+study_module_names+"</h3>");
 
-        $(".step5_selected_study_submodules").html("<h3>Mòduls sel·leccionats: "+checkNames+"</h3>");
-        //alert(checkValues);
+        } else if(step == "step5") { // Study Submodules
 
+        var study_submodules_names = $('#checkbox_study_submodules input:checked').map(function(){
+          return this.name;
+        }).get();
 
+        var study_submodules_ids = $('#checkbox_study_submodules input:checked').map(function(){
+          return $(this).val()
+        }).get();
+        study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
 
+          alert("Alumne: "+student_name+"\nEstudi: "+study_name+"\nGrup de Classe: "+classroom_group_name+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
+
+              // AJAX insert Enrollment data into database
+              $.ajax({
+                url:'<?php echo base_url("index.php/wizard/enrollment");?>',
+                type: 'post',
+                data: { person_id: student_id,
+                        period_id: academic_period,
+                        study_id: study_id,
+                        classroom_group_id: classroom_group_id,
+                        study_module_ids: study_module_ids,
+                        study_submodules_ids: study_submodules_ids
+                      },
+                datatype: 'json'
+              }).done(function(data){
+
+                alert(data);
+              });
+        
         }
       });  
-      
-      /*
-          //AJAX per obtenir L'alumne
-          jQuery.ajax({
-            url:'<?php echo base_url("index.php/wizard/student");?>'+'/'+study,
-            type: 'get',
-            datatype: 'json'
-          }).done(function(date){
-            $.each(data, function(k,v){
-              alert("K: "+k+" V: "+v);
-            });
-          });
-          $("#step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
-        });
-      });
-      */
-      /*
-        step = $("#step-container div.active").attr("id");
-        alert(step);
-        $(".btn-next").click(function(){
-          step = $("#step-container div.active").attr("id");
-          alert(step);
-        });
-      */
       
         var $validation = false;
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){

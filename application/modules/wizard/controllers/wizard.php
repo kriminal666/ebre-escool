@@ -120,7 +120,40 @@ class wizard extends skeleton_main {
         print_r(json_encode($resultat));
     }
    
-	public function index() {
+    public function enrollment() {
+
+            $resultat = array();
+
+            $period_id = $_POST['period_id'];
+            $person_id = $_POST['person_id'];
+            $study_id = $_POST['study_id'];
+            $classroom_group_id = $_POST['classroom_group_id'];
+            $study_module_ids = $_POST['study_module_ids'];
+            $study_submodules_ids = $_POST['study_submodules_ids'];
+
+            $study_submodules_ids = explode('-',$study_submodules_ids);
+            $study_module_ids = explode('-',$study_module_ids);
+
+            //echo "<script>alert(".print_r($study_module_ids).")</script>";die();
+
+            /*echo "<script>alert(".print_r($study_submodules_ids).")</script>";die();*/
+
+            $enrollment = $this->wizard_model->insert_enrollment($period_id, $person_id);
+            $enrollment_studies = $this->wizard_model->insert_enrollment_studies($period_id, $person_id, $study_id);
+            $enrollment_class_group = $this->wizard_model->insert_enrollment_class_group($period_id, $person_id, $study_id, $classroom_group_id);
+            $enrollment_modules = $this->wizard_model->insert_enrollment_modules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids);
+            $enrollment_submodules = $this->wizard_model->insert_enrollment_submodules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids, $study_submodules_ids);
+
+            $resultat['enrollment'] = $enrollment;
+            $resultat['enrollment_studies'] = $enrollment_studies;
+            $resultat['enrollment_class_group'] = $enrollment_class_group;
+            $resultat['enrollment_modules'] = $enrollment_modules;
+            $resultat['enrollment_submodules'] = $enrollment_submodules;
+
+            print_r(json_encode($resultat));
+    }	
+
+    public function index() {
 		$this->wizard();
 	}
 
