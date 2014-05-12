@@ -170,7 +170,7 @@
                                 <div id="step3_classroom_group" class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="enrollment_study">Grups de Classe:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
-                                    <select id="classroom_group" name="classroom_group" class="select2" data-placeholder="Selecciona un Grup de Classe">
+                                    <select id="classroom_group" name="classroom_group" class="select2" data-placeholder="Selecciona un Grup de Classe" style="width:400px;">
                                       <option value=""></option>
                                       <?php 
                                         //foreach($enrollment_classroom_groups as $enrollment_classroom_group){
