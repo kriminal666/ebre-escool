@@ -156,7 +156,7 @@ class Wizard_model  extends CI_Model  {
 			//$study_modules[]=268;	//	"M2"
 		}	
 
-        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname');
+        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_submodules_study_module_id');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
 		$this->db->where_in('study_submodules_study_module_id',$study_modules);
@@ -174,6 +174,7 @@ class Wizard_model  extends CI_Model  {
    				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
    				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
    				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+   				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
    				$i++;
 			}
 			return $study_submodules_array;
@@ -182,5 +183,155 @@ class Wizard_model  extends CI_Model  {
 			return false;
 	}	
 
+	/* ENROLLMENT */
+
+	/* Enrollment */
+	public function insert_enrollment($period_id=false,$person_id=false) {
+
+        $data = array(
+        	'enrollment_periodid' => $period_id,
+        	'enrollment_personid' => $person_id 
+        );
+
+        $this->db->insert('enrollment',$data);
+		       
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() > 0) {
+
+			return $this->db->affected_rows();
+		}			
+		else
+			return false;
+	}	
+
+	/* Enrollment Studies */
+	public function insert_enrollment_studies($period_id=false,$person_id=false,$study_id=false) {
+
+        $data = array(
+        	'enrollment_studies_periodid' => $period_id,
+        	'enrollment_studies_personid' => $person_id,
+        	'enrollment_studies_study_id' => $study_id
+        );
+
+        $this->db->insert('enrollment_studies',$data);
+		       
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() > 0) {
+
+			return $this->db->affected_rows();
+		}			
+		else
+			return false;
+	}	
+
+	/* Enrollment Classroom Group */
+	public function insert_enrollment_class_group($period_id=false,$person_id=false,$study_id=false,$class_group_id=false) {
+
+        $data = array(
+        	'enrollment_class_group_periodid' => $period_id,
+        	'enrollment_class_group_personid' => $person_id,
+        	'enrollment_class_group_study_id' => $study_id,
+        	'enrollment_class_group_group_id' => $class_group_id
+        );
+
+        $this->db->insert('enrollment_class_group',$data);
+		       
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() > 0) {
+
+			return $this->db->affected_rows();
+		}			
+		else
+			return false;
+	}	
+
+	/* Enrollment Modules */
+	public function insert_enrollment_modules($period_id=false,$person_id=false,$study_id=false,$class_group_id=false,$modules_id=false) {
+
+	$affected_rows = 0;
+
+		foreach($modules_id as $module){
+
+        	$data = array(
+        		'enrollment_modules_periodid' => $period_id,
+        		'enrollment_modules_personid' => $person_id,
+        		'enrollment_modules_study_id' => $study_id,
+        		'enrollment_modules_group_id' => $class_group_id,
+        		'enrollment_modules_moduleid' => $module
+        	);
+
+        $this->db->insert('enrollment_modules',$data);
+		
+        $affected_rows += $this->db->affected_rows();
+
+		}       
+		//echo $this->db->last_query();
+		return $affected_rows;
+		//if ($this->db->affected_rows() > 0) {
+
+		//	return $this->db->affected_rows();
+		//}			
+		//else
+		//	return false;
+	}	
+
+	/* Enrollment Submodules */
+	public function insert_enrollment_submodules($period_id=false,$person_id=false,$study_id=false,$class_group_id=false,$modules_id=false,$submodules_id=false) {
+
+	$modules = array();
+	$submodules = array();
+
+	$affected_rows = 0;
+
+	foreach($submodules_id as $elements){
+
+		$submodules_id = explode('#',$elements);
+
+		//$modules[] = $submodules_id[0];
+		//$submodules[] = $submodules_id[1];
+
+	    $data = array(
+        	'enrollment_submodules_periodid' => $period_id,
+        	'enrollment_submodules_personid' => $person_id,
+        	'enrollment_submodules_study_id' => $study_id,
+        	'enrollment_submodules_group_id' => $class_group_id,
+        	'enrollment_submodules_moduleid' => $submodules_id[0],
+        	'enrollment_submodules_submoduleid' => $submodules_id[1]
+        );
+
+        $this->db->insert('enrollment_submodules',$data);
+		       
+		//echo $this->db->last_query();
+		$affected_rows += $this->db->affected_rows();
+
+	}
+
+/*
+	    $data = array(
+        	'enrollment_submodules_periodid' => $period_id,
+        	'enrollment_submodules_personid' => $person_id,
+        	'enrollment_submodules_study_id' => $study_id,
+        	'enrollment_submodules_group_id' => $class_group_id,
+        	'enrollment_submodules_moduleid' => $modules_id,
+        	'enrollment_submodules_submoduleid' => $submodules_id
+        );
+*/
+      //  $this->db->insert('enrollment_submodules',$data);
+		       
+		//echo $this->db->last_query();
+
+		//if ($this->db->affected_rows() > 0) {
+			//return $this->db->affected_rows();
+		//echo "Files afectades = $affected_rows<br />";
+		//echo "Files rebudes = count($submodules_id)<br />";
+		//if($affected_rows == count($submodules_id)){
+			return $affected_rows;
+		//}			
+		//else
+		//	return false;
+	}	
 
 }

@@ -30,8 +30,6 @@ class reports extends skeleton_main {
 	 * Include teachers sheet and other info like employees
 	 */
 	function general_sheet() {
-		
-		
 
 		if (!$this->skeleton_auth->logged_in())
         {
@@ -42,21 +40,9 @@ class reports extends skeleton_main {
 		$this->load->model('reports_model');
 
         $all_teachers = $this->reports_model->get_all_teachers();
-/*
-        echo "<table border=1px>";
-        foreach($all_teachers as $t){
-
-        	$photo = base_url('uploads/person_photos')."/".$t->photo_url;
-        	echo "<tr>";
-        	echo "<td>".$t->teacher_id."</td>";
-        	echo "<td>".$t->givenName." ".$t->sn1." ".$t->sn2."</td>";
-        	echo "<td><img src=". $photo. " /></td>";        	        	
-        	echo "</tr>";
-
-        }
-        echo "</table>";
-*/
-
+        $all_conserges = $this->reports_model->get_all_conserges();
+        $all_secretaria = $this->reports_model->get_all_secretaria();
+        
         $default_group_code = $this->config->item('default_group_code');
 
         $group_code=$default_group_code;
@@ -66,8 +52,50 @@ class reports extends skeleton_main {
         $header_data['header_title']=lang("all_teachers") . ". " . $organization;
     
 //        $all_teachers = $this->ebre_escool_ldap->getAllTeachers("ou=Profes,ou=All,dc=iesebre,dc=com");
-        $all_conserges = $this->ebre_escool_ldap->getAllTeachers("ou=Consergeria,ou=Personal,ou=All,dc=iesebre,dc=com");
-        $all_secretaria = $this->ebre_escool_ldap->getAllTeachers("ou=Secretaria,ou=Personal,ou=All,dc=iesebre,dc=com");
+//        $all_conserges = $this->ebre_escool_ldap->getAllTeachers("ou=Consergeria,ou=Personal,ou=All,dc=iesebre,dc=com");
+//        $all_secretaria = $this->ebre_escool_ldap->getAllTeachers("ou=Secretaria,ou=Personal,ou=All,dc=iesebre,dc=com");
+/*
+echo "<pre>";
+print_r($all_conserges);
+echo "</pre>";
+*/
+/*
+echo "<pre>";
+print_r($all_secretaria);
+echo "</pre>";
+*/
+/*
+$all_conserges = array();
+$all_conserges[0]['name']='Jordi';
+$all_conserges[0]['sn']='Caudet';
+$all_conserges[0]['photo']='jcaudet.jpg';
+$all_conserges[1]['name']='Jaume';
+$all_conserges[1]['sn']='Benaiges';
+$all_conserges[1]['photo']='jbenaiges.jpg';
+$all_conserges[2]['name']='Leonor';
+$all_conserges[2]['sn']='Agramunt Lleixà';
+$all_conserges[2]['photo']='leonoragramunt.jpg';
+
+$all_secretaria = array();
+$all_secretaria[0]['name']='Ariadna';
+$all_secretaria[0]['sn']='Arasa Bonavila';
+$all_secretaria[0]['photo']='aarasa.jpg';
+$all_secretaria[1]['name']='Sònia';
+$all_secretaria[1]['sn']='Alegria Sol';
+$all_secretaria[1]['photo']='soniaalegria.jpg';
+$all_secretaria[2]['name']='Yolanda';
+$all_secretaria[2]['sn']='Domingo Vallés';
+$all_secretaria[2]['photo']='yolandadomingo.jpg';
+$all_secretaria[3]['name']='Maria Cinta';
+$all_secretaria[3]['sn']='Tomàs Fàbregues';
+$all_secretaria[3]['photo']='ctomas.jpg';
+$all_secretaria[4]['name']='Lluïsa';
+$all_secretaria[4]['sn']='Garcia Gil';
+$all_secretaria[4]['photo']='lluisagarcia.jpg';
+$all_secretaria[5]['name']='Jordi';
+$all_secretaria[5]['sn']='Vega';
+$all_secretaria[5]['photo']='jvega.jpg';
+*/
 /*
 echo "Conserges<br/>";
 foreach($all_conserges as $conserge){
@@ -86,19 +114,28 @@ foreach($all_secretaria as $secretaria){
 		$professor = array();
 		$conserge = array();
 		$secretaria = array();
-		/*
-		echo "<pre>";
-		print_r($all_secretaria);
-		echo "</pre>";
-		*/
+
 		/* CONSERGES */
 		foreach($all_conserges as $cons) {
+/*
+echo $cons->givenName;
+echo $cons->sn1;
+echo $cons->sn2;
+echo $cons->photo_url;
+*/
+			//$nom = explode(" ",rtrim($cons['name']));
+			$conserge[$contador]['name']=$cons->givenName;//$nom[0];
+			$conserge[$contador]['sn']=$cons->sn1." ".$cons->sn2;//$nom[1];
+			$conserge[$contador]['photo']=base_url('uploads/person_photos')."/".$cons->photo_url;
 
-			$nom = explode(" ",rtrim($cons['name']));
-			$conserge[$contador]['name']=$nom[0];
-			$conserge[$contador]['sn']=$nom[1];
-			$conserge[$contador]['photo']=$cons['photo'];
+			if( file_exists(getcwd().'/uploads/person_photos/'.$cons->photo_url)) {
+			
+				$conserge[$contador]['photo']=base_url('uploads/person_photos')."/".$cons->photo_url;
+			} else {
+				$conserge[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
+			}
 
+/*
 			$tipus = substr($conserge[$contador]['photo'],0,10);
 
 			if(strlen($tipus)==8){
@@ -122,19 +159,27 @@ foreach($all_secretaria as $secretaria){
 			fwrite($outjpeg, $conserge[$contador]['photo']);
 			fclose ($outjpeg);
 			$jpeg_data_size = filesize( $jpeg_filename );
-
+*/
 			$contador++;
 		}
-		/*
-		echo "<pre>";
-		print_r($conserge);
-		echo "</pre>";
-		*/
+
 		$contador = 0;
 
 		/* SECRETARIES */
 		foreach($all_secretaria as $secr) {
 
+			$secretaria[$contador]['name']=$secr->givenName;//$nom[0];
+			$secretaria[$contador]['sn']=$secr->sn1." ".$secr->sn2;//$nom[1];
+			$secretaria[$contador]['photo']=base_url('uploads/person_photos')."/".$secr->photo_url;
+
+			if( file_exists(getcwd().'/uploads/person_photos/'.$secr->photo_url)) {
+			
+				$secretaria[$contador]['photo']=base_url('uploads/person_photos')."/".$secr->photo_url;
+			} else {
+				$secretaria[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
+			}
+			//echo "<img src='".$secretaria[$contador]['photo']."'/>";
+/*
 			$nom = explode(" ",rtrim($secr['name']));
 
 			$secretaria[$contador]['name']=$nom[0];
@@ -164,7 +209,7 @@ foreach($all_secretaria as $secretaria){
 			fwrite($outjpeg, $secretaria[$contador]['photo']);
 			fclose ($outjpeg);
 			$jpeg_data_size = filesize( $jpeg_filename );
-
+*/
 			$contador++;
 		}
 
@@ -296,13 +341,13 @@ foreach($all_secretaria as $secretaria){
 					
 			$pdf->SetFont('Arial','B',8);
 			$pdf->Text($initial_x_personal+3,$initial_y_personal-2,utf8_decode("CONSERGES"));                
-			$pdf->SetFont('Arial','',5); 	
+			$pdf->SetFont('Arial','',4); 	
 			
 			$x_personal=$initial_x_personal;
 			$y_personal=$initial_y_personal;
 			for($cont=0;$cont<count($conserge);$cont++){
 
-				$pdf->Image($jpeg_file_cons[$cont],$x_personal,$y_personal,$width_personal_foto); 
+				$pdf->Image($conserge[$cont]['photo'],$x_personal,$y_personal,$width_personal_foto); 
 				$pdf->Text($x_personal,$y_personal+15,utf8_decode($conserge[$cont]['name']));                
 				$pdf->Text($x_personal,$y_personal+17,utf8_decode($conserge[$cont]['sn']));   
 				$x_personal=$x_personal+14;
@@ -314,13 +359,13 @@ foreach($all_secretaria as $secretaria){
 
 			$pdf->SetFont('Arial','B',8);   
 			$pdf->Text($initial_x_personal+3,$initial_y_personal+22,utf8_decode("SECRETÀRIES"));	
-			$pdf->SetFont('Arial','',5); 
+			$pdf->SetFont('Arial','',4); 
 
 			$x_personal=$initial_x_personal;
 			$y_personal=$initial_y_personal+24;
 			for($cont=0;$cont<count($secretaria);$cont++){
 
-				$pdf->Image($jpeg_file_secr[$cont],$x_personal,$y_personal,$width_personal_foto); 
+				$pdf->Image($secretaria[$cont]['photo'],$x_personal,$y_personal,$width_personal_foto); 
 				$pdf->Text($x_personal,$y_personal+15,utf8_decode(ucfirst($secretaria[$cont]['name'])));                
 				$pdf->Text($x_personal,$y_personal+17,utf8_decode(ucfirst($secretaria[$cont]['sn'])));   
 				$x_personal=$x_personal+14;

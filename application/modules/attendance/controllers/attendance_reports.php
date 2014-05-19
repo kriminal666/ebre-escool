@@ -363,10 +363,10 @@ class attendance_reports extends skeleton_main {
         }   else {
             $data['selected_group']=$default_group_id;
         }
-
+/*
         if ($data['selected_group']!="ALL_GROUPS")
             $default_group_dn=$this->ebre_escool_ldap->getGroupDNByGroupCode($data['selected_group']);
-        
+*/        
         if ($data['selected_group']=="ALL_GROUPS")
             $data['selected_group_names']= array (lang("all_tstudents"),"");
         else
@@ -442,7 +442,6 @@ class attendance_reports extends skeleton_main {
                 if( $jpeg_data_size < 6 )
                 {
                     $student->photo_url='assets/img/alumnes/foto.png';
-                    //echo "<img src='".base_url('assets/img/alumnes/foto.png')."' /><br />";   
                 }
             }
 
@@ -454,46 +453,6 @@ class attendance_reports extends skeleton_main {
             $contador++;
             }
 
-            /*
-            foreach($all_students_in_group as $student){
-
-            if($photo){
-                // Detectar tipus d'imatge (PNG o JPG) 
-                
-                //$imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->irisPersonalUniqueID);
-                $imagedata = file_get_contents(base_url("/assets/img/alumnes")."/".$student->jpegPhoto);
-                $type = pathinfo(base_url("/assets/img/alumnes")."/".$student->jpegPhoto, PATHINFO_EXTENSION);
-                $extensio = ".".$type;
-
-                //$jpeg_filename="/tmp/".$student->irisPersonalUniqueID.$extensio;
-                $jpeg_filename=base_url("/assets/img/alumnes")."/".$student->jpegPhoto;
-                $jpeg_file[$contador]=$student->jpegPhoto;
-                $alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
-                $outjpeg = fopen($jpeg_filename, "rb");
-                fwrite($outjpeg, $student->jpegPhoto);
-                fclose ($outjpeg);
-                $jpeg_data_size = filesize( $imagedata );
-
-                if( $jpeg_data_size < 6 ) {
-                    $jpeg_file[$contador]=$student->jpegPhoto;
-                    $alumne[$contador]['jpegPhoto']=$student->jpegPhoto;
-                }
-
-            }
-            //print_r($student);
-            $alumne[$contador]['givenName']=$student->givenName;
-            $alumne[$contador]['sn1']=$student->sn1;
-            $alumne[$contador]['sn2']=$student->sn2;
-
-            $contador++;
-            }
-            */
-            //$contador = 1;
-            /*
-            echo "<pre>";
-            print_r($alumne);
-            echo "</pre>";
-            */
             //Crido la classe
             $pdf = new FPDF('P', 'mm', 'A4','font/');
             //Defineixo els marges
