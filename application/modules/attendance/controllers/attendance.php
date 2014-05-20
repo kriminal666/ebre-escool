@@ -230,6 +230,7 @@ class attendance extends skeleton_main {
         
 	}
 
+
 /* proves ajax, json */
 
 	public function prova () {
@@ -1440,5 +1441,15 @@ function set_common_columns_name($table_name){
     $this->grocery_crud->display_as($table_name.'_markedForDeletion',lang('markedForDeletion'));       
     $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
+
+ // PROVA Executar funcions d'altres mòduls
+	public function test($params = false){
+		echo "Això és un test de Attendance<br />";
+		echo $this->body_footer_view."<br />";
+		if($params){
+			echo "Ei, he rebut estos paràmetres: ".$params;
+		}
+	}
+
 
 }
