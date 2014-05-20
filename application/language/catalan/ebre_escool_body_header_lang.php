@@ -131,3 +131,8 @@ $lang['bank_account_type']="Tipus de compte";
 //Usuaris
 $lang['creation_user']="Usuari de Creació";
 $lang['modification_user']="Usuari de Modificació";
+
+//Usuaris
+$lang['attendance_incidents']="Incidènces assistència";
+$lang['attendance_incident_types']="Tipus d'incidències d'assistència";
+

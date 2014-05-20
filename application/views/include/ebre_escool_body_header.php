@@ -818,7 +818,8 @@
               <li id="lessons"><a href='<?=base_url()?>index.php/curriculum/lessons'><?php echo lang('lessons');?></a></li><!-- Lliçons -->              
             </ul>
          </li>  
-              <!-- matricula -->
+         
+         <!-- matricula -->
          <li id="enrollment_menu">
           <a href="#" class="dropdown-toggle">
           <i class="icon-double-angle-right"></i>
@@ -835,6 +836,22 @@
               <li id="enrollment_submodules"><a href='<?=base_url()?>index.php/enrollment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>      
+
+        <!-- matricula -->
+         <li id="attendance_maintainance">
+          <a href="#" class="dropdown-toggle">
+          <i class="icon-double-angle-right"></i>
+            <?php echo lang('attendance');?>
+                  <b class="arrow icon-angle-down"></b>             
+          </a>
+           
+            <ul class="submenu">
+              <!-- Matrícules -->
+              <li id="attendance_incident"><a href='<?=base_url()?>index.php/attendance/incident'><?php echo lang('attendance_incidents');?></a></li>              
+              <li id="attendance_incident_ype"><a href='<?=base_url()?>index.php/attendance/incident_type'><?php echo lang('attendance_incident_types');?></a></li>              
+            </ul>                                                                                                                                                                                                                                                                                                                                      
+         </li> 
+
          <!-- Hores no lectives-->
          <li id="timetable">
           <a href="#" class="dropdown-toggle">

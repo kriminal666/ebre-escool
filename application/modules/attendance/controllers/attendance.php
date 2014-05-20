@@ -230,20 +230,7 @@ class attendance extends skeleton_main {
         
 	}
 
-/* proves ajax, json */
 
-	public function prova () {
-
-		//CSS
-		$header_data= $this->add_css_to_html_header_data(
-			$this->_get_html_header_data(),
-			"http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
-			
-		$this->_load_html_header($header_data); 
-		$this->_load_body_header();
-        $this->load->view('attendance/prova.php');    
-		$this->_load_body_footer();	
-	}
 
 	public function read($table=null){
 
@@ -339,6 +326,99 @@ class attendance extends skeleton_main {
     $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
 	$this->renderitzar($this->current_table,$header_data);	
+
+	}
+
+	public function incident () {
+
+		$active_menu = array();
+		$active_menu['menu']='#maintenances';
+		$active_menu['submenu1']='#attendance_maintainance';
+		$active_menu['submenu2']='#attendance_incident';
+
+	    $this->check_logged_user();
+
+		/* Ace */
+	    $header_data = $this->load_ace_files($active_menu);  
+
+	    // Grocery Crud 
+	    $this->current_table="incident";
+	    $this->grocery_crud->set_table($this->current_table);
+	        
+	    $this->session->set_flashdata('table_name', $this->current_table);     
+			
+		//Establish subject:
+	    $this->grocery_crud->set_subject(lang("incident"));
+
+	    //COMMON_COLUMNS               
+	    $this->set_common_columns_name($this->current_table);       
+
+	    $this->common_callbacks($this->current_table);
+
+	    //ESPECIFIC COLUMNS  
+	    // $this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
+	    //$this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
+	    
+
+	    //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+	    
+	    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+			
+	    $this->userCreation_userModification($this->current_table);
+
+	    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+		$this->renderitzar($this->current_table,$header_data);	
+
+	}
+
+	public function incident_type () {
+
+		$active_menu = array();
+		$active_menu['menu']='#maintenances';
+		$active_menu['submenu1']='#attendance_maintainance';
+		$active_menu['submenu2']='#attendance_incident_ype';
+
+	    $this->check_logged_user();
+
+		/* Ace */
+	    $header_data = $this->load_ace_files($active_menu);  
+
+	    // Grocery Crud 
+	    $this->current_table="incident_type";
+	    $this->grocery_crud->set_table($this->current_table);
+	        
+	    $this->session->set_flashdata('table_name', $this->current_table);     
+			
+		//Establish subject:
+	    $this->grocery_crud->set_subject(lang("incident_type"));
+
+	    //COMMON_COLUMNS               
+	    $this->set_common_columns_name($this->current_table);       
+
+	    $this->common_callbacks($this->current_table);
+
+	    //ESPECIFIC COLUMNS  
+	    //$this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
+	    //$this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
+	    
+	    //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+	    
+	    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+			
+	    $this->userCreation_userModification($this->current_table);
+
+	    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+		$this->renderitzar($this->current_table,$header_data);	
 
 	}
 
