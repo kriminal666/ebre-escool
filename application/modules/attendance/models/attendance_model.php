@@ -83,7 +83,6 @@ class attendance_model  extends CI_Model  {
 		//echo $this->db->last_query();
 
 		if ($query->num_rows() > 0) {
-
 			$student_info_array = array();
 
 			foreach ($query->result_array() as $row)	{
@@ -106,8 +105,10 @@ class attendance_model  extends CI_Model  {
 
 			return $student_info_array;
 		}			
-		else
-			return false;
+		else {
+			return array();
+		}
+			
 
 	}
 
