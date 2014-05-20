@@ -3,7 +3,7 @@
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
-
+      <!--coomment to prove fork push -->
       <div class="navbar-inner">
         <div class="container-fluid">
           <a href="#" class="brand">
@@ -964,5 +964,31 @@
 
   </div>
 
+<script>
+  $(document).ready(function(){
+    var menu_count = Object.keys(menu).length;
+    
+      $(".open").removeClass("open");      
+      $(".active").removeClass("active");   
 
+      if(menu_count>1){
+
+        for(var i=0; i<=menu_count; i++)
+        {
+          if(i==0){
+            $(menu['menu']).addClass("open active");
+          } else if(i==menu_count) {
+            $(menu['submenu'+i]).addClass("active");
+          } else {
+            $(menu['submenu'+i]).addClass("open active");
+          }
+        }
+
+      } else {
+        $(menu['menu']).addClass("active");
+      }
+
+  });
+
+</script>  
 <!-- END OF body_header. DO NOT CLOSE Body tag. Closed in body footer--> 
