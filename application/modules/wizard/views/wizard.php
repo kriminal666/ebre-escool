@@ -49,7 +49,13 @@
                         <div class="widget-main">
                           <div id="fuelux-wizard" class="row-fluid" data-target="#step-container">
                             <ul class="wizard-steps">
-                              <li data-target="#step1" class="active">
+
+                              <li data-target="#step0" class="active">
+                                <span class="step">0</span>
+                                <span class="title">Alta alumne</span>
+                              </li>
+
+                              <li data-target="#step1">
                                 <span class="step">1</span>
                                 <span class="title"><?php echo lang('enrollment');?></span>
                               </li>
@@ -77,8 +83,117 @@
                           </div>
 
                           <hr />
+<!-- Step 0 -->
+
                           <div class="step-content row-fluid position-relative" id="step-container">
-                            <div class="step-pane active" id="step1">
+                            <div class="step-pane active" id="step0">
+                              <div class="row-fluid center">
+                                <h3 class="lighter block green">Alta Alumne</h3>
+                                Dades personals
+                              </div>
+                          
+                          <form class="form-horizontal" id="validation-form" method="get">
+                                
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_official_id"><?php echo lang('wizzard_official_id');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el DNI" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
+                                  </div>
+                                </div>
+
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
+                                  </div>
+                                </div>
+
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
+                                  </div>
+                                </div>                                
+
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_telephoneNumber" placeholder="Escriu el telèfon fixe" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_mobile" placeholder="Escriu el telèfon mòbil" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_homePostalAddress" placeholder="Escriu l'Adreça" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_locality_name" placeholder="Escriu la Localitat" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" />
+                                  </div>
+                                </div>
+                                <br />
+
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_gender"><?php echo lang('wizzard_gender');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_gender" placeholder="Escriu el Sexe" />
+                                  </div>
+                                </div>
+
+                                <div class="space-2"></div>
+                            </form>
+                            </div>
+                          </div>
+
+<!-- /Step 0 -->
+
+
+                          <div class="step-content row-fluid position-relative" id="step-container">
+                            <div class="step-pane" id="step1">
                               <div class="row-fluid center">
                                 <h3 class="lighter block green"><?php echo lang('enrollment');?></h3>
                                 <?php echo lang('person_and_academinc_period'); ?>
@@ -87,7 +202,7 @@
                       <!-- Formulari step 1 -->
 
                           <form class="form-horizontal" id="validation-form" method="get">
-
+                                <div class="step1_student_data"></div>
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="academic_period"><?php echo lang('academinc_period'); ?>:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -324,6 +439,37 @@
         } 
         //alert(actual_step);    
 
+        $("#student_official_id").blur(function(){
+          student = $(this).val();
+          //alert("Has sortit del DNI havent escrit: "+text);
+
+              $.ajax({
+                url:'<?php echo base_url("index.php/wizard/check_student");?>',
+                type: 'post',
+                data: {
+                    student_official_id : student
+                },
+                datatype: 'json'
+              }).done(function(data){
+                //alert(this['person_givenName']);
+                //alert(data.person_givenName);
+                //alert(data(person_sn1));
+                //alert(data['person_sn2']);
+                
+                $.each(JSON.parse(data), function(idx,obj) {
+                  //console.log("Index "+idx+" Object: "+obj);
+                  $("#step0 input[name$="+idx+"]").val(obj);
+                });
+
+
+              });
+
+
+
+
+        });
+
+
 /*
       $(".btn-next").attr('disabled','disabled');
 
@@ -336,7 +482,31 @@
 */
       $(".btn-next").click(function(){
         step = $("#step-container div.active").attr("id");
-        if(step == "step1"){ // Academic period and student data
+        if(step == "step0"){ // Student Personal data
+
+          student_givenName = $("#"+step+" input[name$='person_givenName']").val();
+          student_sn1 = $("#"+step+" input[name$='person_sn1']").val();
+          student_sn2 = $("#"+step+" input[name$='student_sn2']").val();
+          student_email = $("#"+step+" input[name$='student_email']").val();
+          student_official_id = $("#"+step+" input[name$='student_official_id']").val();
+          student_date_of_birth = $("#"+step+" input[name$='student_date_of_birth']").val();
+          student_gender = $("#"+step+" input[name$='student_gender']").val();
+          student_homePostalAddress = $("#"+step+" input[name$='student_homePostalAddress']").val();
+          student_locality_name = $("#"+step+" input[name$='student_locality_name']").val();
+          student_telephoneNumber = $("#"+step+" input[name$='student_telephoneNumber']").val();
+          student_mobile = $("#"+step+" input[name$='student_mobile']").val();
+
+              // AJAX check student
+
+              /*
+
+            */
+
+          //alert("Nom: "+student_givenName+" "+student_sn1+" "+student_sn2+"\nDni: "+student_official_id+"\nEmail: "+student_email+"\nAdreça: "+student_homePostalAddress+" - "+student_locality_name+"\nTelèfons: "+student_telephoneNumber+"/"+student_mobile+"\nSexe: "+student_gender+"\nData de Naixement: "+student_date_of_birth);
+          
+          $(".step1_student_data").html("<h3>Alumne: "+student_givenName+" ("+student_official_id+") </h3>");          
+        
+        } else if(step == "step1"){ // Academic period and student data
 
           academic_period = $("#"+step+" input[name$='academic_period']").val();
           student_dni = $("#"+step+" input[name$='student_personal_id']").val();

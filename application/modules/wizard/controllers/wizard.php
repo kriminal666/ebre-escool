@@ -80,6 +80,31 @@ class wizard extends skeleton_main {
 
 	}
 
+    public function check_student() {
+        
+        if(isset($_POST['student_official_id'])){
+            $official_id = $_POST['student_official_id'];
+            $student_data = $this->wizard_model->get_student_data($official_id);
+            if($student_data){
+                print_r(json_encode($student_data));
+            } else {
+                return false;
+            }
+        }
+
+
+/*
+        $resultat = array();
+
+        $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
+        foreach($enrollment_classroom_groups as $key => $value){
+            $resultat[$key]=$value;
+        }
+*/        
+
+
+    }
+
     public function classroom_group($study = false) {
         //echo $study;
 
@@ -113,10 +138,11 @@ class wizard extends skeleton_main {
         $resultat = array();
 
         $enrollment_study_submodules = $this->wizard_model->get_enrollment_study_submodules($modules);
-        
-        foreach($enrollment_study_submodules as $key => $value){
-           $resultat[$key]=$value;
-        }
+      
+           foreach($enrollment_study_submodules as $key => $value){
+               $resultat[$key]=$value;
+            }
+
         print_r(json_encode($resultat));
     }
    
