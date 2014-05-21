@@ -3,7 +3,7 @@
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
-
+      <!--coomment to prove fork push -->
       <div class="navbar-inner">
         <div class="container-fluid">
           <a href="#" class="brand">
@@ -263,7 +263,7 @@
                 <img class="nav-user-photo" src="<?php echo base_url('uploads/person_photos/' . $this->session->userdata('photo'));?>" 
                   style="max-height: 36px !important;" alt="Foto de <?php echo $this->session->userdata('username');?>" />
                 <span class="user-info" style="line-height: 16px;">
-                  <small><?php echo lang('Welcome'); ?></small>
+                  <small>Benvingut/da,</small>
                   <?php echo $this->session->userdata('username');?>
                 </span>
 
@@ -274,14 +274,14 @@
                 <li>
                   <a href="#">
                     <i class="icon-cog"></i>
-                    <?php echo lang('configuration'); ?>
+                    Configuració
                   </a>
                 </li>
 
                 <li>
                   <a href="<?php echo base_url('/index.php/persons/persons/profile')?>" alt="Foto de <?php echo $this->session->userdata('username');?>">
                     <i class="icon-user"></i>
-                    <?php echo lang('profile'); ?>
+                    Perfil
                   </a>
                 </li>
 
@@ -290,7 +290,7 @@
                 <li>
                   <a href="<?php echo base_url('/index.php/skeleton_auth/ebre_escool_auth/logout'); ?>">
                     <i class="icon-off"></i>
-                    <?php echo lang('Exit'); ?>
+                    Sortir
                   </a>
                 </li>
               </ul>
@@ -361,7 +361,7 @@
 
 
 <?php 
-  /* Getting Active Menu */
+
   //$menu = $this->session->flashdata('menu');
   //print_r($menu); 
   $menu = json_encode($menu);
@@ -370,14 +370,15 @@
   if ( ! isset($is_teacher) ) {
     $is_teacher = $this->session->userdata('is_teacher');
   }
-?>
+
+  ?>
 
         <ul class="nav nav-list">
           <!-- PANELL DE CONTROL -->
           <li id="dashboard" class="active">
             <a href="<?php echo base_url('/index.php/dashboard'); ?>">
               <i class="icon-dashboard"></i>
-              <span class="menu-text"> <?php echo lang('control_panel'); ?> </span>
+              <span class="menu-text"> Panell de control </span>
             </a>
           </li>
           <!-- PASSAR LLISTA -->
@@ -564,33 +565,29 @@
                 <ul class="submenu">
 
                   <li id="curriculum_reports_statistics_checkings_groups">
-<<<<<<< HEAD
-                    <!--<a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">-->
-                    <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups'); ?>">
-                        <?php echo lang('classroom_groups'); ?>
-=======
                     <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">
                         Grups de classe
->>>>>>> 1224a7b5dcda83c130aabe94a8a97804ca71c5df
                     </a>
                   </li>
 
                   <li id="curriculum_reports_users_in_group">
-                    <!--<a href="http://iesdeltebre.net/ebre-escool/index.php/managment/users_in_group">-->
-                    <a href="<?php echo base_url('/index.php/managment/users_in_group'); ?>">
-                      <?php echo lang('users_in_classroom_group'); ?>
+                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/users_in_group">
+                      Usuaris per grup de classe
                     </a>
                   </li>
 
                   <!-- STUDENTS MAILING LIST-->    
                   <li id="curriculum_reports_lessons">
                     <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/lessons">
-                      <?php echo lang('lessons'); ?>
+                      Lliçons
                     </a>
                   </li>
 
                 </ul>                  
               </li> 
+
+
+              
 
               <!-- Assistència informes del centre -->
               <li id="reports_educational_center">
@@ -661,14 +658,14 @@
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
 
-                  <?php echo lang('inventory_reports'); ?>
+                  Informes d'inventari
                   <b class="arrow icon-angle-down"></b>
                 </a>
 
                 <ul class="submenu">
                   <li id="inventory_reports_filters">
                     <a href="<?php echo base_url('/index.php/inventory/inventory_reports/inventory'); ?>">
-                        <?php echo lang('all_inventory_with_filter_options'); ?>
+                        Tot l'inventari amb opció de filtres
                     </a>
                   </li>
 
@@ -681,7 +678,7 @@
           <li id="inventory">
             <a href="<?=base_url()?>index.php/inventory/inventory">
               <i class="icon-check"></i>
-              <span class="menu-text"><?php echo lang('inventory'); ?></span>
+              <span class="menu-text"> Inventari </span>
             </a>
           </li>
 
@@ -908,21 +905,21 @@
               <li id="managment_users">
                 <a href="<?php echo base_url('index.php/skeleton/users');?>">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo lang('users'); ?>
+                  Usuaris
                 </a>
               </li>
 
               <li id="managment_groups">
                 <a href="<?php echo base_url('index.php/skeleton/groups');?>">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo lang('groups'); ?>
+                  Grups
                 </a>
               </li>
 
               <li id="managment_massive_change_password">
                 <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/massive_change_password">
                   <i class="icon-double-angle-right"></i>
-                    <?php echo lang('massive_change_password'); ?>
+                  Canvi massiu de paraules de pas
                 </a>
               </li>
 
@@ -931,14 +928,14 @@
               <li id="managment_preferences">
                 <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo lang('preferences'); ?>
+                  Preferències
                 </a>
               </li>
 
               <li id="user_profile">
                 <a href="<?php echo base_url('index.php/persons/persons/profile');?>">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo lang('user_profile'); ?>
+                  Perfil del usuari
                 </a>
               </li>
 
@@ -967,5 +964,31 @@
 
   </div>
 
+<script>
+  $(document).ready(function(){
+    var menu_count = Object.keys(menu).length;
+    
+      $(".open").removeClass("open");      
+      $(".active").removeClass("active");   
 
+      if(menu_count>1){
+
+        for(var i=0; i<=menu_count; i++)
+        {
+          if(i==0){
+            $(menu['menu']).addClass("open active");
+          } else if(i==menu_count) {
+            $(menu['submenu'+i]).addClass("active");
+          } else {
+            $(menu['submenu'+i]).addClass("open active");
+          }
+        }
+
+      } else {
+        $(menu['menu']).addClass("active");
+      }
+
+  });
+
+</script>  
 <!-- END OF body_header. DO NOT CLOSE Body tag. Closed in body footer--> 

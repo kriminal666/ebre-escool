@@ -14,6 +14,18 @@
 
 // TODO
 
+$lang['wizzard_official_id'] = 'DNI: ';
+$lang['wizzard_givenName'] = 'Nom: ';
+$lang['wizzard_sn1'] = 'Primer Cognom: ';
+$lang['wizzard_sn2'] = 'Segon Cognom: ';
+$lang['wizzard_telephoneNumber'] = 'Telèfon fixe: ';
+$lang['wizzard_mobile'] = 'Telèfon mòbil: ';
+$lang['wizzard_email'] = 'Correu electrònic: ';
+$lang['wizzard_homePostalAddress'] = 'Adreça Postal: ';
+$lang['wizzard_locality_name'] = 'Localitat: ';
+$lang['wizzard_date_of_birth'] = 'Data de naixement: ';
+$lang['wizzard_gender'] = 'Sexe: ';
+
 $lang['wizard'] = 'Assistent';
 $lang['enrollment'] = 'Matrícula';
 $lang['enrollment_studies'] = 'Estudi';

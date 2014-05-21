@@ -804,31 +804,31 @@ class attendance extends skeleton_main {
 		$data['classroom_group_students'] = array ();
 		$base_photo_url = "uploads/person_photos";
 		
-		foreach($all_students_in_group as $student)	{
+		
+		if ( $data['total_number_of_students'] != 0 ) {
+			foreach($all_students_in_group as $student)	{
 
-			$studentObject = new stdClass;
+				$studentObject = new stdClass;
 			
-			$studentObject->person_id = $student->person_id;
-			$studentObject->givenName = $student->givenName;
-			$studentObject->sn1 = $student->sn1;
-			$studentObject->sn2 = $student->sn2;
-			$studentObject->username = $student->username;
-			$studentObject->email = $student->email;
+				$studentObject->person_id = $student->person_id;
+				$studentObject->givenName = $student->givenName;
+				$studentObject->sn1 = $student->sn1;
+				$studentObject->sn2 = $student->sn2;
+				$studentObject->username = $student->username;
+				$studentObject->email = $student->email;
 			
-			//TODO: get incident notes!
-			$studentObject->notes = "nota";
+				//TODO: get incident notes!
+				$studentObject->notes = "nota";
 
-			if ($student->photo_url != "") {
-				$student->photo_url = $base_photo_url."/".$student->photo_url;	
-			}	else {
-				$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
-			}
-			
-
-			$data['classroom_group_students'][]=$student;
+				if ($student->photo_url != "") {
+					$student->photo_url = $base_photo_url."/".$student->photo_url;	
+				}	else {
+					$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
+				}
+				$data['classroom_group_students'][]=$student;
+			}	
 		}
-
-
+		
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 
 		/*******************
