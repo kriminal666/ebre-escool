@@ -1773,7 +1773,7 @@ CREATE TABLE `incident` (
   `incident_day` int(11) NOT NULL,
   `incident_study_submodule_id` int(11) NOT NULL,
   `incident_type` int(11) NOT NULL,
-  `incident_notes` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `incident_notes` text NOT NULL,
   `incident_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `incident_creationUserId` int(11) DEFAULT NULL,
   `incident_lastupdateUserId` int(11) DEFAULT NULL,
@@ -1786,7 +1786,6 @@ CREATE TABLE `incident` (
 --
 -- Table structure for table `incident`
 --
-
 DROP TABLE IF EXISTS `incident_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -1795,6 +1794,7 @@ CREATE TABLE `incident_type` (
   `incident_type_name` varchar(150) NOT NULL,
   `incident_type_shortName` varchar(150) NOT NULL,
   `incident_type_description` varchar(255) NOT NULL,
+  `incident_type_code` varchar(10) NOT NULL,
   `incident_type_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `incident_type_creationUserId` int(11) DEFAULT NULL,
   `incident_type_lastupdateUserId` int(11) DEFAULT NULL,
@@ -1803,4 +1803,6 @@ CREATE TABLE `incident_type` (
   PRIMARY KEY (`incident_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
 

@@ -767,36 +767,7 @@
                   <?php echo lang('location_menu');?>
                 </a>
               </li>
-              <!-- Gestio Assistència -->              
-              <li id="attendance_managment">
-                <a href="#" class="dropdown-toggle">
-                  <i class="icon-double-angle-right"></i>
-
-                  <?php echo lang('attendance_managment');?>
-
-                  <b class="arrow icon-angle-down"></b>
-                </a>
-
-                <ul class="submenu">
-                  <li id="classroom_groups">
-                    <a href="<?php echo base_url('/index.php/attendance/classroom_groups'); ?>">
-                      <?php echo lang('classroom_groups')?>
-                    </a>
-                  </li>
-
-                  <li id="time_slots">
-                    <a href="<?php echo base_url('/index.php/attendance/time_slots'); ?>">
-                      <?php echo lang('time_slots')?>
-                    </a>
-                  </li>
-                  
-                  <li id="attendance_incidents_managment">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_incidents_managment'); ?>">
-                       <?php echo "Incidències"?>
-                    </a>
-                  </li> 
-                </ul>
-              </li>
+              
               <!-- currículum -->
          <li id="curriculum">
           <a href="#" class="dropdown-toggle">
@@ -848,7 +819,9 @@
             <ul class="submenu">
               <!-- Matrícules -->
               <li id="attendance_incident"><a href='<?=base_url()?>index.php/attendance/incident'><?php echo lang('attendance_incidents');?></a></li>              
-              <li id="attendance_incident_ype"><a href='<?=base_url()?>index.php/attendance/incident_type'><?php echo lang('attendance_incident_types');?></a></li>              
+              <li id="attendance_incident_type"><a href='<?=base_url()?>index.php/attendance/incident_type'><?php echo lang('attendance_incident_types');?></a></li>
+              <li id="classroom_groups"><a href="<?php echo base_url('/index.php/attendance/classroom_groups'); ?>"><?php echo lang('classroom_groups')?></a></li>
+              <li id="time_slots"><a href="<?php echo base_url('/index.php/attendance/time_slots'); ?>"><?php echo lang('time_slots')?></a></li>              
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li> 
 

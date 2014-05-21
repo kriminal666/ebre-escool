@@ -356,9 +356,18 @@ class attendance extends skeleton_main {
 	    $this->common_callbacks($this->current_table);
 
 	    //ESPECIFIC COLUMNS  
-	    // $this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
-	    //$this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
+	    $this->grocery_crud->display_as($this->current_table.'_student_id',lang('student'));
+	    $this->grocery_crud->display_as($this->current_table.'_day',lang('day'));
+	    $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang('time_slot'));
+	    $this->grocery_crud->display_as($this->current_table.'_study_submodule_id',lang('study_submodule'));
+	    $this->grocery_crud->display_as($this->current_table.'_type',lang('incident_type'));
+	    $this->grocery_crud->display_as($this->current_table.'_notes',lang('incident_notes'));
 	    
+	    //Relations
+    	$this->grocery_crud->set_relation($this->current_table.'_student_id','student','{student_person_id} - {student_code}',array('student_markedForDeletion' => 'n'));
+    	$this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time}',array('time_slot_markedForDeletion' => 'n'));
+		$this->grocery_crud->set_relation($this->current_table.'_study_submodule_id','study_submodules','{study_submodules_id} - {study_submodules_name}',array('study_submodules_markedForDeletion' => 'n'));
+    	$this->grocery_crud->set_relation($this->current_table.'_type','incident_type','{incident_type_id} - {incident_type_shortName}',array('incident_type_markedForDeletion' => 'n'));
 
 	    //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -403,8 +412,10 @@ class attendance extends skeleton_main {
 	    $this->common_callbacks($this->current_table);
 
 	    //ESPECIFIC COLUMNS  
-	    //$this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
-	    //$this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
+	    $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+	    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
+	    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+	    $this->grocery_crud->display_as($this->current_table.'_code',lang('code'));
 	    
 	    //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -479,26 +490,6 @@ class attendance extends skeleton_main {
 		$this->_load_body_footer();		
 	}
 
-	public function attendance_incidents_managment () {
-
-		$active_menu = array();
-		$active_menu['menu']='#mentoring';
-		$active_menu['submenu1']='#attendance_incidents_managment';
-
-    	$this->check_logged_user();
-
-		$header_data = $this->load_header_data($active_menu);
-        $this->_load_html_header($header_data);
-
-		$this->_load_body_header();
-
-		$data = array();
-		
-		$this->load->view('attendance_incidents_managment',$data);	
-
-		$this->_load_body_footer();		
-	}
-	
 	public function pdf_exemple() {
 		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
 		#$this->load->library('fpdf');
