@@ -942,6 +942,37 @@
               -->
             </ul>
           </li>
+          <!--Bloquear aulas-->
+	     <li id="blockaula">
+            <a href="#" class="dropdown-toggle">
+              <i class="icon-fire"></i>
+              <span class="menu-text">Firewall </span>
+              <b class="arrow icon-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+              <!-- aulas -->
+              <li id="blockclass">
+                <a href="<?php echo base_url('/index.php/blockclass/lock_unlock');?>">
+                  <i class="icon-double-angle-right"></i>
+                 Bloquear/Desbloquear aulas
+                </a>
+              </li>
+              
+             
+              <!--commmands-->
+              <li id="commands">
+                <a href="<?php echo base_url('/index.php/blockclass/commands');?>">
+                  <i class="icon-double-angle-right"></i>
+                 Ejecutar comandos de terminal RB
+                </a>
+              </li>
+              </ul>
+              </li>
+
+
+              </ul>
+
 
 
         </ul><!-- /.nav-list -->
