@@ -119,9 +119,10 @@ $(document).ready(function(){
 		$('#loaderImage').show();
 		
 		// post the data from the form
-		$.post("create.php", $(this).serialize())
+		$.post("<?php echo base_url()?>index.php/attendance/insert_incidents", $(this).serialize())
 			.done(function(data) {
 				// 'data' is the text returned, you can do any conditions based on that
+				//TODO: treat errors!!!!!!!!!!!!!!!!!!!
 				showIncidents();
 			});
 	 			

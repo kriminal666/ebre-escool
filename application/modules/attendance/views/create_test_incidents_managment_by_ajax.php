@@ -30,31 +30,31 @@
         </tr>
         <tr>
             <td>incident_type</td>
-            <td><input type='password' name='incident_type' required /></td>
+            <td><input type='text' name='incident_type' required /></td>
         <tr>
             <tr>
             <td>incident_notes</td>
-            <td><input type='password' name='incident_notes' required /></td>
+            <td><input type='text' name='incident_notes' required /></td>
         <tr>
             <tr>
             <td>incident_last_update</td>
-            <td><input type='password' name='incident_last_update' required /></td>
+            <td><input type='text' name='incident_last_update' required /></td>
         <tr>
             <tr>
             <td>incident_creationUserId</td>
-            <td><input type='password' name='incident_creationUserId' required /></td>
+            <td><input type='text' name='incident_creationUserId' required /></td>
         <tr>
         <tr>
             <td>incident_lastupdateUserId</td>
-            <td><input type='password' name='incident_lastupdateUserId' required /></td>
+            <td><input type='text' name='incident_lastupdateUserId' required /></td>
         <tr>
             <tr>
             <td>incident_markedForDeletion</td>
-            <td><input type='password' name='incident_markedForDeletion' required /></td>
+            <td><input type='text' name='incident_markedForDeletion' required /></td>
         <tr>
             <tr>
             <td>incident_markedForDeletionDate</td>
-            <td><input type='password' name='incident_markedForDeletionDate' required /></td>
+            <td><input type='text' name='incident_markedForDeletionDate' required /></td>
         <tr>
             <td></td>
             <td>                

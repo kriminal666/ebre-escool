@@ -27,6 +27,11 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 
+	function insert_incidence($data_incident_array){
+		$this->db->insert('incident', $data_incident_array); 
+		echo $this->db->last_query();
+	}
+
 	function is_user_a_teacher ($person_id) {
 
 		$this->db->select('teacher_id');

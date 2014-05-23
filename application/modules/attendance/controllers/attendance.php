@@ -308,12 +308,9 @@ class attendance extends skeleton_main {
     	}
 
     	//DEBUG
-    	echo "<br/>incident_student_id: " . $_POST['incident_student_id'];
-    	echo "<br/>incident_time_slot_id: " . $_POST['incident_time_slot_id'];
-    
-    	echo "<br/>POST: " . print_r($_POST);	
+    	echo "POST: " . print_r($_POST);	
 
-    	//$this->attendance_model->insert_incidence();
+    	$this->attendance_model->insert_incidence($_POST);
 
 	}
 	
