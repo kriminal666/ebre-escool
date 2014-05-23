@@ -1469,6 +1469,35 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
   PRIMARY KEY (`non_lective_hours_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `lesson`     TODO
+--
+
+CREATE TABLE IF NOT EXISTS `lesson` (
+  `lesson_id` int(11) NOT NULL AUTO_INCREMENT,
+  `lesson_periodid` varchar(50) NOT NULL,
+  `lesson_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `lesson_codi_assignatura` varchar(30) NOT NULL COMMENT 'ESBORRAR',
+  `lesson_classroom_group_id` int(11) NOT NULL,
+  `lesson_codi_grup` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'ESBORRAR',
+  `lesson_teacher_id` int(11) NOT NULL,
+  `lesson_codi_professor` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'ESBORRAR',
+  `lesson_study_module_id` int(11) NOT NULL,
+  `lesson_location_id` int(11) NOT NULL,
+  `lesson_day` int(5) NOT NULL,
+  `lesson_time_slot_id` int(11) NOT NULL,
+  `codi_hora` tinyint(2) NOT NULL,
+  `lesson_entryDate` datetime NOT NULL,
+  `lesson_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lesson_creationUserId` int(11) DEFAULT NULL,
+  `lesson_lastupdateUserId` int(11) DEFAULT NULL,
+  `lesson_markedForDeletion` enum('n','y') NOT NULL,
+  `lesson_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`lesson_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 --
 -- Estructura de la taula `non_lective_lessons`
 --

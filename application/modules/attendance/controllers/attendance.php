@@ -195,6 +195,11 @@ class attendance extends skeleton_main {
                     $header_data,
                     base_url('assets/grocery_crud/js/jquery_plugins/jquery.fancybox-1.3.4.js'));
 
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));
+
+
 		$header_data['menu']= $active_menu;
 		return $header_data; 
         
