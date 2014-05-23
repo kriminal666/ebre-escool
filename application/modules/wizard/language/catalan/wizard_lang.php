@@ -15,6 +15,7 @@
 // TODO
 
 $lang['wizzard_official_id'] = 'DNI: ';
+$lang['wizzard_secondary_official_id'] = 'TSI: ';
 $lang['wizzard_givenName'] = 'Nom: ';
 $lang['wizzard_sn1'] = 'Primer Cognom: ';
 $lang['wizzard_sn2'] = 'Segon Cognom: ';

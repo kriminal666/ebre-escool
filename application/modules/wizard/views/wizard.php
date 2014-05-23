@@ -80,20 +80,38 @@
                                 <span class="title"><?php echo lang('enrollment_submodules');?></span>
                               </li>
                             </ul>
-                          </div>
+                          </div> <!-- /fuelux-wizard -->
 
                           <hr />
-<!-- Step 0 -->
 
                           <div class="step-content row-fluid position-relative" id="step-container">
+
+                <!-- Step 0 - Student data -->
                             <div class="step-pane active" id="step0">
+
+                    <!-- Show notification if student exists -->
+                            <div id="student_exists"></div>
+                    <!-- /Show notification if student exists -->
+
+
                               <div class="row-fluid center">
                                 <h3 class="lighter block green">Alta Alumne</h3>
                                 Dades personals
                               </div>
                           
-                          <form class="form-horizontal" id="validation-form" method="get">
+                              <form class="form-horizontal" id="standard-form" method="get">
+                                <input type="hidden" id="person_id" name="person_id"  />
+                                <div id="perfil"></div>
+                                <!-- Student Photo -->
+                                <div id="student_photo" style="height: 150px;"> 
+
+                                  <span class="profile-picture">
+                                    <img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/>
+                                  </span>
+
+                                </div>
                                 
+                                <!-- Student Official ID -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_official_id"><?php echo lang('wizzard_official_id');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -101,34 +119,44 @@
                                   </div>
                                 </div>
                                 <br />
+                                
+                                <!-- Student Secondary Official ID -->
+                                <div class="form-group">
+                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
+                                  <div class="col-xs-12 col-sm-9">
+                                    <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
+                                  </div>
+                                </div>
+                                <br />
 
+                                <!-- Student Name -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <input type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
                                   </div>
                                 </div>
-
                                 <br />
 
+                                <!-- Student Sn1 -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <input type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
                                   </div>
                                 </div>
-
                                 <br />
 
+                                <!-- Student Sn2 -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <input type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
                                   </div>
                                 </div>                                
-
                                 <br />
 
+                                <!-- Student Telephone Number -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -137,6 +165,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Mobile Number -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -145,6 +174,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Email -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -153,6 +183,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Address -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -161,6 +192,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Locality -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -169,6 +201,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Birth Date -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -177,6 +210,7 @@
                                 </div>
                                 <br />
 
+                                <!-- Student Gender -->
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_gender"><?php echo lang('wizzard_gender');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -185,14 +219,11 @@
                                 </div>
 
                                 <div class="space-2"></div>
-                            </form>
+                              </form>
                             </div>
-                          </div>
 
-<!-- /Step 0 -->
-
-
-                          <div class="step-content row-fluid position-relative" id="step-container">
+                <!-- /Step 0 -->
+                <!-- Step 1 - Academic period and student -->
                             <div class="step-pane" id="step1">
                               <div class="row-fluid center">
                                 <h3 class="lighter block green"><?php echo lang('enrollment');?></h3>
@@ -206,18 +237,17 @@
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="academic_period"><?php echo lang('academinc_period'); ?>:&nbsp;&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
-                                    <input type="text" name="academic_period" placeholder="Escriu un periode Acadèmic" />
+                                    <select id="academic_period" name="academic_period" class="select2" >
+                                      <?php foreach($this->config->item('academic_periods') as $key => $periode){ ?>
+                                        <option value="<?php echo $key; ?>" <?php if($periode == $this->config->item('current_period')){ ?> selected <?php } ?> ><?php echo $periode; ?></option>
+                                      <? } ?>
+                                    </select>
+                                    <script> 
+                                      $('select.academic_period').select2();
+                                    </script>
                                   </div>
                                 </div>
 
-                                <br />
-
-                                <div class="form-group">
-                                  <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_personal_id">DNI:&nbsp;&nbsp;</label>
-                                  <div class="col-xs-12 col-sm-9">
-                                    <input type="text" name="student_personal_id" placeholder="Escriu el teu DNI" />
-                                  </div>
-                                </div>
                                 <br />
 
                                 <div class="form-group">
@@ -239,7 +269,8 @@
                             </form>
                       <!-- /Formulari step 1 -->
                             </div>
-
+                <!-- /Step 1 -->
+                <!-- Step 2 - All Studies -->
                             <div class="step-pane" id="step2">
                               <div class="row-fluid center">
                                 <h3 class="blue lighter"><?php echo lang('enrollment_studies');?></h3>
@@ -267,10 +298,9 @@
                                 <div class="space-2"></div>
                             </form>
                       <!-- /Formulari step 2 -->
-
-
                             </div>
-
+                <!-- /Step 2 -->
+                <!-- Step 3 - All Classroom groups from Selected Study -->
                             <div class="step-pane" id="step3">
                               <div class="center">
                                 <h3 class="blue lighter"><?php echo lang('enrollment_classgroups');?></h3>
@@ -302,7 +332,8 @@
                       <!-- /Formulari step 3 -->
 
                             </div>
-
+                <!-- /Step 3 -->
+                <!-- Step 4 -->
                             <div class="step-pane" id="step4">
                               <div class="center">
                                 <h3 class="green"><?php echo lang('enrollment_modules');?></h3>
@@ -332,6 +363,8 @@
                       <!-- /Formulari step 4 -->
 
                             </div>
+                <!-- /Step 4 -->
+                <!-- Step 5 -->
 
                             <div class="step-pane" id="step5">
                               <div class="center">
@@ -364,6 +397,8 @@
                       <!-- /Formulari step 5 -->
 
                           </div>
+                <!-- /Step 5 -->
+
                             </div>
                           <hr />
                           <div class="row-fluid wizard-actions">
@@ -387,44 +422,14 @@
       if("ontouchend" in document) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
 
-    <script>
-/*
-      $(document).ready(function(){
-
-      study = $("#enrollment_study").val();
-      study_name = $("#enrollment_study option:selected").text();
-      $("#enrollment_study").change(function(){
-          study = $("#enrollment_study").val();
-          study_name = $("#enrollment_study option:selected").text();
-          
-          //AJAX per obtenir Grup de Classe
-          jQuery.ajax({
-            url:'<?php echo base_url("index.php/wizard/classroom_group");?>'+'/'+study,
-            type: 'get',
-            datatype: 'json'
-          }).done(function(data){
-            $.each(data, function(k,v){
-              alert("K: "+k+" V: "+v);
-            });
-          });
-          $(".step3_selected_study").html("<h3>Estudi: "+study_name+"</h3>");          
-        });
-      });
-*/
-
-    </script>
-
-
-
-
-
-
 
     <!-- inline scripts related to this page -->
 
     <script type="text/javascript">
       jQuery(function($) {
       
+        $( "#perfil" ).load( "<?php echo base_url('assets'); ?>/perfil_modificat.html" );
+
         $('[data-rel=tooltip]').tooltip();
       
         $(".select2").css('width','300px').select2({allowClear:true})
@@ -437,11 +442,10 @@
           $('ul.wizard-steps li').first().addClass('active');
           $('#step-container div').first().addClass('active');
         } 
-        //alert(actual_step);    
 
+        /* DNI blur action */
         $("#student_official_id").blur(function(){
           student = $(this).val();
-          //alert("Has sortit del DNI havent escrit: "+text);
 
               $.ajax({
                 url:'<?php echo base_url("index.php/wizard/check_student");?>',
@@ -451,44 +455,62 @@
                 },
                 datatype: 'json'
               }).done(function(data){
-                //alert(this['person_givenName']);
-                //alert(data.person_givenName);
-                //alert(data(person_sn1));
-                //alert(data['person_sn2']);
-                
+
+                /* Student Exists */
+                if(data != false){
+
+                  var student_exist = $("#student_exists");
+                  student_exist.html("<i class='icon-ok green'></i> L'alumne ja existeix <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
+                  .addClass("alert alert-block alert-success");
+
+                  /* Show notification during 5 seconds */
+                  setTimeout(function(){
+                    student_exist.html('');
+                    student_exist.removeClass("alert alert-block alert-success")
+                  },5000);
+                  //alert(data);
                 $.each(JSON.parse(data), function(idx,obj) {
-                  //console.log("Index "+idx+" Object: "+obj);
+                  
+                  /* Fill form with student data from Database */
                   $("#step0 input[name$="+idx+"]").val(obj);
+                  if(idx=='person_photo'){
+                    var student_photo = $('#student_photo');
+                    student_photo.html('<span class="profile-picture"><img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
+                  }
                 });
 
+                } else {
+                    empty_student = {"person_id":"",
+                    "person_photo":"","person_secondary_official_id":"","person_givenName":"",
+                    "person_sn1":"","person_sn2":"","person_email":"","person_date_of_birth":"",
+                    "person_gender":"","person_homePostalAddress":"","person_locality_name":"",
+                    "person_telephoneNumber":"","person_mobile":""}
+
+                    student_photo = $('#student_photo');
+                    student_photo.html('<span class="profile-picture"><img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
+                    //prova = $("#standard-form input").not( document.getElementById( "person_id" )).not( document.getElementById( "student_official_id" ));
+                    //console.log(prova);
+                    $.each(empty_student, function(idx,obj) {
+                      $("#step0 input[name$="+idx+"]").val(obj);
+                    });
+                }
 
               });
 
-
-
-
         });
 
-
-/*
-      $(".btn-next").attr('disabled','disabled');
-
-      $("input[name=academic_period]").change(function(){
-
-        if($(this).val() == "" ){
-          alert("no hi ha res");
-        }
-      });
-*/
       $(".btn-next").click(function(){
+        
         step = $("#step-container div.active").attr("id");
         if(step == "step0"){ // Student Personal data
 
+          student_person_id = $("#"+step+" input[name$='person_id']").val();
           student_givenName = $("#"+step+" input[name$='person_givenName']").val();
           student_sn1 = $("#"+step+" input[name$='person_sn1']").val();
           student_sn2 = $("#"+step+" input[name$='student_sn2']").val();
           student_email = $("#"+step+" input[name$='student_email']").val();
           student_official_id = $("#"+step+" input[name$='student_official_id']").val();
+          student_secondary_official_id = $("#"+step+" input[name$='student_secondary_official_id']").val();
           student_date_of_birth = $("#"+step+" input[name$='student_date_of_birth']").val();
           student_gender = $("#"+step+" input[name$='student_gender']").val();
           student_homePostalAddress = $("#"+step+" input[name$='student_homePostalAddress']").val();
@@ -496,24 +518,22 @@
           student_telephoneNumber = $("#"+step+" input[name$='student_telephoneNumber']").val();
           student_mobile = $("#"+step+" input[name$='student_mobile']").val();
 
-              // AJAX check student
-
-              /*
-
-            */
-
           //alert("Nom: "+student_givenName+" "+student_sn1+" "+student_sn2+"\nDni: "+student_official_id+"\nEmail: "+student_email+"\nAdreça: "+student_homePostalAddress+" - "+student_locality_name+"\nTelèfons: "+student_telephoneNumber+"/"+student_mobile+"\nSexe: "+student_gender+"\nData de Naixement: "+student_date_of_birth);
           
+          $("#student option[value=" + student_person_id +"]").attr("selected","selected");
+          $("#student").select2();
+
           $(".step1_student_data").html("<h3>Alumne: "+student_givenName+" ("+student_official_id+") </h3>");          
         
         } else if(step == "step1"){ // Academic period and student data
 
-          academic_period = $("#"+step+" input[name$='academic_period']").val();
+          //academic_period = $("#"+step+" input[name$='academic_period']").val();
+          academic_period = $("#academic_period option:selected").text();
           student_dni = $("#"+step+" input[name$='student_personal_id']").val();
-          student_name = $("#"+step+" option:selected").text();
-          student_id = $("#"+step+" option:selected").val();
+          student_name = $("#student option:selected").text();
+          student_id = $("#student option:selected").val();
           
-          $(".step2_selected_student").html("<h3>Alumne: "+student_name+" ("+student_id+") </h3>");          
+          $(".step2_selected_student").html("<h3>Periode Acadèmic: "+academic_period+"</h3><h3>Alumne: "+student_name+" ("+student_id+") </h3>");          
         
         } else if(step == "step2"){ // Study data
         
@@ -522,6 +542,7 @@
           $("#enrollment_study").change(function(){
               study_id = $("#enrollment_study").val();
               study_name = $("#enrollment_study option:selected").text();
+
           });    
               // AJAX get Classroom_Group from Study for step 3
               $.ajax({
