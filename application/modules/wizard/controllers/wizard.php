@@ -25,6 +25,8 @@ class wizard extends skeleton_main {
 		    }
 		    $this->lang->load('wizard', $current_language);	       
 
+            $this->config->load('config');
+
         //LANGUAGE HELPER:
         $this->load->helper('language');
 	}
@@ -35,11 +37,12 @@ class wizard extends skeleton_main {
 
     $this->check_logged_user(); 
 
-    /* Ace */
-    $header_data= $this->load_ace_files();  
-
     /* Wizard */
-    $header_data= $this->load_wizard_files($header_data);    
+    $header_data= $this->load_wizard_files();    
+
+    /* Ace */
+    $header_data= $this->load_ace_files($header_data);  
+
 
     if($study == false){
         $study = 2;
@@ -200,15 +203,30 @@ function check_logged_user()
     }
 }
 
-function load_wizard_files($header_data){
+function load_wizard_files($header_data=false){
 
 
         //CSS
         $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");    
+        $header_data= $this->add_css_to_html_header_data(
             $header_data,
-                base_url('assets/css/select2.css'));  
+                base_url('assets/css/select2.css')); 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/modifications_select2.css')); 
 
         //JS
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");  
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/select2.min.js'));           
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/fuelux.wizard.min.js'));
@@ -227,20 +245,16 @@ function load_wizard_files($header_data){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/fuelux.wizard.min.js'));                                                  
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/select2.min.js'));        
+      
 
         return $header_data;
 
 }
 
-function load_ace_files(){
+function load_ace_files($header_data){
 
         //CSS
-        $header_data= $this->add_css_to_html_header_data(
-            $this->_get_html_header_data(),
-            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-fonts.css'));
@@ -253,6 +267,8 @@ function load_ace_files(){
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
                 base_url('assets/css/ace-skins.min.css'));
+ 
+
 /*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -260,12 +276,7 @@ function load_ace_files(){
 */
 
         //JS
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/jquery-1.9.1.js");
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/ace-extra.min.js'));
