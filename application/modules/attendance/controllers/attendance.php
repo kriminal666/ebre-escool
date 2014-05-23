@@ -204,7 +204,8 @@ class attendance extends skeleton_main {
 		return $header_data; 
         
     }
-	
+
+
 	function __construct()
     {
         parent::__construct();
@@ -236,6 +237,8 @@ class attendance extends skeleton_main {
 	}
 
 
+	/*
+	TODO: remove
 
 	public function read($table=null){
 
@@ -283,54 +286,103 @@ class attendance extends skeleton_main {
 		$this->db->where('cycle_id', '8');
 		$this->db->delete('cycle'); 
 		print_r(json_encode($data));
-	}	
+	}
 
-/* fi proves ajax json */	
+	fi proves ajax json */	
+
+	public function read_test_incidents_managment_by_ajax () {	
+
+		echo "hola!";
+	}
+
+	public function create_test_incidents_managment_by_ajax() {
+		$data = array();
+        $this->load->view('create_test_incidents_managment_by_ajax.php',$data); 
+	}
+
+	public function insert_incidents() {
+
+		if (!$this->skeleton_auth->logged_in())	{
+			//TODO check permisions!
+        	echo "User not logged";
+    	}
+
+    	//DEBUG
+    	echo "<br/>incident_student_id: " . $_POST['incident_student_id'];
+    	echo "<br/>incident_time_slot_id: " . $_POST['incident_time_slot_id'];
+    
+    	echo "<br/>POST: " . print_r($_POST);	
+
+    	//$this->attendance_model->insert_incidence();
+
+	}
+	
+	public function test_incidents_managment_by_ajax () {	
+		
+		$active_menu = array();
+		$active_menu['menu']='#maintenances';
+		$active_menu['submenu1']='#attendance_managment';
+		$active_menu['submenu2']='#time_slots';
+
+	    $this->check_logged_user();
+
+		/* Ace */
+	    $header_data = $this->load_ace_files($active_menu); 
+
+		// HTML HEADER
+        $this->_load_html_header($header_data); 
+        $this->_load_body_header();      
+       
+       	// BODY       
+       	$data = array();
+        $this->load->view('test_incidents_managment_by_ajax.php',$data); 
+
+	}
 
 	public function time_slots () {
 
-	$active_menu = array();
-	$active_menu['menu']='#maintenances';
-	$active_menu['submenu1']='#attendance_managment';
-	$active_menu['submenu2']='#time_slots';
+		$active_menu = array();
+		$active_menu['menu']='#maintenances';
+		$active_menu['submenu1']='#attendance_managment';
+		$active_menu['submenu2']='#time_slots';
 
-    $this->check_logged_user();
+	    $this->check_logged_user();
 
-	/* Ace */
-    $header_data = $this->load_ace_files($active_menu);  
+		/* Ace */
+	    $header_data = $this->load_ace_files($active_menu);  
 
-    // Grocery Crud 
-    $this->current_table="time_slot";
-    $this->grocery_crud->set_table($this->current_table);
-        
-    $this->session->set_flashdata('table_name', $this->current_table);     
-		
-	//Establish subject:
-    $this->grocery_crud->set_subject(lang("time_slot"));
+	    // Grocery Crud 
+	    $this->current_table="time_slot";
+	    $this->grocery_crud->set_table($this->current_table);
+	        
+	    $this->session->set_flashdata('table_name', $this->current_table);     
+			
+		//Establish subject:
+	    $this->grocery_crud->set_subject(lang("time_slot"));
 
-    //COMMON_COLUMNS               
-    $this->set_common_columns_name($this->current_table);       
+	    //COMMON_COLUMNS               
+	    $this->set_common_columns_name($this->current_table);       
 
-    $this->common_callbacks($this->current_table);
+	    $this->common_callbacks($this->current_table);
 
-    //ESPECIFIC COLUMNS  
-    $this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
-    $this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
-    $this->grocery_crud->display_as($this->current_table.'_end_time',lang('time_slot_end_time'));       
+	    //ESPECIFIC COLUMNS  
+	    $this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
+	    $this->grocery_crud->display_as($this->current_table.'_end_time',lang('time_slot_end_time'));       
 
-    //UPDATE AUTOMATIC FIELDS
-	$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
-	$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
-    
-    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
-		
-    $this->userCreation_userModification($this->current_table);
+	    //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+	    
+	    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+			
+	    $this->userCreation_userModification($this->current_table);
 
-    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+	    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
 
-    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-	$this->renderitzar($this->current_table,$header_data);	
+		$this->renderitzar($this->current_table,$header_data);	
 
 	}
 
@@ -1405,7 +1457,7 @@ function before_update_object_callback($post_array, $primary_key) {
 
 function load_ace_files($active_menu){
 
-$header_data= $this->add_css_to_html_header_data(
+		$header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 
@@ -1420,7 +1472,10 @@ $header_data= $this->add_css_to_html_header_data(
                 base_url('assets/css/ace-responsive.min.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
-                base_url('assets/css/ace-skins.min.css'));      
+                base_url('assets/css/ace-skins.min.css'));  
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/test_incidents_managment_by_ajax_css.css'));     
 /*
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
