@@ -63,10 +63,12 @@ $lang['study_module_external_code']="Codi extern";
 $lang['type']="Tipus";   
 $lang['subtype']="Subtipus";   
 $lang['study_submodules_study_module_id']="Mòdul Professional";   
+$lang['study_submodules_courseid']="Curs";   
 $lang['study_submodules_initialDate']="Data inici";
 $lang['study_submodules_endDate']="Data fi";
 $lang['study_submodules_totalHours']="Hores totals";
 $lang['study_submodules_order']="Ordre";
+$lang['study_submodules_description']="Descripció";
 
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
