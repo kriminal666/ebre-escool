@@ -325,6 +325,7 @@ class persons extends skeleton_main {
         if ( is_array($this->session->flashdata('persons_filter')) ) {
           foreach ($this->session->flashdata('persons_filter') as $condition) {
             $this->grocery_crud->or_where('person_official_id',$condition);
+            $this->grocery_crud->order_by($table_name.'_official_id','desc');
           }            
         }
 
