@@ -148,6 +148,8 @@ class dashboard extends skeleton_main {
 	function __construct()
     {
         parent::__construct();
+
+        $this->load->model('dashboard_model');
         
 	}
 	
@@ -171,7 +173,13 @@ class dashboard extends skeleton_main {
 		/******************/
 		$this->_load_body_header();
 
-		$this->load->view('dashboard'); 
+		$data = array();
+
+		$person_statistics = $this->dashboard_model->getPersonsStatistics();
+
+		$data['person_statistics'] = $person_statistics;
+		
+		$this->load->view('dashboard',$data); 
                 
 		/*******************
 		/*      FOOTER     *

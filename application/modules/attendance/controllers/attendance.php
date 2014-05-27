@@ -307,8 +307,7 @@ class attendance extends skeleton_main {
         	echo "User not logged";
     	}
 
-    	//DEBUG
-    	echo "POST: " . print_r($_POST);	
+		//TODO: validate data	
 
     	$this->attendance_model->insert_incidence($_POST);
 
