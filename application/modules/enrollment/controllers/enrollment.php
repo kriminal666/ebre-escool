@@ -17,9 +17,10 @@ class enrollment extends skeleton_main {
         parent::__construct();
         
         //$this->load->model('attendance_model');
-        //$this->load->model('enrollment_model');
+        $this->load->model('enrollment_model');
         //$this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
+        $this->config->load('wizard');
         
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -503,6 +504,13 @@ function load_ace_files($active_menu){
 $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/select2.css')); 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+                base_url('assets/css/modifications_select2.css')); 
+
 
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -541,6 +549,285 @@ $header_data= $this->add_css_to_html_header_data(
 
         $header_data['menu']= $active_menu;
         return $header_data;
+}
+
+/* Enrollment Wizzard */
+
+    public function wizard($study=false,$classroom_group=false,$study_modules=false) {
+
+    $this->check_logged_user(); 
+
+    $active_menu = array();
+    $active_menu['menu']='#enrollment_wizard';
+    $active_menu['submenu1']='#wizard';
+
+
+    /* Ace */
+    $header_data= $this->load_ace_files($active_menu);  
+
+    /* Wizard */
+    $header_data= $this->load_wizard_files($header_data); 
+
+
+    if($study == false){
+        $study = 2;
+    }    
+    
+    if($classroom_group == false){
+        $classroom_group = 3;  
+    }
+    
+    if($study_modules == false){
+        $study_modules = array();
+        $study_modules[]=282;   //  "M1"
+        $study_modules[]=268;   //  "M2";
+    }    
+
+       $this->_load_html_header($header_data); 
+       $data = array();
+       
+       $enrollment_studies = $this->enrollment_model->get_enrollment_studies();
+       $data['enrollment_studies'] = $enrollment_studies;
+       $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($study);
+       $data['enrollment_classroom_groups'] = $enrollment_classroom_groups;
+       $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_group);
+       $data['enrollment_study_modules'] = $enrollment_study_modules;
+       $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($study_modules);
+       $data['enrollment_study_submodules'] = $enrollment_study_submodules;       
+       $enrollment_students = $this->enrollment_model->get_students();
+       $data['enrollment_students'] = $enrollment_students;              
+
+      // print_r($enrollment_students);
+       
+       // BODY       
+       $this->_load_body_header();
+       $this->load->view('wizard.php',$data);     
+       
+       // FOOTER     
+       $this->_load_body_footer(); 
+
+    }
+
+    public function check_student() {
+        
+        if(isset($_POST['student_official_id'])){
+            $official_id = $_POST['student_official_id'];
+            $student_data = $this->enrollment_model->get_student_data($official_id);
+            if($student_data){
+                print_r(json_encode($student_data));
+            } else {
+                return false;
+            }
+        }
+
+/*
+        $resultat = array();
+
+        $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
+        foreach($enrollment_classroom_groups as $key => $value){
+            $resultat[$key]=$value;
+        }
+*/        
+
+    }
+
+    public function classroom_course() {
+        
+        if(isset($_POST['study_id'])){
+            $study_id = $_POST['study_id'];
+            $resultat = array();
+            $enrollment_courses = $this->enrollment_model->get_enrollment_courses($study_id);
+            foreach($enrollment_courses as $key => $value){
+                $resultat[$key]=$value;
+            }
+            print_r(json_encode($resultat));
+        } else {
+            return false;
+        }
+    }
+
+    public function generate_password() {
+
+        $length = 10;
+
+        $chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $password = array();
+        
+        $password['password'] = substr(str_shuffle($chars),0,$length);
+            
+        print_r(json_encode($password));    
+    }
+
+    public function classroom_group() {
+        //echo $study;
+
+        if(isset($_POST['study_id'])){
+            $resultat = array();
+
+            $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($_POST['study_id']);
+            foreach($enrollment_classroom_groups as $key => $value){
+                $resultat[$key]=$value;
+            }
+            print_r(json_encode($resultat));
+        } else {
+            return false;
+        }
+    }
+
+    public function study_modules() {
+        //echo $classroom_group;
+
+        $classroom_group = $_POST['classroom_group_id'];
+        $classroom_groups = $_POST['classroom_groups'];
+
+        $resultat = array();
+
+        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group);
+        $grups = array();
+        foreach($enrollment_study_modules as $key => $value){
+            $resultat[$key]=$value;
+            $grups[] = $value['classroom_group_code'];
+        }
+                $grups = array_unique($grups);
+                $res = array();
+                foreach ($grups as $grup)
+                {
+                    foreach ($enrollment_study_modules as $enrollment_study_module){
+                        if($enrollment_study_module['classroom_group_code'] == $grup){
+                            $res[$grup][]=$enrollment_study_module;    
+                        }
+                        
+                    }
+                }
+
+        //print_r(json_encode($resultat));
+        print_r(json_encode($res));
+
+    }
+
+    public function study_submodules() {
+        
+        $modules = $_POST['study_module_ids'];
+        $classroom_group_id = $_POST['classroom_group_id'];
+        $classroom_groups = $_POST['classroom_groups'];
+
+        $modules = explode("-",$modules);
+        
+        $resultat = array();
+
+        $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($modules,$classroom_group_id);
+    //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
+
+
+            foreach($enrollment_study_submodules as $key => $value){
+               $resultat[$key]=$value;
+            }
+/*
+                echo "Grups de classe --><pre>";
+                print_r($classroom_groups);
+                echo "</pre>";
+*/
+        print_r(json_encode($resultat));
+    }
+
+    public function enrollment_wizard() {
+
+            $resultat = array();
+
+            $period_id = $_POST['period_id'];
+            $person_id = $_POST['person_id'];
+            $study_id = $_POST['study_id'];
+            $classroom_group_id = $_POST['classroom_group_id'];
+            $study_module_ids = $_POST['study_module_ids'];
+            $study_submodules_ids = $_POST['study_submodules_ids'];
+
+            $study_submodules_ids = explode('-',$study_submodules_ids);
+            $study_module_ids = explode('-',$study_module_ids);
+
+            //echo "<script>alert(".print_r($study_module_ids).")</script>";die();
+
+            /*echo "<script>alert(".print_r($study_submodules_ids).")</script>";die();*/
+
+            $enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id);
+            $enrollment_studies = $this->enrollment_model->insert_enrollment_studies($period_id, $person_id, $study_id);
+            $enrollment_class_group = $this->enrollment_model->insert_enrollment_class_group($period_id, $person_id, $study_id, $classroom_group_id);
+            $enrollment_modules = $this->enrollment_model->insert_enrollment_modules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids);
+            $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids, $study_submodules_ids);
+
+            $resultat['enrollment'] = $enrollment;
+            $resultat['enrollment_studies'] = $enrollment_studies;
+            $resultat['enrollment_class_group'] = $enrollment_class_group;
+            $resultat['enrollment_modules'] = $enrollment_modules;
+            $resultat['enrollment_submodules'] = $enrollment_submodules;
+
+            print_r(json_encode($resultat));
+    }   
+
+function load_wizard_files($header_data=false){
+
+
+        //CSS
+        if($header_data != false){
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");    
+        } else {
+        $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");                
+        }
+
+
+        //JS
+       /* 
+       $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/jquery-1.9.1.js");
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");  
+        */    
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/select2.min.js'));           
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/jquery.gritter.min.js'));          
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/fuelux.spinner.min.js'));         
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-editable.min.js'));          
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-editable.min.js'));                   
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/fuelux.wizard.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/typeahead-bs2.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/jquery.validate.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootbox.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/jquery.maskedinput.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));        
+        /*
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/fuelux.wizard.min.js'));                                                  
+        */
+
+        return $header_data;
+
 }
 
 }

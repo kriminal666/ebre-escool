@@ -98,20 +98,80 @@
                                 <h3 class="lighter block green">Alta Alumne</h3>
                                 Dades personals
                               </div>
-                          
+                              <br />
                               <form class="form-horizontal" id="standard-form" method="get">
                                 <input type="hidden" id="person_id" name="person_id"  />
-                                <div id="perfil"></div>
                                 <!-- Student Photo -->
-                                <div id="student_photo" style="height: 150px;"> 
+                    <div class="col-xs-12 col-sm-3 center">
 
-                                  <span class="profile-picture">
-                                    <img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/>
-                                  </span>
+                      <div id="student_photo" style="height: 150px;">
+                        <span class="profile-picture">
+                          <img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="http://localhost/ebre-escool/assets/img/alumnes/foto.png" alt="photo" />
+                        </span>
+                      </div>  
+                      <br />
 
+                      <div id="student_full_name" class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                        <div class="inline position-relative">
+                          <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-circle light-green middle"></i>
+                            &nbsp;
+                            <span class="white">Alumne</span>
+                          </a>
+
+                            
+                        </div>
+                      </div>
+                    </div>
+
+                      <div class="space-6"></div>
+                      
+                    
+                                <div class="widget-box ">
+                                  <div class="widget-header">
+                                    <h4>Dades de l'alumne</h4>
+                                  </div>
+                                  <div class="widget-body">
+                                    <div class="widget-main">
+                                      <form>
+                                        <label class="control-label" for="student_official_id"><?php echo lang('wizzard_official_id');?>&nbsp;</label>
+                                        <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el DNI" />        
+                                        <br />
+                                        <label class="control-label" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
+                                        <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
+                                        <br />
+                                        <label class="control-label" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
+                                        <input type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
+                                        <br />
+                                        <label class="control-label" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
+                                        <input type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
+                                        <br />
+                                        <label class="control-label" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
+                                        <input type="text" name="person_telephoneNumber" placeholder="Escriu el telèfon fixe" />
+                                        <br />
+                                        <label class="control-label" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>
+                                        <input type="text" name="person_mobile" placeholder="Escriu el telèfon mòbil" />
+                                        <br />
+                                        <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>
+                                        <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />
+                                        <br />
+                                        <label class="control-label" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
+                                        <input type="text" name="person_homePostalAddress" placeholder="Escriu l'Adreça" />
+                                        <br />
+                                        <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
+                                        <input type="text" name="person_locality_name" placeholder="Escriu la Localitat" />
+                                        <br />
+                                        <label class="control-label" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
+                                        <input type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" />
+                                        <br />
+                                        <label class="control-label" for="student_gender"><?php echo lang('wizzard_gender');?>&nbsp;</label>
+                                        <input type="text" name="person_gender" placeholder="Escriu el Sexe" />
+                                    </form>
+                                    </div>
+                                  </div>  
                                 </div>
-                                
                                 <!-- Student Official ID -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_official_id"><?php echo lang('wizzard_official_id');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -119,8 +179,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
                                 
                                 <!-- Student Secondary Official ID -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -128,8 +190,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Name -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -137,8 +201,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Sn1 -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -146,8 +212,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Sn2 -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -155,8 +223,10 @@
                                   </div>
                                 </div>                                
                                 <br />
+                                -->
 
                                 <!-- Student Telephone Number -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -164,8 +234,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Mobile Number -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -173,8 +245,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Email -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -182,8 +256,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Address -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -191,8 +267,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Locality -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -200,8 +278,10 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Birth Date -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
@@ -209,15 +289,17 @@
                                   </div>
                                 </div>
                                 <br />
+                                -->
 
                                 <!-- Student Gender -->
+                                <!--
                                 <div class="form-group">
                                   <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="student_gender"><?php echo lang('wizzard_gender');?>&nbsp;</label>
                                   <div class="col-xs-12 col-sm-9">
                                     <input type="text" name="person_gender" placeholder="Escriu el Sexe" />
                                   </div>
                                 </div>
-
+                                -->    
                                 <div class="space-2"></div>
                               </form>
                             </div>
@@ -428,8 +510,6 @@
     <script type="text/javascript">
       jQuery(function($) {
       
-        $( "#perfil" ).load( "<?php echo base_url('assets'); ?>/perfil_modificat.html" );
-
         $('[data-rel=tooltip]').tooltip();
       
         $(".select2").css('width','300px').select2({allowClear:true})
@@ -469,14 +549,22 @@
                     student_exist.removeClass("alert alert-block alert-success")
                   },5000);
                   //alert(data);
-                $.each(JSON.parse(data), function(idx,obj) {
+                  //console.log("Data -> "+data);
+                  var all_data = $.parseJSON(data);
+                  //console.log("Prova -> "+prova['person_givenName']);
+
+                $.each(all_data, function(idx,obj) {
                   
                   /* Fill form with student data from Database */
                   $("#step0 input[name$="+idx+"]").val(obj);
+                    var student_full_name = $('#student_full_name').find("span.white");
                   if(idx=='person_photo'){
                     var student_photo = $('#student_photo');
+
                     student_photo.html('<span class="profile-picture"><img style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
                   }
+                    student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
+
                 });
 
                 } else {
