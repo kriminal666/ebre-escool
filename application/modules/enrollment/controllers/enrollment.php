@@ -557,12 +557,10 @@ $header_data= $this->add_css_to_html_header_data(
 
     $this->check_logged_user(); 
 
-   
-
     $active_menu = array();
     $active_menu['menu']='#enrollment_wizard';
     $active_menu['submenu1']='#wizard';
-    //$active_menu['submenu2']='#wizard';
+
 
     /* Ace */
     $header_data= $this->load_ace_files($active_menu);  
@@ -622,7 +620,6 @@ $header_data= $this->add_css_to_html_header_data(
             }
         }
 
-
 /*
         $resultat = array();
 
@@ -632,7 +629,33 @@ $header_data= $this->add_css_to_html_header_data(
         }
 */        
 
+    }
 
+    public function classroom_course() {
+        
+        if(isset($_POST['study_id'])){
+            $study_id = $_POST['study_id'];
+            $resultat = array();
+            $enrollment_courses = $this->enrollment_model->get_enrollment_courses($study_id);
+            foreach($enrollment_courses as $key => $value){
+                $resultat[$key]=$value;
+            }
+            print_r(json_encode($resultat));
+        } else {
+            return false;
+        }
+    }
+
+    public function generate_password() {
+
+        $length = 10;
+
+        $chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $password = array();
+        
+        $password['password'] = substr(str_shuffle($chars),0,$length);
+            
+        print_r(json_encode($password));    
     }
 
     public function classroom_group() {
@@ -660,11 +683,25 @@ $header_data= $this->add_css_to_html_header_data(
         $resultat = array();
 
         $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group);
-
+        $grups = array();
         foreach($enrollment_study_modules as $key => $value){
             $resultat[$key]=$value;
+            $grups[] = $value['classroom_group_code'];
         }
-        print_r(json_encode($resultat));
+                $grups = array_unique($grups);
+                $res = array();
+                foreach ($grups as $grup)
+                {
+                    foreach ($enrollment_study_modules as $enrollment_study_module){
+                        if($enrollment_study_module['classroom_group_code'] == $grup){
+                            $res[$grup][]=$enrollment_study_module;    
+                        }
+                        
+                    }
+                }
+
+        //print_r(json_encode($resultat));
+        print_r(json_encode($res));
 
     }
 
@@ -679,8 +716,10 @@ $header_data= $this->add_css_to_html_header_data(
         $resultat = array();
 
         $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($modules,$classroom_group_id);
-      
-           foreach($enrollment_study_submodules as $key => $value){
+    //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
+
+
+            foreach($enrollment_study_submodules as $key => $value){
                $resultat[$key]=$value;
             }
 /*
@@ -753,6 +792,18 @@ function load_wizard_files($header_data=false){
             base_url('assets/js/select2.min.js'));           
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
+            base_url('assets/js/jquery.gritter.min.js'));          
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/fuelux.spinner.min.js'));         
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-editable.min.js'));          
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/ace-editable.min.js'));                   
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
             base_url('assets/js/fuelux.wizard.min.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
@@ -766,6 +817,9 @@ function load_wizard_files($header_data=false){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             base_url('assets/js/jquery.maskedinput.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));        
         /*
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,

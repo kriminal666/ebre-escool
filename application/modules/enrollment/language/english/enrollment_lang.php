@@ -138,6 +138,7 @@ $lang['wizzard_gender'] = 'Sexe: ';
 $lang['wizard'] = 'Assistent';
 $lang['enrollment'] = 'Matrícula';
 $lang['enrollment_studies'] = 'Estudi';
+$lang['enrollment_courses'] = 'Curs';
 $lang['enrollment_classgroups'] = 'Grup de Classe';
 $lang['enrollment_modules'] = 'Mòduls Formatius';
 $lang['enrollment_submodules'] = 'Unitats Formatives';
