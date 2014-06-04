@@ -300,8 +300,10 @@
 										<div class="infobox-data">
 											<span class="infobox-data-number"><?php echo $person_statistics['total_number_of_duplicated_persons'];?></span>
 											<div class="infobox-content">
-												<?php $this->session->set_flashdata('persons_filter', $person_statistics['duplicated_person_ids']); ;?>
-												<a href="<?php echo base_url('/index.php/persons')?>">DNIs duplicats</a>
+	    										<?php $this->session->set_flashdata('persons_filter', $person_statistics['duplicated_person_ids']); ;?>
+												<?php if (count($person_statistics['duplicated_person_ids']) > 0): ?>
+                    								<a href="<?php echo base_url('/index.php/persons')?>">DNIs duplicats</a>
+												<?php endif; ?>
 											</div>
 										</div>
 									</div>
