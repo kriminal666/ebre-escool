@@ -66,7 +66,61 @@ class dashboard_model  extends CI_Model  {
 		} 	
 
         $person_statistics['duplicated_person_ids'] = $duplicated_person_ids;
-		
+
+        /*
+        /* SELECT `person_gender`,count(`person_id`) FROM `person` GROUP BY  `person_gender` 
+        /* 
+        */
+
+        $this->db->from('person');
+        $this->db->select('person_gender,count(person_id) as total');
+        $this->db->group_by("person_gender"); 
+                   
+        $query = $this->db->get();
+
+        $male_persons = 0;
+        $female_persons = 0;
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)  {
+                if ($row->person_gender == "M")
+                    $male_persons = $row->total;
+                if ($row->person_gender == "F")
+                    $female_persons  = $row->total;
+            }
+        }   
+
+        $person_statistics['male_persons'] = $male_persons;
+        $person_statistics['female_persons'] = $female_persons;
+        $person_statistics['not_gender_defined_persons'] = $person_statistics['total_number_of_persons'] - $female_persons - $male_persons;
+
+        //emails
+        //SELECT `person_email`,count(`person_id`) as total FROM `person` GROUP BY  `person_email`HAVING total > 1 ORDER BY total DESC 
+
+        $this->db->from('person');
+        $this->db->select('person_email,count(person_id) as total');
+        $this->db->group_by("person_email"); 
+        $this->db->having('total > 1'); 
+                   
+        $query = $this->db->get();
+
+        $male_persons = 0;
+        $female_persons = 0;
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)  {
+                if ($row->person_email == "") {
+                    $undefined_emails = $row->total;
+                }
+            }
+        }   
+
+        $person_statistics['undefined_emails'] = $undefined_emails;
+        $person_statistics['duplicated_emails'] = $query->num_rows() -1;
+
+        //PHOTOS
+        $person_statistics['without_photo_persons'] = 89;
+
 		return $person_statistics;
     }
     
