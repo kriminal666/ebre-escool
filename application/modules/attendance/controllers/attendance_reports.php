@@ -362,9 +362,9 @@ class attendance_reports extends skeleton_main {
         //$this->set_header_data();
         $all_groups = $this->attendance_model->get_all_classroom_groups();
         $data['all_groups']=$all_groups->result();
-        
         $photo = false;
         if ($_POST) {
+
             $data['selected_group']= urldecode($_POST['grup']);
             if (isset($_POST['foto'])){
                 $photo= true;
@@ -382,6 +382,7 @@ class attendance_reports extends skeleton_main {
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
 
         $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+        $group_name = $this->attendance_model->getGroupCodeByGroupID($data['selected_group']);
 /*  
         $data['classroom_group_students'] = array ();
         $base_photo_url = "uploads/person_photos";
@@ -432,10 +433,11 @@ class attendance_reports extends skeleton_main {
             //$this->load->view('attendance_reports/class_list_report.php', $data); 
             //$this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
             $number_returned = $count_alumnes;
-            $codi_grup = $group_code;
+            //$codi_grup = $group_code;
+            $codi_grup = $group_name;
             $contador=0;
             $alumne =array();
-
+//print_r($_POST);
             foreach($classroom_group_students as $student){
 
             $jpeg_data_size = @filesize($student->photo_url);
@@ -601,7 +603,7 @@ class attendance_reports extends skeleton_main {
         //$data['all_students_in_group']= $this->attendance_model->getAllGroupStudentsInfo(11);
          
         $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
-
+        $group_name = $this->attendance_model->getGroupCodeByGroupID($data['selected_group']);
         //print_r($all_students_in_group);
 
 /* Student Object */
@@ -643,7 +645,7 @@ class attendance_reports extends skeleton_main {
             /* GENERAR PDF */
 
             $number_returned = $count_alumnes;
-            $codi_grup = $group_code;
+            $codi_grup = $group_name;
             $contador=0;
             $alumne =array();
 
