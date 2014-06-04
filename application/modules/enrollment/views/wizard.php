@@ -108,161 +108,186 @@ STEP 0 - STUDENT DATA
                 </div>
                 <br />
                 <!--<form class="form-horizontal" id="standard-form" method="get">-->
-                <form class="form-horizontal" id="validation-form" method="get">
-                  <input type="hidden" id="person_id" name="person_id"  />
-                  
-                  <div class="col-xs-12 col-sm-3 center">
-                    
-                    <!-- Student Photo -->
-                    <div id="student_photo">
-                      <span class="profile-picture">
-                        <img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('assets/img/alumnes').'/foto.png';?>" alt="photo" />
-                      </span>
-                    </div>  
+                        <form id="validation-form">
+                          <div class="row-fluid">
+                            <div class="span12">
+                              <!-- PAGE CONTENT BEGINS -->
+                              <div>
+                                <div id="user-profile-1" class="user-profile row-fluid">
+                                  <div class="span3 center">
+                                    <div class="span2"></div>
+                                    <div class="span8 center">
+                                      <div class="space-4"></div>
+                                      
+                                      <!-- Student Photo -->
+                                      <div id="student_photo">
+                                        <span class="profile-picture">
+                                          <img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('assets/img/alumnes').'/foto.png';?>" alt="photo" />
+                                        </span>
+                                      </div>                                        
 
-                    <br />
-                    <div id="student_full_name" class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
-                      <div class="inline position-relative">
-                        <span class="white">Alumne</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="space-6"></div>
-                  <div class="widget-box">
-                    <div class="widget-header">
-                      <h4>Dades de l'alumne</h4>
-                    </div>
-                    <div class="widget-body">
-                      <div class="widget-main">
-                        <div class="form-group">
-                          <!-- Student Official ID -->
-                          <div class="form-group">
-                            <!-- Official id type -->
-                            <label class="control-label" for="official_id_type"><?php echo lang('wizzard_official_id_type');?>&nbsp;</label><br /><br />
-                            <input type="radio" name="official_id_type" id="rb_is_dni" value="1"><span><?php echo lang('wizzard_official_DNI');?>&nbsp;</span><br />
-                            <input type="radio" name="official_id_type" value="2"><span><?php echo lang('wizzard_official_NIE');?>&nbsp;</span><br />
-                            <input type="radio" name="official_id_type" value="3"><span><?php echo lang('wizzard_official_passport');?>&nbsp;</span><br />
-                          </div>
-                          <br />
+                                      <div id="student_full_name" class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                        <div class="inline position-relative">
+                                          <span class="white">Alumne</span>
+                                        </div>
+                                      </div>                                      
+                                    </div>  
+                                    <div class="space-4"></div>
+                                  </div>
+                                  <div class="span9">
 
-                          <div class="form-group">
-                            <label id="lbl_student_official_id" for="student_official_id" class="control-label col-xs-12 col-sm-3 no-padding-right"><?php echo lang('wizzard_official_DNI');?>&nbsp;</label>
-                            <div class="col-xs-12 col-sm-9">
-                              <div class="clearfix">
-                                <input type="text" class="col-xs-12 col-sm-4" id="student_official_id" name="student_official_id" placeholder="Escriu el <?php echo lang('wizzard_official_DNI');?>" />
-                              </div>
+                                    <div class="control-group">                             
+
+                                      <!-- TIPUS DE DOCUMENT -->
+
+                                      <div class="span12">
+                                        <label>&nbsp;</label>
+                                        <input class="span12" name="person_id" type="hidden" />  
+                                      </div>                                      
+
+                                      <label class="control-label" for="official_id_type"><?php echo lang('wizzard_official_id_type');?>&nbsp;</label>
+                                      <div class="span7">
+                                        <div class="span2">
+                                          <input type="radio" name="official_id_type" id="rb_is_dni" value="1"><span><?php echo lang('wizzard_official_DNI');?>&nbsp;</span>
+                                        </div>
+                                        <div class="span2">
+                                          <input type="radio" name="official_id_type" value="2"><span><?php echo lang('wizzard_official_NIE');?>&nbsp;</span>
+                                        </div>
+                                        <div class="span4">
+                                          <input type="radio" name="official_id_type" value="3"><span><?php echo lang('wizzard_official_passport');?>&nbsp;</span>
+                                        </div>
+                                      </div>
+                                      <!-- /TIPUS DE DOCUMENT -->                               
+                                    </div>
+                                    <!-- DNI / TIS -->
+                                    <div class="space-20"></div>                                    
+                                    <div class="space-6"></div>
+                                    <div class="span11" >
+                                    <div class="form-group">  
+                                      <div class="span5" >                                  
+                                        <label id="lbl_student_official_id" for="student_official_id" class="control-label no-padding-right"><?php echo lang('wizzard_official_DNI');?>&nbsp;</label>
+                                        <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el <?php echo lang('wizzard_official_DNI');?>" />
+                                      </div>
+                                    </div>  
+                                    <div class="form-group">                                        
+                                      <div class="span5">
+                                        <label class="control-label" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
+                                        <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
+                                      </div>
+                                    </div>  
+                                    </div>
+                                    
+                                    
+                                    <!-- /DNI / TIS --> 
+                                  </div>
+
+                                  <div class="span11">
+                                    <div class="span4">
+                                      <label class="control-label" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
+                                      <input id="givenName" type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
+                                    </div>
+                                    <div class="span4">
+                                      <label class="control-label" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
+                                      <input id="sn1" type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
+                                    </div>
+                                    <div class="span4">
+                                      <label class="control-label" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
+                                      <input type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="span11" >
+                                    <div class="span3">
+                                      <label class="control-label" for="student_username">Username:&nbsp;</label>
+                                      <input id="username" type="text" name="person_username" placeholder="Username" readonly />                                    
+                                    </div>
+                                    
+                                    <div class="span3">
+                                      <label class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
+                                      <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" readonly />
+                                    </div>
+                                    <div class="span3">
+                                      <label class="control-label" for="student_password">Password:&nbsp;</label>
+                                      <input type="password" name="person_password" id="person_password" placeholder="Password"/>
+                                    </div>
+                                    <div class="span3">
+                                      <label class="control-label" for="student_verify_password">Verify Password:&nbsp;</label>
+                                      <input type="password" name="person_verify_password" placeholder="Verify Password"/>
+                                    </div>                                    
+                                  </div>                                  
+                            
+                                  <div class="span11" >
+                                    <div class="span3">
+                                      <label class="control-label" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
+                                      <div class="input-prepend">                         
+                                        <span class="add-on">
+                                          <i class="icon-phone"></i>
+                                        </span>
+                                        <input type="text" name="person_telephoneNumber" id="person_telephoneNumber" placeholder="Escriu el telèfon fixe" />                          
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="span3">
+                                      <label class="control-label" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>  
+                                      <div class="input-prepend">                         
+                                        <span class="add-on">
+                                          <i class="icon-phone"></i>
+                                        </span>                                     
+                                        <input type="text" name="person_mobile" placeholder="Escriu el telèfon mòbil" />                      
+                                      </div>
+                                    </div>
+                                    <div class="span6">
+                                      <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>                          
+                                      <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />                         
+                                    </div>
+                                  </div>
+
+                                  <div class="span11" >
+                                    <div class="span7">
+                                      <label class="control-label" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
+                                      <input class="span12" type="text" name="person_homePostalAddress" placeholder="Escriu l'Adreça" />                          
+                                    </div>
+                                    <div class="span5">
+                                      <div class="span8">
+                                        <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
+                                        <input class="span12" type="text" name="person_locality_name" placeholder="Escriu la Localitat" />          
+                                      </div>
+                                      <div class="span4">
+                                        <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label>
+                                        <input class="span12" type="text" name="person_postal_code" placeholder="Escriu el codi postal" />                 
+                                      </div>                                      
+                                    </div>                                    
+                                  </div>
+
+                                  <div class="span6" >
+                                    <div class="span6">
+                                      <label class="control-label" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
+                                      <input class="span11" type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" />                            
+                                    </div>
+                                    <label for="Tipus" >Sexe</label>
+                                    <div class="span6">
+                                      <div class="span4">
+                                        <label>
+                                          <input name="sexe" type="radio" class="ace" value="M" />
+                                          <span class="lbl"> Home</span>
+                                        </label>                                      
+                                      </div>
+                                      <div class="span4">
+                                        <label>
+                                          <input name="sexe" type="radio" class="ace" value="F"/>
+                                          <span class="lbl"> Dona</span>
+                                        </label>                                      
+                                      </div>
+                                    </div>                                  
+                                  </div>
+                                </div>
+                                <!-- PAGE CONTENT ENDS -->
+                              </div><!-- /.span -->
                             </div>
-                          </div>
+                          </div><!-- /.row-fluid -->
 
-
-
-
-
-                          <!--
-                          <div class="form-group">                          
-                            <label class="control-label" for="student_official_id"><?php echo lang('wizzard_official_id');?>&nbsp;</label>
-                            <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el DNI" />
-                          </div>
-                          -->  
-                          <br />
-                          <!-- Student Secondary Official ID -->
-                          <div class="form-group">
-                            <label class="control-label" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
-                            <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
-                          </div>
-                          <br />
-                          <!-- Student Name -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
-                            <input id="givenName" type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
-                          </div>
-                          <br />
-                          <!-- Student Sn1 -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
-                            <input id="sn1" type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
-                          </div>
-                          <br />
-                          <!-- Student Sn2 -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
-                            <input type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
-                          </div>
-                          <br />
-
-
-                          <!-- Student username -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_username">Username:&nbsp;</label>
-                            <input id="username" type="text" name="person_username" placeholder="Username" disabled />
-                          </div>
-                          <br />
-                          <!-- Student generated password -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
-                            <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" disabled />
-                          </div>
-                          <br />
-                          <!-- Student Password -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_password">Password:&nbsp;</label>
-                            <input type="password" name="person_password" id="person_password" placeholder="Password"/>
-                          </div>
-                          <br />
-                          <!-- Student Verify Password -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_verify_password">Verify Password:&nbsp;</label>
-                            <input type="password" name="person_verify_password" placeholder="Verify Password"/>
-                          </div>
-                          <br />
-
-
-                          <!-- Student Telephone Number -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_telephoneNumber"><?php echo lang('wizzard_telephoneNumber');?>&nbsp;</label>
-                            <input type="text" name="person_telephoneNumber" id="person_telephoneNumber" placeholder="Escriu el telèfon fixe" />
-                          </div>
-                          <br />
-                          <!-- Student Mobile Number -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_mobile"><?php echo lang('wizzard_mobile');?>&nbsp;</label>
-                            <input type="text" name="person_mobile" placeholder="Escriu el telèfon mòbil" />
-                          </div>
-                          <br />
-                          <!-- Student Email -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>
-                            <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />
-                          </div>
-                          <br />
-                          <!-- Student Address -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_homePostalAddress"><?php echo lang('wizzard_homePostalAddress');?>&nbsp;</label>
-                            <input type="text" name="person_homePostalAddress" placeholder="Escriu l'Adreça" />
-                          </div>
-                          <br />
-                          <!-- Student Locality -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
-                            <input type="text" name="person_locality_name" placeholder="Escriu la Localitat" />
-                          </div>
-                          <br />
-                          <!-- Student Birth Date -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
-                            <input type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" />
-                          </div>
-                          <br />
-                          <!-- Student Gender -->
-                          <div class="form-group">
-                            <label class="control-label" for="student_gender"><?php echo lang('wizzard_gender');?>&nbsp;</label>
-                            <input type="text" name="person_gender" placeholder="Escriu el Sexe" />
-                          </div>
-                        </div><!-- /form-group -->
-                      </div><!-- /widget-main -->
-                    </div><!-- /widget-body -->  
-                  </div><!-- -/widget-box -->
-                </form>
+                        </form>
+                      
               </div><!-- /step0 -->
 
 <!--  
@@ -454,7 +479,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   <div class="widget-body">
                     <div class="widget-main">
     <!-- COURSE WIDGET -->
-                      <div class="step6_course_widget"></div>
+                      <div class="step6_course_widget"><div id="checkbox_study_submodules"></div></div>
     <!-- /COURSE WIDGET -->
                     </div><!-- /widget-main -->
                   </div><!-- /widget-body -->
@@ -505,8 +530,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         official_id_type_text = $("input:checked + span").text();
         student_official_id.attr("placeholder", "Escriu el "+official_id_type_text);  
         student_official_id_label.text(official_id_type_text);      
-
       });
+
+        $('input:radio[name=official_id_type]').val(['1']);
 
         $('[data-rel=tooltip]').tooltip();
 
@@ -570,7 +596,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               // ***UPDATE AVATAR HERE*** //
               //You can replace the contents of this function with examples/profile-avatar-update.js for actual upload
       
-      
               var deferred = new $.Deferred
       
               //if value is empty, means no valid files were selected
@@ -581,7 +606,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 deferred.resolve();
                 return deferred.promise();
               }
-      
       
               //dummy upload
               setTimeout(function(){
@@ -609,15 +633,12 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             }
           })
         }catch(e) {}
-        
 
 /******************
  *  /Editable Avatar
  ******************/
 
-
         $('select.academic_period').select2();
-       
         $(".select2").css('width','400px').select2({
           allowClear:true
         }).on('change', function(){
@@ -629,25 +650,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           $('ul.wizard-steps li').first().addClass('active');
           $('#step-container div').first().addClass('active');
         } 
-
-        /* username */
-        username = $('#username');
-        givenName_input = $('#givenName');
-        sn1_input = $('#sn1');                
-
-        givenName = givenName_input.val();
-        sn1 = sn1_input.val();
-
-        givenName_input.change(function(){
-          //alert(givenName_input.val());
-          givenName = givenName_input.val();
-          username.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
-        });
-
-        sn1_input.change(function(){
-          sn1 = sn1_input.val();
-          username.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
-        });        
 
 /* remove accents */
 
@@ -676,11 +678,6 @@ var accent_fold = (function () {
 
 /* remove accents */
 
-
-
-
-
-
         /* Get generated password */
               // AJAX get Classroom_Group from Study for step 4
               $.ajax({
@@ -694,7 +691,7 @@ var accent_fold = (function () {
               });
 
 
-        /* DNI blur action -> gets student data from database */
+        /* DNI change action -> gets student data from database */
         $("#student_official_id").change(function(){
           student = $(this).val();
 
@@ -709,7 +706,8 @@ var accent_fold = (function () {
 
                 /* Student Exists */
                 if(data != false){
-                  var student_exist = $("#student_exists");
+                  student_exist = $("#student_exists");
+                  existeix = true;
                   student_exist.html("<i class='icon-ok green'></i> L'alumne ja existeix <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
                   .addClass("alert alert-block alert-success");
 
@@ -731,16 +729,24 @@ var accent_fold = (function () {
 
                     student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
                   }
+                  if(idx=='person_gender'){
+                    if(obj == 'M'){
+                      $('input:radio[name=sexe]').val(['M']);  
+                    } else if(obj == 'F'){
+                      $('input:radio[name=sexe]').val(['F']);  
+                    }
+                    
+                  }
                     student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
                 });
 
                 /* Student doesn't exists, clear form data */
                 } else {
-
+                    existeix = false;
                     empty_student = {"person_id":"",
                     "person_photo":"","person_secondary_official_id":"","person_givenName":"",
                     "person_sn1":"","person_sn2":"","person_email":"","person_date_of_birth":"",
-                    "person_gender":"","person_homePostalAddress":"","person_locality_name":"",
+                    "person_gender":"","person_homePostalAddress":"","person_locality_name":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
 
                     student_photo = $('#student_photo');
@@ -755,6 +761,52 @@ var accent_fold = (function () {
 
         });
 
+        /* username */
+        username_input = $('#username');
+        givenName_input = $('#givenName');
+        sn1_input = $('#sn1');                
+
+        givenName = givenName_input.val();
+        sn1 = $.trim(sn1_input.val());
+        username = username_input.val();
+
+        givenName_input.blur(function(){
+          givenName = $.trim(givenName_input.val());
+          username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+          if(givenName!='' && sn1!='' && !existeix){
+            generate_username();
+          }
+        });
+
+        sn1_input.blur(function(){
+          sn1 = $.trim(sn1_input.val());
+          username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+          if(givenName!='' && sn1!='' && !existeix){
+            generate_username();
+          }
+        });
+        
+        /* /username */
+
+        function generate_username(){
+
+              // AJAX get student by username
+              $.ajax({
+                url:'<?php echo base_url("index.php/enrollment/get_user_by_username");?>',
+                type: 'post',
+                datatype: 'json',
+                data: {
+                  username : $("#username").val()
+                }
+              }).done(function(data){
+
+                if(data!=false){
+                  $('#username').val(data);
+                }
+            });
+        }          
+
+
       $(".btn-next").click(function(){
 
         step = $("#step-container div.active").attr("id");
@@ -767,36 +819,108 @@ var accent_fold = (function () {
 
           /* store student data from form */
           student_person_id = $("#"+step+" input[name$='person_id']").val();
+          student_official_id = $("#"+step+" input[name$='student_official_id']").val();
+          student_secondary_official_id = $("#"+step+" input[name$='person_secondary_official_id']").val();          
+
           student_givenName = $("#"+step+" input[name$='person_givenName']").val();
           student_sn1 = $("#"+step+" input[name$='person_sn1']").val();
-          student_sn2 = $("#"+step+" input[name$='student_sn2']").val();
+          student_sn2 = $("#"+step+" input[name$='person_sn2']").val();
 
           student_username = $("#"+step+" input[name$='person_username']").val();
           student_generated_password = $("#"+step+" input[name$='person_generated_password']").val();
           student_password = $("#"+step+" input[name$='person_password']").val();
           student_verify_password = $("#"+step+" input[name$='person_verify_password']").val();
 
-          student_email = $("#"+step+" input[name$='student_email']").val();
-          student_official_id = $("#"+step+" input[name$='student_official_id']").val();
-          student_secondary_official_id = $("#"+step+" input[name$='student_secondary_official_id']").val();
-          student_date_of_birth = $("#"+step+" input[name$='student_date_of_birth']").val();
-          student_gender = $("#"+step+" input[name$='student_gender']").val();
-          student_homePostalAddress = $("#"+step+" input[name$='student_homePostalAddress']").val();
-          student_locality_name = $("#"+step+" input[name$='student_locality_name']").val();
-          student_telephoneNumber = $("#"+step+" input[name$='student_telephoneNumber']").val();
-          student_mobile = $("#"+step+" input[name$='student_mobile']").val();
+          student_telephoneNumber = $("#"+step+" input[name$='person_telephoneNumber']").val();
+          student_mobile = $("#"+step+" input[name$='person_mobile']").val();
+          student_email = $("#"+step+" input[name$='person_email']").val();
 
+          student_homePostalAddress = $("#"+step+" input[name$='person_homePostalAddress']").val();
+          student_locality_name = $("#"+step+" input[name$='person_locality_name']").val();
+          student_postal_code = $("#"+step+" input[name$='person_postal_code']").val();
+
+          student_date_of_birth = $("#"+step+" input[name$='person_date_of_birth']").val();
+          student_gender = $("input:radio[name=sexe]").val();
+
+
+/*
 if(student_password != student_verify_password){
   //alert("NO");
 } else {
   //alert("SI");
 }
+*/
+  if(existeix){
+/**/
+              // AJAX get Classroom_Group from Study for step 4
+              $.ajax({
+                url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
+                type: 'post',
+                data: {
+                    student_person_id : student_person_id,
+                    student_official_id : student_official_id,
+                    student_secondary_official_id : student_secondary_official_id,
+                    student_givenName : student_givenName,
+                    student_sn1 : student_sn1,
+                    student_sn2 : student_sn2,
+                    student_username : student_username,
+                    student_generated_password : student_generated_password,
+                    student_password : student_password,
+                    student_verify_password : student_verify_password,
+                    student_email : student_email,
+                    student_homePostalAddress : student_homePostalAddress,
+                    student_locality_name : student_locality_name,
+                    student_postal_code : student_postal_code,
+                    student_telephoneNumber : student_telephoneNumber,
+                    student_mobile : student_mobile,
+                    student_date_of_birth : student_date_of_birth,
+                    student_gender : student_gender,
+                    action : "update"
+                },
+                datatype: 'json'
+              }).done(function(data){
+
+              
+              });
+/**/
+  } else {
+              // AJAX get Classroom_Group from Study for step 4
+              $.ajax({
+                url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
+                type: 'post',
+                data: {
+                    student_official_id : student_official_id,
+                    student_secondary_official_id : student_secondary_official_id,
+                    student_givenName : student_givenName,
+                    student_sn1 : student_sn1,
+                    student_sn2 : student_sn2,
+                    student_username : student_username,
+                    student_generated_password : student_generated_password,
+                    student_password : student_password,
+                    student_verify_password : student_verify_password,
+                    student_email : student_email,
+                    student_homePostalAddress : student_homePostalAddress,
+                    student_locality_name : student_locality_name,
+                    student_postal_code : student_postal_code,
+                    student_telephoneNumber : student_telephoneNumber,
+                    student_mobile : student_mobile,
+                    student_date_of_birth : student_date_of_birth,
+                    student_gender : student_gender,
+                    action : "insert"
+                },
+                datatype: 'json'
+              }).done(function(data){
+
+              
+              });
+  }
+          
 
           $("#student option[value=" + student_person_id +"]").attr("selected","selected");
           $("#student").select2();
 
-          $(".step1_student").html("<p>Alumne: "+student_givenName+" ("+student_official_id+") </p>");          
-
+          $(".step1_student").html("<p>Alumne: "+student_givenName+" ("+student_official_id+") </p>");    
+  
 // End step 0
         
 /***********
@@ -822,8 +946,8 @@ if(student_password != student_verify_password){
         } else if(step == "step2"){
         
           study_id = $("#enrollment_study").val();
-          
           study_name = $("#enrollment_study option:selected").text();
+
           $("#enrollment_study").change(function(){
               study_id = $("#enrollment_study").val();
               study_name = $("#enrollment_study option:selected").text();
@@ -839,7 +963,7 @@ if(student_password != student_verify_password){
                 },
                 datatype: 'json'
               }).done(function(data){
-              
+             
                 courses = [];
                 var $_courses = $('select#enrollment_course');
                 var $_course_widget = $('div.step6_course_widget');
@@ -878,8 +1002,8 @@ if(student_password != student_verify_password){
         } else if(step == "step3"){
         
           course_id = $("#enrollment_course").val();
-          
           course_name = $("#enrollment_course option:selected").text();
+
           $("#enrollment_course").change(function(){
               course_id = $("#enrollment_course").val();
               course_name = $("#enrollment_course option:selected").text();
@@ -894,6 +1018,7 @@ if(student_password != student_verify_password){
                 },
                 datatype: 'json'
               }).done(function(data){
+
                 classroom_groups = [];
                 var $_classroom_group = $('select#classroom_group');
                 
@@ -936,13 +1061,12 @@ if(student_password != student_verify_password){
                 },
                 datatype: 'json'
               }).done(function(data){
-
+                //study_modules_data = data;
                 var $_study_module = $('#checkbox_study_module');
                 var $_module_widget = $('div.module_widget');   
                 $_study_module.empty();
                 
                 $.each(JSON.parse(data), function(idx, obj) {
-                  
                   //console.log("Data: "+data);
                   //$_study_module.append('<h3>'+idx+'</h3>');
                   $_study_module.append("<div class='widget-box'>"+
@@ -960,7 +1084,6 @@ if(student_password != student_verify_password){
                         $_step4_widget_main.empty();
                         $.each(obj, function(index, object){
                           //console.log("Object: "+object);
-
                           if(object.selected_classroom_group=="yes"){
                             checked = 'checked';
                           } else {
@@ -980,7 +1103,7 @@ if(student_password != student_verify_password){
                                                   "</div><!-- /widget-header -->"+
                                                   "<div class='widget-body'>"+
                                                     "<div class='widget-main'>"+
-                                                      "<div class='submodule_widget'></div><!-- /submodule-widget -->"+
+                                                      "<div id='"+object.study_module_id+"' class='submodule_widget'></div><!-- /submodule-widget -->"+
                                                     "</div><!-- /widget-main -->"+
                                                   "</div><!-- /widget-body -->"+
                                                 "</div><!-- /widget-box -->");
@@ -1007,7 +1130,6 @@ if(student_password != student_verify_password){
         study_module_names = $('#checkbox_study_module input:checked').map(function(){
           return this.name;
         }).get();
-
         study_module_ids = $('#checkbox_study_module input:checked').map(function(){
           return $(this).val()
         }).get();
@@ -1029,6 +1151,7 @@ if(student_password != student_verify_password){
                $_study_submodule.empty();
 
                 $.each(JSON.parse(data), function(idx, obj) {
+                //$("#"+obj.study_submodules_study_module_id).append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
                 $_study_submodule.append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
 
                 });
@@ -1061,7 +1184,8 @@ if(student_password != student_verify_password){
               $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
                 type: 'post',
-                data: { person_id: student_id,
+                data: { 
+                        person_id: student_id,
                         period_id: academic_period,
                         study_id: study_id,
                         classroom_group_id: classroom_group_id,
@@ -1070,8 +1194,7 @@ if(student_password != student_verify_password){
                       },
                 datatype: 'json'
               }).done(function(data){
-
-                //alert(data);
+                
               });
         }
       });  
@@ -1117,7 +1240,7 @@ if(student_password != student_verify_password){
       
       
         $.mask.definitions['~']='[+-]';
-        $('#person_telephoneNumber').mask('(999) 999-9999');
+        //$('#person_telephoneNumber').mask('(999) 999-9999');
       
         /* VALIDAR DNI */
 
@@ -1156,10 +1279,9 @@ if(student_password != student_verify_password){
           errorClass: 'help-block',
           focusInvalid: false,
           rules: {
-            student_official_id: {required: function(element) {
-                  return $('input[name="official_id_type"]:checked').val() == 1;
-            }
-
+            student_official_id: {
+              required: true,
+              student_official_id: 'required',
             },
             person_givenName: {
               required: true
@@ -1182,12 +1304,10 @@ if(student_password != student_verify_password){
             },
             
             person_telephoneNumber: {
-              required: true,
-              person_telephoneNumber: 'required'
+              required: false
             },
             
-            gender: 'required',
-            agree: 'required'
+            gender: 'required'
           },
       
           messages: {
@@ -1200,8 +1320,7 @@ if(student_password != student_verify_password){
               minlength: "Please specify a secure password."
             },
             subscription: "Please choose at least one option",
-            gender: "Please choose gender",
-            agree: "Please accept our policy"
+            gender: "Please choose gender"
           },
       
           invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -1229,7 +1348,7 @@ if(student_password != student_verify_password){
             else if(element.is('.chosen-select')) {
               error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
             }
-            else error.insertAfter(element.parent());
+            else error.insertAfter(element);
           },
       
           submitHandler: function (form) {

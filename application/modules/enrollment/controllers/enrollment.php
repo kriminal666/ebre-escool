@@ -608,18 +608,27 @@ $header_data= $this->add_css_to_html_header_data(
 
     }
 
-    public function check_student() {
-        
-        if(isset($_POST['student_official_id'])){
-            $official_id = $_POST['student_official_id'];
+    public function check_student($person_official_id=false) {
+
+        if($person_official_id==false){
+            if(isset($_POST['student_official_id'])){
+                $official_id = $_POST['student_official_id'];
+                $student_data = $this->enrollment_model->get_student_data($official_id);
+                if($student_data){
+                    print_r(json_encode($student_data));
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            $official_id = $person_official_id;
             $student_data = $this->enrollment_model->get_student_data($official_id);
             if($student_data){
-                print_r(json_encode($student_data));
+                return $student_data;
             } else {
                 return false;
-            }
+            }            
         }
-
 /*
         $resultat = array();
 
@@ -641,6 +650,34 @@ $header_data= $this->add_css_to_html_header_data(
                 $resultat[$key]=$value;
             }
             print_r(json_encode($resultat));
+        } else {
+            return false;
+        }
+    }
+
+    public function get_user_by_username() {
+
+        if(isset($_POST['username'])){
+            $username = $_POST['username'];
+            $resultat = array();
+                $index=1;
+                /*
+                $user_exists = $this->enrollment_model->get_student_by_username($username);
+                if($user_exists){
+                    $username = $username . $index;
+                }
+                echo $username;
+                */
+                $user_new = $username;
+                do{
+                    $user_exists = $this->enrollment_model->get_student_by_username($user_new);
+                    if($user_exists){
+                        $user_new = $username . $index;
+                        $index++;
+                    }
+                }while($user_exists==true);
+                //echo $user_new;
+            echo $user_new;
         } else {
             return false;
         }
@@ -683,6 +720,7 @@ $header_data= $this->add_css_to_html_header_data(
         $resultat = array();
 
         $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group);
+
         $grups = array();
         foreach($enrollment_study_modules as $key => $value){
             $resultat[$key]=$value;
@@ -762,6 +800,53 @@ $header_data= $this->add_css_to_html_header_data(
 
             print_r(json_encode($resultat));
     }   
+
+function insert_update_user(){
+
+    $student = array();
+    if(isset($_POST['student_person_id'])){
+        $person_id = $_POST['student_person_id'];    
+    }
+    $student['person_official_id'] = $_POST['student_official_id'];
+    $student['person_secondary_official_id'] = $_POST['student_secondary_official_id'];
+    $student['person_givenName'] = $_POST['student_givenName'];
+    $student['person_sn1'] = $_POST['student_sn1'];
+    $student['person_sn2'] = $_POST['student_sn2'];
+    $student['username'] = $_POST['student_username'];
+
+/*    
+    if($_POST['student_password'] != ''){
+        if($_POST['student_password'] == $_POST['student_verify_password']){
+            $student['student_password'] = $_POST['student_password'];
+    } else {
+        $_POST['student_password'] == $_POST['student_generated_password'] &&
+    }
+*/
+    $student['person_photo'] = $student['username'].'.jpg';
+    $student['person_email'] = $_POST['student_email'];
+    $student['person_homePostalAddress'] = $_POST['student_homePostalAddress'];
+    $student['person_locality_name'] = $_POST['student_locality_name'];
+//    $student['student_postal_code'] = $_POST['student_postal_code'];
+    $student['person_telephoneNumber'] = $_POST['student_telephoneNumber'];                
+    $student['person_mobile'] = $_POST['student_mobile'];   
+    $student['person_date_of_birth'] = $_POST['student_date_of_birth'];   
+    $student['person_gender'] = $_POST['student_gender'];   
+
+    $action = $_POST['action'];
+    if($action=='update'){
+        //echo "S'ha d'actualitzar";
+        $enrollment = $this->enrollment_model->update_student_data($person_id, $student);
+    } else {
+        //echo "S'ha d'insertar";
+        $enrollment = $this->enrollment_model->insert_student_data($student);
+        if($enrollment){
+            $inserted_student = $this->check_student($student['person_official_id']);
+            print_r($inserted_student);
+        }
+    }
+
+}
+
 
 function load_wizard_files($header_data=false){
 

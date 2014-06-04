@@ -121,6 +121,7 @@ $lang['wizzard_mobile'] = 'Telèfon mòbil: ';
 $lang['wizzard_email'] = 'Correu electrònic: ';
 $lang['wizzard_homePostalAddress'] = 'Adreça Postal: ';
 $lang['wizzard_locality_name'] = 'Localitat: ';
+$lang['wizzard_postal_code'] = 'Codi Postal: ';
 $lang['wizzard_date_of_birth'] = 'Data de naixement: ';
 $lang['wizzard_gender'] = 'Sexe: ';
 

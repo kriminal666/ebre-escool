@@ -58,6 +58,24 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
+	public function get_student_by_username($username, $orderby="asc") {
+
+        $this->db->select('username');
+		$this->db->from('person');
+		$this->db->where('username',$username);
+		       
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			return true;
+		}			
+		else
+			return false;
+	}
+
+
 	/* Estudis */
 	public function get_enrollment_studies($orderby="asc") {
 
@@ -256,7 +274,7 @@ class enrollment_model  extends CI_Model  {
 
 	/* Student Data */
 	public function get_student_data($official_id) {
-        $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, person_homePostalAddress, person_locality_name, person_telephoneNumber, person_mobile');
+        $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, person_homePostalAddress, person_locality_name, person_telephoneNumber, person_mobile, username');
 		$this->db->from('person');
 		$this->db->where('person_official_id',$official_id);
 		$this->db->limit(1);		       
@@ -271,6 +289,36 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
+	/* Update Student Data */
+	public function update_student_data($person_id,$student) {
+
+
+        $this->db->where('person_id', $person_id);
+		$this->db->update('person', $student); 
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+
+			return true;
+		}			
+		else
+			return false;
+	}	
+
+	/* Insert Student Data */
+	public function insert_student_data($student) {
+
+
+        $this->db->insert('person', $student); 
+		//echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+
+			return true;
+		}			
+		else
+			return false;
+	}	
 
 	/* ENROLLMENT */
 

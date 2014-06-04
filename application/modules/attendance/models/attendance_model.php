@@ -1309,10 +1309,26 @@ ORDER BY person.person_sn1
 		$this->db->where('classroom_group_code', $group_code);
 		
 		$query = $this->db->get();
-
+		//echo $this->db->last_query();
 		if ($query->num_rows() == 1)	{
 			$row = $query->row(); 
 			return $row->groupName;
+		}
+		else
+			return false;
+	}
+
+	function getGroupCodeByGroupID($group_id) {
+		//classroom_group
+		$this->db->select('classroom_group_code');
+		$this->db->from('classroom_group');
+		$this->db->where('classroom_group_id', $group_id);
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		if ($query->num_rows() == 1)	{
+			$row = $query->row(); 
+			return $row->classroom_group_code;
 		}
 		else
 			return false;
