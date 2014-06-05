@@ -96,6 +96,7 @@ $lang['managment'] = 'Gestió';
 $lang['curriculum']="Pla d'estudis"; 
 $lang['organizational_unit_studies']="Unitat Organitzativa. Estudis";
 $lang['departments_families']="Departaments/Famílies";
+$lang['departments']="Departaments/Famílies";
 $lang['studies']="Estudis";
 $lang['cycles']="Cicles";
 $lang['course']="Curs";

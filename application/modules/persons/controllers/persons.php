@@ -215,7 +215,7 @@ class persons extends skeleton_main {
 
   /* PERSON MODIFICADA */
 
-  public function person () {
+  public function person ($filter_type = "") {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -322,10 +322,18 @@ class persons extends skeleton_main {
         $this->grocery_crud->set_field_upload('person_photo','uploads/person_photos');
 
         //print_r($this->session->flashdata('persons_filter'));
-        if ( is_array($this->session->flashdata('persons_filter')) ) {
+
+
+        if ( is_array($this->session->flashdata('persons_filter')) && $filter_type == "persons_filter"  ) {
           foreach ($this->session->flashdata('persons_filter') as $condition) {
             $this->grocery_crud->or_where('person_official_id',$condition);
             $this->grocery_crud->order_by($table_name.'_official_id','desc');
+          }            
+        }
+
+        if (is_array($this->session->flashdata('without_photo_persons_id')) && $filter_type == "without_photo_persons_id" ) {
+          foreach ($this->session->flashdata('without_photo_persons_id') as $condition) {
+            $this->grocery_crud->or_where( $table_name . ".person_id",$condition);
           }            
         }
 

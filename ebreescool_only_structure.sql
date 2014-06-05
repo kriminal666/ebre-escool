@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `course` (
   `course_name` varchar(150) CHARACTER SET utf8 NOT NULL,
   `course_number` int(11) NOT NULL,
   `course_cycle_id` int(11) NOT NULL,
-  `course_estudies_id` int(11) NOT NULL,
+  `course_study_id` int(11) NOT NULL,
   `course_entryDate` datetime NOT NULL,
   `course_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `course_creationUserId` int(11) DEFAULT NULL,
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS `cycle` (
 CREATE TABLE IF NOT EXISTS `enrollment` (
   `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_personid` int(11) DEFAULT NULL,
   `enrollment_entryDate` datetime NOT NULL,
   `enrollment_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_creationUserId` int(11) DEFAULT NULL,
@@ -267,15 +267,53 @@ CREATE TABLE IF NOT EXISTS `enrollment` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
+-- Estructura de la taula `enrollment_studies`
+--
+
+CREATE TABLE IF NOT EXISTS `enrollment_studies` (
+  `enrollment_studies_id` int(11) NOT NULL AUTO_INCREMENT,
+  `enrollment_studies_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_studies_personid` int(11) DEFAULT NULL,
+  `enrollment_studies_study_id` int(11) DEFAULT NULL,
+  `enrollment_studies_entryDate` datetime NOT NULL,
+  `enrollment_studies_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `enrollment_studies_creationUserId` int(11) DEFAULT NULL,
+  `enrollment_studies_lastupdateUserId` int(11) DEFAULT NULL,
+  `enrollment_studies_markedForDeletion` enum('n','y') NOT NULL,
+  `enrollment_studies_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`enrollment_studies_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Estructura de la taula `enrollment_courses`
+--
+
+CREATE TABLE IF NOT EXISTS `enrollment_courses` (
+  `enrollment_courses_id` int(11) NOT NULL AUTO_INCREMENT,
+  `enrollment_courses_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_courses_personid` int(11) DEFAULT NULL,
+  `enrollment_courses_study_id` int(11) DEFAULT NULL,
+  `enrollment_courses_course_id` int(11) DEFAULT NULL,
+  `enrollment_courses_entryDate` datetime NOT NULL,
+  `enrollment_courses_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `enrollment_courses_creationUserId` int(11) DEFAULT NULL,
+  `enrollment_courses_lastupdateUserId` int(11) DEFAULT NULL,
+  `enrollment_courses_markedForDeletion` enum('n','y') NOT NULL,
+  `enrollment_courses_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`enrollment_courses_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
 -- Estructura de la taula `enrollment_class_group`
 --
 
 CREATE TABLE IF NOT EXISTS `enrollment_class_group` (
   `enrollment_class_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_class_group_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_class_group_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_class_group_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_class_group_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_class_group_personid` int(11) DEFAULT NULL,
+  `enrollment_class_group_study_id` int(11) DEFAULT NULL,
+  `enrollment_studies_course_id` int(11) DEFAULT NULL,
+  `enrollment_class_group_group_id` int(11) DEFAULT NULL,
   `enrollment_class_group_entryDate` datetime NOT NULL,
   `enrollment_class_group_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_class_group_creationUserId` int(11) DEFAULT NULL,
@@ -292,10 +330,11 @@ CREATE TABLE IF NOT EXISTS `enrollment_class_group` (
 CREATE TABLE IF NOT EXISTS `enrollment_modules` (
   `enrollment_modules_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_modules_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_modules_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_modules_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_modules_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_modules_moduleid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_modules_personid` int(11) DEFAULT NULL,
+  `enrollment_modules_study_id` int(11) DEFAULT NULL,
+  `enrollment_modules_course_id` int(11) DEFAULT NULL,
+  `enrollment_modules_group_id` int(11) DEFAULT NULL,
+  `enrollment_modules_moduleid` int(11) DEFAULT NULL,
   `enrollment_modules_entryDate` datetime NOT NULL,
   `enrollment_modules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_modules_creationUserId` int(11) DEFAULT NULL,
@@ -306,35 +345,18 @@ CREATE TABLE IF NOT EXISTS `enrollment_modules` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Estructura de la taula `enrollment_studies`
---
-
-CREATE TABLE IF NOT EXISTS `enrollment_studies` (
-  `enrollment_studies_id` int(11) NOT NULL AUTO_INCREMENT,
-  `enrollment_studies_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_studies_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_studies_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_studies_entryDate` datetime NOT NULL,
-  `enrollment_studies_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `enrollment_studies_creationUserId` int(11) DEFAULT NULL,
-  `enrollment_studies_lastupdateUserId` int(11) DEFAULT NULL,
-  `enrollment_studies_markedForDeletion` enum('n','y') NOT NULL,
-  `enrollment_studies_markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`enrollment_studies_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
 -- Estructura de la taula `enrollment_submodules`
 --
 
 CREATE TABLE IF NOT EXISTS `enrollment_submodules` (
   `enrollment_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_submodules_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_submodules_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_submodules_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_submodules_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_submodules_moduleid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_submodules_submoduleid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_submodules_personid` int(11) DEFAULT NULL,
+  `enrollment_submodules_study_id` int(11) DEFAULT NULL,
+  `enrollment_submodules_course_id` int(11) DEFAULT NULL,
+  `enrollment_submodules_group_id` int(11) DEFAULT NULL,
+  `enrollment_submodules_moduleid` int(11) DEFAULT NULL,
+  `enrollment_submodules_submoduleid` int(11) DEFAULT NULL,
   `enrollment_submodules_entryDate` datetime NOT NULL,
   `enrollment_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_submodules_creationUserId` int(11) DEFAULT NULL,

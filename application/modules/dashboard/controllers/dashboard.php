@@ -178,7 +178,25 @@ class dashboard extends skeleton_main {
 		$person_statistics = $this->dashboard_model->getPersonsStatistics();
 
 		$data['person_statistics'] = $person_statistics;
-		
+
+		$teacher_statistics = $this->dashboard_model->getTeachersStatistics();
+
+		$data['teachers_statistics'] = $teacher_statistics;
+
+		$students_statistics = $this->dashboard_model->getStudentsStatistics();
+
+		$data['students_statistics'] = $students_statistics;
+
+		$employers_statistics = $this->dashboard_model->getEmployersStatistics();
+
+		$data['employers_statistics'] = $employers_statistics;
+
+		$curriculum_statistics = $this->dashboard_model->getCurriculumStatistics();
+
+		$data['curriculum_statistics'] = $curriculum_statistics;
+
+		$data['current_academic_period'] = "2014/15";
+
 		$this->load->view('dashboard',$data); 
                 
 		/*******************

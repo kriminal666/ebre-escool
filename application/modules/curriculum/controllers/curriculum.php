@@ -164,12 +164,17 @@ class curriculum extends skeleton_main {
 
     }
 
+    //OLD CONTROLLER FUNCTION NAMENAME
     public function departments_families() {
+        $this->departments();
+    }
+
+    public function departments() {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
         $active_menu['submenu1']='#curriculum';
-        $active_menu['submenu2']='#departments_families';
+        $active_menu['submenu2']='#departments';
 
         $this->check_logged_user(); 
 
@@ -382,7 +387,7 @@ class curriculum extends skeleton_main {
 
         //Relació de Taules
         $this->grocery_crud->set_relation($this->current_table.'_cycle_id','cycle','cycle_shortname'); 
-        $this->grocery_crud->set_relation($this->current_table.'_estudies_id','studies','studies_shortname');        
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','studies_shortname');        
 
         //Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
         //Param 2: The relation table (cycle)

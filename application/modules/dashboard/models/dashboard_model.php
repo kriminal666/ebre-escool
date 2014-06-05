@@ -16,6 +16,75 @@ class dashboard_model  extends CI_Model  {
         $this->load->database();
     }
 
+    function getTeachersStatistics() {
+        
+        $teachers_statistics = array();
+
+        $teachers_statistics['total_teachers'] = 69;
+
+
+        return $teachers_statistics;
+    }
+
+    function getCurriculumStatistics() {
+
+        $curriculum_statistics = array();
+
+        //All studies
+        $this->db->from('studies');
+        $query = $this->db->get();
+        $curriculum_statistics['total_studies'] = $query->num_rows();
+
+        //All courses
+        $this->db->from('course');
+        $query = $this->db->get();
+        $curriculum_statistics['total_courses'] = $query->num_rows();
+
+        //All departments
+        $this->db->from('department');
+        $query = $this->db->get();
+        $curriculum_statistics['total_departments'] = $query->num_rows();
+
+        //All classgroups
+        $this->db->from('classroom_group');
+        $query = $this->db->get();
+        $curriculum_statistics['total_classroom_group'] = $query->num_rows();
+
+        //All classgroups
+        $this->db->from('study_module');
+        $query = $this->db->get();
+        $curriculum_statistics['total_study_modules'] = $query->num_rows();
+
+        //All classgroups
+        $this->db->from('study_submodules');
+        $query = $this->db->get();
+        $curriculum_statistics['total_study_submodules'] = $query->num_rows();
+
+        return $curriculum_statistics;
+    }
+
+    
+
+    function getStudentsStatistics() {
+
+        $students_statistics = array();
+
+        $students_statistics['total_students'] = 56;
+
+
+        return $students_statistics;
+    }
+
+    function getEmployersStatistics() {
+
+        $employers_statistics = array();
+
+        $employers_statistics['total_employers'] = 15;
+
+
+        return $employers_statistics;
+    }
+
     function getPersonsStatistics() {
 
     	$person_statistics = array();
@@ -28,8 +97,29 @@ class dashboard_model  extends CI_Model  {
         $query = $this->db->get();
 
         $person_statistics['total_number_of_persons'] = $query->num_rows();
+
+        $photos_url = array();
+        $photos_url_filenotexists = array();
+        $photos_url_filenotexists_id = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)  {
+                $base_url = "/usr/share/ebre-escool/uploads/person_photos";
+                $photo_url = $base_url . "/" . $row->person_photo;
+                $photos_url[] = $photo_url;
+                if ( !file_exists ( $photo_url ) ) {
+                    $photos_url_filenotexists[] = $photo_url;
+                    $photos_url_filenotexists_id[] = $row->person_id;
+                }
+            }
+        }
+
+        //PHOTOS
+        //SELECT `person_photo` FROM `person` 
+        $person_statistics['without_photo_persons'] = $photos_url_filenotexists;
+        $person_statistics['without_photo_persons_id'] = $photos_url_filenotexists_id;
+
 		
-		//All persons without person_official_id (DNI p.ex.) duplciates!
+		//All persons without person_official_id (DNI p.ex.) duplicates!
 		$this->db->from('person');
 		$this->db->select('person_official_id');
         $this->db->distinct();
@@ -118,10 +208,7 @@ class dashboard_model  extends CI_Model  {
         $person_statistics['undefined_emails'] = $undefined_emails;
         $person_statistics['duplicated_emails'] = $query->num_rows() -1;
 
-        //PHOTOS
-        $person_statistics['without_photo_persons'] = 89;
-
-		return $person_statistics;
+        return $person_statistics;
     }
     
    

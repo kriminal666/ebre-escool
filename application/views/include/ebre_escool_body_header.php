@@ -782,7 +782,7 @@
             <ul class="submenu">
               <!-- Manteniments -->
               <li id="studies_organizational_unit"><a href='<?=base_url()?>index.php/curriculum/studies_organizational_unit'><?php echo lang('organizational_unit_studies');?></a></li>
-              <li id="departments_families"><a href='<?=base_url()?>index.php/curriculum/departments_families'><?php echo lang('departments_families');?></a></li>
+              <li id="departments"><a href='<?=base_url()?>index.php/curriculum/departments'><?php echo lang('departments');?></a></li>
               <li id="studies"><a href='<?=base_url()?>index.php/curriculum/studies'><?php echo lang('studies');?></a></li>
               <li id="cycle"><a href='<?=base_url()?>index.php/curriculum/cycle'><?php echo lang('cycles');?></a></li>
               <li id="course"><a href='<?=base_url()?>index.php/curriculum/course'><?php echo lang('course');?></a></li>
