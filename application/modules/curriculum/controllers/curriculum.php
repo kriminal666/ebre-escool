@@ -237,7 +237,7 @@ class curriculum extends skeleton_main {
 
     }
 
-    public function studies() {
+    public function studies($department_id = "") {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -279,6 +279,7 @@ class curriculum extends skeleton_main {
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
          //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',"Id");
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_departments',lang($this->current_table.'_departments'));
@@ -300,6 +301,16 @@ class curriculum extends skeleton_main {
 //        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $studies_by_department = $this->session->flashdata('studies_by_department');
+        $this->session->keep_flashdata('studies_by_department');
+
+        if ( is_array($studies_by_department) && $department_id != "" ) {
+            $studies = $studies_by_department[$department_id];
+            foreach ($studies as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
 
         $this->renderitzar($this->current_table,$header_data);
 

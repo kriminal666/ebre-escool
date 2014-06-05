@@ -471,62 +471,73 @@ class teachers extends skeleton_main {
 
     }     
 
-	public function teacher() {
+	public function teacher($department_id = "") {
     
-    $active_menu = array();
-    $active_menu['menu']='#maintenances';
-    $active_menu['submenu1']='#persons';
-    $active_menu['submenu2']='#teachers';
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#persons';
+        $active_menu['submenu2']='#teachers';
 
-    $this->check_logged_user(); 
+        $this->check_logged_user(); 
 
-    /* Ace */
-    $header_data= $this->load_ace_files($active_menu);  
+        /* Ace */
+        $header_data= $this->load_ace_files($active_menu);  
 
-    /* Grocery Crud */ 
-    $this->current_table="teacher";
-    $this->grocery_crud->set_table($this->current_table);
+        /* Grocery Crud */ 
+        $this->current_table="teacher";
+        $this->grocery_crud->set_table($this->current_table);
+            
+        $this->session->set_flashdata('table_name', $this->current_table); 
         
-    $this->session->set_flashdata('table_name', $this->current_table); 
-    
-    //Establish subject:
-    $this->grocery_crud->set_subject(lang('teacher'));
+        //Establish subject:
+        $this->grocery_crud->set_subject(lang('teacher'));
 
-    $this->common_callbacks($this->current_table);
-        
-    //SPECIFIC COLUMNS
-    $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
-    $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
-    $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
+        $this->common_callbacks($this->current_table);
+            
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
+        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
+        $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
 
-    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
-    $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
-    $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
-    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
-    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 
-    //RELATIONS
-    $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
-    $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}');   
+        //RELATIONS
+        $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
+        $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}');   
 
-    //UPDATE AUTOMATIC FIELDS
-    $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
-    $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
-        
-    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
-        
-    $this->userCreation_userModification($this->current_table);
+        //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+            
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+            
+        $this->userCreation_userModification($this->current_table);
 
-    $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
 
-    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
-    $this->renderitzar($this->current_table,$header_data); 
+        $teachers_by_department = $this->session->flashdata('teachers_by_department');
+        $this->session->keep_flashdata('teachers_by_department');
+        echo "Ok!: " . $department_id;
+        if ( is_array($teachers_by_department) && $department_id != "" ) {
+            echo "Ok!";
+            $teachers = $teachers_by_department[$department_id];
+            foreach ($teachers as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
+
+        $this->renderitzar($this->current_table,$header_data); 
 
 
-       	//$this->grocery_crud->set_rules('person_official_id',lang('person_official_id'),'callback_valida_nif_cif_nie['.$this->input->post('person_official_id_type').']');
-        //$this->grocery_crud->set_rules('person_email',lang('person_email'),'valid_email');
+           	//$this->grocery_crud->set_rules('person_official_id',lang('person_official_id'),'callback_valida_nif_cif_nie['.$this->input->post('person_official_id_type').']');
+            //$this->grocery_crud->set_rules('person_email',lang('person_email'),'valid_email');
 
 	}
 

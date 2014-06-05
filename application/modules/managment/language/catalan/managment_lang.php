@@ -121,3 +121,14 @@ $lang['hour_code']="Codi hora";
 	$lang['enrollment_submodules_group_id']="Id Grup";
 	$lang['enrollment_submodules_moduleid']="Id Mòdul";
 	$lang['enrollment_submodules_submoduleid']="Id Sub-Mòdul";
+
+//Departments report	
+$lang['department_id']="Id";
+$lang['department_shortname']="Nom curt";
+$lang['department_name']="Nom";
+$lang['department_head']="Cap de departament";
+$lang['department_organizational_unit']="Unitat Organitzativa";
+$lang['department_location']="Espai";
+$lang['department_parentDepartment']="Dep. pare";
+$lang['department_numberOfTeachers']="# de professors";
+$lang['department_numberOfStudies']="# d'estudis";

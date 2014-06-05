@@ -20,7 +20,7 @@
                     <?php echo lang("curriculum");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Grups de classe
+                        Departaments
                     </small>
                 </h1>
 </div><!-- /.page-header -->
@@ -94,37 +94,84 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="6" style="text-align: center;"> <h4><?php echo $all_groups_table_title?></h4></td>
+    <td colspan="9" style="text-align: center;"> <h4>
+      <a href="<?php echo base_url('/index.php/curriculum/departments') ;?>">
+        <?php echo $departments_table_title?>
+      </a>
+      </h4></td>
   </tr>
   <tr> 
-     <th><?php echo lang('group_code')?></th>
-     <th><?php echo lang('group_name')?></th>
-     <th><?php echo lang('mentor_code')?></th>
-     <th><?php echo lang('mentor_name')?></th>
-     <th><?php echo lang('ldap_dn')?></th>
-     <th><?php echo lang('total_students')?></th>
+     <th><?php echo lang('department_id')?></th>
+     <th><?php echo lang('department_shortname')?></th>
+     <th><?php echo lang('department_name')?></th>
+     <th><?php echo lang('department_head')?></th>
+     <th><?php echo lang('department_organizational_unit')?></th>
+     <th><?php echo lang('department_location')?></th>
+     <th><?php echo lang('department_parentDepartment')?></th>
+     <th><?php echo lang('department_numberOfTeachers')?></th>
+     <th><?php echo lang('department_numberOfStudies')?></th>
   </tr>
  </thead>
  <tbody> 
-  <!-- Iteration that shows teacher groups for selected day-->
-  <?php foreach ($all_groups as $group_key => $group) : ?>
+  <?php $this->session->set_flashdata('studies_by_department', $studies_by_department);?>
+  <?php $this->session->set_flashdata('teachers_by_department', $teachers_by_department);?>
+
+  <!-- Iteration that shows departments-->
+  <?php foreach ($all_departments as $department_key => $department) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
-     <td><?php echo $group->groupCode;?></td>
-     <td><?php echo $group->groupShortName;?></td>
-     <td><?php echo $group->mentorId;?></td>
-     <td><?php echo $group->mentor_name;?></td>
-     <td><font size="-3"><?php echo $group->ldap_dn;?></font></td>
-     <td><?php echo $group->total_students;?></td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/departments/read/' . $department->id ) ;?>">
+          <?php echo $department->id;?>
+      </a> 
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
+          <?php echo $department->shortname;?>
+      </a> 
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
+          <?php echo $department->name;?>
+      </a> 
+     </td>
+     <td>
+      ( <a href="<?php echo base_url('/index.php/teachers/teachers/index/edit/' . $department->head_id ) ;?>">
+          <?php echo $department->head_code ;?>
+      </a> ) <a href="<?php echo base_url('/index.php/persons/persons/index/edit/' . $department->head_personid ) ;?>">
+          <?php echo $department->head_fullname; ;?>
+      </a>
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/organizational_unit/edit/' . $department->organizational_unit_id ) ;?>">
+          <?php echo $department->organizational_unit; ;?>
+      </a>
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/location/location/index/edit/' . $department->location_id ) ;?>">
+          <?php echo $department->location;?>
+      </a>
+     </td>
+     <td><?php echo $department->parentDepartment;?></td>
+     <td>
+      <a href="<?php echo base_url('/index.php/teachers/teachers/index/' . $department->id ) ;?>">
+          <?php echo $department->numberOfTeachers;?>
+      </a>
+      
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/studies/' . $department->id ) ;?>">
+          <?php echo $department->numberOfStudies;?>
+      </a>
+      
+     </td>
    </tr>
   <?php endforeach; ?>
  </tbody>
 </table> 
 
-
 </div>
 
-
-
+<div class="space-30"></div>
 
 
 

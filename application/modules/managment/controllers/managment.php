@@ -447,6 +447,93 @@ class managment extends skeleton_main {
 	public function index() {
 		$this->massive_change_password();
 	}
+
+	public function curriculum_reports_departments() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
 	
 	public function statistics_checkings_groups() {
 		
@@ -569,10 +656,12 @@ class managment extends skeleton_main {
 		}
 */
 		
-		$this->load->view('managment/statistics_checkings_groups.php',$data);
+		$this->load->view('statistics_checkings_groups.php',$data);
 		
 		$this->_load_body_footer();	
 	}
+
+
 	
 	public function statistics_checkings() {
 		$this->statistics_checkings_groups();
@@ -737,20 +826,24 @@ class managment extends skeleton_main {
         $this->set_common_columns_name();
 
         //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as('group_shortName',lang('shortName'));
-        $this->grocery_crud->display_as('group_name',lang('name'));
-        $this->grocery_crud->display_as('group_code',lang('group_code'));  
-        $this->grocery_crud->display_as('group_lastupdate',lang('last_update'));        
-		$this->grocery_crud->display_as('group_description',lang('description'));
-        $this->grocery_crud->display_as('group_creationUserId',lang('creationUserId'));	
-        $this->grocery_crud->display_as('group_lastupdateUserId',lang('lastupdateUserId')); 
-		$this->grocery_crud->display_as('group_entryDate',lang('entryDate'));   
-		$this->grocery_crud->display_as('group_educationalLevelId',lang('group_EducationalLevelId')); 
-		$this->grocery_crud->display_as('group_parentLocation',lang('parentLocation')); 		
-		$this->grocery_crud->display_as('group_mentorId',lang('mentor_code')); 
-		$this->grocery_crud->display_as('group_course_id',lang('course')); 
-        $this->grocery_crud->display_as('group_markedForDeletion',lang('markedForDeletion'));   
-        $this->grocery_crud->display_as('group_markedForDeletionDate',lang('markedForDeletionDate'));		
+        $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_number',lang($this->current_table.'_number'));
+
+
+        $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
+        $this->grocery_crud->display_as($this->current_table.'_lastupdate',lang('last_update'));        
+		$this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));	
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId')); 
+		$this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));   
+		$this->grocery_crud->display_as($this->current_table.'_parentLocation',lang('parentLocation')); 		
+		$this->grocery_crud->display_as($this->current_table.'_mentorId',lang('mentor_code')); 
+		$this->grocery_crud->display_as($this->current_table.'_course_id',lang('course')); 
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));		
 
 //      RELACIONS
         $this->grocery_crud->set_relation('group_course_id','course','course_shortname'); 

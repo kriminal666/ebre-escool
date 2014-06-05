@@ -27,6 +27,246 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
+	function get_teachers_by_department1() {
+		/* teachers by department
+		SELECT `teacher_department_id`, count(`teacher_id`) 
+		FROM `teacher` 
+		GROUP BY teacher_department_id */
+
+		//deparments
+		$this->db->select('teacher_department_id,count(teacher_id) as total');
+		$this->db->from('teacher');
+		$this->db->group_by('teacher_department_id');
+		$query = $this->db->get();
+
+		$teachers_by_department = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$teachers_ids = array();
+				//deparments
+				$this->db->select('teacher_department_id,teacher_id');
+				$this->db->from('teacher');
+				$this->db->where('teacher_department_id',$row->teacher_department_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$teachers_ids[]=$row1->teacher_id;
+					}
+				}
+				$deposit->teachers_ids =  $teachers_ids;
+				$teachers_by_department[$row->teacher_department_id] = $teachers_ids;
+			}
+		}
+
+		return $teachers_by_department;
+	}
+
+	function get_teachers_by_department() {
+		/* teachers by department
+		SELECT `teacher_department_id`, count(`teacher_id`) 
+		FROM `teacher` 
+		GROUP BY teacher_department_id */
+
+		//deparments
+		$this->db->select('teacher_department_id,count(teacher_id) as total');
+		$this->db->from('teacher');
+		$this->db->group_by('teacher_department_id');
+		$query = $this->db->get();
+
+		$teachers_by_department = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$teachers_ids = array();
+				//deparments
+				$this->db->select('teacher_department_id,teacher_id');
+				$this->db->from('teacher');
+				$this->db->where('teacher_department_id',$row->teacher_department_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$teachers_ids[]=$row1->teacher_id;
+					}
+				}
+				$deposit->teachers_ids =  $teachers_ids;
+				$teachers_by_department[$row->teacher_department_id] = $deposit;
+			}
+		}
+
+		return $teachers_by_department;
+	}
+
+	function get_studies_by_department() {
+		/* studies by department
+		SELECT `department_id`,count(`study_id`) as total
+		FROM `study_department` 
+		GROUP BY department_id */
+
+		//deparments
+		$this->db->select('department_id,count(study_id) as total');
+		$this->db->from('study_department');
+		$this->db->group_by('department_id');
+		$query = $this->db->get();
+
+		$studies_by_department = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$studies_ids = array();
+				//studies
+				$this->db->select('department_id,study_id');
+				$this->db->from('study_department');
+				$this->db->where('department_id',$row->department_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$studies_ids[]=$row1->study_id;
+					}
+				}
+
+				$deposit->studies_ids = $studies_ids;
+				$studies_by_department[$row->department_id] = $deposit;
+				
+			}
+		}
+
+		return $studies_by_department;
+	}
+
+	function get_studies_by_department1() {
+		/* studies by department
+		SELECT `department_id`,count(`study_id`) as total
+		FROM `study_department` 
+		GROUP BY department_id */
+
+		//deparments
+		$this->db->select('department_id,count(study_id) as total');
+		$this->db->from('study_department');
+		$this->db->group_by('department_id');
+		$query = $this->db->get();
+
+		$studies_by_department = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$studies_ids = array();
+				//studies
+				$this->db->select('department_id,study_id');
+				$this->db->from('study_department');
+				$this->db->where('department_id',$row->department_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$studies_ids[]=$row1->study_id;
+					}
+				}
+
+				$studies_by_department[$row->department_id] = $studies_ids;
+				
+			}
+		}
+
+		return $studies_by_department;
+	}
+
+
+	function get_all_departments_report_info($orderby = "DESC") {
+
+			
+		$teachers_by_department = $this->get_teachers_by_department();
+		$studies_by_department = $this->get_studies_by_department();
+
+
+		//deparments
+		$this->db->select('department_id,department_shortname,department_name,department_head,department_parent_department_id,
+						   department_organizational_unit_id,department_location_id,
+						   teacher_code,person_id,person_sn1,person_sn2,person_givenName,organizational_unit_id,organizational_unit_name,location_name');
+		$this->db->from('department');
+		$this->db->join('teacher','teacher.teacher_id = department.department_head', 'left');
+		$this->db->join('person','teacher.teacher_person_id = person.person_id', 'left');
+		$this->db->join('organizational_unit','department.department_organizational_unit_id = organizational_unit.organizational_unit_id', 'left');
+		$this->db->join('location','department.department_location_id = location.location_id', 'left');
+		$this->db->order_by('department_name', $orderby);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0){
+			$all_departments = array();
+			foreach($query->result() as $row){
+				$department = new stdClass;
+				
+				$department->id = $row->department_id;
+				$department->shortname = $row->department_shortname;
+				$department->name = $row->department_name;
+				$teacher_fullname = $row->person_sn1 . " " . $row->person_sn1 . ", " . $row->person_givenName;
+				$department->head_personid = $row->person_id;
+				$department->head = "( " . $row->teacher_code . " ) " . $teacher_fullname;
+				$department->head_fullname = $teacher_fullname;
+				$department->head_code = $row->teacher_code;
+				$department->head_id = $row->department_head;
+				$department->parentDepartment = $row->department_parent_department_id;
+				$department->organizational_unit = $row->organizational_unit_name;
+				$department->organizational_unit_id = $row->organizational_unit_id;
+				$department->location = $row->location_name;
+				$department->location_id = $row->department_location_id;				
+
+				//get number of teacher Deparments
+				if ( array_key_exists ( $row->department_id , $teachers_by_department )) {					
+					$department->numberOfTeachers = $teachers_by_department[$row->department_id]->total;
+					$department->teacher_ids = $teachers_by_department[$row->department_id]->teachers_ids;
+
+				}	else {
+					$department->numberOfTeachers = "";
+					$department->teacher_ids = "";
+				}
+
+				//get number of teacher Studies
+				if ( array_key_exists ( $row->department_id , $studies_by_department )) {					
+					$department->numberOfStudies = $studies_by_department[$row->department_id]->total;
+					$department->studies_ids = $studies_by_department[$row->department_id]->studies_ids;
+				}	else {
+					$department->numberOfStudies = "";
+					$department->studies_ids = "";
+				}
+				
+				$all_departments[$row->department_id] = $department;
+			}
+			return $all_departments;
+		}	
+		else
+			return false;
+		
+
+		/*$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+
+		return $all_departments;*/
+	}
+
+
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
 		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_educationalLevelId,classroom_group_mentorId');

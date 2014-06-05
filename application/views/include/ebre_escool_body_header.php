@@ -563,20 +563,26 @@
 
                 <ul class="submenu">
 
+                  <li id="curriculum_reports_departments">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_departments'); ?>">
+                      Departaments
+                    </a>
+                  </li>
+
                   <li id="curriculum_reports_statistics_checkings_groups">
 
-                    <!--<a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">-->
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/statistics_checkings_groups">-->
                     <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups'); ?>">
                         <?php echo lang('classroom_groups'); ?>
 
-                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/statistics_checkings_groups">
-                        Grups de classe
-
+                    <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups');?>">
+                        Grups de classe 1
                     </a>
                   </li>
 
                   <li id="curriculum_reports_users_in_group">
-                    <!--<a href="http://iesdeltebre.net/ebre-escool/index.php/managment/users_in_group">-->
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
                     <a href="<?php echo base_url('/index.php/managment/users_in_group'); ?>">
                       <?php echo lang('users_in_classroom_group'); ?>
                     </a>
@@ -584,7 +590,14 @@
 
                   <!-- STUDENTS MAILING LIST-->    
                   <li id="curriculum_reports_lessons">
-                    <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/lessons">
+                    <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups');?>">
+                      <?php echo "TODO"; ?>
+                    </a>
+                  </li>
+
+                  <!-- LESSONS -->    
+                  <li id="curriculum_reports_lessons">
+                    <a href="<?php echo base_url('/index.php/managment/lessons');?>">
                       <?php echo lang('lessons'); ?>
                     </a>
                   </li>
@@ -910,7 +923,7 @@
               </li>
 
               <li id="managment_massive_change_password">
-                <a href="http://iesdeltebre.net/ebre-escool/index.php/managment/massive_change_password">
+                <a href="<?php echo base_url('index.php/managment/massive_change_password');?>">
                   <i class="icon-double-angle-right"></i>
                     <?php echo lang('massive_change_password'); ?>
                 </a>
