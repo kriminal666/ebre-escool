@@ -132,3 +132,16 @@ $lang['department_location']="Espai";
 $lang['department_parentDepartment']="Dep. pare";
 $lang['department_numberOfTeachers']="# de professors";
 $lang['department_numberOfStudies']="# d'estudis";
+
+//Studies report	
+$lang['studies_id']="Id";
+$lang['studies_shortname']="Nom curt";
+$lang['studies_name']="Nom";
+$lang['studies_organizational_unit']="Tipus estudi";
+$lang['studies_law']="Llei";
+$lang['studies_cycles']="Cicles";
+$lang['studies_courses']="Cursos";
+$lang['studies_classroomgroups']="Grups de classe";
+$lang['studies_studymodules']="Mòduls";
+$lang['studies_studysubmodules']="Unitats formatives";
+

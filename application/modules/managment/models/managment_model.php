@@ -27,6 +27,183 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
+	function get_studymodules_by_study() {
+		/* studymodules by study
+		SELECT course_study_id, count(`study_module_id`) 
+		FROM study_module 
+		LEFT JOIN classroom_group ON study_module.study_module_classroom_group_id=classroom_group.classroom_group_id
+		LEFT JOIN course ON classroom_group.`classroom_group_course_id`=course.course_id
+		GROUP BY course_study_id
+		 */
+
+		//courses
+		$this->db->select('course_study_id,count(study_module_id) as total');
+		$this->db->from('study_module');
+		$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
+		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+		$this->db->group_by('course_study_id');
+		$query = $this->db->get();
+
+		$studymodules_by_study = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$studymodules_ids = array();
+				//study_modules
+				$this->db->select('study_module_id');
+				$this->db->from('study_module');
+				$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
+				$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+				$this->db->where('course_study_id',$row->course_study_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$studymodules_ids[]=$row1->study_module_id;
+					}
+				}
+				$deposit->studymodules_ids =  $studymodules_ids;
+
+				$studymodules_by_study[$row->course_study_id] = $deposit;
+			}
+		}
+
+		return $studymodules_by_study;
+	}
+		
+
+	function get_studysubmodules_by_study() {
+
+		/* studysubmodules by study
+		SELECT course_study_id, count(`study_module_id`) 
+		FROM study_submodules
+		JOIN study_module ON study_submodules.study_submodules_study_module_id=study_module.study_module_id
+		LEFT JOIN classroom_group ON study_module.study_module_classroom_group_id=classroom_group.classroom_group_id
+		LEFT JOIN course ON classroom_group.`classroom_group_course_id`=course.course_id
+		GROUP BY course_study_id
+		 */
+
+		//courses
+		$this->db->select('course_study_id,count(study_module_id) as total');
+		$this->db->from('study_submodules');
+		$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
+		$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
+		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+		$this->db->group_by('course_study_id');
+		$query = $this->db->get();
+
+		$studysubmodules_by_study = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$studysubmodules_ids = array();
+				//study_modules
+				$this->db->select('study_submodules_id');
+				$this->db->from('study_submodules');
+				$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
+				$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
+				$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+				$this->db->where('course_study_id',$row->course_study_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$studysubmodules_ids[]=$row1->study_submodules_id;
+					}
+				}
+				$deposit->studysubmodules_ids =  $studysubmodules_ids;
+
+				$studysubmodules_by_study[$row->course_study_id] = $deposit;
+			}
+		}
+
+		return $studysubmodules_by_study;
+	}
+
+	function get_classroomgroups_by_study() {
+		/* classroomgroups by study
+		SELECT course_study_id, count(classroom_group_id) 
+		FROM classroom_group 
+		LEFT JOIN course ON classroom_group.`classroom_group_course_id`=course.course_id
+		GROUP BY course_study_id
+		 */
+
+		//courses
+		$this->db->select('course_study_id,count(classroom_group_id) as total');
+		$this->db->from('classroom_group');
+		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+		$this->db->group_by('course_study_id');
+		$query = $this->db->get();
+
+		$classroomgroups_by_study = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$classroomgroups_ids = array();
+				//classroomgroups
+				$this->db->select('classroom_group_id');
+				$this->db->from('classroom_group');
+				$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+				$this->db->where('course_study_id',$row->course_study_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$classroomgroups_ids[]=$row1->classroom_group_id;
+					}
+				}
+				$deposit->classroomgroups_ids =  $classroomgroups_ids;
+
+				$classroomgroups_by_study[$row->course_study_id] = $deposit;
+			}
+		}
+
+		return $classroomgroups_by_study;
+	}
+
+
+	function get_courses_by_study() {
+		/* courses by study
+		SELECT course_study_id, count(`course_id`) 
+		FROM course 
+		GROUP BY course_study_id
+		 */
+
+		//courses
+		$this->db->select('course_study_id,count(course_id) as total');
+		$this->db->from('course');
+		$this->db->group_by('course_study_id');
+		$query = $this->db->get();
+
+		$courses_by_study = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$courses_ids = array();
+				//courses
+				$this->db->select('course_id');
+				$this->db->from('course');
+				$this->db->where('course_study_id',$row->course_study_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$courses_ids[]=$row1->course_id;
+					}
+				}
+				$deposit->courses_ids =  $courses_ids;
+
+				$courses_by_study[$row->course_study_id] = $deposit;
+			}
+		}
+
+		return $courses_by_study;
+	}
+
 	function get_teachers_by_department1() {
 		/* teachers by department
 		SELECT `teacher_department_id`, count(`teacher_id`) 
@@ -53,7 +230,6 @@ class managment_model  extends CI_Model  {
 						$teachers_ids[]=$row1->teacher_id;
 					}
 				}
-				$deposit->teachers_ids =  $teachers_ids;
 				$teachers_by_department[$row->teacher_department_id] = $teachers_ids;
 			}
 		}
@@ -170,6 +346,159 @@ class managment_model  extends CI_Model  {
 		}
 
 		return $studies_by_department;
+	}
+
+	
+
+	function get_all_studies_report_info($orderby = "DESC") {
+		/*
+		SELECT studies_id,studies_shortname,studies_name,studies_studies_organizational_unit_id, study_department.department_id, department_shortname
+		FROM studies
+		LEFT JOIN study_department ON studies.studies_studies_organizational_unit_id = study_department.study_id
+		LEFT JOIN department ON study_department.department_id = department.department_id
+		WHERE 1
+		*/
+		/*
+		SELECT studies_id, studies_shortname, studies_name, studies_studies_organizational_unit_id,studies_organizational_unit_shortname
+		FROM studies
+		LEFT JOIN studies_organizational_unit ON studies.studies_studies_organizational_unit_id = studies_organizational_unit.studies_organizational_unit_id
+		WHERE 1
+		*/
+
+		$courses_by_study = $this->get_courses_by_study();
+		$classroomgroups_by_study = $this->get_classroomgroups_by_study();
+		$studymodules_by_study = $this->get_studymodules_by_study();
+		$studysubmodules_by_study = $this->get_studysubmodules_by_study();
+
+		//deparments
+		$this->db->select('studies_id,studies_shortname,studies_name,studies_studies_organizational_unit_id,studies_organizational_unit_shortname,
+						  studies_law_id,studies_law_shortname,');
+		$this->db->from('studies');
+		$this->db->join('studies_organizational_unit','studies.studies_studies_organizational_unit_id = studies_organizational_unit.studies_organizational_unit_id', 'left');
+		$this->db->join('studies_law','studies.studies_studies_law_id = studies_law.studies_law_id', 'left');
+		
+		$this->db->order_by('studies_shortname', $orderby);
+		
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0){
+			$all_studies = array();
+			foreach($query->result() as $row){
+				$study = new stdClass;
+				
+				$study->id = $row->studies_id;
+				$study->shortname = $row->studies_shortname;
+				$study->name = $row->studies_name;
+				$study->studies_studies_organizational_unit_id = $row->studies_studies_organizational_unit_id;
+				$study->studies_organizational_unit_shortname = $row->studies_organizational_unit_shortname;
+				$study->studies_studies_law_id = $row->studies_law_id;
+				$study->studies_studies_law_shortname = $row->studies_law_shortname;
+
+				//get courses info
+				if ( array_key_exists ( $row->studies_id , $courses_by_study )) {					
+					$study->numberOfCourses = $courses_by_study[$row->studies_id]->total;
+					$study->courses_ids = $courses_by_study[$row->studies_id]->courses_ids;
+
+				}	else {
+					$study->numberOfCourses = "";
+					$study->courses_ids = "";
+				}
+
+				//get classroomgroups info
+				if ( array_key_exists ( $row->studies_id , $classroomgroups_by_study )) {					
+					$study->numberOfClassroomgroups = $classroomgroups_by_study[$row->studies_id]->total;
+					$study->classroomgroups_ids = $classroomgroups_by_study[$row->studies_id]->classroomgroups_ids;
+
+				}	else {
+					$study->numberOfClassroomgroups = "";
+					$study->classroomgroups_ids = "";
+				}	
+
+				//get studymodules info
+				if ( array_key_exists ( $row->studies_id , $studymodules_by_study )) {					
+					$study->numberOfStudyModules = $studymodules_by_study[$row->studies_id]->total;
+					$study->studymodules_ids = $studymodules_by_study[$row->studies_id]->studymodules_ids;
+
+				}	else {
+					$study->numberOfStudyModules = "";
+					$study->studymodules_ids = "";
+				}		
+
+				//get studysubmodules info
+				if ( array_key_exists ( $row->studies_id , $studysubmodules_by_study )) {					
+					$study->numberOfStudySubModules = $studysubmodules_by_study[$row->studies_id]->total;
+					$study->studysubmodules_ids = $studysubmodules_by_study[$row->studies_id]->studysubmodules_ids;
+
+				}	else {
+					$study->numberOfStudySubModules = "";
+					$study->studysubmodules_ids = "";
+				}		
+				
+
+				/*
+				$teacher_fullname = $row->person_sn1 . " " . $row->person_sn1 . ", " . $row->person_givenName;
+				$study->head_personid = $row->person_id;
+				$study->head = "( " . $row->teacher_code . " ) " . $teacher_fullname;
+				$study->head_fullname = $teacher_fullname;
+				$study->head_code = $row->teacher_code;
+				$study->head_id = $row->study_head;
+				$study->parentstudy = $row->study_parent_study_id;
+				$study->organizational_unit = $row->organizational_unit_name;
+				$study->organizational_unit_id = $row->organizational_unit_id;
+				$study->location = $row->location_name;
+				$study->location_id = $row->study_location_id;				*/
+
+				//get number of teacher Deparments
+				/*if ( array_key_exists ( $row->study_id , $teachers_by_study )) {					
+					$study->numberOfTeachers = $teachers_by_study[$row->study_id]->total;
+					$study->teacher_ids = $teachers_by_study[$row->study_id]->teachers_ids;
+
+				}	else {
+					$study->numberOfTeachers = "";
+					$study->teacher_ids = "";
+				}
+
+				//get number of teacher Studies
+				if ( array_key_exists ( $row->study_id , $studies_by_study )) {					
+					$study->numberOfStudies = $studies_by_study[$row->study_id]->total;
+					$study->studies_ids = $studies_by_study[$row->study_id]->studies_ids;
+				}	else {
+					$study->numberOfStudies = "";
+					$study->studies_ids = "";
+				}*/
+				
+				$all_studies[$row->studies_id] = $study;
+			}
+			return $all_studies;
+		}	
+		else
+			return false;
+		
+
+		/*$all_studies = array();
+
+		$study1 = new stdClass;
+
+		$study1->shortname = "Elèctrics";
+		$study1->name = "Departament d'electrics";
+		$study1->head = "Richard Stallman";
+		$study1->location = "Aula 45";
+		$study1->numberOfTeachers = 7;
+		$study1->numberOfStudies = 2;
+
+		$study2 = new stdClass;
+
+		$study2->shortname = "Informàtica";
+		$study2->name = "Departament d'informàtica";
+		$study2->head = "Linus Torvalds";
+		$study2->location = "Espai";
+		$study2->numberOfTeachers = 6;
+		$study2->numberOfStudies = 3;
+
+		$all_studies[] = $study1;
+		$all_studies[] = $study2;
+
+		return $all_studies;*/
 	}
 
 

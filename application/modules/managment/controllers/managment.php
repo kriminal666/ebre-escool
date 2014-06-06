@@ -448,6 +448,504 @@ class managment extends skeleton_main {
 		$this->massive_change_password();
 	}
 
+	public function curriculum_reports_studysubmodules() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_studymodules() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_classgroup() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_course() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_cicle() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_departments';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['departments_table_title'] = "Departaments";
+
+		$all_departments = $this->managment_model->get_all_departments_report_info();
+		$studies_by_department = $this->managment_model->get_studies_by_department1();
+		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		/*
+		$all_departments = array();
+
+		$department1 = new stdClass;
+
+		$department1->shortname = "Elèctrics";
+		$department1->name = "Departament d'electrics";
+		$department1->head = "Richard Stallman";
+		$department1->location = "Aula 45";
+		$department1->numberOfTeachers = 7;
+		$department1->numberOfStudies = 2;
+
+		$department2 = new stdClass;
+
+		$department2->shortname = "Informàtica";
+		$department2->name = "Departament d'informàtica";
+		$department2->head = "Linus Torvalds";
+		$department2->location = "Espai";
+		$department2->numberOfTeachers = 6;
+		$department2->numberOfStudies = 3;
+
+		$all_departments[] = $department1;
+		$all_departments[] = $department2;
+		*/
+
+		$data['all_departments'] = $all_departments;
+		$data['studies_by_department'] = $studies_by_department;
+		$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_departments.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_study() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_study';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['studies_table_title'] = "Estudis";
+
+		$all_studies = $this->managment_model->get_all_studies_report_info();
+		
+		//$studies_by_department = $this->managment_model->get_studies_by_department1();
+		//$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		$data['all_studies'] = $all_studies;
+		//$data['studies_by_department'] = $studies_by_department;
+		//$data['teachers_by_department'] = $teachers_by_department;
+
+		$this->load->view('curriculum_reports_study.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
 	public function curriculum_reports_departments() {
 
 		if (!$this->skeleton_auth->logged_in())
@@ -534,6 +1032,8 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 		
 	}
+
+
 	
 	public function statistics_checkings_groups() {
 		

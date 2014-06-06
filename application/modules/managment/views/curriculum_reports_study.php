@@ -20,7 +20,7 @@
                     <?php echo lang("curriculum");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Departaments
+                        Estudis
                     </small>
                 </h1>
 </div><!-- /.page-header -->
@@ -94,75 +94,75 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="9" style="text-align: center;"> <h4>
-      <a href="<?php echo base_url('/index.php/curriculum/departments') ;?>">
-        <?php echo $departments_table_title?>
+    <td colspan="10" style="text-align: center;"> <h4>
+      <a href="<?php echo base_url('/index.php/curriculum/studies') ;?>">
+        <?php echo $studies_table_title?>
       </a>
       </h4></td>
   </tr>
   <tr> 
-     <th><?php echo lang('department_id')?></th>
-     <th><?php echo lang('department_shortname')?></th>
-     <th><?php echo lang('department_name')?></th>
-     <th><?php echo lang('department_head')?></th>
-     <th><?php echo lang('department_organizational_unit')?></th>
-     <th><?php echo lang('department_location')?></th>
-     <th><?php echo lang('department_parentDepartment')?></th>
-     <th><?php echo lang('department_numberOfTeachers')?></th>
-     <th><?php echo lang('department_numberOfStudies')?></th>
+     <th><?php echo lang('studies_id')?></th>
+     <th><?php echo lang('studies_shortname')?></th>
+     <th><?php echo lang('studies_name')?></th>
+     <th><?php echo lang('studies_organizational_unit')?></th>
+     <th><?php echo lang('studies_law')?></th>
+     <th><?php echo lang('studies_cycles')?></th>
+     <th><?php echo lang('studies_courses')?></th>
+     <th><?php echo lang('studies_classroomgroups')?></th>
+     <th><?php echo lang('studies_studymodules')?></th>
+     <th><?php echo lang('studies_studysubmodules')?></th>
   </tr>
  </thead>
  <tbody> 
-  <?php $this->session->set_flashdata('studies_by_department', $studies_by_department);?>
-  <?php $this->session->set_flashdata('teachers_by_department', $teachers_by_department);?>
+  <?php //$this->session->set_flashdata('studies_by_department', $studies_by_department);?>
+  <?php //$this->session->set_flashdata('teachers_by_department', $teachers_by_department);?>
 
-  <!-- Iteration that shows departments-->
-  <?php foreach ($all_departments as $department_key => $department) : ?>
+  <!-- Iteration that shows study-->
+  <?php foreach ($all_studies as $studies_key => $study) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/read/' . $department->id ) ;?>">
-          <?php echo $department->id;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study/read/' . $study->id ) ;?>">
+          <?php echo $study->id;?>
       </a> 
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
-          <?php echo $department->shortname;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study/edit/' . $study->id ) ;?>">
+          <?php echo $study->shortname;?>
       </a> 
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
-          <?php echo $department->name;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study/edit/' . $study->id ) ;?>">
+          <?php echo $study->name;?>
       </a> 
      </td>
      <td>
-      ( <a href="<?php echo base_url('/index.php/teachers/teachers/index/edit/' . $department->head_id ) ;?>">
-          <?php echo $department->head_code ;?>
-      </a> ) <a href="<?php echo base_url('/index.php/persons/persons/index/edit/' . $department->head_personid ) ;?>">
-          <?php echo $department->head_fullname; ;?>
+      ( <a href="<?php echo base_url('/index.php/curriculum/studies_organizational_unit/index/read/' . $study->studies_studies_organizational_unit_id ) ;?>">
+          <?php echo $study->studies_studies_organizational_unit_id ;?>
+      </a> ) <a href="<?php echo base_url('/index.php/curriculum/studies_organizational_unit/index/edit/' . $study->studies_studies_organizational_unit_id ) ;?>">
+          <?php echo $study->studies_organizational_unit_shortname; ;?>
       </a>
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/organizational_unit/edit/' . $department->organizational_unit_id ) ;?>">
-          <?php echo $department->organizational_unit; ;?>
+      ( <a href="<?php echo base_url('/index.php/curriculum/studieslaw/index/read/' . $study->studies_studies_law_id ) ;?>">
+          <?php echo $study->studies_studies_law_id ;?>
+      </a> ) <a href="<?php echo base_url('/index.php/curriculum/studieslaw/index/edit/' . $study->studies_studies_law_id ) ;?>">
+          <?php echo $study->studies_studies_law_shortname; ;?>
       </a>
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/location/location/index/edit/' . $department->location_id ) ;?>">
-          <?php echo $department->location;?>
-      </a>
-     </td>
-     <td><?php echo $department->parentDepartment;?></td>
-     <td>
-      <a href="<?php echo base_url('/index.php/teachers/teachers/index/' . $department->id ) ;?>">
-          <?php echo $department->numberOfTeachers;?>
-      </a>
-      
+      TODO
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/studies/' . $department->id ) ;?>">
-          <?php echo $department->numberOfStudies;?>
-      </a>
-      
+      <?php echo $study->numberOfCourses; ;?>
+     </td>
+     <td>
+      <?php echo $study->numberOfClassroomgroups; ;?>
+     </td>
+     <td>
+      <?php echo $study->numberOfStudyModules; ;?>
+     </td>
+     <td>
+      <?php echo $study->numberOfStudySubModules; ;?>
      </td>
    </tr>
   <?php endforeach; ?>
@@ -172,6 +172,23 @@
 </div>
 
 <div class="space-30"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	</div>	
 </div>

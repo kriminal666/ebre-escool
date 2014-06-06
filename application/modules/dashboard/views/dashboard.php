@@ -47,7 +47,7 @@
 									<small>(v1.1.3)</small>
 								</strong>
 								,
- the lightweight, feature-rich and easy to use admin template.
+ 								the lightweight, feature-rich and easy to use admin template.
 							</div>
 
 							<div class="space-6"></div>
@@ -487,7 +487,12 @@
 												<?php if ($curriculum_statistics['total_departments'] > 0): ?>
                     								<a href="<?php echo base_url('/index.php/curriculum/departments')?>">
 												<?php endif; ?>
-													Departaments
+													Departaments 
+														<?php if ($curriculum_statistics['total_departments'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('index.php/managment/curriculum_reports_departments')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_departments'] > 0): ?>
 													</a>
 												<?php endif; ?>	

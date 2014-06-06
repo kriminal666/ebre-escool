@@ -552,7 +552,7 @@
                 </ul>                  
               </li> 
 
-              <!-- STUDENTS REPORTS -->
+              <!-- CURRICULUM REPORTS -->
               <li id="curriculum_reports">
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
@@ -567,6 +567,48 @@
                     <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
                     <a href="<?php echo base_url('/index.php/managment/curriculum_reports_departments'); ?>">
                       Departaments
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_study">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_study'); ?>">
+                      Estudis
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_cicle">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_cicle'); ?>">
+                      Cicles
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_course">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_course'); ?>">
+                      Curs
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_classgroup">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_classgroup'); ?>">
+                      Grups classe
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_studymodules">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_studymodules'); ?>">
+                      Mòduls professionals
+                    </a>
+                  </li>
+
+                  <li id="curriculum_reports_studysubmodules">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_studysubmodules'); ?>">
+                      Unitat formatives
                     </a>
                   </li>
 
@@ -659,13 +701,7 @@
                   </li>
 
                 </ul>
-                <!-- Informe guifi -->
-                <!--<li>
-                  <a href="<?php echo base_url('/index.php/attendance/attendance_reports/informeGuifi'); ?>">
-                   <i class="icon-double-angle-right"></i>
-                    <?php echo lang('reports_guifi');?>
-                  </a>
-                </li>-->
+                
               </li>
 
 
@@ -797,6 +833,7 @@
               <li id="studies_organizational_unit"><a href='<?=base_url()?>index.php/curriculum/studies_organizational_unit'><?php echo lang('organizational_unit_studies');?></a></li>
               <li id="departments"><a href='<?=base_url()?>index.php/curriculum/departments'><?php echo lang('departments');?></a></li>
               <li id="studies"><a href='<?=base_url()?>index.php/curriculum/studies'><?php echo lang('studies');?></a></li>
+              <li id="studieslaw"><a href='<?=base_url()?>index.php/curriculum/studieslaw'><?php echo lang('studieslaw');?></a></li>
               <li id="cycle"><a href='<?=base_url()?>index.php/curriculum/cycle'><?php echo lang('cycles');?></a></li>
               <li id="course"><a href='<?=base_url()?>index.php/curriculum/course'><?php echo lang('course');?></a></li>
               <li id="classroom_group"><a href='<?=base_url()?>index.php/curriculum/classroom_group'><?php echo lang('classroom_group');?></a></li>

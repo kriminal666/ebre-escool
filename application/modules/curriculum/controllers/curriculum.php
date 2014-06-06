@@ -237,6 +237,80 @@ class curriculum extends skeleton_main {
 
     }
 
+    public function studieslaw($department_id = "") {
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#studieslaw';
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        /* Grocery Crud */
+        $this->current_table="studies_law";
+        $this->grocery_crud->set_table($this->current_table);
+        
+        $this->session->set_flashdata('table_name', $this->current_table);
+
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('studieslaw'));          
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+    
+        //Express fields
+        $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);
+
+        $this->grocery_crud->add_fields($this->current_table.'_shortname', $this->current_table.'_name',  $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
+            $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
+
+        $this->grocery_crud->edit_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_entryDate',  $this->current_table.'_last_update', $this->current_table.'_creationUserId', 
+            $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
+
+         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',"Id");
+        $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        
+         //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        /*
+        $studies_by_department = $this->session->flashdata('studies_by_department');
+        $this->session->keep_flashdata('studies_by_department');
+
+        if ( is_array($studies_by_department) && $department_id != "" ) {
+            $studies = $studies_by_department[$department_id];
+            foreach ($studies as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }*/
+
+        $this->renderitzar($this->current_table,$header_data);
+    }
+
     public function studies($department_id = "") {
 
         $active_menu = array();
@@ -272,21 +346,26 @@ class curriculum extends skeleton_main {
         //COMMON_COLUMNS               
         $this->set_common_columns_name($this->current_table);
 
-        $this->grocery_crud->add_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_departments' ,  $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
+        $this->grocery_crud->add_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_departments', $this->current_table.'_studies_organizational_unit_id', $this->current_table.'_studies_law_id' ,  $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
-        $this->grocery_crud->edit_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_departments' ,  $this->current_table.'_entryDate',  $this->current_table.'_last_update', $this->current_table.'_creationUserId', 
+        $this->grocery_crud->edit_fields($this->current_table.'_shortname', $this->current_table.'_name', $this->current_table.'_departments' , $this->current_table.'_studies_organizational_unit_id', $this->current_table.'_studies_law_id', $this->current_table.'_entryDate',  $this->current_table.'_last_update', $this->current_table.'_creationUserId', 
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
          //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_id',"Id");
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
+        $this->grocery_crud->display_as($this->current_table.'_studies_organizational_unit_id',lang($this->current_table.'_studies_organizational_unit_id'));
+        $this->grocery_crud->display_as($this->current_table.'_studies_law_id',lang($this->current_table.'_studies_law_id'));
         $this->grocery_crud->display_as($this->current_table.'_departments',lang($this->current_table.'_departments'));
 
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->set_relation($this->current_table.'_studies_organizational_unit_id','studies_organizational_unit','studies_organizational_unit_shortname'); 
+        $this->grocery_crud->set_relation($this->current_table.'_studies_law_id','studies_law','studies_law_shortname'); 
         
         $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
         
@@ -398,6 +477,7 @@ class curriculum extends skeleton_main {
 
         //Relació de Taules
         $this->grocery_crud->set_relation($this->current_table.'_cycle_id','cycle','cycle_shortname'); 
+
         $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','studies_shortname');        
 
         //Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)

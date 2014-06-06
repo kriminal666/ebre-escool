@@ -399,6 +399,8 @@ CREATE TABLE IF NOT EXISTS `studies` (
   `studies_id` int(11) NOT NULL AUTO_INCREMENT,
   `studies_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
   `studies_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `studies_studies_organizational_unit_id` int(11) NOT NULL,
+  `studies_studies_law_id` int(11) NOT NULL,
   `studies_entryDate` datetime NOT NULL,
   `studies_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `studies_creationUserId` int(11) DEFAULT NULL,
@@ -406,6 +408,25 @@ CREATE TABLE IF NOT EXISTS `studies` (
   `studies_markedForDeletion` enum('n','y') NOT NULL,
   `studies_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`studies_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `studies_law`
+--
+
+CREATE TABLE IF NOT EXISTS `studies_law` (
+  `studies_law_id` int(11) NOT NULL AUTO_INCREMENT,
+  `studies_law_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `studies_law_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `studies_law_entryDate` datetime NOT NULL,
+  `studies_law_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `studies_law_creationUserId` int(11) DEFAULT NULL,
+  `studies_law_lastupdateUserId` int(11) DEFAULT NULL,
+  `studies_law_markedForDeletion` enum('n','y') NOT NULL,
+  `studies_law_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`studies_law_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

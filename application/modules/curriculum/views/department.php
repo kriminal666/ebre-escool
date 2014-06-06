@@ -28,6 +28,16 @@
         </div><!-- /.page-header -->
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
+      <div class="alert alert-block alert-success">
+        <button type="button" class="close" data-dismiss="alert">
+          <i class="icon-remove"></i>
+        </button>
+
+        <i class="icon-ok green"></i>
+         També us pot interessar l'<strong class="green"><a href="<?php echo base_url('/index.php/managment/curriculum_reports_departments');?>">
+          informe de departaments
+        </strong></a> que mostra informació resumida sobre tots els departaments del centre
+      </div>
    		<?php echo $output; ?>		
 	</div>	
 </div

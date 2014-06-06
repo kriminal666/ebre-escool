@@ -100,3 +100,7 @@ $lang['classroom_group_creationUserId']   = "Usuari de creació";
 $lang['classroom_group_lastupdateUserId']   = "Usuari última modificació";
 $lang['classroom_group_markedForDeletion']   = "Baixa?";
 $lang['classroom_group_markedForDeletionDate']   = "Data de baixa";
+
+$lang['studies_studies_organizational_unit_id'] = "Tipus d'estudi";
+$lang['studies_studies_law_id'] = "Llei";
+ 	
