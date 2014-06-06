@@ -688,6 +688,11 @@ public function load_data_tables($header_data){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js')); 
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));
+
+        
         if($active_menu==false){
             $header_data['menu']= $active_menu;
         }
