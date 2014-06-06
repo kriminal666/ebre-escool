@@ -497,8 +497,8 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -584,8 +584,8 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -671,8 +671,8 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -758,8 +758,8 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -845,8 +845,8 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -932,13 +932,18 @@ class managment extends skeleton_main {
 		$data['studies_table_title'] = "Estudis";
 
 		$all_studies = $this->managment_model->get_all_studies_report_info();
-		
-		//$studies_by_department = $this->managment_model->get_studies_by_department1();
-		//$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		$studies_by_department = $this->managment_model->get_courses_by_study(false);
+		$classroomgroups_by_study = $this->managment_model->get_classroomgroups_by_study(false);
+		$studymodules_by_study = $this->managment_model->get_studymodules_by_study(false);
+		$studysubmodules_by_study = $this->managment_model->get_studysubmodules_by_study(false);
 
 		$data['all_studies'] = $all_studies;
-		//$data['studies_by_department'] = $studies_by_department;
-		//$data['teachers_by_department'] = $teachers_by_department;
+
+		$data['courses_by_study'] = $studies_by_department;
+		$data['classroomgroups_by_study'] = $classroomgroups_by_study;
+		$data['studymodules_by_study'] = $studymodules_by_study;
+		$data['studysubmodules_by_study'] = $studysubmodules_by_study;
 
 		$this->load->view('curriculum_reports_study.php',$data);
 		
@@ -995,8 +1000,9 @@ class managment extends skeleton_main {
 		$data['departments_table_title'] = "Departaments";
 
 		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department1();
-		$teachers_by_department = $this->managment_model->get_teachers_by_department1();
+
+		$studies_by_department = $this->managment_model->get_studies_by_department(false);
+		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
 		/*
 		$all_departments = array();
@@ -1032,8 +1038,6 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 		
 	}
-
-
 	
 	public function statistics_checkings_groups() {
 		
@@ -2492,6 +2496,10 @@ class managment extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js')); 
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));
+
         if($active_menu!=false){
             $header_data['menu']= $active_menu;
         }

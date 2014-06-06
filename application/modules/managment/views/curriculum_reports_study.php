@@ -114,8 +114,12 @@
   </tr>
  </thead>
  <tbody> 
-  <?php //$this->session->set_flashdata('studies_by_department', $studies_by_department);?>
-  <?php //$this->session->set_flashdata('teachers_by_department', $teachers_by_department);?>
+  <?php //$this->session->set_flashdata('cycles_by_study', $studies_by_department);?>  
+  <?php $this->session->set_flashdata('courses_by_study', $courses_by_study);?>
+  <?php $this->session->set_flashdata('classroomgroups_by_study', $classroomgroups_by_study);?>
+  <?php $this->session->set_flashdata('studymodules_by_study', $studymodules_by_study);?>
+  <?php $this->session->set_flashdata('studysubmodules_by_study', $studysubmodules_by_study);?>
+  
 
   <!-- Iteration that shows study-->
   <?php foreach ($all_studies as $studies_key => $study) : ?>
@@ -153,16 +157,24 @@
       TODO
      </td>
      <td>
-      <?php echo $study->numberOfCourses; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/course/' . $study->id );?>">
+        <?php echo $study->numberOfCourses; ;?>
+      </a>  
      </td>
      <td>
-      <?php echo $study->numberOfClassroomgroups; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/classroom_group/' . $study->id );?>">
+       <?php echo $study->numberOfClassroomgroups; ;?>
+      </a>   
      </td>
      <td>
-      <?php echo $study->numberOfStudyModules; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study_module/' . $study->id );?>">
+       <?php echo $study->numberOfStudyModules; ;?>
+      </a>   
      </td>
      <td>
-      <?php echo $study->numberOfStudySubModules; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study_submodules/' . $study->id );?>">
+       <?php echo $study->numberOfStudySubModules; ;?>
+      </a>   
      </td>
    </tr>
   <?php endforeach; ?>

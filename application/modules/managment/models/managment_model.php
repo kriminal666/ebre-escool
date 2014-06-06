@@ -27,7 +27,7 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
-	function get_studymodules_by_study() {
+	function get_studymodules_by_study($withtotal = true) {
 		/* studymodules by study
 		SELECT course_study_id, count(`study_module_id`) 
 		FROM study_module 
@@ -64,8 +64,13 @@ class managment_model  extends CI_Model  {
 					}
 				}
 				$deposit->studymodules_ids =  $studymodules_ids;
-
-				$studymodules_by_study[$row->course_study_id] = $deposit;
+				
+				if ($withtotal) {
+					$studymodules_by_study[$row->course_study_id] = $deposit;
+				}	else {
+					$studymodules_by_study[$row->course_study_id] = $studymodules_ids;
+				}
+				
 			}
 		}
 
@@ -73,7 +78,7 @@ class managment_model  extends CI_Model  {
 	}
 		
 
-	function get_studysubmodules_by_study() {
+	function get_studysubmodules_by_study( $withtotal = true) {
 
 		/* studysubmodules by study
 		SELECT course_study_id, count(`study_module_id`) 
@@ -115,14 +120,19 @@ class managment_model  extends CI_Model  {
 				}
 				$deposit->studysubmodules_ids =  $studysubmodules_ids;
 
-				$studysubmodules_by_study[$row->course_study_id] = $deposit;
+				if ($withtotal) {
+					$studysubmodules_by_study[$row->course_study_id] = $deposit;
+				} else {
+					$studysubmodules_by_study[$row->course_study_id] = $studysubmodules_ids;
+				}
+				
 			}
 		}
 
 		return $studysubmodules_by_study;
 	}
 
-	function get_classroomgroups_by_study() {
+	function get_classroomgroups_by_study( $withtotal = true ) {
 		/* classroomgroups by study
 		SELECT course_study_id, count(classroom_group_id) 
 		FROM classroom_group 
@@ -157,7 +167,12 @@ class managment_model  extends CI_Model  {
 				}
 				$deposit->classroomgroups_ids =  $classroomgroups_ids;
 
-				$classroomgroups_by_study[$row->course_study_id] = $deposit;
+				if ($withtotal) {
+					$classroomgroups_by_study[$row->course_study_id] = $deposit;
+				} else {
+					$classroomgroups_by_study[$row->course_study_id] = $classroomgroups_ids;
+				}
+					
 			}
 		}
 
@@ -165,7 +180,7 @@ class managment_model  extends CI_Model  {
 	}
 
 
-	function get_courses_by_study() {
+	function get_courses_by_study( $withtotal = true) {
 		/* courses by study
 		SELECT course_study_id, count(`course_id`) 
 		FROM course 
@@ -197,47 +212,19 @@ class managment_model  extends CI_Model  {
 				}
 				$deposit->courses_ids =  $courses_ids;
 
-				$courses_by_study[$row->course_study_id] = $deposit;
+				if ($withtotal) {
+					$courses_by_study[$row->course_study_id] = $deposit;
+				} else {
+					$courses_by_study[$row->course_study_id] = $courses_ids;	
+				}
+				
 			}
 		}
 
 		return $courses_by_study;
 	}
 
-	function get_teachers_by_department1() {
-		/* teachers by department
-		SELECT `teacher_department_id`, count(`teacher_id`) 
-		FROM `teacher` 
-		GROUP BY teacher_department_id */
-
-		//deparments
-		$this->db->select('teacher_department_id,count(teacher_id) as total');
-		$this->db->from('teacher');
-		$this->db->group_by('teacher_department_id');
-		$query = $this->db->get();
-
-		$teachers_by_department = array();
-		if ($query->num_rows() > 0){
-			foreach($query->result() as $row){
-				$teachers_ids = array();
-				//deparments
-				$this->db->select('teacher_department_id,teacher_id');
-				$this->db->from('teacher');
-				$this->db->where('teacher_department_id',$row->teacher_department_id);
-				$query1 = $this->db->get();
-				if ($query1->num_rows() > 0){
-					foreach($query1->result() as $row1){
-						$teachers_ids[]=$row1->teacher_id;
-					}
-				}
-				$teachers_by_department[$row->teacher_department_id] = $teachers_ids;
-			}
-		}
-
-		return $teachers_by_department;
-	}
-
-	function get_teachers_by_department() {
+	function get_teachers_by_department( $withtotal = true) {
 		/* teachers by department
 		SELECT `teacher_department_id`, count(`teacher_id`) 
 		FROM `teacher` 
@@ -267,14 +254,18 @@ class managment_model  extends CI_Model  {
 					}
 				}
 				$deposit->teachers_ids =  $teachers_ids;
-				$teachers_by_department[$row->teacher_department_id] = $deposit;
+				if ($withtotal) {
+					$teachers_by_department[$row->teacher_department_id] = $deposit;
+				} else {
+					$teachers_by_department[$row->teacher_department_id] = $teachers_ids;
+				}
 			}
 		}
 
 		return $teachers_by_department;
 	}
 
-	function get_studies_by_department() {
+	function get_studies_by_department( $withtotal = true ) {
 		/* studies by department
 		SELECT `department_id`,count(`study_id`) as total
 		FROM `study_department` 
@@ -305,42 +296,12 @@ class managment_model  extends CI_Model  {
 				}
 
 				$deposit->studies_ids = $studies_ids;
-				$studies_by_department[$row->department_id] = $deposit;
-				
-			}
-		}
-
-		return $studies_by_department;
-	}
-
-	function get_studies_by_department1() {
-		/* studies by department
-		SELECT `department_id`,count(`study_id`) as total
-		FROM `study_department` 
-		GROUP BY department_id */
-
-		//deparments
-		$this->db->select('department_id,count(study_id) as total');
-		$this->db->from('study_department');
-		$this->db->group_by('department_id');
-		$query = $this->db->get();
-
-		$studies_by_department = array();
-		if ($query->num_rows() > 0){
-			foreach($query->result() as $row){
-				$studies_ids = array();
-				//studies
-				$this->db->select('department_id,study_id');
-				$this->db->from('study_department');
-				$this->db->where('department_id',$row->department_id);
-				$query1 = $this->db->get();
-				if ($query1->num_rows() > 0){
-					foreach($query1->result() as $row1){
-						$studies_ids[]=$row1->study_id;
-					}
+				if ($withtotal) {
+					$studies_by_department[$row->department_id] = $studies_ids;
+				} else {
+					$studies_by_department[$row->department_id] = $deposit;
 				}
-
-				$studies_by_department[$row->department_id] = $studies_ids;
+				
 				
 			}
 		}
@@ -349,7 +310,6 @@ class managment_model  extends CI_Model  {
 	}
 
 	
-
 	function get_all_studies_report_info($orderby = "DESC") {
 		/*
 		SELECT studies_id,studies_shortname,studies_name,studies_studies_organizational_unit_id, study_department.department_id, department_shortname

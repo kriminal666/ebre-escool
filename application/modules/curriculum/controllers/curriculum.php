@@ -454,7 +454,7 @@ class curriculum extends skeleton_main {
     }           
 
 
-    public function course() {
+    public function course( $study_id = false) {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -525,13 +525,23 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
+        $courses_by_study = $this->session->flashdata('courses_by_study');
+        $this->session->keep_flashdata('courses_by_study');
+        
+        if ( is_array($courses_by_study) && $study_id != false ) {
+            $courses = $courses_by_study[$study_id];
+            foreach ($courses as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
+
         $this->renderitzar($this->current_table,$header_data);
                    
     }
 
 /* GRUP */
 
-    public function classroom_group() {
+    public function classroom_group( $study_id = false) {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -614,6 +624,17 @@ class curriculum extends skeleton_main {
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
 
+        $classroomgroups_by_study = $this->session->flashdata('classroomgroups_by_study');
+        $this->session->keep_flashdata('classroomgroups_by_study');
+        
+        if ( is_array($classroomgroups_by_study) && $study_id != false ) {
+            $classroomgroups = $classroomgroups_by_study[$study_id];
+            foreach ($classroomgroups as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
+
+
         $this->renderitzar($this->current_table,$header_data);
                    
     }
@@ -623,7 +644,7 @@ class curriculum extends skeleton_main {
 
 /* ASSIGNATURA */
 
-    public function study_module() {
+    public function study_module ( $study_id = false) {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -697,9 +718,21 @@ class curriculum extends skeleton_main {
         $this->set_dialogforms($this->grocery_crud);
         
         //Default values:
-//        $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //$this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $studymodules_by_study = $this->session->flashdata('studymodules_by_study');
+        $this->session->keep_flashdata('studymodules_by_study');
+        
+        if ( is_array($studymodules_by_study) && $study_id != false ) {
+            
+            $study_modules = $studymodules_by_study[$study_id];
+            
+            foreach ($study_modules as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
 
         $this->renderitzar($this->current_table,$header_data);
                    
@@ -709,7 +742,7 @@ class curriculum extends skeleton_main {
 
 /* UNITATS FORMATIVES */
 
-    public function study_submodules() {
+    public function study_submodules($study_id = false) {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -774,6 +807,16 @@ class curriculum extends skeleton_main {
 //      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
         //markedForDeletion
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $studysubmodules_by_study = $this->session->flashdata('studysubmodules_by_study');
+        $this->session->keep_flashdata('studysubmodules_by_study');
+        
+        if ( is_array($studysubmodules_by_study) && $study_id != false ) {
+            $study_submodules = $studysubmodules_by_study[$study_id];
+            foreach ($study_submodules as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
 
         $this->renderitzar($this->current_table,$header_data);
                    

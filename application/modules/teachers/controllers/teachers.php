@@ -524,9 +524,8 @@ class teachers extends skeleton_main {
 
         $teachers_by_department = $this->session->flashdata('teachers_by_department');
         $this->session->keep_flashdata('teachers_by_department');
-        echo "Ok!: " . $department_id;
+        
         if ( is_array($teachers_by_department) && $department_id != "" ) {
-            echo "Ok!";
             $teachers = $teachers_by_department[$department_id];
             foreach ($teachers as $condition) {
                 $this->grocery_crud->or_where($this->current_table.'_id',$condition);
