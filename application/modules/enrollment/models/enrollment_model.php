@@ -111,7 +111,7 @@ class enrollment_model  extends CI_Model  {
 
 		$this->db->select('course_id, course_name');
 		$this->db->from('course');
-		$this->db->join('studies','course_estudies_id=studies_id');
+		$this->db->join('studies','course_study_id=studies_id');
 		$this->db->where('studies_id',$study);
 		
         $query = $this->db->get();
@@ -142,7 +142,7 @@ class enrollment_model  extends CI_Model  {
 		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,course_shortname,course_name,studies_shortname,studies_name');
 		$this->db->from('classroom_group');
 		$this->db->join('course','classroom_group_course_id=course_id');
-		$this->db->join('studies','course_estudies_id=studies_id');
+		$this->db->join('studies','course_study_id=studies_id');
 		$this->db->where('studies_id',$study);
 		$this->db->order_by('classroom_group_id', $orderby);
 		

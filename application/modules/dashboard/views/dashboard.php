@@ -500,7 +500,7 @@
 										</div>
 									</div>
 
-									<div class="infobox infobox-blue  ">
+									<div class="infobox infobox-blue">
 										<div class="infobox-icon">
 											<i class="icon-book"></i>
 										</div>
@@ -512,6 +512,11 @@
                     								<a href="<?php echo base_url('/index.php/curriculum/studies')?>">
 												<?php endif; ?>
 													Estudis
+														<?php if ($curriculum_statistics['total_studies'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('index.php/managment/curriculum_reports_study')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_studies'] > 0): ?>
 													</a>
 												<?php endif; ?>	
