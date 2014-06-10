@@ -499,9 +499,134 @@ function set_common_columns_name($table_name){
     $this->grocery_crud->display_as($table_name.'_markedForDeletionDate',lang('markedForDeletionDate')); 
 }
 
-function load_ace_files($active_menu){
+function load_wizard_files($active_menu){
 
-$header_data= $this->add_css_to_html_header_data(
+    //CSS
+    $header_data= $this->add_css_to_html_header_data(
+        $this->_get_html_header_data(),
+        "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");                
+
+    $header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));  
+
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/select2.css')); 
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/modifications_select2.css')); 
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-fonts.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace.min.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-responsive.min.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-skins.min.css'));      
+    /*                      
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+        base_url('assets/css/no_padding_top.css'));  
+    */
+
+    //JS
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/jquery-1.9.1.js");
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/ace-extra.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+            base_url('assets/js/ace-elements.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+            base_url('assets/js/ace.min.js'));    
+    $header_data= $this->add_javascript_to_html_header_data(
+                $header_data,
+                base_url('assets/js/ebre-escool.js'));
+
+    /* 
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/jquery-1.9.1.js");
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/ui/1.10.3/jquery-ui.js");  
+    */    
+    
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/select2.min.js'));           
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.gritter.min.js'));          
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/fuelux.spinner.min.js'));         
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap-editable.min.js'));          
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/ace-editable.min.js'));                   
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/fuelux.wizard.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/typeahead-bs2.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.validate.min.js'));
+    /*$header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.validate.messages_ca.js'));*/
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootbox.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.maskedinput.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+                $header_data,
+                base_url('assets/js/ebre-escool.js'));        
+    /*
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/fuelux.wizard.min.js'));                                                  
+    */
+
+    $header_data['menu']= $active_menu;
+
+    return $header_data;
+
+}
+
+function load_ace_files($active_menu,$header_data=false){
+
+
+    //CSS
+    if($header_data != false)   {
+            $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");    
+    } else {
+            $header_data= $this->add_css_to_html_header_data(
+            $this->_get_html_header_data(),
+            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");                
+    }
+
+        $header_data= $this->add_css_to_html_header_data(
             $this->_get_html_header_data(),
             "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
         $header_data= $this->add_css_to_html_header_data(
@@ -558,38 +683,44 @@ $header_data= $this->add_css_to_html_header_data(
 
     public function wizard($study=false,$classroom_group=false,$study_modules=false) {
 
-    $this->check_logged_user(); 
+        $this->check_logged_user(); 
 
-    $active_menu = array();
-    $active_menu['menu']='#enrollment_wizard';
-    $active_menu['submenu1']='#wizard';
+        $active_menu = array();
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#wizard';
 
+        /* Wizard */
+        //$header_data = $this->load_wizard_files(); 
 
-    /* Ace */
-    $header_data= $this->load_ace_files($active_menu);  
+        /* Ace */
+        //$header_data= $this->load_ace_files($active_menu,$header_data);  
 
-    /* Wizard */
-    $header_data= $this->load_wizard_files($header_data); 
+        $header_data= $this->load_wizard_files($active_menu);
 
-
-    if($study == false){
-        $study = 2;
-    }    
-    
-    if($classroom_group == false){
-        $classroom_group = 3;  
-    }
-    
-    if($study_modules == false){
-        $study_modules = array();
-        $study_modules[]=282;   //  "M1"
-        $study_modules[]=268;   //  "M2";
-    }    
+        if($study == false){
+            $study = 2;
+        }    
+        
+        if($classroom_group == false){
+            $classroom_group = 3;  
+        }
+        
+        if($study_modules == false){
+            $study_modules = array();
+            $study_modules[]=282;   //  "M1"
+            $study_modules[]=268;   //  "M2";
+        }    
 
        $this->_load_html_header($header_data); 
+       
        $data = array();
        
        $enrollment_studies = $this->enrollment_model->get_enrollment_studies();
+
+       $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+
+       $data['all_person_official_ids'] = $all_person_official_ids;
+       
        $data['enrollment_studies'] = $enrollment_studies;
        $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($study);
        $data['enrollment_classroom_groups'] = $enrollment_classroom_groups;
@@ -600,7 +731,7 @@ $header_data= $this->add_css_to_html_header_data(
        $enrollment_students = $this->enrollment_model->get_students();
        $data['enrollment_students'] = $enrollment_students;              
 
-      // print_r($enrollment_students);
+       // print_r($enrollment_students);
        
        // BODY       
        $this->_load_body_header();
@@ -850,72 +981,5 @@ function insert_update_user(){
 
 }
 
-
-function load_wizard_files($header_data=false){
-
-
-        //CSS
-        if($header_data != false){
-        $header_data= $this->add_css_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");    
-        } else {
-        $header_data= $this->add_css_to_html_header_data(
-            $this->_get_html_header_data(),
-            "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");                
-        }
-
-
-        //JS
-       /* 
-       $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/jquery-1.9.1.js");
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js");  
-        */    
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/select2.min.js'));           
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/jquery.gritter.min.js'));          
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/fuelux.spinner.min.js'));         
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/bootstrap-editable.min.js'));          
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/ace-editable.min.js'));                   
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/fuelux.wizard.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/typeahead-bs2.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/jquery.validate.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/bootbox.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/jquery.maskedinput.min.js'));
-        $header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    base_url('assets/js/ebre-escool.js'));        
-        /*
-        $header_data= $this->add_javascript_to_html_header_data(
-            $header_data,
-            base_url('assets/js/fuelux.wizard.min.js'));                                                  
-        */
-
-        return $header_data;
-
-}
 
 }

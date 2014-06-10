@@ -32,10 +32,9 @@ class enrollment_model  extends CI_Model  {
 	/* Alumnes */
 	public function get_students($orderby="asc") {
 
-        $this->db->select('student_id,student_person_id,person_givenName,person_sn1,person_sn2');
-		$this->db->from('student');
-		$this->db->join('person','student_person_id=person_id');
-		$this->db->order_by('student_id', $orderby);
+        $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id');
+		$this->db->from('person');
+		$this->db->order_by('person_official_id', $orderby);
 		       
         $query = $this->db->get();
 
@@ -48,8 +47,8 @@ class enrollment_model  extends CI_Model  {
    				$student_array[$i]['student_surname1'] = $row['person_sn1'];
    				$student_array[$i]['student_surname2'] = $row['person_sn2'];
    				$student_array[$i]['student_fullName'] = $row['person_givenName'] .' '.$row['person_sn1'].' '.$row['person_sn2'] ;
-   				$student_array[$i]['student_id'] = $row['student_id'];
-   				$student_array[$i]['student_person_id'] = $row['student_person_id'];
+   				$student_array[$i]['student_person_id'] = $row['person_id'];
+   				$student_array[$i]['person_official_id'] = $row['person_official_id'];
    				$i++;
 			}
 			return $student_array;
@@ -75,8 +74,33 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}
 
+	public function get_all_person_official_ids($orderby = "ASC") {
 
-	/* Estudis */
+		/*
+		SELECT `person_official_id` FROM `person` WHERE 1
+		*/
+
+        $this->db->select('person_official_id');
+		$this->db->from('person');
+		$this->db->order_by('person_official_id', $orderby);
+		       
+        $query = $this->db->get();
+		$this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+
+			$person_official_ids = array();
+			foreach ($query->result_array() as $row)	{
+   				$person_official_ids[] = $row['person_official_id'];
+   			}
+			return $person_official_ids;
+		}			
+		else
+			return false;
+	}
+
+
+	/* Studies */
 	public function get_enrollment_studies($orderby="asc") {
 
         $this->db->select('studies_id,studies_shortname,studies_name');

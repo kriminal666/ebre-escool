@@ -41,7 +41,7 @@
               <small class="green">
                 <b><?php echo lang('validation');?></b>
               </small>
-              <input id="skip-validation" type="checkbox" class="ace ace-switch ace-switch-4" />
+              <input id="skip-validation" type="checkbox" class="ace ace-switch ace-switch-4" checked="checked" />
               <span class="lbl"></span>
             </label>
           </div>
@@ -102,11 +102,6 @@ STEP 0 - STUDENT DATA
                 <div id="student_exists"></div>
                 <!-- /Show notification if student exists -->
 
-                <div class="row-fluid center">
-                  <h3 class="lighter block green">Alta Alumne</h3>
-                  Dades personals
-                </div>
-                <br />
                 <!--<form class="form-horizontal" id="standard-form" method="get">-->
                         <form id="validation-form">
                           <div class="row-fluid">
@@ -114,7 +109,10 @@ STEP 0 - STUDENT DATA
                               <!-- PAGE CONTENT BEGINS -->
                               <div>
                                 <div id="user-profile-1" class="user-profile row-fluid">
+                                  
+                                  <!-- AVATAR -->
                                   <div class="span3 center">
+                                    
                                     <div class="span2"></div>
                                     <div class="span8 center">
                                       <div class="space-4"></div>
@@ -128,15 +126,16 @@ STEP 0 - STUDENT DATA
 
                                       <div id="student_full_name" class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
                                         <div class="inline position-relative">
-                                          <span class="white">Alumne</span>
+                                          <i class="icon-circle light-green middle"></i> <span class="white">Alumne</span>
                                         </div>
                                       </div>                                      
                                     </div>  
                                     <div class="space-4"></div>
                                   </div>
+                                  <!-- AVATAR END -->
+
                                   <div class="span9">
 
-                                    <div class="control-group">                             
 
                                       <!-- TIPUS DE DOCUMENT -->
 
@@ -145,7 +144,6 @@ STEP 0 - STUDENT DATA
                                         <input class="span12" name="person_id" type="hidden" />  
                                       </div>                                      
 
-                                      <label class="control-label" for="official_id_type"><?php echo lang('wizzard_official_id_type');?>&nbsp;</label>
                                       <div class="span7">
                                         <div class="span2">
                                           <input type="radio" name="official_id_type" id="rb_is_dni" value="1"><span><?php echo lang('wizzard_official_DNI');?>&nbsp;</span>
@@ -158,23 +156,25 @@ STEP 0 - STUDENT DATA
                                         </div>
                                       </div>
                                       <!-- /TIPUS DE DOCUMENT -->                               
-                                    </div>
                                     <!-- DNI / TIS -->
                                     <div class="space-20"></div>                                    
                                     <div class="space-6"></div>
                                     <div class="span11" >
-                                    <div class="form-group">  
-                                      <div class="span5" >                                  
-                                        <label id="lbl_student_official_id" for="student_official_id" class="control-label no-padding-right"><?php echo lang('wizzard_official_DNI');?>&nbsp;</label>
-                                        <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el <?php echo lang('wizzard_official_DNI');?>" />
-                                      </div>
-                                    </div>  
-                                    <div class="form-group">                                        
-                                      <div class="span5">
-                                        <label class="control-label" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
-                                        <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
-                                      </div>
-                                    </div>  
+                                      <div class="form-group control-group">  
+                                        <div class="span5" >                                  
+                                          <label id="lbl_student_official_id" for="student_official_id" class="control-label no-padding-right"><?php echo lang('wizzard_official_DNI');?>&nbsp;</label>
+                                          <div class="controls">
+                                            <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el <?php echo lang('wizzard_official_DNI');?>" />
+                                          </div>
+                                        </div>
+                                      </div>  
+
+                                      <div class="form-group control-group">                                        
+                                        <div class="span5">
+                                          <label class="control-label" for="person_secondary_official_id"><?php echo lang('wizzard_secondary_official_id');?>&nbsp;</label>
+                                          <input type="text" name="person_secondary_official_id" placeholder="Escriu el nº TSI" />
+                                        </div>
+                                      </div>  
                                     </div>
                                     
                                     
@@ -183,16 +183,26 @@ STEP 0 - STUDENT DATA
 
                                   <div class="span11">
                                     <div class="span4">
-                                      <label class="control-label" for="student_givenName"><?php echo lang('wizzard_givenName');?>&nbsp;</label>
-                                      <input id="givenName" type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
+                                        <div class="control-group">
+                                          <label class="control-label" for="student_givenName"><?php echo lang('wizzard_givenName');?></label>
+
+                                          <div class="controls">
+                                             <input id="givenName" type="text" name="person_givenName" placeholder="Escriu un nom d'alumne" />
+                                          </div>
+                                        </div>
                                     </div>
                                     <div class="span4">
-                                      <label class="control-label" for="student_sn1"><?php echo lang('wizzard_sn1');?>&nbsp;</label>
-                                      <input id="sn1" type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
+                                        <div class="control-group">
+                                          <label class="control-label"><?php echo lang('wizzard_sn1');?></label>
+
+                                          <div class="controls">
+                                             <input id="sn1" type="text" name="person_sn1" placeholder="Escriu el Primer Cognom" />
+                                          </div>
+                                        </div>
                                     </div>
                                     <div class="span4">
                                       <label class="control-label" for="student_sn2"><?php echo lang('wizzard_sn2');?>&nbsp;</label>
-                                      <input type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
+                                      <input id="sn2" type="text" name="person_sn2" placeholder="Escriu el Segon Cognom" />
                                     </div>
                                   </div>
                                   
@@ -203,16 +213,24 @@ STEP 0 - STUDENT DATA
                                     </div>
                                     
                                     <div class="span3">
-                                      <label class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
-                                      <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" readonly />
+                                        <label class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
+                                        <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" readonly />
                                     </div>
                                     <div class="span3">
-                                      <label class="control-label" for="student_password">Password:&nbsp;</label>
-                                      <input type="password" name="person_password" id="person_password" placeholder="Password"/>
+                                      <div class="control-group">
+                                        <label class="control-label" for="student_password">Password:&nbsp;</label>
+                                        <div class="controls">
+                                          <input type="password" name="person_password" id="person_password" placeholder="Password"/>
+                                        </div>    
+                                      </div>  
                                     </div>
                                     <div class="span3">
-                                      <label class="control-label" for="student_verify_password">Verify Password:&nbsp;</label>
-                                      <input type="password" name="person_verify_password" placeholder="Verify Password"/>
+                                      <div class="control-group">
+                                        <label class="control-label" for="student_verify_password">Verify Password:&nbsp;</label>
+                                        <div class="controls">
+                                          <input type="password" name="person_verify_password" placeholder="Verify Password"/>
+                                        </div>    
+                                      </div>    
                                     </div>                                    
                                   </div>                                  
                             
@@ -237,8 +255,12 @@ STEP 0 - STUDENT DATA
                                       </div>
                                     </div>
                                     <div class="span6">
-                                      <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>                          
-                                      <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />                         
+                                      <div class="control-group">
+                                        <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>    
+                                        <div class="controls">                      
+                                          <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />                         
+                                        </div>  
+                                      </div>  
                                     </div>
                                   </div>
 
@@ -317,12 +339,15 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                         <br />
                          <!-- Student -->
                         <label class="control-label" for="student"><?php echo lang('student'); ?>:&nbsp;&nbsp;</label>
-                        <select id="student" name="student" class="select2" data-placeholder="Selecciona un Estudiant" style="width:800px;">
+                        <select id="student" name="student" class="select2" data-placeholder="Selecciona un estudiant..." style="width:800px;">
                           <option value=""></option>
                           <? foreach($enrollment_students as $enrollment_student): ?>
-                          <option value="<?php echo $enrollment_student['student_person_id']; ?>"><?php echo $enrollment_student['student_fullName']; ?></option>
+                           <option value="<?php echo $enrollment_student['student_person_id'];?>" >
+                            <?php echo $enrollment_student['person_official_id'] . ". " . $enrollment_student['student_fullName']; ?>
+                           </option>
                           <? endforeach; ?>
                         </select>
+                           Total estudiants: <?php echo count($enrollment_students);?>
                         <div class="space-2"></div>
                       </form>
                     </div><!-- /widget-main -->
@@ -516,29 +541,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
     <!-- inline scripts related to this page -->
 
     <script type="text/javascript">
-      jQuery(function($) {
-      
-      student_official_id = $('#student_official_id');
-      student_official_id_label = $('#lbl_student_official_id');
 
-      rb_official_id_type = $("input[name=official_id_type]:radio");
-      official_id_type = rb_official_id_type.val();
-      official_id_type_text = $("input:checked + span").text();
+      var existeix=false;
 
-      rb_official_id_type.change(function () {
-        official_id_type = $(this).val();
-        official_id_type_text = $("input:checked + span").text();
-        student_official_id.attr("placeholder", "Escriu el "+official_id_type_text);  
-        student_official_id_label.text(official_id_type_text);      
-      });
-
-        $('input:radio[name=official_id_type]').val(['1']);
-
-        $('[data-rel=tooltip]').tooltip();
-
-/******************
- *  Editable Avatar
- ******************/
+      /******************
+       *  Editable Avatar
+      ******************/
+      function editableAvatar() {
 
         //editables on first profile page
         $.fn.editable.defaults.mode = 'inline';
@@ -558,7 +567,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             value: null,
             image: {
               //specify ace file input plugin's options here
-              btn_choose: 'Change Avatar',
+              btn_choose: 'Canvieu el Avatar',
               droppable: true,
               /**
               //this will override the default before_change that only accepts image files
@@ -574,14 +583,14 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 if(last_gritter) $.gritter.remove(last_gritter);
                 if(code == 1) {//file format error
                   last_gritter = $.gritter.add({
-                    title: 'File is not an image!',
-                    text: 'Please choose a jpg|gif|png image!',
+                    title: 'El fitxer no és una imatge!',
+                    text: 'Escolliu un fitxer jpg|gif|png!',
                     class_name: 'gritter-error gritter-center'
                   });
                 } else if(code == 2) {//file size rror
                   last_gritter = $.gritter.add({
-                    title: 'File too big!',
-                    text: 'Image size should not exceed 100Kb!',
+                    title: 'El fitxer és massa gran!',
+                    text: 'La imatge no pot superar els 100Kb!',
                     class_name: 'gritter-error gritter-center'
                   });
                 }
@@ -619,8 +628,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
       
                 if(last_gritter) $.gritter.remove(last_gritter);
                 last_gritter = $.gritter.add({
-                  title: 'Avatar Updated!',
-                  text: 'Uploading to server can be easily implemented. A working example is included with the template.',
+                  title: "Foto actualitzada correctament!",
+                  text: "El avatar de l'usuari s'ha modificat correctament!",
+                  time: 3000,
                   class_name: 'gritter-info gritter-center'
                 });
                 
@@ -634,47 +644,76 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           })
         }catch(e) {}
 
-/******************
- *  /Editable Avatar
- ******************/
+      }
 
-        $('select.academic_period').select2();
-        $(".select2").css('width','400px').select2({
-          allowClear:true
-        }).on('change', function(){
-          $(this).closest('form').validate().element($(this));
-        }); 
-  
-        var actual_step = $('ul.wizard-steps').children().hasClass('active');      
-        if(actual_step == false){
-          $('ul.wizard-steps li').first().addClass('active');
-          $('#step-container div').first().addClass('active');
-        } 
+      jQuery(function($) {
+      
+          student_official_id = $('#student_official_id');
+          student_official_id_label = $('#lbl_student_official_id');
 
-/* remove accents */
+          rb_official_id_type = $("input[name=official_id_type]:radio");
+          official_id_type = rb_official_id_type.val();
+          official_id_type_text = $("input:checked + span").text();
 
-var accent_fold = (function () {
-    var accent_map = {
-        'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', // a
-        'ç': 'c',                                                   // c
-        'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',                     // e
-        'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',                     // i
-        'ñ': 'n',                                                   // n
-        'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', // o
-        'ß': 's',                                                   // s
-        'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',                     // u
-        'ÿ': 'y'                                                    // y
-    };
+          rb_official_id_type.change(function () {
+            official_id_type = $(this).val();
+            official_id_type_text = $("input:checked + span").text();
+            student_official_id.attr("placeholder", "Escriu el "+official_id_type_text);  
+            student_official_id_label.text(official_id_type_text);      
+          });
 
-    return function accent_fold(s) {
-        if (!s) { return ''; }
-        var ret = '';
-        for (var i = 0; i < s.length; i++) {
-            ret += accent_map[s.charAt(i)] || s.charAt(i);
-        }
-        return ret;
-    };
-} ());
+           var availableTags = <?php echo json_encode($all_person_official_ids);?>;
+
+           student_official_id.autocomplete({
+            source: availableTags
+           });
+
+            $('input:radio[name=official_id_type]').val(['1']);
+
+            $('[data-rel=tooltip]').tooltip();
+
+            /******************
+            *  /Editable Avatar
+            ******************/
+            editableAvatar();
+
+            $('select.academic_period').select2();
+            $(".select2").css('width','400px').select2({
+              allowClear:true
+            }).on('change', function(){
+              $(this).closest('form').validate().element($(this));
+            }); 
+      
+            var actual_step = $('ul.wizard-steps').children().hasClass('active');      
+            if(actual_step == false){
+              $('ul.wizard-steps li').first().addClass('active');
+              $('#step-container div').first().addClass('active');
+            } 
+
+          /* remove accents */
+
+          var accent_fold = (function () {
+              var accent_map = {
+                  'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', // a
+                  'ç': 'c',                                                   // c
+                  'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',                     // e
+                  'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',                     // i
+                  'ñ': 'n',                                                   // n
+                  'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', // o
+                  'ß': 's',                                                   // s
+                  'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',                     // u
+                  'ÿ': 'y'                                                    // y
+              };
+
+              return function accent_fold(s) {
+                  if (!s) { return ''; }
+                  var ret = '';
+                  for (var i = 0; i < s.length; i++) {
+                      ret += accent_map[s.charAt(i)] || s.charAt(i);
+                  }
+                  return ret;
+              };
+          } ());
 
 /* remove accents */
 
@@ -690,8 +729,6 @@ var accent_fold = (function () {
                 $('#generated_password').val(password);
               });
 
-
-        /* DNI change action -> gets student data from database */
         $("#student_official_id").change(function(){
           student = $(this).val();
 
@@ -708,7 +745,7 @@ var accent_fold = (function () {
                 if(data != false){
                   student_exist = $("#student_exists");
                   existeix = true;
-                  student_exist.html("<i class='icon-ok green'></i> L'alumne ja existeix <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
+                  student_exist.html("<i class='icon-ok green'></i> La persona ja existeix a la base de dades. Us hem omplert tots els camps amb les dades de la persona. Comproveu que les dades siguin correctes! <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
                   .addClass("alert alert-block alert-success");
 
                   /* Show notification during 5 seconds */
@@ -727,7 +764,9 @@ var accent_fold = (function () {
                   if(idx=='person_photo'){
                     var student_photo = $('#student_photo');
 
-                    student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
+                    //Sergi Tur: change only img source not all span!!
+                    //student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
+                    $('#avatar').attr("src","<?php echo base_url('uploads/person_photos');?>/"+obj);
                   }
                   if(idx=='person_gender'){
                     if(obj == 'M'){
@@ -749,9 +788,11 @@ var accent_fold = (function () {
                     "person_gender":"","person_homePostalAddress":"","person_locality_name":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
 
+                    /*
                     student_photo = $('#student_photo');
                     student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
-                    student_full_name.text('Alumne');
+                    student_full_name.text('Alumne');*/
+
                     $.each(empty_student, function(idx,obj) {
                       $("#step0 input[name$="+idx+"]").val(obj);
                     });
@@ -759,6 +800,24 @@ var accent_fold = (function () {
 
               });
 
+        editableAvatar();          
+
+        });
+
+        $("#givenName").change(function(){
+          student_full_name = $('#student_full_name').find("span.white");
+          student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
+
+        });
+
+        $("#sn1").change(function(){
+          student_full_name = $('#student_full_name').find("span.white");
+          student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
+        });
+
+        $("#sn2").change(function(){
+          student_full_name = $('#student_full_name').find("span.white");
+          student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
         });
 
         /* username */
@@ -772,7 +831,9 @@ var accent_fold = (function () {
 
         givenName_input.blur(function(){
           givenName = $.trim(givenName_input.val());
-          username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+          if (!existeix) {
+            username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));  
+          }
           if(givenName!='' && sn1!='' && !existeix){
             generate_username();
           }
@@ -780,7 +841,9 @@ var accent_fold = (function () {
 
         sn1_input.blur(function(){
           sn1 = $.trim(sn1_input.val());
-          username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+          if (!existeix) {
+            username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+          }
           if(givenName!='' && sn1!='' && !existeix){
             generate_username();
           }
@@ -788,7 +851,7 @@ var accent_fold = (function () {
         
         /* /username */
 
-        function generate_username(){
+        function generate_username()  {
 
               // AJAX get student by username
               $.ajax({
@@ -808,9 +871,9 @@ var accent_fold = (function () {
 
 
       $(".btn-next").click(function(){
-
+        console.debug("Click on next button");
         step = $("#step-container div.active").attr("id");
-
+        console.debug("Step:" + step);
 /***********
  *  STEP 0 - Student Personal Data
  ***********/
@@ -819,6 +882,7 @@ var accent_fold = (function () {
 
           /* store student data from form */
           student_person_id = $("#"+step+" input[name$='person_id']").val();
+          console.debug("student_person_id: " . student_person_id);
           student_official_id = $("#"+step+" input[name$='student_official_id']").val();
           student_secondary_official_id = $("#"+step+" input[name$='person_secondary_official_id']").val();          
 
@@ -915,9 +979,11 @@ if(student_password != student_verify_password){
               });
   }
           
+          //CHECK student_person_id if undefined?!!!!!!
 
           $("#student option[value=" + student_person_id +"]").attr("selected","selected");
           $("#student").select2();
+          
 
           $(".step1_student").html("<p>Alumne: "+student_givenName+" ("+student_official_id+") </p>");    
   
@@ -1203,7 +1269,7 @@ if(student_password != student_verify_password){
 
 
 
-        var $validation = false;
+        var $validation = true;
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){
           if(info.step == 1 && $validation) {
             if(!$('#validation-form').valid()) return false;
@@ -1222,7 +1288,8 @@ if(student_password != student_verify_password){
           //return false;//prevent clicking on steps
         });
       
-        $('#skip-validation').removeAttr('checked').on('click', function(){
+        //documentation : http://docs.jquery.com/Plugins/Validation/validate
+        $('#skip-validation').on('click', function(){
           $validation = this.checked;
           /*
           if(this.checked) {
@@ -1236,8 +1303,6 @@ if(student_password != student_verify_password){
           */
         });
 
-        //documentation : http://docs.jquery.com/Plugins/Validation/validate
-      
       
         $.mask.definitions['~']='[+-]';
         //$('#person_telephoneNumber').mask('(999) 999-9999');
@@ -1265,7 +1330,7 @@ if(student_password != student_verify_password){
          
          return false;
         
-        }, "Please specify a valid NIF number.");
+        }, "Especifiqueu un NIF vàlid!.");
         /* /Validar dni */
 
         /*
@@ -1274,9 +1339,29 @@ if(student_password != student_verify_password){
         }, "Enter a valid phone number.");
         */
 
+        $.extend($.validator.messages, {
+          required: "Aquest camp és obligatori.",
+          remote: "Si us plau, omple aquest camp.",
+          email: "Si us plau, escriu una adreça de correu-e vàlida",
+          url: "Si us plau, escriu una URL vàlida.",
+          date: "Si us plau, escriu una data vàlida.",
+          dateISO: "Si us plau, escriu una data (ISO) vàlida.",
+          number: "Si us plau, escriu un número enter vàlid.",
+          digits: "Si us plau, escriu només dígits.",
+          creditcard: "Si us plau, escriu un número de tarjeta vàlid.",
+          equalTo: "Si us plau, escriu el maateix valor de nou.",
+          extension: "Si us plau, escriu un valor amb una extensió acceptada.",
+          maxlength: $.validator.format("Si us plau, no escriguis més de {0} caracters."),
+          minlength: $.validator.format("Si us plau, no escriguis menys de {0} caracters."),
+          rangelength: $.validator.format("Si us plau, escriu un valor entre {0} i {1} caracters."),
+          range: $.validator.format("Si us plau, escriu un valor entre {0} i {1}."),
+          max: $.validator.format("Si us plau, escriu un valor menor o igual a {0}."),
+          min: $.validator.format("Si us plau, escriu un valor major o igual a {0}.")
+        });
+
         $('#validation-form').validate({
           errorElement: 'div',
-          errorClass: 'help-block',
+          errorClass: 'help-inline',
           focusInvalid: false,
           rules: {
             student_official_id: {
@@ -1312,15 +1397,15 @@ if(student_password != student_verify_password){
       
           messages: {
             person_email: {
-              required: "Please provide a valid email.",
-              email: "Please provide a valid email."
+              required: "Si us plau especifiqueu un email vàlid.",
+              email: "Si us plau especifiqueu un email vàlid."
             },
             person_password: {
-              required: "Please specify a password.",
-              minlength: "Please specify a secure password."
+              required: "És obligatori especificar una paraula de pas",
+              minlength: "Si us plau especifiqueu una paraula de pas segura."
             },
-            subscription: "Please choose at least one option",
-            gender: "Please choose gender"
+            subscription: "Si us plau escolliu almenys una opció",
+            gender: "Si us plau escolliu el gènere"
           },
       
           invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -1328,11 +1413,11 @@ if(student_password != student_verify_password){
           },
       
           highlight: function (e) {
-            $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+            $(e).closest('.control-group').removeClass('info').addClass('error');
           },
       
           success: function (e) {
-            $(e).closest('.form-group').removeClass('has-error').addClass('has-info');
+            $(e).closest('.control-group').removeClass('error').addClass('info');
             $(e).remove();
           },
       
