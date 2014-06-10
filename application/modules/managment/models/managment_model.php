@@ -297,9 +297,9 @@ class managment_model  extends CI_Model  {
 
 				$deposit->studies_ids = $studies_ids;
 				if ($withtotal) {
-					$studies_by_department[$row->department_id] = $studies_ids;
-				} else {
 					$studies_by_department[$row->department_id] = $deposit;
+				} else {
+					$studies_by_department[$row->department_id] = $studies_ids;
 				}
 				
 				
