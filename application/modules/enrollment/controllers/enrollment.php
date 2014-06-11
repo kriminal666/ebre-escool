@@ -853,7 +853,7 @@ function load_ace_files($active_menu,$header_data=false){
 
         $resultat = array();
 
-        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group);
+        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group,"asc","order");
 
         $grups = array();
         foreach($enrollment_study_modules as $key => $value){
@@ -887,7 +887,7 @@ function load_ace_files($active_menu,$header_data=false){
         
         $resultat = array();
 
-        $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($modules,$classroom_group_id);
+        $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($modules,$classroom_group_id,"asc","order");
     //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
 
 

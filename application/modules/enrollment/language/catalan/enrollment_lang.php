@@ -126,15 +126,25 @@ $lang['wizzard_date_of_birth'] = 'Data de naixement: ';
 $lang['wizzard_gender'] = 'Sexe: ';
 
 $lang['wizard'] = 'Assistent';
-$lang['enrollment'] = 'Matrícula';
+$lang['enrollment_academic_period'] = 'Període';
 $lang['enrollment_studies'] = 'Estudi';
 $lang['enrollment_courses'] = 'Curs';
-$lang['enrollment_classgroups'] = 'Grup de Classe';
-$lang['enrollment_modules'] = 'Mòduls Formatius';
-$lang['enrollment_submodules'] = 'Unitats Formatives';
-$lang['new_enrollment'] = 'Nova Matrícula';
+$lang['enrollment_classgroups'] = 'Grup de classe';
+$lang['enrollment_modules'] = 'Mòduls formatius';
+$lang['enrollment_submodules'] = 'Unitats formatives';
+$lang['new_enrollment'] = 'Matrícula';
 $lang['validation'] = 'Validació';
 
 $lang['person_and_academinc_period'] = 'Persona i període acadèmic';
 $lang['academinc_period'] = 'Període acadèmic';
 $lang['student'] = 'Alumne';	
+
+
+$lang['enrollment_academic_period_title'] = "Període acadèmic i alumne";
+$lang['enrollment_student_personal_data'] = "Dades personals alumne";
+$lang['enrollment_total_students'] = "Total estudiants";
+$lang['enrollment_select_study_title'] = "Escolliu un estudi";
+$lang['enrollment_select_course_title'] = "Escolliu un curs";
+$lang['enrollment_select_classroomgroup_title'] = "Escolliu un grup de classe";
+$lang['enrollment_select_studymodule_title'] = "Escolliu els mòduls professionals";
+$lang['enrollment_select_studysubmodule_title'] = "Escolliu les unitats formatives";

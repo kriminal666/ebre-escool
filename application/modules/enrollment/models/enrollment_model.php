@@ -43,6 +43,9 @@ class enrollment_model  extends CI_Model  {
 			$student_array = array();
 			$i=0;
 			foreach ($query->result_array() as $row)	{
+				if ($row['person_official_id'] == "") {
+					continue;
+				}
    				$student_array[$i]['student_name'] = $row['person_givenName'];
    				$student_array[$i]['student_surname1'] = $row['person_sn1'];
    				$student_array[$i]['student_surname2'] = $row['person_sn2'];
@@ -91,7 +94,8 @@ class enrollment_model  extends CI_Model  {
 
 			$person_official_ids = array();
 			foreach ($query->result_array() as $row)	{
-   				$person_official_ids[] = $row['person_official_id'];
+				if ($row['person_official_id']!="")
+   					$person_official_ids[] = trim($row['person_official_id']);
    			}
 			return $person_official_ids;
 		}			
@@ -133,7 +137,7 @@ class enrollment_model  extends CI_Model  {
 			$study=2;	//	"ASIX-DAM"
 		}
 
-		$this->db->select('course_id, course_name');
+		$this->db->select('course_id, course_shortname, course_name');
 		$this->db->from('course');
 		$this->db->join('studies','course_study_id=studies_id');
 		$this->db->where('studies_id',$study);
@@ -148,6 +152,7 @@ class enrollment_model  extends CI_Model  {
 			foreach ($query->result_array() as $row)	{
    				$courses_array[$i]['course_id'] = $row['course_id'];
    				$courses_array[$i]['course_name'] = $row['course_name'];
+   				$courses_array[$i]['course_shortname'] = $row['course_shortname'];
    				$i++;
 			}
 			return $courses_array;
@@ -219,18 +224,25 @@ class enrollment_model  extends CI_Model  {
 
 
 	/* Mòduls */
-	public function get_enrollment_study_modules($classroom_groups=false,$classroom_group=false,$orderby="asc") {
+	public function get_enrollment_study_modules($classroom_groups=false,$classroom_group=false,$orderby="asc",$order_field = "") {
 		
 		if(!$classroom_groups){
 			//$classroom_group=3;	//	"1ASIX-DAM"
 		}		
-//echo $classroom_group."<br />";
-        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_classroom_group_id,classroom_group_code');
+		//echo $classroom_group."<br />";
+        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_classroom_group_id,classroom_group_code,study_module_courseid');
 		$this->db->from('study_module');
 		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
 		$this->db->where_in('classroom_group_id', $classroom_groups);
 		$this->db->order_by('study_module_classroom_group_id', $orderby);
-		$this->db->order_by('study_module_shortname', $orderby);
+		if ($order_field != "") {
+			if ($order_field == "order") {
+				$this->db->order_by('study_module_order', $orderby);
+			}
+		} else {
+			$this->db->order_by('study_module_shortname', $orderby);	
+		}
+		
 		       
         $query = $this->db->get();
 		//echo $this->db->last_query();
@@ -245,6 +257,8 @@ class enrollment_model  extends CI_Model  {
    				$study_module_array[$i]['study_module_name'] = $row['study_module_name'];
    				$study_module_array[$i]['study_classroom_group_id'] = $row['study_module_classroom_group_id'];
    				$study_module_array[$i]['classroom_group_code'] = $row['classroom_group_code'];
+   				$study_module_array[$i]['study_module_courseid'] = $row['study_module_courseid'];
+   				
    				if($row['study_module_classroom_group_id'] == $classroom_group){
    					$study_module_array[$i]['selected_classroom_group'] = 'yes';
    				} else {
@@ -260,19 +274,28 @@ class enrollment_model  extends CI_Model  {
 	}	
 
 	/* Unitats formatives */
-	public function get_enrollment_study_submodules($study_modules=false,$classroom_group=false,$orderby="asc") {
+	public function get_enrollment_study_submodules($study_modules=false,$classroom_group=false,$orderby="asc",$order_field="") {
 
 		if(!$study_modules){
 			//$study_modules[]=282;	//	"M1"
 			//$study_modules[]=268;	//	"M2"
 		}	
 
-        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_submodules_study_module_id,classroom_group_code');
+        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_module_order,study_submodules_study_module_id,classroom_group_code');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
 		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
 		$this->db->where_in('study_submodules_study_module_id',$study_modules);
-		$this->db->order_by('study_submodules_id', $orderby);
+		if ( $order_field != "") {
+			if ( $order_field == "order") {
+				$this->db->order_by('study_module_order', $orderby);
+				$this->db->order_by('study_submodules_order', $orderby);				
+			}
+		} else {
+			$this->db->order_by ('study_submodules_id', $orderby);
+		}
+
+		
 		       
         $query = $this->db->get();
 		//echo $this->db->last_query();

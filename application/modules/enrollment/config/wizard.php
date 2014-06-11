@@ -18,6 +18,8 @@ $config['academic_periods'] = array(
 
 $config['current_period'] = "2014-15";
 
+$config['default_study_id'] = "1";
+
 /* Enrollment Configurations */
 // URL LINKS
 $config['rulesURL'] = "http://moodle.iesmontsia.org/normesTIC";

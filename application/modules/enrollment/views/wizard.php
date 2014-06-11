@@ -35,7 +35,21 @@
     <div class="row-fluid">
       <div class="widget-box">
         <div class="widget-header widget-header-blue widget-header-flat">
-          <h4 class="lighter"><?php echo lang('new_enrollment');?></h4>
+          <h4 class="lighter"><?php echo lang('new_enrollment');?></h4> <i class="icon-double-angle-right"></i>
+
+              <span name="step0_title" id="enrollment_breadcump_step1_student" class="step1_student green">
+                <small>
+                  <b><?php echo lang("enrollment_student_personal_data");?></b>
+                </small>
+              </span>
+              </span>
+              <span name="step1_title" id="enrollment_breadcrump_step2_selected_academic_period" class="step2_selected_academic_period"></span>
+              <span name="step2_title" id="enrollment_breadcrump_step3_selected_study" class="step3_selected_study"></span>                
+              <span name="step3_title" id="enrollment_breadcrump_step4_selected_course" class="step4_selected_course"></span>
+              <span name="step4_title" id="enrollment_breadcrump_step5_selected_classroom_group" class="step5_selected_classroom_group"></span>                            
+              <span name="step5_title" id="enrollment_breadcrump_step6_selected_study_module" class="step6_selected_study_module"></span>
+              <span name="step6_title" id="enrollment_breadcrump_step7_selected_study_submodule" class="step7_selected_study_submodule"></span>
+              
           <div class="widget-toolbar">
             <label>
               <small class="green">
@@ -54,12 +68,12 @@
 
                 <li data-target="#step0" class="active">
                   <span class="step">0</span>
-                  <span class="title">Alta alumne</span>
+                  <span class="title"><?php echo lang('student');?></span>
                 </li>
 
                 <li data-target="#step1">
                   <span class="step">1</span>
-                  <span class="title"><?php echo lang('enrollment');?></span>
+                  <span class="title"><?php echo lang('enrollment_academic_period');?></span>
                 </li>
 
                 <li data-target="#step2">
@@ -102,8 +116,23 @@ STEP 0 - STUDENT DATA
                 <div id="student_exists"></div>
                 <!-- /Show notification if student exists -->
 
-                <!--<form class="form-horizontal" id="standard-form" method="get">-->
-                        <form id="validation-form">
+                    <div class="widget-box">
+                      <div class="widget-header" style="text-align: center;">
+                      <!-- /widget-header -->
+                        <span >
+                          <small class="green" >
+                           <b><?php echo lang("enrollment_student_personal_data");?></b>
+                          </small>
+                        </span>
+                        <div class="widget-toolbar">
+                          <a href="#" data-action="collapse">
+                            <i class="icon-chevron-up"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="widget-body">
+
+                          <form id="validation-form">
                           <div class="row-fluid">
                             <div class="span12">
                               <!-- PAGE CONTENT BEGINS -->
@@ -309,6 +338,15 @@ STEP 0 - STUDENT DATA
                           </div><!-- /.row-fluid -->
 
                         </form>
+
+
+
+
+                      </div>  
+                    </div>
+
+                        
+                        
                       
               </div><!-- /step0 -->
 
@@ -316,14 +354,9 @@ STEP 0 - STUDENT DATA
 STEP 1 - ACADEMIC PERIOD AND STUDENT
 -->
               <div class="step-pane" id="step1">
-                <div class="row-fluid center">
-                  <h3 class="lighter block green"><?php echo lang('enrollment');?></h3>
-                  <?php echo lang('person_and_academinc_period'); ?>
-                </div>
-                <div class="step1_student"></div>
                 <div class="widget-box ">
                   <div class="widget-header">
-                    <h4>Periode Acadèmic i Alumne</h4>
+                    <h4><?php echo lang("enrollment_academic_period_title")?></h4>
                   </div>
                   <div class="widget-body">
                     <div class="widget-main">
@@ -347,7 +380,7 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                            </option>
                           <? endforeach; ?>
                         </select>
-                           Total estudiants: <?php echo count($enrollment_students);?>
+                           <?php echo lang("enrollment_total_students");?>: <?php echo count($enrollment_students);?>
                         <div class="space-2"></div>
                       </form>
                     </div><!-- /widget-main -->
@@ -358,12 +391,6 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
 STEP 2 - ALL STUDIES
 -->                
               <div class="step-pane" id="step2">
-                <div class="row-fluid center">
-                  <h3 class="blue lighter"><?php echo lang('enrollment_studies');?></h3>
-                  Seleccionar un Studi.
-                </div>
-                <div class="step1_student"></div>
-                <div class="step2_selected_academic_period"></div>
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4>Estudi</h4>
@@ -372,10 +399,9 @@ STEP 2 - ALL STUDIES
                     <div class="widget-main">
                       <form class="form-horizontal" id="enrollment_study-form" method="get">
                         <label class="control-label" for="enrollment_study">Estudi:&nbsp;&nbsp;</label>
-                        <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="Selecciona un Estudi">
-                          <option value=""></option>
+                        <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="<?php echo lang('enrollment_select_study_title') ;?>">
                           <? foreach($enrollment_studies as $enrollment_study): ?>
-                          <option value="<?php echo $enrollment_study['studies_id']; ?>"><?php echo $enrollment_study['studies_shortname']; ?></option>
+                          <option value="<?php echo $enrollment_study['studies_id']; ?>" <?php if ( $this->config->item('default_study_id') == $enrollment_study['studies_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $enrollment_study['studies_shortname'] . ". " . $enrollment_study['studies_name']; ?></option>
                           <? endforeach; ?>
                         </select>
                         <div class="space-2"></div>
@@ -388,13 +414,6 @@ STEP 2 - ALL STUDIES
 STEP 3 - ALL COURSES
 -->                
               <div class="step-pane" id="step3">
-                <div class="row-fluid center">
-                  <h3 class="blue lighter"><?php echo lang('enrollment_courses');?></h3>
-                  Seleccionar un Curs.
-                </div>
-                <div class="step1_student"></div>
-                <div class="step2_selected_academic_period"></div>
-                <div class="step3_selected_study"></div> 
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4>Curs</h4>
@@ -417,14 +436,6 @@ STEP 3 - ALL COURSES
 STEP 4 - ALL CLASSROOM GROUPS FROM SELECTED STUDY
 -->                
               <div class="step-pane" id="step4">
-                <div class="center">
-                  <h3 class="blue lighter"><?php echo lang('enrollment_classgroups');?></h3>
-                  Han de sortir els grups de classe de l'estudi.
-                </div>
-                <div class="step1_student"></div>
-                <div class="step2_selected_academic_period"></div>
-                <div class="step3_selected_study"></div>                
-                <div class="step4_selected_course"></div>
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4>Grup de Classe</h4>
@@ -433,7 +444,7 @@ STEP 4 - ALL CLASSROOM GROUPS FROM SELECTED STUDY
                     <div class="widget-main">
                       <form class="form-horizontal" id="classroom_group-form" method="get">
                         <div id="step4_classroom_group" class="form-group">
-                          <label class="control-label" for="enrollment_study">Grups de Classe:&nbsp;&nbsp;</label>
+                          <label class="control-label" for="classroom_group">Grups de Classe:&nbsp;&nbsp;</label>
                           <select id="classroom_group" name="classroom_group" class="select2" data-placeholder="Selecciona un Grup de Classe">
                             <option value=""></option>
                           </select>
@@ -449,15 +460,6 @@ STEP 4 - ALL CLASSROOM GROUPS FROM SELECTED STUDY
 STEP 5 - ALL MODULES FROM SELECTED STUDY
 -->                      
               <div class="step-pane" id="step5">
-                <div class="center">
-                  <h3 class="green"><?php echo lang('enrollment_modules');?></h3>
-                  Per defecte tots els mòduls marcats.
-                </div>
-                <div class="step1_student"></div>
-                <div class="step2_selected_academic_period"></div>
-                <div class="step3_selected_study"></div>                
-                <div class="step4_selected_course"></div>
-                <div class="step5_selected_classroom_group"></div>
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4>Mòdul</h4>
@@ -479,18 +481,7 @@ STEP 5 - ALL MODULES FROM SELECTED STUDY
 STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 -->      
 
-              <div class="step-pane" id="step6">
-                <div class="center">
-                  <h3 class="green"><?php echo lang('enrollment_submodules');?></h3>
-                  Unitats formatives - Tots marcats de tots els MPS del pas anterior.
-                </div>
-                <div class="step1_student"></div>
-                <div class="step2_selected_academic_period"></div>
-                <div class="step3_selected_study"></div>                
-                <div class="step4_selected_course"></div>
-                <div class="step5_selected_classroom_group"></div>                            
-                <div class="step6_selected_study_module"></div>
-
+              <div class="step-pane" id="step6">               
 <!-- STUDY WIDGET -->
                 <div class="widget-box">
                   <div class="widget-header">
@@ -503,9 +494,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   </div>
                   <div class="widget-body">
                     <div class="widget-main">
-    <!-- COURSE WIDGET -->
-                      <div class="step6_course_widget"><div id="checkbox_study_submodules"></div></div>
-    <!-- /COURSE WIDGET -->
+    
+                      <!--<div id="checkbox_study_submodules"></div>-->
+                      <!-- COURSE WIDGET -->
+                      <div class="step6_course_widget"></div>
+                      <!-- /COURSE WIDGET -->
                     </div><!-- /widget-main -->
                   </div><!-- /widget-body -->
                 </div><!-- /widget-box -->
@@ -869,20 +862,42 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             });
         }          
 
+      $(".btn-prev").click(function(){
+        console.debug("Click on prev button");
+        step = $("#step-container div.active").attr("id");
+        step_number = parseInt( step.substr(step.length - 1) , 10);
+        previous_step_number = step_number -1 ;
+        /*console.debug("Step:" + step);
+        console.debug("step_number:" + step_number);
+        console.debug("step_number -1:" + (step_number -1));
+        */
+        
+
+        $('[name ^=step][name $=_title]').removeClass("green");
+        previous_step_number_string = previous_step_number.toString() ;
+        step_to_green = "step" + previous_step_number_string + "_title" ;
+
+        $('[name ^="' + step_to_green + '"]').addClass("green");
+      });
+
 
       $(".btn-next").click(function(){
         console.debug("Click on next button");
         step = $("#step-container div.active").attr("id");
         console.debug("Step:" + step);
+
+        $('[name ^=step][name $=_title]').removeClass("green");
+        $('[name ^="' + step + ' _title"]').addClass("green");
+
 /***********
  *  STEP 0 - Student Personal Data
  ***********/
 
-        if(step == "step0"){
+        if(step == "step0") {
 
           /* store student data from form */
           student_person_id = $("#"+step+" input[name$='person_id']").val();
-          console.debug("student_person_id: " . student_person_id);
+          //console.debug("student_person_id: " . student_person_id);
           student_official_id = $("#"+step+" input[name$='student_official_id']").val();
           student_secondary_official_id = $("#"+step+" input[name$='person_secondary_official_id']").val();          
 
@@ -907,15 +922,15 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           student_gender = $("input:radio[name=sexe]").val();
 
 
-/*
-if(student_password != student_verify_password){
-  //alert("NO");
-} else {
-  //alert("SI");
-}
-*/
-  if(existeix){
-/**/
+          /*
+          if(student_password != student_verify_password){
+            //alert("NO");
+          } else {
+            //alert("SI");
+          }
+          */
+          if(existeix) {
+          /**/
               // AJAX get Classroom_Group from Study for step 4
               $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
@@ -946,8 +961,8 @@ if(student_password != student_verify_password){
 
               
               });
-/**/
-  } else {
+          /**/
+          } else {
               // AJAX get Classroom_Group from Study for step 4
               $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
@@ -977,16 +992,19 @@ if(student_password != student_verify_password){
 
               
               });
-  }
+          }
           
           //CHECK student_person_id if undefined?!!!!!!
-
           $("#student option[value=" + student_person_id +"]").attr("selected","selected");
           $("#student").select2();
           
-
-          $(".step1_student").html("<p>Alumne: "+student_givenName+" ("+student_official_id+") </p>");    
-  
+          $(".step1_student").html( student_sn1 + " " + student_sn2 + "," + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
+          if($.trim($("[name = 'step1_title' ]").html())=='') {
+              $("[name = 'step1_title' ]").html("<b><small><?php echo lang('enrollment_academic_period_title');?></b></small>");     
+          }
+          
+          $("[name = 'step1_title' ]").addClass("green"); 
+          
 // End step 0
         
 /***********
@@ -1000,8 +1018,12 @@ if(student_password != student_verify_password){
           student_name = $("#student option:selected").text();
           student_id = $("#student option:selected").val();
           
-          //$(".step2_selected_student").html("<p>Periode Acadèmic: "+academic_period+"</p><p>Alumne: "+student_name+" ("+student_id+") </p>");          
-          $(".step2_selected_academic_period").html("<p>Periode Acadèmic: "+academic_period+" </p>");          
+
+          $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
+          if($.trim($("[name = 'step2_title' ]").html())=='') {        
+              $("[name = 'step2_title' ]").html("<b><small><?php echo lang('enrollment_select_study_title');?></b></small>");   
+          }
+          $("[name = 'step2_title' ]").addClass("green");
 
 // End step 1
         
@@ -1013,6 +1035,8 @@ if(student_password != student_verify_password){
         
           study_id = $("#enrollment_study").val();
           study_name = $("#enrollment_study option:selected").text();
+
+          console.debug("study_name:" . study_name);
 
           $("#enrollment_study").change(function(){
               study_id = $("#enrollment_study").val();
@@ -1033,9 +1057,18 @@ if(student_password != student_verify_password){
                 courses = [];
                 var $_courses = $('select#enrollment_course');
                 var $_course_widget = $('div.step6_course_widget');
+                $_course_widget.empty();
                 $_courses.empty();
+                first = 1;
                 $.each(JSON.parse(data), function(idx, obj) {
-                  $_courses.append($('<option></option>').attr("value",obj.course_id).text(obj.course_name));
+                  if (first == 1) {
+                    $_courses.append($('<option selected="selected"></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name));
+                    first = 0;
+                  } else {
+                    $_courses.append($('<option></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name));
+                  }
+                  
+                  
                   courses.push(obj.course_id);
 
                   $_course_widget.append("<div class='widget-box'>"+
@@ -1049,15 +1082,19 @@ if(student_password != student_verify_password){
                                             "</div><!-- /widget-header -->"+
                                             "<div class='widget-body'>"+
                                               "<div class='widget-main'>"+
-                                                "<div class='module_widget'></div>"+
+                                                "<div id=module_widget_"+obj.course_id+" class='module_widget'></div>"+
                                               "</div><!-- /widget-main -->"+
                                             "</div><!-- /widget-body -->"+
                                           "</div><!-- /widget-box -->");
                 });
-              
+                $_courses.select2();
               });
 
-              $(".step3_selected_study").html("<p>Estudi: "+study_name+" ("+study_id+") </p>");  
+              $(".step3_selected_study").html(study_name+" <i class='icon-double-angle-right'></i>");  
+              if($.trim($("[name = 'step3_title' ]").html())=='') {
+                  $("[name = 'step3_title' ]").html("<b><small><?php echo lang('enrollment_select_course_title');?></b></small>");   
+              }
+              $("[name = 'step3_title' ]").addClass("green");
               $("#study_name").text(study_name);
 // End step 2
 
@@ -1089,14 +1126,27 @@ if(student_password != student_verify_password){
                 var $_classroom_group = $('select#classroom_group');
                 
                 $_classroom_group.empty();
+                first = 1;
                 $.each(JSON.parse(data), function(idx, obj) {
-                  $_classroom_group.append($('<option></option>').attr("value",obj.classroom_group_id).text(obj.classroom_group_name));
+                  if (first == 1) {
+                    $_classroom_group.append($('<option selected="selected"></option>').attr("value",obj.classroom_group_id).text(obj.classroom_group_name));
+                    first = 0;
+                  }
+                  else {
+                    $_classroom_group.append($('<option></option>').attr("value",obj.classroom_group_id).text(obj.classroom_group_name));
+                  }
+                  
                   classroom_groups.push(obj.classroom_group_id);
                 });
-
+                $_classroom_group.select2();
               });
 
-              $(".step4_selected_course").html("<p>Curs: "+course_name+" ("+course_id+") </p>");         
+              $(".step4_selected_course").html(course_name + " <i class='icon-double-angle-right'></i>");      
+              if($.trim($("[name = 'step4_title' ]").html())=='') {
+                  $("[name = 'step4_title' ]").html("<b><small><?php echo lang('enrollment_select_classroomgroup_title');?></b></small>");   
+              }
+
+              $("[name = 'step4_title' ]").addClass("green");   
               $("#course_name").text(course_name);
 // End step 3
 
@@ -1110,6 +1160,10 @@ if(student_password != student_verify_password){
 
           classroom_group_name = $("select#classroom_group option:selected").text();
           classroom_group_id = $("select#classroom_group option:selected").val();
+
+          var $_module_widget = $('div[id^="module_widget_"]');   
+          console.debug($_module_widget);
+          $_module_widget.empty(); 
 
           $("#classroom_group").change(function(){
             classroom_group_name = $("select#classroom_group option:selected").text();
@@ -1129,9 +1183,8 @@ if(student_password != student_verify_password){
               }).done(function(data){
                 //study_modules_data = data;
                 var $_study_module = $('#checkbox_study_module');
-                var $_module_widget = $('div.module_widget');   
                 $_study_module.empty();
-                
+
                 $.each(JSON.parse(data), function(idx, obj) {
                   //console.log("Data: "+data);
                   //$_study_module.append('<h3>'+idx+'</h3>');
@@ -1158,9 +1211,11 @@ if(student_password != student_verify_password){
 
                           $_step4_widget_main.append('<input class="ace" type="checkbox" '+ checked +' name="'+object.study_module_shortname+'" value="'+object.study_module_id+'"/> <span class="lbl">  ('+object.classroom_group_code+') '+object.study_module_shortname+' - '+object.study_module_name+' ('+object.study_module_id+')</span><br />');
 
+                          //console.debug("courseid: " + object.study_module_courseid);
+                          var $_module_widget = $('#module_widget_' + object.study_module_courseid);   
                           $_module_widget.append("<div class='widget-box'>"+
                                                   "<div class='widget-header'>"+
-                                                    "<h4>"+object.study_module_name+"</h4>"+
+                                                    "<h4 id='h4_study_module_" + object.study_module_id + "'>" +object.study_module_name+"</h4>"+
                                                     "<div class='widget-toolbar'>"+
                                                       "<a data-action='collapse' href='#'>"+
                                                         "<i class='icon-chevron-up'></i>"+
@@ -1183,7 +1238,13 @@ if(student_password != student_verify_password){
 
             });
               
-              $(".step5_selected_classroom_group").html("<p>Grup de classe: "+classroom_group_name+"</p>");          
+              $(".step5_selected_classroom_group").html(classroom_group_name + " <i class='icon-double-angle-right'></i>");          
+              if($.trim($("[name = 'step5_title' ]").html())=='') {
+                  $("[name = 'step5_title' ]").html("<b><small><?php echo lang('enrollment_select_studymodule_title');?></b></small>");   
+              }     
+              $("[name = 'step5_title' ]").addClass("green");  
+
+              
 
 // End step 4
 
@@ -1214,6 +1275,7 @@ if(student_password != student_verify_password){
               }).done(function(data){
 
                var $_study_submodule = $('#checkbox_study_submodules');
+               $_study_submodule.attr("style","visibility:hidden;");
                $_study_submodule.empty();
 
                 $.each(JSON.parse(data), function(idx, obj) {
@@ -1225,8 +1287,13 @@ if(student_password != student_verify_password){
                 //alert(data);
               });
 
-        $(".step6_selected_study_modules").html("<p>Mòduls sel·leccionats: "+study_module_names+"</p>");
+        $(".step6_selected_study_module").html( Object.keys(study_module_names).length + " Mòduls Professionals <i class='icon-double-angle-right'></i>");
         $("#study_module_name").text(study_module_names);
+        if($.trim($("[name = 'step6_title' ]").html())=='') {
+            $("[name = 'step6_title' ]").html("<b><small><?php echo lang('enrollment_select_studysubmodule_title');?></b></small>");   
+        }
+        $("[name = 'step6_title' ]").addClass("green"); 
+
 // End step 5
 
 /***********
