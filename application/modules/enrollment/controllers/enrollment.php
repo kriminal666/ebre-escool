@@ -774,7 +774,7 @@ function load_ace_files($active_menu,$header_data=false){
 
     }
 
-    public function classroom_course() {
+    public function courses() {
         
         if(isset($_POST['study_id'])){
             $study_id = $_POST['study_id'];
@@ -907,6 +907,52 @@ function load_ace_files($active_menu,$header_data=false){
         //print_r(json_encode($resultat));
         print_r(json_encode($res));
 
+    }
+
+    public function all_study_submodules_by_study() {
+        
+        $study_id = $_POST['study_id'];
+                
+        $resultat = array();
+
+        $enrollment_study_submodules = $this->enrollment_model->get_enrollment_all_study_submodules_by_study(
+            $study_id,"asc","order");
+    //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
+
+
+            foreach($enrollment_study_submodules as $key => $value){
+               $resultat[$key]=$value;
+            }
+/*
+                echo "Grups de classe --><pre>";
+                print_r($classroom_groups);
+                echo "</pre>";
+*/
+        print_r(json_encode($resultat));
+    }
+
+    public function all_study_submodules_by_modules() {
+        
+        $study_module_ids = $_POST['study_module_ids'];
+
+        $modules = explode("-",$study_module_ids);
+        
+        $resultat = array();
+
+        $enrollment_study_submodules = $this->enrollment_model->get_enrollment_all_study_submodules_by_modules(
+            $modules,"asc","order");
+    //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
+
+
+            foreach($enrollment_study_submodules as $key => $value){
+               $resultat[$key]=$value;
+            }
+/*
+                echo "Grups de classe --><pre>";
+                print_r($classroom_groups);
+                echo "</pre>";
+*/
+        print_r(json_encode($resultat));
     }
 
     public function study_submodules() {

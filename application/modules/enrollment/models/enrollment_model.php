@@ -273,6 +273,101 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
+
+	/* Unitats formatives */
+	public function get_enrollment_all_study_submodules_by_study($study_id=false,$orderby="asc",$order_field="") {
+
+		if(!$study_id){
+			//TODO set default study by config file
+			$study_id=1;
+		}	
+
+        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+        				   study_module_order,study_submodules_study_module_id');
+		$this->db->from('study_submodules');
+		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
+		$this->db->join('studies','studies.studies_id = course.course_study_id');
+		$this->db->where('studies.studies_id',$study_id);
+		if ( $order_field != "") {
+			if ( $order_field == "order") {
+				$this->db->order_by('study_module_order', $orderby);
+				$this->db->order_by('study_submodules_order', $orderby);				
+			}
+		} else {
+			$this->db->order_by ('study_submodules_id', $orderby);
+		}
+
+		
+		       
+        $query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$study_submodules_array = array();
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+   				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
+   				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
+   				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+   				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
+   				$i++;
+			}
+			return $study_submodules_array;
+		}			
+		else
+			return false;
+	}	
+
+	/* Unitats formatives */
+	public function get_enrollment_all_study_submodules_by_modules($study_modules=false,$orderby="asc",$order_field="") {
+
+		if(!$study_modules){
+			//TODO set default study by config file
+			$study_modules[]=282;	//	"M1"
+			$study_modules[]=268;	//	"M2"
+		}	
+
+        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+        				   study_module_order,study_submodules_study_module_id');
+		$this->db->from('study_submodules');
+		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
+		$this->db->join('course','course.course_id = study_module.study_module_courseid');
+		$this->db->where_in('study_submodules_study_module_id',$study_modules);
+		if ( $order_field != "") {
+			if ( $order_field == "order") {
+				$this->db->order_by('study_module_order', $orderby);
+				$this->db->order_by('study_submodules_order', $orderby);				
+			}
+		} else {
+			$this->db->order_by ('study_submodules_id', $orderby);
+		}
+
+		
+		       
+        $query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$study_submodules_array = array();
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+   				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
+   				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
+   				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+   				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
+   				$i++;
+			}
+			return $study_submodules_array;
+		}			
+		else
+			return false;
+	}	
+
 	/* Unitats formatives */
 	public function get_enrollment_study_submodules($study_modules=false,$classroom_group=false,$orderby="asc",$order_field="") {
 
