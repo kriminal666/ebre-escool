@@ -294,7 +294,6 @@ class timetables extends skeleton_main {
             $lessonsfortimetablebygroupid = $this->add_breaks($temp,$data['first_time_slot_order'],$data['last_time_slot_order']);
             $data['lessonsfortimetablebygroupid']= $lessonsfortimetablebygroupid;
             
-            /* SI AL CAMP study_module_classroom_group_id de la base de dades no hi ha valors, dona error o no surten els colors */
             /* All Group Study Modules  */
             $all_group_study_modules = $this->timetables_model->get_all_group_study_modules($classroom_group_id)->result();
             $data['all_group_study_modules']= $all_group_study_modules;

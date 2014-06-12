@@ -110,8 +110,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	function get_all_group_study_modules($classroom_group_id) {
         $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
 		$this->db->from('study_module');
+		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = course.course_id', 'left');
 		//$this->db->distinct();
-		$this->db->where('study_module_classroom_group_id',$classroom_group_id);
+		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
         
         $query = $this->db->get();
 

@@ -877,6 +877,38 @@ function load_ace_files($active_menu,$header_data=false){
 
     }
 
+    public function study_modules_by_classroomgroups() {
+        //echo $classroom_group;
+
+        $classroom_group = $_POST['classroom_group_id'];
+        $classroom_groups = $_POST['classroom_groups'];
+
+        $resultat = array();
+
+        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group,"asc","order");
+
+        $grups = array();
+        foreach($enrollment_study_modules as $key => $value){
+            $resultat[$key]=$value;
+            $grups[] = $value['classroom_group_code'];
+        }
+                $grups = array_unique($grups);
+                $res = array();
+                foreach ($grups as $grup)
+                {
+                    foreach ($enrollment_study_modules as $enrollment_study_module){
+                        if($enrollment_study_module['classroom_group_code'] == $grup){
+                            $res[$grup][]=$enrollment_study_module;    
+                        }
+                        
+                    }
+                }
+
+        //print_r(json_encode($resultat));
+        print_r(json_encode($res));
+
+    }
+
     public function study_submodules() {
         
         $modules = $_POST['study_module_ids'];

@@ -31,16 +31,14 @@ class managment_model  extends CI_Model  {
 		/* studymodules by study
 		SELECT course_study_id, count(`study_module_id`) 
 		FROM study_module 
-		LEFT JOIN classroom_group ON study_module.study_module_classroom_group_id=classroom_group.classroom_group_id
-		LEFT JOIN course ON classroom_group.`classroom_group_course_id`=course.course_id
+		LEFT JOIN course ON study_module.study_module_courseid = course.course_id
 		GROUP BY course_study_id
 		 */
 
 		//courses
 		$this->db->select('course_study_id,count(study_module_id) as total');
 		$this->db->from('study_module');
-		$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
-		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');	
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
 
@@ -54,8 +52,7 @@ class managment_model  extends CI_Model  {
 				//study_modules
 				$this->db->select('study_module_id');
 				$this->db->from('study_module');
-				$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
-				$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+				$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
 				$this->db->where('course_study_id',$row->course_study_id);
 				$query1 = $this->db->get();
 				if ($query1->num_rows() > 0){
@@ -84,8 +81,7 @@ class managment_model  extends CI_Model  {
 		SELECT course_study_id, count(`study_module_id`) 
 		FROM study_submodules
 		JOIN study_module ON study_submodules.study_submodules_study_module_id=study_module.study_module_id
-		LEFT JOIN classroom_group ON study_module.study_module_classroom_group_id=classroom_group.classroom_group_id
-		LEFT JOIN course ON classroom_group.`classroom_group_course_id`=course.course_id
+		LEFT JOIN course ON study_module.study_module_courseid = course.course_id
 		GROUP BY course_study_id
 		 */
 
@@ -93,8 +89,7 @@ class managment_model  extends CI_Model  {
 		$this->db->select('course_study_id,count(study_module_id) as total');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
-		$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
-		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
 
@@ -109,8 +104,7 @@ class managment_model  extends CI_Model  {
 				$this->db->select('study_submodules_id');
 				$this->db->from('study_submodules');
 				$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
-				$this->db->join('classroom_group','study_module.study_module_classroom_group_id = classroom_group.classroom_group_id', 'left');
-				$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
+				$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
 				$this->db->where('course_study_id',$row->course_study_id);
 				$query1 = $this->db->get();
 				if ($query1->num_rows() > 0){

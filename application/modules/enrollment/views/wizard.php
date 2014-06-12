@@ -1008,7 +1008,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 // End step 0
         
 /***********
- *  STEP 1 - Academic Period and Student Data
+ *  STEP 1 - Academic period and student data
  ***********/
 
         } else if(step == "step1"){
@@ -1071,7 +1071,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   
                   courses.push(obj.course_id);
 
-                  $_course_widget.append("<div class='widget-box'>"+
+                  $_course_widget.append("<div class='widget-box'id='step6_course_" + obj.course_id +  "'>"+
                                             "<div class='widget-header'>"+
                                               "<h4>"+obj.course_name+"</h4>"+
                                               "<div class='widget-toolbar'>"+
@@ -1190,7 +1190,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   //$_study_module.append('<h3>'+idx+'</h3>');
                   $_study_module.append("<div class='widget-box'>"+
                                             "<div class='widget-header'>"+
-                                              "<h3>"+idx+"</h3>"+
+                                              "<h3>PROV1"+idx+"</h3>"+
                                               "<div class='widget-toolbar'>"+
                                                 "<a data-action='collapse' href='#'>"+
                                                   "<i class='icon-chevron-up'></i>"+

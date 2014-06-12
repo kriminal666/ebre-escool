@@ -230,11 +230,12 @@ class enrollment_model  extends CI_Model  {
 			//$classroom_group=3;	//	"1ASIX-DAM"
 		}		
 		//echo $classroom_group."<br />";
-        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_classroom_group_id,classroom_group_code,study_module_courseid');
+        $this->db->select('study_module_id,study_module_shortname,study_module_name,classroom_group_id,classroom_group_code,study_module_courseid');
 		$this->db->from('study_module');
-		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
+		$this->db->join('course','course.course_id = study_module.study_module_courseid');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id=course.course_id');
 		$this->db->where_in('classroom_group_id', $classroom_groups);
-		$this->db->order_by('study_module_classroom_group_id', $orderby);
+		$this->db->order_by('classroom_group_id', $orderby);
 		if ($order_field != "") {
 			if ($order_field == "order") {
 				$this->db->order_by('study_module_order', $orderby);
@@ -255,11 +256,11 @@ class enrollment_model  extends CI_Model  {
    				$study_module_array[$i]['study_module_id'] = $row['study_module_id'];
    				$study_module_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
    				$study_module_array[$i]['study_module_name'] = $row['study_module_name'];
-   				$study_module_array[$i]['study_classroom_group_id'] = $row['study_module_classroom_group_id'];
+   				$study_module_array[$i]['study_classroom_group_id'] = $row['classroom_group_id'];
    				$study_module_array[$i]['classroom_group_code'] = $row['classroom_group_code'];
    				$study_module_array[$i]['study_module_courseid'] = $row['study_module_courseid'];
    				
-   				if($row['study_module_classroom_group_id'] == $classroom_group){
+   				if($row['classroom_group_id'] == $classroom_group){
    					$study_module_array[$i]['selected_classroom_group'] = 'yes';
    				} else {
 					$study_module_array[$i]['selected_classroom_group'] = 'no';
@@ -284,7 +285,8 @@ class enrollment_model  extends CI_Model  {
         $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_module_order,study_submodules_study_module_id,classroom_group_code');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
-		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
+		$this->db->join('course','course.course_id = study_module.study_module_courseid');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id=course.course_id');
 		$this->db->where_in('study_submodules_study_module_id',$study_modules);
 		if ( $order_field != "") {
 			if ( $order_field == "order") {
