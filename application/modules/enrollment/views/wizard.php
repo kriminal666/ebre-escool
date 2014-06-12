@@ -462,7 +462,7 @@ STEP 5 - ALL MODULES FROM SELECTED STUDY
               <div class="step-pane" id="step5">
                 <div class="widget-box ">
                   <div class="widget-header">
-                    <h4>Mòdul</h4>
+                    <h4>Mòduls professionals</h4>
                   </div>
                   <div class="widget-body">
                     <div class="widget-main">
@@ -1054,7 +1054,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 datatype: 'json'
               }).done(function(data){
              
-                courses = [];
+                courses_ids = [];
+                courses_shortnames = [];
+                courses_names = [];
                 var $_courses = $('select#enrollment_course');
                 var $_course_widget = $('div.step6_course_widget');
                 $_course_widget.empty();
@@ -1069,11 +1071,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   }
                   
                   
-                  courses.push(obj.course_id);
+                  courses_ids.push(obj.course_id);
+                  courses_shortnames.push(obj.course_shortname);
+                  courses_names.push(obj.course_name);
 
                   $_course_widget.append("<div class='widget-box'id='step6_course_" + obj.course_id +  "'>"+
                                             "<div class='widget-header'>"+
-                                              "<h4>"+obj.course_name+"</h4>"+
+                                              "<h4>"+ obj.course_shortname + " - " +  obj.course_name+"</h4>"+
                                               "<div class='widget-toolbar'>"+
                                                 "<a data-action='collapse' href='#'>"+
                                                   "<i class='icon-chevron-up'></i>"+
@@ -1117,7 +1121,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 url:'<?php echo base_url("index.php/enrollment/classroom_group");?>',
                 type: 'post',
                 data: {
-                    study_id : study_id
+                    study_id : study_id,
+                    course_id : course_id
                 },
                 datatype: 'json'
               }).done(function(data){
@@ -1158,11 +1163,20 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           //alert(classroom_groups);
 
+          //course_id = $("#enrollment_course").val();
+          //course_name = $("#enrollment_course option:selected").text();
+
           classroom_group_name = $("select#classroom_group option:selected").text();
           classroom_group_id = $("select#classroom_group option:selected").val();
 
+          //Wizard could be navigated forward and backwards. Empty first to avoid adding multiple times studymodules!
           var $_module_widget = $('div[id^="module_widget_"]');   
-          console.debug($_module_widget);
+          //console.debug($_module_widget);
+          console.debug("course_id:" + course_id);
+          console.debug("courses_ids:" + courses_ids);
+          console.debug("courses_shortnames:" + courses_shortnames);
+          console.debug("courses_names:" + courses_shortnames);
+          
           $_module_widget.empty(); 
 
           $("#classroom_group").change(function(){
@@ -1176,8 +1190,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 url:'<?php echo base_url("index.php/enrollment/study_modules");?>',
                 type: 'post',
                 data: {
-                    classroom_group_id : classroom_group_id,
-                    classroom_groups : classroom_groups
+                    course_id : course_id,
+                    courses_ids : courses_ids
                 },
                 datatype: 'json'
               }).done(function(data){
@@ -1190,7 +1204,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   //$_study_module.append('<h3>'+idx+'</h3>');
                   $_study_module.append("<div class='widget-box'>"+
                                             "<div class='widget-header'>"+
-                                              "<h3>PROV1"+idx+"</h3>"+
+                                              "<h3>" + courses_shortnames[jQuery.inArray(idx,courses_ids)] + " - " + courses_names[jQuery.inArray(idx,courses_ids)]  +"</h3>"+
                                               "<div class='widget-toolbar'>"+
                                                 "<a data-action='collapse' href='#'>"+
                                                   "<i class='icon-chevron-up'></i>"+
@@ -1203,13 +1217,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                         $_step4_widget_main.empty();
                         $.each(obj, function(index, object){
                           //console.log("Object: "+object);
-                          if(object.selected_classroom_group=="yes"){
+                          if(object.selected_course=="yes"){
                             checked = 'checked';
                           } else {
                             checked = '';
                           }
 
-                          $_step4_widget_main.append('<input class="ace" type="checkbox" '+ checked +' name="'+object.study_module_shortname+'" value="'+object.study_module_id+'"/> <span class="lbl">  ('+object.classroom_group_code+') '+object.study_module_shortname+' - '+object.study_module_name+' ('+object.study_module_id+')</span><br />');
+                          $_step4_widget_main.append('<input class="ace" type="checkbox" '+ checked +' name="'+object.study_module_shortname+'" value="'+object.study_module_id+'"/> <span class="lbl">  ('+object.study_module_courseid+') '+object.study_module_shortname+' - '+object.study_module_name+' ('+object.study_module_id+')</span><br />');
 
                           //console.debug("courseid: " + object.study_module_courseid);
                           var $_module_widget = $('#module_widget_' + object.study_module_courseid);   
@@ -1224,7 +1238,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                                                   "</div><!-- /widget-header -->"+
                                                   "<div class='widget-body'>"+
                                                     "<div class='widget-main'>"+
-                                                      "<div id='"+object.study_module_id+"' class='submodule_widget'></div><!-- /submodule-widget -->"+
+                                                      "<div id='submodule_widget_module_id_"+object.study_module_id+"' class='submodule_widget'></div><!-- /submodule-widget -->"+
                                                     "</div><!-- /widget-main -->"+
                                                   "</div><!-- /widget-body -->"+
                                                 "</div><!-- /widget-box -->");
@@ -1274,13 +1288,22 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 datatype: 'json'
               }).done(function(data){
 
-               var $_study_submodule = $('#checkbox_study_submodules');
-               $_study_submodule.attr("style","visibility:hidden;");
-               $_study_submodule.empty();
+                study_module_emptied = [];
 
                 $.each(JSON.parse(data), function(idx, obj) {
-                //$("#"+obj.study_submodules_study_module_id).append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
-                $_study_submodule.append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
+                  console.debug("idx: " + idx);
+                  //console.debug("study_submodules: " + JSON.stringify(obj));
+                  console.debug("study_submodules_study_module_id: " + obj.study_submodules_study_module_id);
+
+                  var $_study_module_div_for_submodules = $('#submodule_widget_module_id_' + obj.study_submodules_study_module_id);
+                  
+                  if ( jQuery.inArray( obj.study_submodules_study_module_id , study_module_emptied ) == -1) {
+                    $_study_module_div_for_submodules.empty();
+                    study_module_emptied.push(obj.study_submodules_study_module_id);
+                  }
+
+                  //$("#"+obj.study_submodules_study_module_id).append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
+                  $_study_module_div_for_submodules.append($('<input id="step6_checkbox_studysudmodule_id_' + obj.study_submodules_id + ' " type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
 
                 });
               }).fail(function(){

@@ -830,12 +830,11 @@ function load_ace_files($active_menu,$header_data=false){
     }
 
     public function classroom_group() {
-        //echo $study;
 
-        if(isset($_POST['study_id'])){
+        if(isset($_POST['study_id']) && isset($_POST['course_id'])){
             $resultat = array();
 
-            $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($_POST['study_id']);
+            $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($_POST['study_id'],$_POST['course_id']);
             foreach($enrollment_classroom_groups as $key => $value){
                 $resultat[$key]=$value;
             }
@@ -846,31 +845,32 @@ function load_ace_files($active_menu,$header_data=false){
     }
 
     public function study_modules() {
-        //echo $classroom_group;
 
-        $classroom_group = $_POST['classroom_group_id'];
-        $classroom_groups = $_POST['classroom_groups'];
+        $course_id = $_POST['course_id']; 
+        $courses_ids = $_POST['courses_ids'];
 
         $resultat = array();
 
-        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_groups,$classroom_group,"asc","order");
+        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($courses_ids,$course_id,"asc","order");
 
-        $grups = array();
+        $courses = array();
         foreach($enrollment_study_modules as $key => $value){
             $resultat[$key]=$value;
-            $grups[] = $value['classroom_group_code'];
+            $courses[] = $value['study_module_courseid'];
         }
-                $grups = array_unique($grups);
-                $res = array();
-                foreach ($grups as $grup)
-                {
-                    foreach ($enrollment_study_modules as $enrollment_study_module){
-                        if($enrollment_study_module['classroom_group_code'] == $grup){
-                            $res[$grup][]=$enrollment_study_module;    
-                        }
-                        
-                    }
+                
+        $courses = array_unique($courses);
+        $res = array();
+
+        foreach ($courses as $course)
+        {
+            foreach ($enrollment_study_modules as $enrollment_study_module){
+                if($enrollment_study_module['study_module_courseid'] == $course){
+                    $res[$course][]=$enrollment_study_module;    
                 }
+                
+            }
+        }
 
         //print_r(json_encode($resultat));
         print_r(json_encode($res));

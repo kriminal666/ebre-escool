@@ -162,7 +162,7 @@ class enrollment_model  extends CI_Model  {
 	}	
 
 	/* Grups de classe */
-	public function get_enrollment_classroom_groups($study=false,$orderby="asc") {
+	public function get_enrollment_classroom_groups($study=false,$course_id=false,$orderby="asc") {
 
 		if(!$study){
 			$study=2;	//	"ASIX-DAM"
@@ -173,6 +173,7 @@ class enrollment_model  extends CI_Model  {
 		$this->db->join('course','classroom_group_course_id=course_id');
 		$this->db->join('studies','course_study_id=studies_id');
 		$this->db->where('studies_id',$study);
+		$this->db->where('course_id',$course_id);
 		$this->db->order_by('classroom_group_id', $orderby);
 		
         $query = $this->db->get();
@@ -224,18 +225,17 @@ class enrollment_model  extends CI_Model  {
 
 
 	/* Mòduls */
-	public function get_enrollment_study_modules($classroom_groups=false,$classroom_group=false,$orderby="asc",$order_field = "") {
+	public function get_enrollment_study_modules($courses=false,$course_id=false,$orderby="asc",$order_field = "") {
 		
-		if(!$classroom_groups){
-			//$classroom_group=3;	//	"1ASIX-DAM"
+		if(!$courses){
+			//$course_id=3;	//	"1ASIX-DAM"
 		}		
-		//echo $classroom_group."<br />";
-        $this->db->select('study_module_id,study_module_shortname,study_module_name,classroom_group_id,classroom_group_code,study_module_courseid');
+		//echo $course_id."<br />";
+        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_courseid,course.course_shortname,course.course_name');
 		$this->db->from('study_module');
 		$this->db->join('course','course.course_id = study_module.study_module_courseid');
-		$this->db->join('classroom_group','classroom_group.classroom_group_course_id=course.course_id');
-		$this->db->where_in('classroom_group_id', $classroom_groups);
-		$this->db->order_by('classroom_group_id', $orderby);
+		$this->db->where_in('course.course_id', $courses);
+		$this->db->order_by('course.course_id', $orderby);
 		if ($order_field != "") {
 			if ($order_field == "order") {
 				$this->db->order_by('study_module_order', $orderby);
@@ -246,8 +246,7 @@ class enrollment_model  extends CI_Model  {
 		
 		       
         $query = $this->db->get();
-		//echo $this->db->last_query();
-
+		
 		if ($query->num_rows() > 0) {
 
 			$study_module_array = array();
@@ -256,14 +255,14 @@ class enrollment_model  extends CI_Model  {
    				$study_module_array[$i]['study_module_id'] = $row['study_module_id'];
    				$study_module_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
    				$study_module_array[$i]['study_module_name'] = $row['study_module_name'];
-   				$study_module_array[$i]['study_classroom_group_id'] = $row['classroom_group_id'];
-   				$study_module_array[$i]['classroom_group_code'] = $row['classroom_group_code'];
    				$study_module_array[$i]['study_module_courseid'] = $row['study_module_courseid'];
+   				$study_module_array[$i]['course_shortname'] = $row['course_shortname'];
+   				$study_module_array[$i]['course_name'] = $row['course_name'];
    				
-   				if($row['classroom_group_id'] == $classroom_group){
-   					$study_module_array[$i]['selected_classroom_group'] = 'yes';
+   				if($row['study_module_courseid'] == $course_id){
+   					$study_module_array[$i]['selected_course'] = 'yes';
    				} else {
-					$study_module_array[$i]['selected_classroom_group'] = 'no';
+					$study_module_array[$i]['selected_course'] = 'no';
    				}
 
    				$i++;
