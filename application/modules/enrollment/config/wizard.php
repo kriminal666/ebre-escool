@@ -11,9 +11,10 @@
 | Example: Enrollment Wizard
 */
 $config['academic_periods'] = array(
-	1 => "2013-14",
-	2 => "2014-15",
-	3 => "2015-16"
+    1 => "2011-12",
+    2 => "2012-13",
+	3 => "2013-14",
+	4 => "2014-15"
 	);
 
 $config['current_period'] = "2014-15";

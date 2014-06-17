@@ -19,12 +19,24 @@ class dashboard_model  extends CI_Model  {
     function getTeachersStatistics() {
         
         $teachers_statistics = array();
-
         $teachers_statistics['total_teachers'] = 69;
-
-
         return $teachers_statistics;
     }
+
+    function getEnrollmentStatistics() {
+
+        $enrollment_statistics = array();
+        
+        $this->db->from('enrollment');
+        //TODO: get current period from config
+        $this->db->where('enrollment_periodid',"2013-14");
+        $query = $this->db->get();
+
+        $enrollment_statistics['total_number_of_current_period_enrolled_persons'] = $query->num_rows();
+        return $enrollment_statistics;
+
+    }
+    
 
     function getCurriculumStatistics() {
 

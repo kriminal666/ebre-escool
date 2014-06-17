@@ -12,7 +12,9 @@ Set basedn to base correct base dn period enrollment. P.e.
 include "/usr/share/ebre-escool/application/config/auth_ldap.php";
 include "/usr/share/ebre-escool/application/config/database.php";
 
-$PERIOD="2010-11";
+
+$PERIOD="2013-14";
+$PERIOD_ALT_FORMAT="201314";
 
 //DATABASE:
 
@@ -50,7 +52,10 @@ ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 $password=$config['proxy_pass'];
 $dn=$config['proxy_user'];
 
-$basedn="ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+//$basedn="ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+$basedn="ou=Alumnes,ou=All,dc=iesebre,dc=com";
+//$basedn="ou=Alumnes,ou=All,ou=".$PERIOD_ALT_FORMAT.",dc=iesebre,dc=com";
+
 
 if ($bind=ldap_bind($ds, $dn, $password)) {
   echo("Login correct\n");
@@ -85,7 +90,7 @@ for ($i=0; $i<$info["count"]; $i++  ) {
 	if (array_key_exists ( $uid , $persons )) {
 		echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons[$uid]->id  . "\n"; 
 
-		if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid) VALUES ('" . $PERIOD "','" . $persons[$uid]->id .  "')")) {
+		if (!mysqli_query($con,"INSERT INTO enrollment (enrollment_periodid,enrollment_personid) VALUES ('" . $PERIOD . "','" . $persons[$uid]->id .  "')")) {
 			//die('Error: ' . mysqli_error($con));
 			echo " ERROR! " . mysqli_error($con) . "\n";
 		} else {
@@ -98,7 +103,7 @@ for ($i=0; $i<$info["count"]; $i++  ) {
 		if ($irispersonaluniqueid != ""){ 
 			if (array_key_exists ( $irispersonaluniqueid , $persons_dni )) {
 				echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons_dni[$irispersonaluniqueid]->id; 
-				if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid) VALUES ('2010-11','" . $persons_dni[$irispersonaluniqueid]->id .  "')")) {
+				if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid) VALUES ('". $PERIOD ."','" . $persons_dni[$irispersonaluniqueid]->id .  "')")) {
 					//die('Error: ' . mysqli_error($con));
 					echo " ERROR! " . mysqli_error($con) . "\n";
 

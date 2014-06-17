@@ -27,6 +27,75 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
+	
+	function get_all_enrollment_academic_periods() {
+
+		/*
+		SELECT person_id, person_sn1, person_sn2, person_givenName, person_official_id, enrollment_studies_id, enrollment_studies_periodid, enrollment_studies_personid, enrollment_studies_study_id, studies_shortname , studies_name
+		FROM enrollment_studies
+		JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
+		JOIN person ON person.person_id = enrollment_studies.enrollment_studies_personid
+		ORDER BY person_sn1, person_sn2, person_givenName
+		LIMIT 0 , 30
+		*/
+
+		//enrollments
+		$this->db->select('person_id, person_sn1, person_sn2, person_givenName, person_official_id, enrollment_studies_id, 
+				           enrollment_studies_periodid, enrollment_studies_personid, enrollment_studies_study_id, 
+				           studies_shortname , studies_name');
+		$this->db->from('enrollment_studies');
+		$this->db->join('studies','studies.studies_id = enrollment_studies.enrollment_studies_study_id');	
+		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
+		//$this->db->order_by('studies_shortname', $orderby);
+
+
+		$query = $this->db->get();
+
+		$all_enrollment_academic_periods = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$enrollment = new stdClass;
+				
+				$enrollment->person_id = $row->person_id;
+				$enrollment->person_sn1 = $row->person_sn1;
+				$enrollment->person_sn2 = $row->person_sn2;
+				$enrollment->person_givenName = $row->person_givenName;
+				$enrollment->person_official_id = $row->person_official_id;
+				$enrollment->enrollment_studies_id = $row->enrollment_studies_id;
+				$enrollment->enrollment_studies_periodid = $row->enrollment_studies_periodid;
+				$enrollment->person_official_id = $row->person_official_id;
+
+				$all_enrollment_academic_periods[$row->enrollment_studies_id] = $enrollment;
+			}
+		}
+
+		return $all_enrollment_academic_periods;	
+		
+		/*
+		$academic_periods = array ();
+
+		$academic_period1 = new stdClass;
+		$academic_period1->academic_period = "2010-11";
+		$academic_period1->total_number_of_enrolled_persons = 58;
+		$academic_period2 = new stdClass;
+		$academic_period2->academic_period = "2011-12";
+		$academic_period2->total_number_of_enrolled_persons = 86;
+		$academic_period3 = new stdClass;
+		$academic_period3->academic_period = "2012-13";
+		$academic_period3->total_number_of_enrolled_persons = 91;
+		$academic_period4 = new stdClass;
+		$academic_period4->academic_period = "2013-14";
+		$academic_period4->total_number_of_enrolled_persons = 54;
+
+		$academic_periods[0] = $academic_period1;
+		$academic_periods[1] = $academic_period2;
+		$academic_periods[2] = $academic_period3;
+		$academic_periods[3] = $academic_period4;
+
+		return $academic_periods; */
+
+	}
+
 	function get_studymodules_by_study($withtotal = true) {
 		/* studymodules by study
 		SELECT course_study_id, count(`study_module_id`) 

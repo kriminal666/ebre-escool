@@ -73,32 +73,32 @@
 
                 <li data-target="#step1">
                   <span class="step">1</span>
-                  <span class="title"><?php echo lang('enrollment_academic_period');?></span>
+                  <span class="title" id="fuelux-wizard_step1_title"><?php echo lang('enrollment_academic_period');?></span>
                 </li>
 
                 <li data-target="#step2">
                   <span class="step">2</span>
-                  <span class="title"><?php echo lang('enrollment_studies');?></span>
+                  <span class="title" id="fuelux-wizard_step2_title"><?php echo lang('enrollment_studies');?></span>
                 </li>
 
                 <li data-target="#step3">
                   <span class="step">3</span>
-                  <span class="title"><?php echo lang('enrollment_courses');?></span>
+                  <span class="title" id="fuelux-wizard_step3_title"><?php echo lang('enrollment_courses');?></span>
                 </li>
 
                 <li data-target="#step4">
                   <span class="step">4</span>
-                  <span class="title"><?php echo lang('enrollment_classgroups');?></span>
+                  <span class="title" id="fuelux-wizard_step4_title"><?php echo lang('enrollment_classgroups');?></span>
                 </li>
 
                 <li data-target="#step5">
                   <span class="step">5</span>
-                  <span class="title"><?php echo lang('enrollment_modules');?></span>
+                  <span class="title" id="fuelux-wizard_step5_title"><?php echo lang('enrollment_modules');?></span>
                 </li>
 
                 <li data-target="#step6">
                   <span class="step">6</span>
-                  <span class="title"><?php echo lang('enrollment_submodules');?></span>
+                  <span class="title" id="fuelux-wizard_step6_title"><?php echo lang('enrollment_submodules');?></span>
                 </li>
               </ul>
             </div> <!-- /fuelux-wizard -->
@@ -354,6 +354,32 @@ STEP 0 - STUDENT DATA
 STEP 1 - ACADEMIC PERIOD AND STUDENT
 -->
               <div class="step-pane" id="step1">
+
+                <div class="widget-box ">
+                  <div class="widget-header">
+                    <h4><?php echo "Matrícules anteriors"?></h4>
+                  </div>
+                  <div class="widget-body">
+                    <div class="widget-main">
+
+
+                      <table class="table table-striped table-bordered table-hover table-condensed" id="previous_enrollments">
+                       <thead style="background-color: #d9edf7;">
+                        <tr> 
+                           <th>academic_period</th>
+                           <th>study</th>
+                           <th>course</th>
+                        </tr>
+                       </thead>
+                      </table> 
+
+
+
+
+                    </div><!-- /widget-main -->
+                  </div><!-- /widget-body -->  
+                </div><!-- -/widget-box -->    
+
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4><?php echo lang("enrollment_academic_period_title")?></h4>
@@ -401,7 +427,7 @@ STEP 2 - ALL STUDIES
                         <label class="control-label" for="enrollment_study">Estudi:&nbsp;&nbsp;</label>
                         <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="<?php echo lang('enrollment_select_study_title') ;?>">
                           <? foreach($enrollment_studies as $enrollment_study): ?>
-                          <option value="<?php echo $enrollment_study['studies_id']; ?>" <?php if ( $this->config->item('default_study_id') == $enrollment_study['studies_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $enrollment_study['studies_shortname'] . ". " . $enrollment_study['studies_name']; ?></option>
+                          <option value="<?php echo $enrollment_study['studies_id']; ?>" <?php if ( $this->config->item('default_study_id') == $enrollment_study['studies_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $enrollment_study['studies_shortname'] . ". " . $enrollment_study['studies_name'] . " ( " . $enrollment_study['studies_law_shortname'] . " - " . $enrollment_study['studies_organizational_unit_shortname'] . " )"; ?></option>
                           <? endforeach; ?>
                         </select>
                         <div class="space-2"></div>
@@ -482,6 +508,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 -->      
 
               <div class="step-pane" id="step6">               
+                <div id="logse_advise"></div>
+                <div id="cam_cas_advise"></div>
 <!-- STUDY WIDGET -->
                 <div class="widget-box">
                   <div class="widget-header">
@@ -907,6 +935,45 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
         if(step == "step0") {
 
+          //Preparing step1
+
+          var ex = document.getElementById('previous_enrollments');
+          if ( ! $.fn.DataTable.isDataTable( ex ) ) {
+              $('#previous_enrollments').dataTable( {
+                "bDestroy": true,
+                "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>",
+                "aoColumns": [
+                  { "mData": "enrollment_periodid" },
+                  { "mData": "studies" },
+                  { "mData": "course_shortname" }
+                ],
+                "bPaginate": false,
+                "bFilter": false,
+                "bInfo": false,
+                "bSort": false,
+                "oLanguage": {
+                            "sProcessing":   "Processant...",
+                            "sLengthMenu":   "Mostra _MENU_ registres",
+                            "sZeroRecords":  "No s'han trobat registres.",
+                            "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                            "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                            "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Filtrar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                    "sFirst":    "Primer",
+                                    "sPrevious": "Anterior",
+                                    "sNext":     "Següent", 
+                                    "sLast":     "Últim"    
+                            }
+                }
+              } );
+          }
+          
+          
+  
+
           /* store student data from form */
           student_person_id = $("#"+step+" input[name$='person_id']").val();
           //console.debug("student_person_id: " . student_person_id);
@@ -1010,7 +1077,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           $("#student option[value=" + student_person_id +"]").attr("selected","selected");
           $("#student").select2();
           
-          $(".step1_student").html( student_sn1 + " " + student_sn2 + "," + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
+          $(".step1_student").html( student_sn1 + " " + student_sn2 + ", " + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
           if($.trim($("[name = 'step1_title' ]").html())=='') {
               $("[name = 'step1_title' ]").html("<b><small><?php echo lang('enrollment_academic_period_title');?></b></small>");     
           }
@@ -1049,6 +1116,77 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           study_name = $("#enrollment_study option:selected").text();
 
           //console.debug("study_name:" . study_name);
+
+          //WICH LAW?:
+          // AJAX get Classroom_Group from Study for step 4
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/get_study_law");?>',
+            type: 'post',
+            data: {
+                study_id : study_id,
+            },
+            datatype: 'json'
+          }).done(function(data){
+
+             if(data != false) {
+                study_law = $.parseJSON(data);
+                study_law_shortname =study_law.studies_law_shortname
+             
+                console.debug("study_law.studies_law_shortname: " + study_law.studies_law_shortname);
+             
+                 switch (study_law_shortname)
+                    {
+                      case 'LOE': 
+                                //Nothing to do. All is configured to LOE by default. Current law at 2014
+                                logse = false;
+                                break;
+                      case 'LOGSE': 
+                                //Change titles
+                                $("#fuelux-wizard_step5_title").html("Crèdits");
+                                $("#fuelux-wizard_step6_title").html("Unitats didàctiques");
+                                logse = true;
+                                break;
+                      default:  console.debug("Unknown Law!")
+                    }
+             }
+             
+          });
+
+          //WICH STUDY TYPE?:
+          // AJAX get Classroom_Group from Study for step 4
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/get_study_type");?>',
+            type: 'post',
+            data: {
+                study_id : study_id,
+            },
+            datatype: 'json'
+          }).done(function(data){
+
+             if(data != false) {
+                study_type = $.parseJSON(data);
+                study_type_shortname =study_type.studies_organizational_unit_shortname
+             
+                console.debug("study_type_shortname: " + studies_organizational_unit_shortname);
+             
+                 switch (study_type_shortname)
+                    {
+                      case 'FP': 
+                                //Nothing to do. Default all is configured for FP
+                                cam_cas = false;
+                                break;
+                      case 'CAM | CAS': 
+                                //Change titles
+                                //$("#fuelux-wizard_step5_title").html("Crèdits");
+                                //$("#fuelux-wizard_step6_title").html("Unitats didàctiques");
+                                cam_cas = true;
+                                break;
+                      default:  console.debug("Unknown study type!")
+                    }
+             }
+             
+          });
+
 
           $("#enrollment_study").change(function(){
               study_id = $("#enrollment_study").val();
@@ -1119,7 +1257,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step3"){
-        
+
           course_id = $("#enrollment_course").val();
           course_name = $("#enrollment_course option:selected").text();
 
@@ -1174,7 +1312,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         } else if(step == "step4") {
 
           //alert(classroom_groups);
-
+          
           //course_id = $("#enrollment_course").val();
           //course_name = $("#enrollment_course option:selected").text();
 
@@ -1281,7 +1419,35 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step5") {
+
+        if (logse) {
+          logse_advise = $("#logse_advise");
+          logse_advise.html("<i class='icon-ok green'></i> Atenció. Heu escollit un cicle LOGSE. En aquest tipus de cicles no trobareu indicades les unitats didàctiques ja que no és possible la matrículació per unitat didàctica i a més no necessariament tots els professors imparteixen les mateixes unitats<button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
+                .addClass("alert alert-block alert-success");
+
+          /* Show notification during 5 seconds */
+          /*setTimeout(function(){
+            logse_advise.html('');
+            logse_advise.removeClass("alert alert-block alert-success")
+          },5000);      */
+        }
+        try {
+          if (cam_cas) {
+            cam_cas_advice = $("#cam_cas_advice");
+            cam_cas_advice.html("<i class='icon-ok green'></i> Atenció. Heu escollit els estudis de preparació de les proves d'accés. Aquest pas us el podeu saltar<button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
+                  .addClass("alert alert-block alert-success");
+
+            /* Show notification during 5 seconds */
+            /*setTimeout(function(){
+              cam_cas_advice.html('');
+              cam_cas_advice.removeClass("alert alert-block alert-success")
+            },5000);      */
+          } 
+        }
+        catch(err) {
           
+        }
+    
         study_module_names = $('#checkbox_study_module input:checked').map(function(){
           return this.name;
         }).get();
@@ -1415,6 +1581,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             if(!$('#validation-form').valid()) return false;
           }
         }).on('finished', function(e) {
+
           bootbox.dialog({
             message: "Thank you! Your information was successfully saved!", 
             buttons: {
@@ -1424,23 +1591,24 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               }
             }
           });
+
         }).on('stepclick', function(e){
           //return false;//prevent clicking on steps
+          console.debug("STEP CLICK TEST!");
+
+          $('[name ^=step][name $=_title]').removeClass("green");
+
+          step = $("#step-container div.active").attr("id");
+          step_number = parseInt( step.substr(step.length - 1) , 10);
+          previous_step_number = step_number -1 ;         
+          _step_title = $('[name ="step' + previous_step_number + '_title"]')
+          _step_title.addClass("green");
+
         });
       
         //documentation : http://docs.jquery.com/Plugins/Validation/validate
         $('#skip-validation').on('click', function(){
           $validation = this.checked;
-          /*
-          if(this.checked) {
-            $('#sample-form').hide();
-            $('#validation-form').removeClass('hide');
-          }
-          else {
-            $('#validation-form').addClass('hide');
-            $('#sample-form').show();
-          }
-          */
         });
 
       
@@ -1471,7 +1639,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
          return false;
         
         }, "Especifiqueu un NIF vàlid!.");
-        /* /Validar dni */
+        /* END /Validar dni */
 
         /*
         jQuery.validator.addMethod("person_telephoneNumber", function (value, element) {

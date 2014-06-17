@@ -527,7 +527,10 @@ function load_wizard_files($active_menu){
             base_url('assets/css/ace-responsive.min.css'));
     $header_data= $this->add_css_to_html_header_data(
         $header_data,
-            base_url('assets/css/ace-skins.min.css'));      
+            base_url('assets/css/ace-skins.min.css'));     
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            'http://cdn.datatables.net/1.10.0/css/jquery.dataTables.css'); 
     /*                      
     $header_data= $this->add_css_to_html_header_data(
         $header_data,
@@ -598,8 +601,11 @@ function load_wizard_files($active_menu){
         $header_data,
         base_url('assets/js/jquery.maskedinput.min.js'));
     $header_data= $this->add_javascript_to_html_header_data(
-                $header_data,
-                base_url('assets/js/ebre-escool.js'));        
+        $header_data,
+        base_url('assets/js/ebre-escool.js'));  
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://cdn.datatables.net/1.10.0/js/jquery.dataTables.js");                  
     /*
     $header_data= $this->add_javascript_to_html_header_data(
         $header_data,
@@ -679,6 +685,48 @@ function load_ace_files($active_menu,$header_data=false){
         return $header_data;
 }
 
+public function get_previous_enrollments( $person_official_id = false ) {
+
+    if (!$person_official_id) {
+        $person_official_id = "47623732R";
+    }
+    
+    $previous_enrollments = $this->enrollment_model->get_previous_enrollments($person_official_id);
+
+    echo '{
+    "aaData": ';
+
+    print_r(json_encode($previous_enrollments));
+
+    echo '}';
+    
+    /*echo '{
+    "aaData": [
+        {
+          "academicperiod": "2010-11",
+          "study": "Estudi 1",
+          "course": "Curs 1"
+        },
+        {
+          "academicperiod": "2011-12",
+          "study": "SMX",
+          "course": "Curs 2"
+        },
+        {
+          "academicperiod": "2012-13",
+          "study": "SMX",
+          "course": "Curs 3"
+        },
+        {
+          "academicperiod": "2011-12",
+          "study": "ASIX-DAM",
+          "course": "Curs 4"
+        }
+      ]
+    }';*/
+
+}
+
 /* Enrollment Wizzard */
 
     public function wizard($study=false,$classroom_group=false,$study_modules=false) {
@@ -741,6 +789,42 @@ function load_ace_files($active_menu,$header_data=false){
        $this->_load_body_footer(); 
 
     }
+
+    public function get_study_law($study_id=false){
+        
+        $study_id=1;
+
+        if(isset($_POST['study_id'])) {
+            $study_id = $_POST['study_id'];
+        }
+
+        $study_law = $this->enrollment_model->get_study_law($study_id);
+        if($study_law){
+            print_r(json_encode($study_law));
+        } else {
+            return false;
+        }
+
+    }
+
+    public function get_study_type($study_id=false){
+        
+        $study_id=1;
+
+        if(isset($_POST['study_id'])) {
+            $study_id = $_POST['study_id'];
+        }
+
+        $study_type = $this->enrollment_model->get_study_law($study_id);
+        if($study_type){
+            print_r(json_encode($study_type));
+        } else {
+            return false;
+        }
+
+    }
+
+    
 
     public function check_student($person_official_id=false) {
 

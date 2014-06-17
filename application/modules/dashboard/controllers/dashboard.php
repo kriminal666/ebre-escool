@@ -195,6 +195,10 @@ class dashboard extends skeleton_main {
 
 		$data['curriculum_statistics'] = $curriculum_statistics;
 
+		$enrollment_statistics = $this->dashboard_model->getEnrollmentStatistics();
+
+		$data['enrollment_statistics'] = $enrollment_statistics;
+
 		$data['current_academic_period'] = "2014/15";
 
 		$this->load->view('dashboard',$data); 

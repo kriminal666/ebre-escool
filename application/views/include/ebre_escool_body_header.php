@@ -647,6 +647,41 @@
                 </ul>                  
               </li> 
 
+              <!-- ENROLLMENT REPORTS -->
+              <li id="enrollment_reports">
+                <a href="#" class="dropdown-toggle">
+                  <i class="icon-double-angle-right"></i>
+
+                  <?php echo "Matrícula";?>
+                  <b class="arrow icon-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+
+                  <li id="enrollment_reports_by_academic_period">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/enrollment_reports_by_academic_period'); ?>">
+                      Matrícula per períodes acadèmics
+                    </a>
+                  </li>
+
+                  <li id="enrollment_reports_by_studies">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/enrollment_reports_by_studies'); ?>">
+                      Matrícula per estudis
+                    </a>
+                  </li>
+
+                  <li id="enrollment_reports_all_enrolled_persons_by_academic_period">
+                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                    <a href="<?php echo base_url('/index.php/managment/enrollment_reports_all_enrolled_persons_by_academic_period'); ?>">
+                      Tots els matriculats per període acadèmic 
+                    </a>
+                  </li>
+
+                </ul>                  
+              </li> 
+
               <!-- Assistència informes del centre -->
               <li id="reports_educational_center">
                 <a href="#" class="dropdown-toggle">

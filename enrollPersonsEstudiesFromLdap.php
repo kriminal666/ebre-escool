@@ -12,7 +12,8 @@ Set basedn to base correct base dn period enrollment. P.e.
 include "/usr/share/ebre-escool/application/config/auth_ldap.php";
 include "/usr/share/ebre-escool/application/config/database.php";
 
-$PERIOD="2010-11";
+$PERIOD="2013-14";
+$PERIOD_ALT_FORMAT="201314";
 
 //DATABASE:
 
@@ -50,7 +51,8 @@ ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 $password=$config['proxy_pass'];
 $dn=$config['proxy_user'];
 
-$basedn="ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+//$basedn="ou=Alumnes,ou=All,ou=".$PERIOD_ALT_FORMAT.",dc=iesebre,dc=com";
+$basedn="ou=Alumnes,ou=All,dc=iesebre,dc=com";
 
 if ($bind=ldap_bind($ds, $dn, $password)) {
   echo("Login correct\n");

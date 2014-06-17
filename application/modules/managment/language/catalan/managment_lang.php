@@ -145,3 +145,6 @@ $lang['studies_classroomgroups']="Grups de classe";
 $lang['studies_studymodules']="Mòduls";
 $lang['studies_studysubmodules']="Unitats formatives";
 
+
+$lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";
+$lang['enrollment_reports_by_academic_period_total_number_of_enrolled_persons']="# Total de matriculats";

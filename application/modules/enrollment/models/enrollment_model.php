@@ -103,12 +103,61 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}
 
+	public function get_previous_enrollments($person_official_id,$orderby="desc") {
+
+		/*
+	    SELECT `enrollment_id` , `enrollment_periodid` , `enrollment_personid` , `person_sn1` , `person_sn2` , 
+	    	   `person_givenName` , `person_official_id`,`enrollment_studies_study_id`,`studies_shortname`,`studies_id`
+		FROM `enrollment`
+		INNER JOIN person ON person.person_id = enrollment.enrollment_personid
+		LEFT JOIN enrollment_studies ON enrollment_studies.`enrollment_studies_periodid` = enrollment.enrollment_periodid
+		INNER JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
+		WHERE person_official_id = "47623732R"
+	    */
+
+	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
+	    				   person_official_id,enrollment_studies_study_id,studies_shortname,studies_name,studies_id');
+		$this->db->from('enrollment_studies');
+		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
+		$this->db->join('studies','studies.studies_id = enrollment_studies.enrollment_studies_study_id');
+		$this->db->join('enrollment','enrollment.enrollment_personid = enrollment_studies.enrollment_studies_personid AND  enrollment.enrollment_periodid= enrollment_studies.enrollment_studies_periodid','left');		
+
+		$this->db->where('person_official_id',$person_official_id);
+
+		$this->db->order_by('enrollment_periodid', $orderby);
+
+		       
+        $query = $this->db->get();
+
+		//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+
+			$previous_enrollments = array();
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+   				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+   				$previous_enrollments[$i]['studies_shortname'] = $row['studies_shortname'];
+   				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
+   				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'];
+   				$previous_enrollments[$i]['course_shortname'] = "TODO";
+   				$i++;
+			}
+			return $previous_enrollments;
+		}			
+		else
+			return false;
+	}
+
 
 	/* Studies */
 	public function get_enrollment_studies($orderby="asc") {
 
-        $this->db->select('studies_id,studies_shortname,studies_name');
+        $this->db->select('studies_id,studies_shortname,studies_name,studies_studies_law_id,studies_law_shortname,studies_organizational_unit_shortname');
 		$this->db->from('studies');
+		$this->db->join('studies_law','studies.studies_studies_law_id = studies_law.studies_law_id');
+		$this->db->join('studies_organizational_unit','studies.studies_studies_organizational_unit_id = studies_organizational_unit.studies_organizational_unit_id');
+
 		$this->db->order_by('studies_id', $orderby);
 		       
         $query = $this->db->get();
@@ -122,6 +171,9 @@ class enrollment_model  extends CI_Model  {
    				$studies_array[$i]['studies_id'] = $row['studies_id'];
    				$studies_array[$i]['studies_shortname'] = $row['studies_shortname'];
    				$studies_array[$i]['studies_name'] = $row['studies_name'];
+   				$studies_array[$i]['studies_law_shortname'] = $row['studies_law_shortname']; 
+   				$studies_array[$i]['studies_organizational_unit_shortname'] = $row['studies_organizational_unit_shortname']; 
+   				  				
    				$i++;
 			}
 			return $studies_array;
@@ -410,6 +462,42 @@ class enrollment_model  extends CI_Model  {
    				$i++;
 			}
 			return $study_submodules_array;
+		}			
+		else
+			return false;
+	}	
+
+	/* STUDY LAW */
+	public function get_study_law($study_id) {
+
+		$this->db->select('studies_studies_law_id,studies_law_shortname');
+		$this->db->from('studies');
+		$this->db->join('studies_law','studies.studies_studies_law_id = studies_law.studies_law_id');
+		$this->db->where('studies.studies_id',$study_id);
+		$this->db->limit(1);		
+
+        $query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			return $query->row();
+		}			
+		else
+			return false;
+	}	
+
+	/* STUDY TYPE */
+	public function get_study_type($study_id) {
+
+		$this->db->select('studies_organizational_unit_id,studies_organizational_unit_shortname');
+		$this->db->from('studies');
+		$this->db->join('studies_organizational_unit','studies_organizational_unit.studies_organizational_unit_id = studies.studies_studies_organizational_unit_id');
+		$this->db->where('studies.studies_id',$study_id);
+		$this->db->limit(1);		
+
+        $query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			return $query->row();
 		}			
 		else
 			return false;

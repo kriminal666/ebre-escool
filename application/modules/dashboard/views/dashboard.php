@@ -701,16 +701,9 @@
 										</div>
 
 										<div class="infobox-data">
-											<span class="infobox-data-number"><?php echo $person_statistics['total_number_of_duplicated_persons'];?></span>
+											<span class="infobox-data-number"><?php echo $enrollment_statistics['total_number_of_current_period_enrolled_persons'];?></span>
 											<div class="infobox-content">
-	    										<?php $this->session->set_flashdata('persons_filter', $person_statistics['duplicated_person_ids']); ;?>
-												<?php if (count($person_statistics['duplicated_person_ids']) > 0): ?>
-                    								<a href="<?php echo base_url('/index.php/persons/person/persons_filter')?>">
-												<?php endif; ?>
-													TODO
-												<?php if (count($person_statistics['duplicated_person_ids']) > 0): ?>
-													</a>
-												<?php endif; ?>	
+                   								<a href="<?php echo base_url('/index.php/enrollment/enrollment')?>">Alumnes matrículats</a>
 											</div>
 										</div>
 									</div>
