@@ -13,9 +13,9 @@ include "/usr/share/ebre-escool/application/config/auth_ldap.php";
 include "/usr/share/ebre-escool/application/config/database.php";
 
 $PERIOD="2010-11";
+$PERIOD_ALT="201011";
 
 //DATABASE:
-
 $con=mysqli_connect($db['default']['hostname'],$db['default']['username'],$db['default']['password'],$db['default']['database']);
 // Check connection
 if (mysqli_connect_errno()) {
@@ -50,7 +50,7 @@ ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 $password=$config['proxy_pass'];
 $dn=$config['proxy_user'];
 
-$basedn="ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+$basedn="ou=Alumnes,ou=All,ou=" . $PERIOD_ALT . ",dc=iesebre,dc=com";
 
 if ($bind=ldap_bind($ds, $dn, $password)) {
   echo("Login correct\n");
@@ -77,7 +77,7 @@ while($row = mysqli_fetch_array($result)) {
 	//Search al Accounts with jpegPhotos
 	$filter="(destinationIndicator=" . $study->shortname . ")";
 	
-	echo "Searching Study: " . $study->shortname . " " . $filter . " ";
+	echo "Searching Classroom_group: " . $study->shortname . " " . $filter . " ";
 
 	$sr=ldap_search($ds,$basedn, $filter);   
 

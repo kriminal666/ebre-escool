@@ -27,8 +27,31 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
-	
 	function get_all_enrollment_academic_periods() {
+
+		//enrollments
+		$this->db->select('enrollment_periodid,count(enrollment_personid) as total_number_of_enrolled_persons');
+		$this->db->from('enrollment');
+		$this->db->group_by('enrollment_periodid');
+
+		$query = $this->db->get();
+
+		$academic_periods = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$academic_period = new stdClass;
+				$academic_period->academic_period = $row->enrollment_periodid;
+				$academic_period->total_number_of_enrolled_persons = $row->total_number_of_enrolled_persons;
+				$academic_periods[$row->enrollment_periodid] = $academic_period;
+			}
+		}
+
+		return $academic_periods;	
+
+	}
+
+	
+	function get_enrollment_reports_all_enrolled_persons_by_academic_period () {
 
 		/*
 		SELECT person_id, person_sn1, person_sn2, person_givenName, person_official_id, enrollment_studies_id, enrollment_studies_periodid, enrollment_studies_personid, enrollment_studies_study_id, studies_shortname , studies_name
@@ -63,7 +86,9 @@ class managment_model  extends CI_Model  {
 				$enrollment->person_official_id = $row->person_official_id;
 				$enrollment->enrollment_studies_id = $row->enrollment_studies_id;
 				$enrollment->enrollment_studies_periodid = $row->enrollment_studies_periodid;
-				$enrollment->person_official_id = $row->person_official_id;
+				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
+				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
+				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
 
 				$all_enrollment_academic_periods[$row->enrollment_studies_id] = $enrollment;
 			}

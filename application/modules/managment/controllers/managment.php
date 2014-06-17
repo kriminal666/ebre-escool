@@ -1231,7 +1231,7 @@ class managment extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#reports';
 		$active_menu['submenu1']='#enrollment_reports';
-		$active_menu['submenu2']='#enrollment_reports_by_academic_period';
+		$active_menu['submenu2']='#enrollment_reports_all_enrolled_persons_by_academic_period';
 
 		$header_data = $this->load_ace_files($active_menu);
 
@@ -1268,7 +1268,7 @@ class managment extends skeleton_main {
 
 		$data['enrollment_reports_all_enrolled_persons_by_academic_period_title'] = "Matrículats per període acadèmic";
 
-		$data['academic_periods'] = $this->managment_model->get_all_enrollment_academic_periods();;
+		$data['academic_periods'] = $this->managment_model->get_enrollment_reports_all_enrolled_persons_by_academic_period();;
 
 		$this->load->view('enrollment_reports_all_enrolled_persons_by_academic_period.php',$data);
 		

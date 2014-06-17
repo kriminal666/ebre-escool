@@ -12,37 +12,15 @@ Set basedn to base correct base dn period enrollment. P.e.
 include "/usr/share/ebre-escool/application/config/auth_ldap.php";
 include "/usr/share/ebre-escool/application/config/database.php";
 
-$PERIOD="2013-14";
-$PERIOD_ALT_FORMAT="201314";
+include "/usr/share/ebre-escool/application/config/academicperiods.php";
 
 //DATABASE:
-
-$con=mysqli_connect($db['default']['hostname'],$db['default']['username'],$db['default']['password'],$db['default']['database']);
-// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-$result = mysqli_query($con,"SELECT * FROM person");
-
-$persons = array();
-$persons_dni = array();
-while($row = mysqli_fetch_array($result)) {
-	$person = new stdClass;
-	$person->id = $row['person_id'];
-
-	$persons[$row['username']] = $person;
-	$persons_dni[$row['person_official_id']] = $person;
-  
-}
-
-//print_r($persons);
+include "/usr/share/ebre-escool/application/config/persons_fromdatabase.php";
 
 //LDAP
 $ldapconfig['host'] = $config['hosts'][0];
 #Només cal indicar el port si es diferent del port per defecte
 $ldapconfig['port'] = NULL;
-$ldapconfig['basedn'] = $config['basedn'];
 
 $ds=ldap_connect($ldapconfig['host'], $ldapconfig['port']);
 
@@ -85,6 +63,7 @@ while($row = mysqli_fetch_array($result)) {
 
 	$totalStudiesFound=ldap_count_entries($ds,$sr); 
 
+	//TODO: 2 estudies FOUND. It could be: rare cases
 	if ($totalStudiesFound != 1) {
 		echo "Error: $totalStudiesFound found entries!\n";
 		continue;
@@ -126,7 +105,7 @@ while($row = mysqli_fetch_array($result)) {
 					echo " ERROR! " . mysqli_error($con) . "\n";
 				} else {
 					$enrolled_persons++;	
-					echo " ENROLLED!\n";
+					echo " ENROLLED to table enrollment_studies!\n";
 				}
 
 			
@@ -149,15 +128,6 @@ while($row = mysqli_fetch_array($result)) {
 					}
 				}
 			}	
-
-
-
-
-
-
-
-
-
 
 		}
 

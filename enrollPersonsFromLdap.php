@@ -12,20 +12,55 @@ Set basedn to base correct base dn period enrollment. P.e.
 include "/usr/share/ebre-escool/application/config/auth_ldap.php";
 include "/usr/share/ebre-escool/application/config/database.php";
 
+# 0 -> ONLY ONE PERIOD 1 -> ALL PERIODS
+$BOOLEAN_PERIODS=1;
 
-$PERIOD="2013-14";
-$PERIOD_ALT_FORMAT="201314";
+// OBSOLET?
+$CURRENT_PERIOD= "2013-14";
 
-//DATABASE:
+$academic_periods_info = array();
 
+//IF ONLY ONE PERIOD IS SELECTED HERE INDICATE WICH ONE
+$academic_period_onlyone = new stdClass;
+$academic_period_onlyone->name = "2010-11";
+$academic_period_onlyone->alt_name = "201011";
+$academic_period_onlyone->basedn = "ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+
+$academic_period1 = new stdClass;
+$academic_period1->name = "2010-11";
+$academic_period1->alt_name = "201011";
+$academic_period1->basedn = "ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
+
+$academic_period2 = new stdClass;
+$academic_period2->name = "2011-12";
+$academic_period2->alt_name = "201112";
+$academic_period2->basedn = "ou=Alumnes,ou=All,ou=201112,dc=iesebre,dc=com";
+
+$academic_period3 = new stdClass;
+$academic_period3->name = "2012-13";
+$academic_period3->alt_name = "201213";
+$academic_period3->basedn = "ou=Alumnes,ou=All,ou=201213,dc=iesebre,dc=com";
+
+$academic_period4 = new stdClass;
+$academic_period4->name = "2013-14";
+$academic_period4->alt_name = "201314";
+$academic_period4->basedn = "ou=Alumnes,ou=All,dc=iesebre,dc=com";
+
+if ($BOOLEAN_PERIODS) {
+	$academic_periods_info = array ( $academic_period1, $academic_period2, $academic_period3, $academic_period4 );
+}	else {
+	$academic_periods_info = array ( $academic_period_onlyone );
+}
+
+//MYSQL CONNECTION
 $con=mysqli_connect($db['default']['hostname'],$db['default']['username'],$db['default']['password'],$db['default']['database']);
-// Check connection
+	// Check connection
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
+//GET PERSONS INFO FROM MYSQL
 $result = mysqli_query($con,"SELECT * FROM person");
-
 $persons = array();
 $persons_dni = array();
 while($row = mysqli_fetch_array($result)) {
@@ -34,16 +69,15 @@ while($row = mysqli_fetch_array($result)) {
 
 	$persons[$row['username']] = $person;
 	$persons_dni[$row['person_official_id']] = $person;
-  
 }
-
 //print_r($persons);
+//print_r($persons_dni);
 
 //LDAP
 $ldapconfig['host'] = $config['hosts'][0];
 #Només cal indicar el port si es diferent del port per defecte
 $ldapconfig['port'] = NULL;
-$ldapconfig['basedn'] = $config['basedn'];
+//$ldapconfig['basedn'] = $config['basedn'];
 
 $ds=ldap_connect($ldapconfig['host'], $ldapconfig['port']);
 
@@ -52,107 +86,88 @@ ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 $password=$config['proxy_pass'];
 $dn=$config['proxy_user'];
 
-//$basedn="ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
-$basedn="ou=Alumnes,ou=All,dc=iesebre,dc=com";
-//$basedn="ou=Alumnes,ou=All,ou=".$PERIOD_ALT_FORMAT.",dc=iesebre,dc=com";
-
-
 if ($bind=ldap_bind($ds, $dn, $password)) {
-  echo("Login correct\n");
+  echo("LDAP Login correct\n");
 } else {
   # Error
+  echo("LDAP Login ERROR!\n");
 }
 
-//Obtain all users
+//PERIODS
+foreach ($academic_periods_info as $academic_period_info_key => $academic_period_info) {
+	//Obtain all users for period
+	//Search al Accounts with jpegPhotos
+	echo "\n";
+	echo "****************************************************\n";
+	echo "   STARTING PERIOD " . $academic_period_info->name . "\n" ;
+	echo "****************************************************\n";
+	echo "";
+	$filter="(objectClass=inetOrgPerson)";
+	$sr=ldap_search($ds,$academic_period_info->basedn, $filter);   
+	$totalUsers=ldap_count_entries($ds,$sr); 
+	echo "Alumnes potencials a matrícular:".$totalUsers."\n";
 
-//Search al Accounts with jpegPhotos
-$filter="(objectClass=inetOrgPerson)";
-$sr=ldap_search($ds,$basedn, $filter);   
+	$info = ldap_get_entries($ds, $sr); 
+	echo "Data for ".$info["count"]." items returned:\n"; 
 
-$totalUsers=ldap_count_entries($ds,$sr); 
+	$enrolled_persons=0;
 
-echo "Alumnes potencials a matrícular:".$totalUsers."\n";
+	for ($i=0; $i<$info["count"]; $i++  ) { 
+		
+		$uid= $info[$i]["uid"][0];	
+		$irispersonaluniqueid="";
+		if (array_key_exists ( "irispersonaluniqueid" , $info[$i] )) {
+			$irispersonaluniqueid=$info[$i]["irispersonaluniqueid"][0];	
+		} 
 
-$info = ldap_get_entries($ds, $sr); 
+		if (array_key_exists ( $uid , $persons )) {
+			echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons[$uid]->id  . "\n"; 
 
-echo "Data for ".$info["count"]." items returned:\n"; 
+			if (!mysqli_query($con,"INSERT INTO enrollment (enrollment_periodid,enrollment_personid) VALUES ('" . $academic_period_info->name . "','" . $persons[$uid]->id .  "')")) {
+				//die('Error: ' . mysqli_error($con));
+				echo " ERROR! " . mysqli_error($con) . "\n";
+			} else {
+				$enrolled_persons++;	
+				echo " ENROLLED!\n";
+			}
 
-$enrolled_persons=0;
+			
+		}	else {
+			if ($irispersonaluniqueid != ""){ 
+				if (array_key_exists ( $irispersonaluniqueid , $persons_dni )) {
+					echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons_dni[$irispersonaluniqueid]->id; 
+					if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid) VALUES ('". $academic_period_info->name ."','" . $persons_dni[$irispersonaluniqueid]->id .  "')")) {
+						//die('Error: ' . mysqli_error($con));
+						echo " ERROR! " . mysqli_error($con) . "\n";
 
-for ($i=0; $i<$info["count"]; $i++  ) { 
-	
-	$uid= $info[$i]["uid"][0];	
-	$irispersonaluniqueid="";
-	if (array_key_exists ( "irispersonaluniqueid" , $info[$i] )) {
-		$irispersonaluniqueid=$info[$i]["irispersonaluniqueid"][0];	
+					} else {
+						$enrolled_persons++;	
+						echo " ENROLLED!\n";
+					}
+					
+				}
+				else {
+					echo "i NOT FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "\n"; 
+					//Insert Ldap person to secondary table!
+				}
+			}
+		}
+		//search person_id at database
+		//$givenname= $info[$i]["givenname"][0];
+		//print_r($info[$i]);
 	} 
 
-	if (array_key_exists ( $uid , $persons )) {
-		echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons[$uid]->id  . "\n"; 
+	echo "Alumnes matriculats al " . $academic_period_info->name . ": ".$enrolled_persons."\n";
 
-		if (!mysqli_query($con,"INSERT INTO enrollment (enrollment_periodid,enrollment_personid) VALUES ('" . $PERIOD . "','" . $persons[$uid]->id .  "')")) {
-			//die('Error: ' . mysqli_error($con));
-			echo " ERROR! " . mysqli_error($con) . "\n";
-		} else {
-			$enrolled_persons++;	
-			echo " ENROLLED!\n";
-		}
+	echo "\n";
+	echo "****************************************************\n";
+	echo "   END PERIOD " . $academic_period_info->name ;
+	echo "****************************************************\n";
+	echo "\n";
 
-		
-	}	else {
-		if ($irispersonaluniqueid != ""){ 
-			if (array_key_exists ( $irispersonaluniqueid , $persons_dni )) {
-				echo "i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons_dni[$irispersonaluniqueid]->id; 
-				if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid) VALUES ('". $PERIOD ."','" . $persons_dni[$irispersonaluniqueid]->id .  "')")) {
-					//die('Error: ' . mysqli_error($con));
-					echo " ERROR! " . mysqli_error($con) . "\n";
-
-				} else {
-					$enrolled_persons++;	
-					echo " ENROLLED!\n";
-				}
-				
-			}
-			else {
-				echo "i NOT FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "\n"; 
-			}
-		}
-	}
-
-	//search person_id at database
-	//$givenname= $info[$i]["givenname"][0];
-	
-
-	//print_r($info[$i]);
-
-
-} 
-
-echo "Alumnes matrículats:".$enrolled_persons."\n";
-
-mysqli_close($con);
-
-/*
-$USERDN="cn=Tur AsAdmin Sergi,ou=people,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com";
-
-$attrs=array();
-
-if(class_exists('Imagick')){
-
-	$im = new Imagick('/home/sergi/Escriptori/SergiTurGosa.jpeg');
-	$im->setImageOpacity(1.0);
-	//$im->resizeImage(147,200,Imagick::FILTER_UNDEFINED,0.5,TRUE);
-	//$im->setCompressionQuality(90);
-	$im->setImageFormat('jpeg'); 
-	$attrs['jpegphoto']=$im->getImageBlob();
-
-} else {
-	echo "ERROR!";
 }
-$ret1=ldap_mod_add($ds,$USERDN,$attrs);	
-	
-if (!$ret1) {
-	echo "Error at ldap_mod_add: $ret1\n";
-}*/
+
+//MYSQL CLOSE
+mysqli_close($con);
 
 ?>
