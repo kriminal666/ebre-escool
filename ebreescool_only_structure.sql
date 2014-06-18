@@ -206,9 +206,9 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
 
 CREATE TABLE IF NOT EXISTS `classroom_group_academic_periods` (
   `classroom_group_academic_periods_id` int(11) NOT NULL,
-  `classroom_group_academic_periods_study_id` int(11) NOT NULL,
+  `classroom_group_academic_periods_classroom_group_id` int(11) NOT NULL,
   `classroom_group_academic_periods_academic_period_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Restriccions per la taula `users_groups`
@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `course` (
 
 CREATE TABLE IF NOT EXISTS `courses_academic_periods` (
   `courses_academic_periods_id` int(11) NOT NULL,
-  `courses_academic_periods_study_id` int(11) NOT NULL,
+  `courses_academic_periods_course_id` int(11) NOT NULL,
   `courses_academic_periods_academic_period_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
