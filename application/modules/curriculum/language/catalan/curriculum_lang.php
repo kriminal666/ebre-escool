@@ -92,17 +92,24 @@ $lang['course_academic_periods']   = "Períodes acadèmics";
 
 
 //Classroom_group
-$lang['mentor_code']="Codi Tutor"; 
-$lang['classroom_group_shift']="Torn (matí/tarda)";
-$lang['classroom_group_parentLocation']="Espai Pare";
-$lang['classroom_group_educationalLevelId']="Nivell Educatiu";
 
+$lang['classroom_group_code']="Codi";
+$lang['classroom_group_name']="Nom";
+$lang['classroom_group_shortName']="Nom curt";
+$lang['classroom_group_course']="Curs"; 
+$lang['classroom_group_description']="Descripció"; 
+$lang['classroom_group_mentor_code']="Codi Tutor"; 
+$lang['classroom_group_shift']="Torn (matí/tarda)";
+$lang['classroom_group_location']="Espai";
+$lang['classroom_group_academic_periods'] = "Períodes acadèmics";
+#$lang['classroom_group_educationalLevelId']="Nivell Educatiu";
 $lang['classroom_group_entryDate']   = "Data de creació";
 $lang['classroom_group_lastupdate']   = "Data última modificació";
 $lang['classroom_group_creationUserId']   = "Usuari de creació";
 $lang['classroom_group_lastupdateUserId']   = "Usuari última modificació";
 $lang['classroom_group_markedForDeletion']   = "Baixa?";
 $lang['classroom_group_markedForDeletionDate']   = "Data de baixa";
+
 
 $lang['studies_studies_organizational_unit_id'] = "Tipus d'estudi";
 $lang['studies_studies_law_id'] = "Llei";

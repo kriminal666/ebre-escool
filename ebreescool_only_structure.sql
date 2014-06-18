@@ -196,7 +196,19 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`classroom_group_id`),
   UNIQUE KEY `groupCode` (`classroom_group_code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=56 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `classroom_group_academic_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `classroom_group_academic_periods` (
+  `classroom_group_academic_periods_id` int(11) NOT NULL,
+  `classroom_group_academic_periods_study_id` int(11) NOT NULL,
+  `classroom_group_academic_periods_academic_period_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Restriccions per la taula `users_groups`

@@ -557,7 +557,7 @@ class curriculum extends skeleton_main {
         //RELATIONS
         $this->grocery_crud->set_relation($this->current_table.'_cycle_id','cycle','cycle_shortname'); 
         $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','studies_shortname');     
-        $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'courses_academic_periods', 'academic_periods', 'courses_academic_periods_study_id', 'courses_academic_periods_academic_period_id', 'academic_periods_name');
+        $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'courses_academic_periods', 'academic_periods', 'courses_academic_periods_course_id', 'courses_academic_periods_academic_period_id', 'academic_periods_name');
 
         //COMMON_COLUMNS               
         $this->set_common_columns_name($this->current_table);
@@ -627,7 +627,7 @@ class curriculum extends skeleton_main {
 
         /* Grocery Crud */
         $this->current_table="classroom_group";
-        $this->grocery_crud->set_table("classroom_group");
+        $this->grocery_crud->set_table($this->current_table);
         
         $this->session->set_flashdata('table_name', $this->current_table); 
 
@@ -635,7 +635,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_subject(lang('classroom_group'));       
 
         //Mandatory fields
-        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortsame',$this->current_table.'_markedForDeletion');
+        $this->grocery_crud->required_fields($this->current_table.'_name',$this->current_table.'_shortname',$this->current_table.'_markedForDeletion');
 
         $this->common_callbacks($this->current_table);
 
@@ -643,41 +643,38 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
-        //COMMON_COLUMNS               
-        $this->set_common_columns_name($this->current_table);
-
-        //SPECIFIC COLUMNS
-        
-        $this->grocery_crud->display_as($this->current_table.'_code',lang('group_code'));  
-        $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
-        $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
-        $this->grocery_crud->display_as($this->current_table.'_course_id',lang('course'));
-        $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
-        $this->grocery_crud->display_as($this->current_table.'_mentorId',lang('mentor_code'));
-        $this->grocery_crud->display_as($this->current_table.'_shift',lang($this->current_table.'_shift'));
-        $this->grocery_crud->display_as($this->current_table.'_location_id',lang('location'));       
-        $this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));       
-        $this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang($this->current_table.'_educationalLevelId'));       
-                
-        
-        //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
-        //The last one is the same as educationalLevelId
-        //$this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang('group_EducationalLevelId')); 
-
-//      RELACIONS
+        //RELATIONS
         $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_name} ({course_shortname} - {course_id})');
         $this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_code');
         $this->grocery_crud->set_relation($this->current_table.'_location_id','location','location_name');
         $this->grocery_crud->set_relation($this->current_table.'_shift','shift','shift_name');
+        $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'classroom_group_academic_periods', 'academic_periods', 'classroom_group_academic_periods_classroom_group_id', 'classroom_group_academic_periods_academic_period_id', 'academic_periods_name');
+      
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table); 
 
-        //$this->grocery_crud->set_relation('group_course_id','course','{course_name} ({course_shortname} - {course_id})',array('status' => 'active'));
+        $this->grocery_crud->add_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods', $this->current_table.'_description', $this->current_table.'_mentorId' , $this->current_table.'_shift',$this->current_table.'_location_id' , $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
+            $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
-/*      $this->grocery_crud->set_relation('course_estudies_id','studies','studies_shortname');        
-        $this->grocery_crud->set_relation('parentLocation','location','{name}',array('markedForDeletion' => 'n'));
-        Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
-        Param 2: The relation table (cycle)
-        Param 3: The 'title' field that we want to use to recognize the relation (cycle_shortname)        
-*/        
+        $this->grocery_crud->edit_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods' , $this->current_table.'_description', $this->current_table.'_mentorId', $this->current_table.'_shift' , $this->current_table.'_location_id', $this->current_table.'_entryDate',  $this->current_table.'_lastupdate', $this->current_table.'_creationUserId', 
+            $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
+
+        //SPECIFIC COLUMNS        
+        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
+        $this->grocery_crud->display_as($this->current_table.'_shortName',lang($this->current_table.'_shortName'));
+        $this->grocery_crud->display_as($this->current_table.'_name',lang($this->current_table.'_name'));
+        $this->grocery_crud->display_as($this->current_table.'_course_id',lang($this->current_table.'_course'));
+        $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
+        $this->grocery_crud->display_as($this->current_table.'_mentorId',lang($this->current_table.'_mentor_code'));
+        $this->grocery_crud->display_as($this->current_table.'_shift',lang($this->current_table.'_shift'));
+        $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location'));       
+        $this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));       
+        $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));       
+        //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
+        //The last one is the same as educationalLevelId
+        //$this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang('group_EducationalLevelId')); 
+
+
          //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
