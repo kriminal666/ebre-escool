@@ -865,6 +865,11 @@
           </a>
             <ul class="submenu">
               <!-- Manteniments -->
+              <li id="academic_periods">
+                <a href="<?php echo base_url('index.php/curriculum/academic_periods');?>">
+                  <?php echo "Períodes acadèmics"; ?>
+                </a>
+              </li>
               <li id="studies_organizational_unit"><a href='<?=base_url()?>index.php/curriculum/studies_organizational_unit'><?php echo lang('organizational_unit_studies');?></a></li>
               <li id="departments"><a href='<?=base_url()?>index.php/curriculum/departments'><?php echo lang('departments');?></a></li>
               <li id="studies"><a href='<?=base_url()?>index.php/curriculum/studies'><?php echo lang('studies');?></a></li>

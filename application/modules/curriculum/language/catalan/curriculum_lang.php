@@ -104,4 +104,8 @@ $lang['classroom_group_markedForDeletionDate']   = "Data de baixa";
 
 $lang['studies_studies_organizational_unit_id'] = "Tipus d'estudi";
 $lang['studies_studies_law_id'] = "Llei";
+$lang['studies_academic_periods'] = "Períodes acadèmics";
  	
+$lang['academic_periods'] = "Períodes acadèmics";
+$lang['alt_name'] = "Nom alternatiu";
+$lang['current_academic_period'] = "Actual";
