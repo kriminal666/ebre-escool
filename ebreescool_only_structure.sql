@@ -231,6 +231,16 @@ CREATE TABLE IF NOT EXISTS `course` (
   PRIMARY KEY (`course_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+--
+-- Estructura de la taula `courses_academic_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `courses_academic_periods` (
+  `courses_academic_periods_id` int(11) NOT NULL,
+  `courses_academic_periods_study_id` int(11) NOT NULL,
+  `courses_academic_periods_academic_period_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
 -- --------------------------------------------------------
 
 --
@@ -432,6 +442,18 @@ CREATE TABLE IF NOT EXISTS `studies` (
   `studies_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`studies_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `studies_academic_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `studies_academic_periods` (
+  `studies_academic_periods_id` int(11) NOT NULL,
+  `studies_academic_periods_study_id` int(11) NOT NULL,
+  `studies_academic_periods_academic_period_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

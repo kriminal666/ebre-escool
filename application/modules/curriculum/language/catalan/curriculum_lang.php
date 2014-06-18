@@ -88,6 +88,8 @@ $lang['course_creationUserId']   = "Usuari de creació";
 $lang['course_lastupdateUserId']   = "Usuari última modificació";
 $lang['course_markedForDeletion']   = "Baixa?";
 $lang['course_markedForDeletionDate']   = "Data de baixa";
+$lang['course_academic_periods']   = "Períodes acadèmics";
+
 
 //Classroom_group
 $lang['mentor_code']="Codi Tutor"; 
