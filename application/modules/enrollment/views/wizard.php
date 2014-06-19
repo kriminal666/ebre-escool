@@ -299,14 +299,14 @@ STEP 0 - STUDENT DATA
                                       <input class="span12" type="text" name="person_homePostalAddress" placeholder="Escriu l'Adreça" />                          
                                     </div>
                                     <div class="span5">
-                                      <div class="span8">
-                                        <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
-                                        <input class="span12" type="text" name="person_locality_name" placeholder="Escriu la Localitat" />          
-                                      </div>
                                       <div class="span4">
                                         <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label>
                                         <input class="span12" type="text" name="person_postal_code" placeholder="Escriu el codi postal" />                 
-                                      </div>                                      
+                                      </div>  
+                                      <div class="span8">
+                                        <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
+                                        <input class="span12" type="text" name="person_locality_name" placeholder="Escriu la Localitat" />          
+                                      </div>                            
                                     </div>                                    
                                   </div>
 
