@@ -407,7 +407,21 @@ function addPersonToDatabase($con, $person) {
 			$error_number= mysqli_errno($con);
 			echo " ERROR! Number: ". $error_number . " Message: " . mysqli_error($con) . "\n";
 			if ($error_number == 1062) {
-				echo "SKIP DUPLICATED ID!";
+				echo "SKIP DUPLICATED ID! Adding tot table person_duplicatedfromldap";
+				$query="INSERT INTO person_duplicatedfromldap (person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_terciary_email,
+								 person_official_id,person_official_id_type,person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type,person_homePostalAddress,person_photo,person_locality_id,person_locality_name,person_telephoneNumber,person_mobile,person_bank_account_id,person_notes,person_entryDate,person_last_update,createbydn,modifiedbydn,person_markedForDeletion,person_markedForDeletionDate,dn,date_of_birth,user_type,uidnumber,homedirectory,employeenumber,employeetype,userpassword,username) 
+		        		VALUES ('" . $person->person_givenName . "','" . $person->person_sn1 . "','" . $person->person_sn2 . "','" .
+						$person->person_email . "','" . $person->person_secondary_email . "','" . $person->person_terciary_email . "','" . $person->person_official_id . "'," . $person->person_official_id_type . ",'" . $person->person_date_of_birth . "','" . $person->person_gender . "','" . $person->person_secondary_official_id . "'," . $person->person_secondary_official_id_type . ",'" . $person->person_homePostalAddress . "','" . $person->person_photo . "','" . $person->person_locality_id . "','" . $person->person_locality_name . "','" . $person->person_telephoneNumber . "','" . $person->person_mobile . "','". $person->person_bank_account_id . "','" . $person->person_notes . "','" . $person->person_entryDate . "','" . $person->person_last_update . "','" . $person->person_creationUserId . "','" . $person->person_lastupdateUserId . "','" . $person->person_markedForDeletion . "','" . $person->person_markedForDeletionDate . "','" . $person->dn . "','" . $person->date_of_birth . "','" . $person->user_type . "','" . $person->uidnumber . "','" . $person->homedirectory . "','" . $person->employeenumber . "','" . $person->employeetype . "','" . $person->userpassword . "','" . $person->username .  "')";
+				if (!mysqli_query($con, $query )) {
+					echo "Correctly inserted to person_duplicatedfromldap!\n";
+				} else {
+					if ($error_number == 1062) {
+						echo "Two times duplicated!\n";
+					} else {
+						die('Error: ' . mysqli_error($con));	
+					}	
+				}
+				
 				$skipped++;
 				$skipped_duplicate_id++;
 			} else {

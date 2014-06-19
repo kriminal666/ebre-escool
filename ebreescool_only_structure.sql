@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
 --
 
 CREATE TABLE IF NOT EXISTS `classroom_group_academic_periods` (
-  `classroom_group_academic_periods_id` int(11) NOT NULL,
+  `classroom_group_academic_periods_id` int(11) NOT NULL AUTO_INCREMENT,
   `classroom_group_academic_periods_classroom_group_id` int(11) NOT NULL,
   `classroom_group_academic_periods_academic_period_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `course` (
 --
 
 CREATE TABLE IF NOT EXISTS `courses_academic_periods` (
-  `courses_academic_periods_id` int(11) NOT NULL,
+  `courses_academic_periods_id` int(11) NOT NULL AUTO_INCREMENT,
   `courses_academic_periods_course_id` int(11) NOT NULL,
   `courses_academic_periods_academic_period_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
@@ -325,6 +325,7 @@ CREATE TABLE IF NOT EXISTS `enrollment_courses` (
   PRIMARY KEY (`enrollment_courses_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
 --
 -- Estructura de la taula `enrollment_class_group`
 --
@@ -332,10 +333,10 @@ CREATE TABLE IF NOT EXISTS `enrollment_courses` (
 CREATE TABLE IF NOT EXISTS `enrollment_class_group` (
   `enrollment_class_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_class_group_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_class_group_personid` int(11) DEFAULT NULL,
-  `enrollment_class_group_study_id` int(11) DEFAULT NULL,
-  `enrollment_studies_course_id` int(11) DEFAULT NULL,
-  `enrollment_class_group_group_id` int(11) DEFAULT NULL,
+  `enrollment_class_group_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_class_group_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_class_group_course_id` int(11) NOT NULL,
+  `enrollment_class_group_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
   `enrollment_class_group_entryDate` datetime NOT NULL,
   `enrollment_class_group_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_class_group_creationUserId` int(11) DEFAULT NULL,
@@ -343,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `enrollment_class_group` (
   `enrollment_class_group_markedForDeletion` enum('n','y') NOT NULL,
   `enrollment_class_group_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`enrollment_class_group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Estructura de la taula `enrollment_modules`
@@ -462,10 +463,10 @@ CREATE TABLE IF NOT EXISTS `studies` (
 --
 
 CREATE TABLE IF NOT EXISTS `studies_academic_periods` (
-  `studies_academic_periods_id` int(11) NOT NULL,
+  `studies_academic_periods_id` int(11) NOT NULL AUTO_INCREMENT,
   `studies_academic_periods_study_id` int(11) NOT NULL,
   `studies_academic_periods_academic_period_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -1220,7 +1221,7 @@ INSERT INTO `locality` (`locality_id`, `locality_name`, `locality_parent_localit
 --
 
 CREATE TABLE IF NOT EXISTS `bank` (
-  `bank_name` varchar(255) NOT NULL,
+  `bank_name` varchar(255) NOT NULL ,
   `bank_code` varchar(4) NOT NULL,
   `bank_entryDate` datetime NOT NULL,
   `bank_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1229,7 +1230,7 @@ CREATE TABLE IF NOT EXISTS `bank` (
   `bank_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `bank_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`bank_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 --
 -- Bolcant dades de la taula `bank`

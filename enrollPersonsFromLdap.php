@@ -15,83 +15,12 @@ include "/usr/share/ebre-escool/application/config/database.php";
 # 0 -> ONLY ONE PERIOD 1 -> ALL PERIODS
 $BOOLEAN_PERIODS=1;
 
-// OBSOLET?
-$CURRENT_PERIOD= "2013-14";
+include "/usr/share/ebre-escool/academicperiods.php";
 
-$academic_periods_info = array();
-
-//IF ONLY ONE PERIOD IS SELECTED HERE INDICATE WICH ONE
-$academic_period_onlyone = new stdClass;
-$academic_period_onlyone->name = "2010-11";
-$academic_period_onlyone->alt_name = "201011";
-$academic_period_onlyone->basedn = "ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
-
-$academic_period1 = new stdClass;
-$academic_period1->name = "2010-11";
-$academic_period1->alt_name = "201011";
-$academic_period1->basedn = "ou=Alumnes,ou=All,ou=201011,dc=iesebre,dc=com";
-
-$academic_period2 = new stdClass;
-$academic_period2->name = "2011-12";
-$academic_period2->alt_name = "201112";
-$academic_period2->basedn = "ou=Alumnes,ou=All,ou=201112,dc=iesebre,dc=com";
-
-$academic_period3 = new stdClass;
-$academic_period3->name = "2012-13";
-$academic_period3->alt_name = "201213";
-$academic_period3->basedn = "ou=Alumnes,ou=All,ou=201213,dc=iesebre,dc=com";
-
-$academic_period4 = new stdClass;
-$academic_period4->name = "2013-14";
-$academic_period4->alt_name = "201314";
-$academic_period4->basedn = "ou=Alumnes,ou=All,dc=iesebre,dc=com";
-
-if ($BOOLEAN_PERIODS) {
-	$academic_periods_info = array ( $academic_period1, $academic_period2, $academic_period3, $academic_period4 );
-}	else {
-	$academic_periods_info = array ( $academic_period_onlyone );
-}
-
-//MYSQL CONNECTION
-$con=mysqli_connect($db['default']['hostname'],$db['default']['username'],$db['default']['password'],$db['default']['database']);
-	// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-//GET PERSONS INFO FROM MYSQL
-$result = mysqli_query($con,"SELECT * FROM person");
-$persons = array();
-$persons_dni = array();
-while($row = mysqli_fetch_array($result)) {
-	$person = new stdClass;
-	$person->id = $row['person_id'];
-
-	$persons[$row['username']] = $person;
-	$persons_dni[$row['person_official_id']] = $person;
-}
-//print_r($persons);
-//print_r($persons_dni);
+include "/usr/share/ebre-escool/mysqlconnection.php";
 
 //LDAP
-$ldapconfig['host'] = $config['hosts'][0];
-#Només cal indicar el port si es diferent del port per defecte
-$ldapconfig['port'] = NULL;
-//$ldapconfig['basedn'] = $config['basedn'];
-
-$ds=ldap_connect($ldapconfig['host'], $ldapconfig['port']);
-
-ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-
-$password=$config['proxy_pass'];
-$dn=$config['proxy_user'];
-
-if ($bind=ldap_bind($ds, $dn, $password)) {
-  echo("LDAP Login correct\n");
-} else {
-  # Error
-  echo("LDAP Login ERROR!\n");
-}
+include "/usr/share/ebre-escool/ldapconnection.php";
 
 //PERIODS
 foreach ($academic_periods_info as $academic_period_info_key => $academic_period_info) {

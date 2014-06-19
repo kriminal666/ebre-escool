@@ -19,5 +19,7 @@ while($row = mysqli_fetch_array($result)) {
   
 }
 //print_r($persons);
+//print_r($persons_dni);
+
 
 ?>
