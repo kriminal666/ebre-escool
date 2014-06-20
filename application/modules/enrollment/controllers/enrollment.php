@@ -531,6 +531,9 @@ function load_wizard_files($active_menu){
     $header_data= $this->add_css_to_html_header_data(
         $header_data,
             'http://cdn.datatables.net/1.10.0/css/jquery.dataTables.css'); 
+    $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css')); 
     /*                      
     $header_data= $this->add_css_to_html_header_data(
         $header_data,
@@ -605,7 +608,17 @@ function load_wizard_files($active_menu){
         base_url('assets/js/ebre-escool.js'));  
     $header_data= $this->add_javascript_to_html_header_data(
         $header_data,
-        "http://cdn.datatables.net/1.10.0/js/jquery.dataTables.js");                  
+        "http://cdn.datatables.net/1.10.0/js/jquery.dataTables.js");   
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap-datepicker.js'));      
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap-datepicker.ca.js'));
+    /*
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap-datepicker.es.js'));*/
     /*
     $header_data= $this->add_javascript_to_html_header_data(
         $header_data,
@@ -764,12 +777,14 @@ public function get_previous_enrollments( $person_official_id = false ) {
        $data = array();
        
        $enrollment_studies = $this->enrollment_model->get_enrollment_studies();
+       $localities = $this->enrollment_model->get_localities();
 
        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
 
        $data['all_person_official_ids'] = $all_person_official_ids;
        
        $data['enrollment_studies'] = $enrollment_studies;
+       $data['localities'] = $localities;
        $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($study);
        $data['enrollment_classroom_groups'] = $enrollment_classroom_groups;
        $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_group);

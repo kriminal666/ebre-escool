@@ -301,11 +301,16 @@ STEP 0 - STUDENT DATA
                                     <div class="span5">
                                       <div class="span4">
                                         <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label>
-                                        <input class="span12" type="text" name="person_postal_code" placeholder="Escriu el codi postal" />                 
+                                        <input class="span12 input-mask-postalcode" type="text" name="person_postal_code" id="person_postal_code" placeholder="Escriu el codi postal" />                 
                                       </div>  
                                       <div class="span8">
-                                        <label class="control-label" for="student_locality_name"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
-                                        <input class="span12" type="text" name="person_locality_name" placeholder="Escriu la Localitat" />          
+                                        <label class="control-label" for="student_locality"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
+                                        <select id="person_locality" name="person_locality" class="select2 span4" data-placeholder="Escriu la població" style="width:300px">
+                                          <? foreach($localities as $locality): ?>
+                                          <option id="locality_postal_code_<?php echo $locality['locality_postal_code'];;?>" value="<?php echo $locality['locality_id']; ?>" <?php if ( $this->config->item('default_locality_id') == $locality['locality_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $locality['locality_name']; ?></option>
+                                          <? endforeach; ?>
+                                        </select>
+
                                       </div>                            
                                     </div>                                    
                                   </div>
@@ -313,13 +318,18 @@ STEP 0 - STUDENT DATA
                                   <div class="span6" >
                                     <div class="span6">
                                       <label class="control-label" for="student_date_of_birth"><?php echo lang('wizzard_date_of_birth');?>&nbsp;</label>
-                                      <input class="span11" type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" />                            
+                                      <div class="input-prepend">
+                                        <span class="add-on">
+                                         <i class="icon-calendar bigger-110"></i>
+                                        </span> 
+                                        <input class="form-control date-picker span11 input-mask-date" type="text" name="person_date_of_birth" placeholder="Escriu la Data de naixement" data-date-format="dd-mm-yyyy"/>                                                                    
+                                      </div>  
                                     </div>
                                     <label for="Tipus" >Sexe</label>
                                     <div class="span6">
                                       <div class="span4">
                                         <label>
-                                          <input name="sexe" type="radio" class="ace" value="M" />
+                                          <input name="sexe" type="radio" class="ace" value="M" checked="checked" />
                                           <span class="lbl"> Home</span>
                                         </label>                                      
                                       </div>
@@ -552,6 +562,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
   </div>
     <!-- PAGE CONTENT ENDS -->
 
+  <div style="height: 35px;"></div>  
 <!--  
   JAVASCRIPT
 -->  
@@ -668,6 +679,28 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
       }
 
       jQuery(function($) {
+
+          $('.date-picker').datepicker({"autoclose": true});
+          $('.input-mask-date').mask('99-99-9999'); 
+          $('.input-mask-postalcode').mask('99999');
+
+          $('#person_postal_code').change(function () {
+              postalcode = $('#person_postal_code').val();
+              //console.debug("Postal code: " + postalcode);
+              _person_locality =  $('#person_locality');              
+              value_to_select= $('#locality_postal_code_' + postalcode).val(); 
+              //console.debug("value_to_select: " + value_to_select);
+
+              if (typeof value_to_select === "undefined") {
+               alert("El codi postal no correspon a cap població");
+              }
+
+              _person_locality.val(value_to_select);
+              _person_locality.select2();
+
+          });
+
+          
       
           student_official_id = $('#student_official_id');
           student_official_id_label = $('#lbl_student_official_id');
@@ -678,7 +711,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           rb_official_id_type.change(function () {
             official_id_type = $(this).val();
-            official_id_type_text = $("input:checked + span").text();
+            official_id_type_text = $("input[name=official_id_type]:checked + span").text();
             student_official_id.attr("placeholder", "Escriu el "+official_id_type_text);  
             student_official_id_label.text(official_id_type_text);      
           });
@@ -699,7 +732,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             editableAvatar();
 
             $('select.academic_period').select2();
-            $(".select2").css('width','400px').select2({
+            $('#person_locality').select2();
+            
+            $("select.academic_period").css('width','400px').select2({
               allowClear:true
             }).on('change', function(){
               $(this).closest('form').validate().element($(this));
@@ -806,7 +841,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     empty_student = {"person_id":"",
                     "person_photo":"","person_secondary_official_id":"","person_givenName":"",
                     "person_sn1":"","person_sn2":"","person_email":"","person_date_of_birth":"",
-                    "person_gender":"","person_homePostalAddress":"","person_locality_name":"","username":"",
+                    "person_gender":"","person_homePostalAddress":"","person_locality":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
 
                     /*
@@ -994,7 +1029,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           student_email = $("#"+step+" input[name$='person_email']").val();
 
           student_homePostalAddress = $("#"+step+" input[name$='person_homePostalAddress']").val();
-          student_locality_name = $("#"+step+" input[name$='person_locality_name']").val();
+          student_locality = $("#"+step+" input[name$='person_locality']").val();
           student_postal_code = $("#"+step+" input[name$='person_postal_code']").val();
 
           student_date_of_birth = $("#"+step+" input[name$='person_date_of_birth']").val();
@@ -1027,7 +1062,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     student_verify_password : student_verify_password,
                     student_email : student_email,
                     student_homePostalAddress : student_homePostalAddress,
-                    student_locality_name : student_locality_name,
+                    student_locality : student_locality,
                     student_postal_code : student_postal_code,
                     student_telephoneNumber : student_telephoneNumber,
                     student_mobile : student_mobile,
@@ -1058,7 +1093,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     student_verify_password : student_verify_password,
                     student_email : student_email,
                     student_homePostalAddress : student_homePostalAddress,
-                    student_locality_name : student_locality_name,
+                    student_locality : student_locality,
                     student_postal_code : student_postal_code,
                     student_telephoneNumber : student_telephoneNumber,
                     student_mobile : student_mobile,
@@ -1620,6 +1655,12 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         jQuery.validator.addMethod( "student_official_id", function ( value, element ) {
          "use strict";
          
+         var _placeholder=element.placeholder;
+         
+         if (_placeholder.search("DNI") == -1) {
+          return true;
+         }
+
          value = value.toUpperCase();
          
          // Basic format test

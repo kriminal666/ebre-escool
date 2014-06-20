@@ -21,6 +21,9 @@ $config['current_period'] = "2014-15";
 
 $config['default_study_id'] = "1";
 
+//TORTOSA
+$config['default_locality_id'] = 414;
+
 /* Enrollment Configurations */
 // URL LINKS
 $config['rulesURL'] = "http://moodle.iesmontsia.org/normesTIC";

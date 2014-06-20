@@ -149,6 +149,31 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}
 
+	/* Localities */
+	public function get_localities($orderby="asc") {
+		$this->db->select('locality_id,locality_name,locality_postal_code');
+		$this->db->from('locality');		
+		$this->db->order_by('locality_name', $orderby);
+		       
+        $query = $this->db->get();
+		$this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+
+			$localities = array();
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+   				$localities[$i]['locality_id'] = $row['locality_id'];
+   				$localities[$i]['locality_name'] = $row['locality_name'];
+   				$localities[$i]['locality_postal_code'] = $row['locality_postal_code'];   				
+   				$i++;
+			}
+			return $localities;
+		}			
+		else
+			return false;
+	}
+
 
 	/* Studies */
 	public function get_enrollment_studies($orderby="asc") {
