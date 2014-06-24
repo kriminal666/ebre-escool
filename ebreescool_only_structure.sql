@@ -826,20 +826,21 @@ INSERT INTO `state` (`state_id`, `state_name`, `state_parent_state_id`, `state_p
 
 CREATE TABLE IF NOT EXISTS `locality` (
   `locality_id` int(11) NOT NULL AUTO_INCREMENT,
-  `locality_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `locality_name` varchar(255) NOT NULL,
+  `locality_postalcodename` varchar(255) CHARACTER SET utf8 NOT NULL,
   `locality_parent_locality_id` varchar(255) NOT NULL,
   `locality_state_id` int(11) NOT NULL,
   `locality_ine_id` int(11) NOT NULL COMMENT 'Codi Instituto Nacional Estadística',
   `locality_aeat_id` int(11) NOT NULL COMMENT 'Codi segons Hisenda',
-  `locality_postal_code` varchar(255) NOT NULL,
   `locality_entryDate` datetime NOT NULL,
   `locality_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  ` ` int(11) DEFAULT NULL,
+  `locality_creationUserId` int(11) DEFAULT NULL,
   `locality_lastupdateUserId` int(11) DEFAULT NULL,
   `locality_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `locality_markedForDeletionDate` datetime NOT NULL,
-  PRIMARY KEY (`locality_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`locality_id`),
+  UNIQUE KEY `locality_name` (`locality_postalcodename`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Estructura de la taula `locality_obsolet`
