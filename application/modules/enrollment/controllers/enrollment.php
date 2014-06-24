@@ -892,7 +892,6 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
         if(isset($_POST['username'])){
             $username = $_POST['username'];
-            $resultat = array();
                 $index=1;
                 /*
                 $user_exists = $this->enrollment_model->get_student_by_username($username);
@@ -909,7 +908,6 @@ public function get_previous_enrollments( $person_official_id = false ) {
                         $index++;
                     }
                 }while($user_exists==true);
-                //echo $user_new;
             echo $user_new;
         } else {
             return false;

@@ -530,8 +530,22 @@ class enrollment_model  extends CI_Model  {
 
 	/* Student Data */
 	public function get_student_data($official_id) {
-        $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, person_homePostalAddress, person_locality_name, person_telephoneNumber, person_mobile, username');
+		/*
+		SELECT person.`person_id` , `person_photo` , `person_secondary_official_id` , `person_givenName` , `person_sn1` , `person_sn2` , `person_email` , `person_date_of_birth` , `person_gender` , 
+		`person_homePostalAddress` , `person_telephoneNumber` , `person_mobile`  , `locality_name` , `locality_postal_code` , users.username
+		FROM (
+		`person`
+		)
+		LEFT JOIN locality ON locality.locality_id = person.person_locality_id
+		LEFT JOIN users ON users.person_id = person.person_id
+		WHERE `person_official_id` = '45648766E'
+		*/
+        $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, 
+        				   person_homePostalAddress, person_telephoneNumber, person_mobile, locality_name, locality_postal_code,users.username ');
 		$this->db->from('person');
+		$this->db->join('locality','locality.locality_id = person.person_locality_id');
+		$this->db->join('users','users.person_id = person.person_id');
+
 		$this->db->where('person_official_id',$official_id);
 		$this->db->limit(1);		       
         $query = $this->db->get();
