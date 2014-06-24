@@ -599,6 +599,115 @@ CREATE TABLE IF NOT EXISTS `person` (
   PRIMARY KEY (`person_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+--
+-- Estructura de la taula `person` for migration
+--
+
+CREATE TABLE IF NOT EXISTS `person` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `person_givenName` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_sn1` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_sn2` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_secondary_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_terciary_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_official_id` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_official_id_type` int(11) NOT NULL,
+  `person_date_of_birth` date NOT NULL,
+  `person_gender` enum('F','M') CHARACTER SET utf8 NOT NULL,
+  `person_secondary_official_id` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_secondary_official_id_type` int(11) NOT NULL,
+  `person_homePostalAddress` varchar(750) CHARACTER SET utf8 NOT NULL,
+  `person_photo` varchar(255) NOT NULL,
+  `person_locality_id` int(11) NOT NULL,
+  `person_locality_name` varchar(500) CHARACTER SET utf8 NOT NULL,
+  `person_telephoneNumber` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_bank_account_id` int(11) NOT NULL,
+  `person_notes` text CHARACTER SET utf8 NOT NULL,
+  `person_entryDate` datetime NOT NULL,
+  `person_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `person_creationUserId` int(11) DEFAULT NULL,
+  `person_lastupdateUserId` int(11) DEFAULT NULL,
+  `person_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `person_markedForDeletionDate` datetime NOT NULL,
+  `dn` varchar(500) NOT NULL COMMENT 'ESBORRAR',
+  `date_of_birth` varchar(100) NOT NULL,
+  `user_type` int(11) NOT NULL,
+  `username_original_ldap` varchar(255) NOT NULL COMMENT 'A ESBORRAR!',
+  `calculated_username` varchar(1000) NOT NULL,
+  `duplicated_username` tinyint(1) NOT NULL,
+  `original_username` varchar(1000) NOT NULL,
+  `uidnumber` int(11) NOT NULL,
+  `homedirectory` varchar(500) NOT NULL,
+  `employeenumber` int(11) NOT NULL,
+  `employeetype` varchar(100) NOT NULL,
+  `createbydn` varchar(800) NOT NULL,
+  `modifiedbydn` varchar(800) NOT NULL,
+  `userpassword` varchar(1500) NOT NULL,
+  `postalcode` varchar(10) NOT NULL,
+  `state` varchar(1000) NOT NULL,
+  PRIMARY KEY (`person_id`),
+  UNIQUE KEY `person_official_id` (`person_official_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+--
+-- Estructura de la taula `person_duplicatedfromldap`
+--
+
+CREATE TABLE IF NOT EXISTS `person_duplicatedfromldap` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `person_givenName` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_sn1` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_sn2` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_secondary_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_terciary_email` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_official_id` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_official_id_type` int(11) NOT NULL,
+  `person_date_of_birth` date NOT NULL,
+  `person_gender` enum('F','M') CHARACTER SET utf8 NOT NULL,
+  `person_secondary_official_id` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_secondary_official_id_type` int(11) NOT NULL,
+  `person_homePostalAddress` varchar(750) CHARACTER SET utf8 NOT NULL,
+  `person_photo` varchar(255) NOT NULL,
+  `person_locality_id` int(11) NOT NULL,
+  `person_locality_name` varchar(500) CHARACTER SET utf8 NOT NULL,
+  `person_telephoneNumber` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `person_bank_account_id` int(11) NOT NULL,
+  `person_notes` text CHARACTER SET utf8 NOT NULL,
+  `person_entryDate` datetime NOT NULL,
+  `person_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `person_creationUserId` int(11) DEFAULT NULL,
+  `person_lastupdateUserId` int(11) DEFAULT NULL,
+  `person_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `person_markedForDeletionDate` datetime NOT NULL,
+  `dn` varchar(500) NOT NULL COMMENT 'ESBORRAR',
+  `date_of_birth` varchar(100) NOT NULL,
+  `user_type` int(11) NOT NULL,
+  `username_original_ldap` varchar(255) NOT NULL COMMENT 'A ESBORRAR!',
+  `calculated_username` varchar(1000) NOT NULL,
+  `duplicated_username` varchar(1000) NOT NULL,
+  `original_username` varchar(1000) NOT NULL,
+  `uidnumber` int(11) NOT NULL,
+  `homedirectory` varchar(500) NOT NULL,
+  `employeenumber` int(11) NOT NULL,
+  `employeetype` varchar(100) NOT NULL,
+  `createbydn` varchar(800) NOT NULL,
+  `modifiedbydn` varchar(800) NOT NULL,
+  `userpassword` varchar(1500) NOT NULL,
+  `postalcode` varchar(10) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  PRIMARY KEY (`person_id`),
+  UNIQUE KEY `person_official_id` (`person_official_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+--
+-- Estructura de la taula `person_official_id_type` 
+--
+
 CREATE TABLE IF NOT EXISTS `person_official_id_type` (
   `person_official_id_type_id` int(11) NOT NULL,
   `person_official_id_type_name` varchar(500) NOT NULL,
