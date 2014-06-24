@@ -843,8 +843,9 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
     public function check_student($person_official_id=false) {
 
+        
         if($person_official_id==false){
-            if(isset($_POST['student_official_id'])){
+                if(isset($_POST['student_official_id'])){
                 $official_id = $_POST['student_official_id'];
                 $student_data = $this->enrollment_model->get_student_data($official_id);
                 if($student_data){
@@ -857,8 +858,9 @@ public function get_previous_enrollments( $person_official_id = false ) {
             $official_id = $person_official_id;
             $student_data = $this->enrollment_model->get_student_data($official_id);
             if($student_data){
-                return $student_data;
+                print_r(json_encode($student_data));
             } else {
+
                 return false;
             }            
         }
@@ -1112,18 +1114,29 @@ public function get_previous_enrollments( $person_official_id = false ) {
             print_r(json_encode($resultat));
     }   
 
-function insert_update_user(){
+function insert_update_user()   {
+
+    $current_userid = $this->session->userdata("user_id");
 
     $student = array();
+
     if(isset($_POST['student_person_id'])){
         $person_id = $_POST['student_person_id'];    
     }
+    
     $student['person_official_id'] = $_POST['student_official_id'];
+    $student['person_official_id_type'] = $_POST['student_official_id_type'];
     $student['person_secondary_official_id'] = $_POST['student_secondary_official_id'];
+    //TSI always code 4 TODO
+    $student['person_secondary_official_id_type'] = 4;
+
     $student['person_givenName'] = $_POST['student_givenName'];
     $student['person_sn1'] = $_POST['student_sn1'];
     $student['person_sn2'] = $_POST['student_sn2'];
-    $student['username'] = $_POST['student_username'];
+    
+    //Not to be saved at table persons instead on users table. The existent username field in person table 
+    //is a temporal one for migration purposes
+    //$student['username'] = $_POST['student_username'];
 
 /*    
     if($_POST['student_password'] != ''){
@@ -1133,28 +1146,65 @@ function insert_update_user(){
         $_POST['student_password'] == $_POST['student_generated_password'] &&
     }
 */
-    $student['person_photo'] = $student['username'].'.jpg';
-    $student['person_email'] = $_POST['student_email'];
+    $student['person_photo'] = $_POST['student_username'].'.jpg';
+    
+    $student['person_secondary_email'] = $_POST['student_email'];
+
+    $student['person_email'] = $_POST['student_username'] . "@iesebre.com";
+    
     $student['person_homePostalAddress'] = $_POST['student_homePostalAddress'];
-    $student['person_locality_name'] = $_POST['student_locality_name'];
+    //$student['person_locality_name'] = $_POST['student_locality_name'];
+    $student['person_locality_id'] = $_POST['student_locality'];
 //    $student['student_postal_code'] = $_POST['student_postal_code'];
     $student['person_telephoneNumber'] = $_POST['student_telephoneNumber'];                
     $student['person_mobile'] = $_POST['student_mobile'];   
     $student['person_date_of_birth'] = $_POST['student_date_of_birth'];   
-    $student['person_gender'] = $_POST['student_gender'];   
+    $student['person_gender'] = $_POST['student_gender']; 
+
+
+    //TODO:
+    $student['person_photo'] = $_POST['student_username'] . "jpg"; 
+
+    $student['person_lastupdateUserId'] = $current_userid;
+    $date = date('Y-m-d H:i:s');
+    $student['person_last_update'] = $date;
+    $student['person_markedForDeletion'] = "n";
+    $student['person_markedForDeletionDate'] = "0000-00-00 00:00:00";
+
+
+    //Data validation for update and insert
+    //Email: correct format
+    if (filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email format";
+        return false;
+    }
 
     $action = $_POST['action'];
     if($action=='update'){
         //echo "S'ha d'actualitzar";
         $enrollment = $this->enrollment_model->update_student_data($person_id, $student);
     } else {
-        //echo "S'ha d'insertar";
+        
+        //Data validation for insert
+        //Mandatory fields: person_givenName, person_sn1, person_official_id, person_official_id_type
+        if ( $student['person_givenName'] == "" || $student['person_sn1'] == "" | $student['person_official_id'] == "" || $student['person_official_id_type'] == "") {
+            return false;
+        }
+             
+    $student['person_sn1'] = $_POST['student_sn1'];
+
+        $student['person_creationUserId'] = $current_userid;
+        $date = date('Y-m-d H:i:s');
+        $student['person_entryDate'] = $date;
+
         $enrollment = $this->enrollment_model->insert_student_data($student);
         if($enrollment){
             $inserted_student = $this->check_student($student['person_official_id']);
             print_r($inserted_student);
         }
     }
+
+    return $enrollment;
 
 }
 

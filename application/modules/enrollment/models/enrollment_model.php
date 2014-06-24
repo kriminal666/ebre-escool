@@ -530,6 +530,7 @@ class enrollment_model  extends CI_Model  {
 
 	/* Student Data */
 	public function get_student_data($official_id) {
+
         $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, person_homePostalAddress, person_locality_name, person_telephoneNumber, person_mobile, username');
 		$this->db->from('person');
 		$this->db->where('person_official_id',$official_id);
@@ -554,7 +555,6 @@ class enrollment_model  extends CI_Model  {
 		echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
-
 			return true;
 		}			
 		else
