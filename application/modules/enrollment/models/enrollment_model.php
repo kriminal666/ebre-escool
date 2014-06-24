@@ -531,11 +531,15 @@ class enrollment_model  extends CI_Model  {
 	/* Student Data */
 	public function get_student_data($official_id) {
 
-        $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, person_homePostalAddress, person_locality_name, person_telephoneNumber, person_mobile, username');
+                $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, 
+            				   person_homePostalAddress, person_telephoneNumber, person_mobile, locality_name, locality_postal_code,users.username ');
 		$this->db->from('person');
+		$this->db->join('locality','locality.locality_id = person.person_locality_id');
+		$this->db->join('users','users.person_id = person.person_id');
+
 		$this->db->where('person_official_id',$official_id);
 		$this->db->limit(1);		       
-        $query = $this->db->get();
+		$query = $this->db->get();
 		//echo $this->db->last_query();
 
 		if ($query->num_rows() == 1) {

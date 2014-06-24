@@ -112,10 +112,6 @@ STEP 0 - STUDENT DATA
 -->                
               <div class="step-pane active" id="step0">
 
-                <!-- Show notification if student exists -->
-                <div id="student_exists"></div>
-                <!-- /Show notification if student exists -->
-
                     <div class="widget-box">
                       <div class="widget-header" style="text-align: center;">
                       <!-- /widget-header -->
@@ -811,15 +807,14 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 if(data != false){
                   student_exist = $("#student_exists");
                   existeix = true;
-                  student_exist.html("<i class='icon-ok green'></i> La persona ja existeix a la base de dades. Us hem omplert tots els camps amb les dades de la persona. Comproveu que les dades siguin correctes! <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>")
-                  .addClass("alert alert-block alert-success");
-
-                  /* Show notification during 5 seconds */
-                  setTimeout(function(){
-                    student_exist.html('');
-                    student_exist.removeClass("alert alert-block alert-success")
-                  },5000);
-
+         
+                  $.gritter.add({
+                    // (string | mandatory) the heading of the notification
+                    title: 'La persona ja existeix!',
+                    // (string | mandatory) the text inside the notification
+                    text: "<i class='icon-exclamation-sign'></i> La persona ja existeix a la base de dades. Us hem omplert tots els camps amb les dades de la persona. Comproveu que les dades siguin correctes! <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>",
+                  });
+                
                   var all_data = $.parseJSON(data);
 
                 $.each(all_data, function(idx,obj) {
