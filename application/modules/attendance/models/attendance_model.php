@@ -825,7 +825,7 @@ ORDER BY person.person_sn1
 		$this->db->from('classroom_group');        
 
 		$this->db->join('course', 'classroom_group.classroom_group_course_id = course.course_id');
-		$this->db->join('studies', 'course.course_estudies_id = studies.studies_id');
+		$this->db->join('studies', 'course.course_study_id = studies.studies_id');
 		$this->db->join('study_department', 'studies.studies_id = study_department.study_id');
 		$this->db->join('department', 'study_department.study_id = department.department_id');
         
