@@ -410,7 +410,7 @@ function getUserType($dn) {
 function getLocalities($con) {
 
 	//SELECT
-	$result = mysqli_query($con,"SELECT * FROM  locality");
+	$result = mysqli_query($con,"SELECT * FROM  locality INNER JOIN postalcode ON postalcode.postalcode_localityid = locality.locality_id");
 	$localities = array();
 	$counter=0;
 	while($row = mysqli_fetch_array($result)) {
@@ -420,8 +420,7 @@ function getLocalities($con) {
 		$locality->name = $row['locality_name'];
 		$locality->locality_parent_locality_id = $row['locality_parent_locality_id'];
 		$locality->locality_state_id = $row['locality_state_id'];
-		$locality->locality_state_id = $row['locality_state_id'];
-		$locality->locality_postal_code = $row['locality_postal_code'];
+		$locality->locality_postal_code = $row['postalcode_code'];
 
 		$localities[strtolower($row['locality_name'])] = $locality;
 		$counter++;
@@ -572,6 +571,37 @@ function addPersonToDatabase($con, $person) {
 			}			
 		} else {
 			echo " ADDED OK!\n";
+
+				//Add username
+				$insert_id = mysqli_insert_id($con);
+				$password="";
+				if ($person->userpassword!="") {
+					$salt = salt();
+					$password_withoutmd5string = str_replace("{MD5}","",$person->userpassword);
+					$password_base64uncoded = base64_decode($password_withoutmd5string);
+					$password_array = unpack('H*',$password_base64uncoded);
+					$password = $password_array[1];
+				}
+
+				echo "salt: " . $salt . "\n";
+				echo "person->userpassword: " . $person->userpassword . "\n";
+				echo "password_withoutmd5string: " . $password_withoutmd5string . "\n";
+				echo "password_base64uncoded: " . $password_base64uncoded . "\n";
+				echo "password_array: " . print_r($password_array) . "\n";
+				echo "password: " . $password . "\n";
+
+				$mainOrganizationaUnitId=99;
+				$active = 1;
+				$query="INSERT INTO users (person_id,username,password,mainOrganizationaUnitId,email,secondary_email,created_on,active)								 
+		        		VALUES ('" . $insert_id . "','" . $person->username . "','" . $password . "','" .
+						$mainOrganizationaUnitId . "','" . $person->person_email . "','" . $person->person_secondary_email . "','" . $person->person_entryDate . "','" . $active . "')";  
+				echo $query . "\n";
+				if (mysqli_query($con, $query )) {
+					echo "Correctly inserted to users table!\n";
+				} else {
+					$error_number= mysqli_errno($con);
+					die('Error: ' . mysqli_error($con) . ". Error number: " . $error_number);						
+				}
 			if ($person->duplicated_username) {
 				echo " ADDED OK!\n";
 				echo "INSERTED OK USERNAME CALCULATED TO: " . $person->username . " FOR " . $person->person_sn1 . " " . $person->person_sn2 . ", " .  $person->person_givenName . " ID: " . $person->person_official_id  . "\n";			
@@ -593,5 +623,10 @@ function LetraNIF ($dni) {
 	$letraNif= substr ($letras, $valor, 1); 
 	return $letraNif; 
 }
+
+public function salt()
+	{
+		return substr(md5(uniqid(456789, true)), 0, 10);
+	}
 
 ?>

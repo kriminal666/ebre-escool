@@ -151,8 +151,18 @@ class enrollment_model  extends CI_Model  {
 
 	/* Localities */
 	public function get_localities($orderby="asc") {
-		$this->db->select('locality_id,locality_name,locality_postal_code');
-		$this->db->from('locality');		
+		/*
+		SELECT locality_id, locality_name, postalcode.postalcode_code, postalcode_name
+		FROM (
+		`locality`
+		)
+		INNER JOIN postalcode ON postalcode.postalcode_localityid = locality.locality_id
+		ORDER BY `locality_name` ASC
+		*/
+		$this->db->select('locality_id,locality_name,postalcode_code,postalcode_name');
+		$this->db->from('locality');	
+		$this->db->join('postalcode','postalcode.postalcode_localityid = locality.locality_id');
+	
 		$this->db->order_by('locality_name', $orderby);
 		       
         $query = $this->db->get();
@@ -165,7 +175,7 @@ class enrollment_model  extends CI_Model  {
 			foreach ($query->result_array() as $row)	{
    				$localities[$i]['locality_id'] = $row['locality_id'];
    				$localities[$i]['locality_name'] = $row['locality_name'];
-   				$localities[$i]['locality_postal_code'] = $row['locality_postal_code'];   				
+   				$localities[$i]['locality_postal_code'] = $row['postalcode_code'];   				
    				$i++;
 			}
 			return $localities;
@@ -531,16 +541,17 @@ class enrollment_model  extends CI_Model  {
 	/* Student Data */
 	public function get_student_data($official_id) {
 
-                $this->db->select('person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, 
-            				   person_homePostalAddress, person_telephoneNumber, person_mobile, locality_name, locality_postal_code,users.username ');
+        $this->db->select('person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, 
+            				   person_homePostalAddress, person_telephoneNumber, person_mobile, locality_name, postalcode_code,users.username ');
 		$this->db->from('person');
 		$this->db->join('locality','locality.locality_id = person.person_locality_id');
+		$this->db->join('postalcode',' postalcode.postalcode_localityid = locality.locality_id');
 		$this->db->join('users','users.person_id = person.person_id');
 
 		$this->db->where('person_official_id',$official_id);
 		$this->db->limit(1);		       
 		$query = $this->db->get();
-		//echo $this->db->last_query();
+		echo $this->db->last_query();
 
 		if ($query->num_rows() == 1) {
 
