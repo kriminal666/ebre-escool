@@ -576,14 +576,12 @@ function addPersonToDatabase($con, $person) {
 				$insert_id = mysqli_insert_id($con);
 				$password="";
 				if ($person->userpassword!="") {
-					$salt = salt();
 					$password_withoutmd5string = str_replace("{MD5}","",$person->userpassword);
 					$password_base64uncoded = base64_decode($password_withoutmd5string);
 					$password_array = unpack('H*',$password_base64uncoded);
 					$password = $password_array[1];
 				}
 
-				echo "salt: " . $salt . "\n";
 				echo "person->userpassword: " . $person->userpassword . "\n";
 				echo "password_withoutmd5string: " . $password_withoutmd5string . "\n";
 				echo "password_base64uncoded: " . $password_base64uncoded . "\n";
@@ -623,10 +621,5 @@ function LetraNIF ($dni) {
 	$letraNif= substr ($letras, $valor, 1); 
 	return $letraNif; 
 }
-
-public function salt()
-	{
-		return substr(md5(uniqid(456789, true)), 0, 10);
-	}
 
 ?>
