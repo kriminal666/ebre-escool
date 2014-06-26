@@ -2091,7 +2091,7 @@ CREATE TABLE IF NOT EXISTS `postalcode` (
   `postalcode_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `postalcode_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`postalcode_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5512 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Bolcant dades de la taula `postalcode`

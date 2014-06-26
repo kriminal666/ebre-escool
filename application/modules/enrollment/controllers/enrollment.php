@@ -1125,7 +1125,8 @@ function insert_update_user()   {
     $student['person_official_id'] = $_POST['student_official_id'];
     $student['person_official_id_type'] = $_POST['student_official_id_type'];
     $student['person_secondary_official_id'] = $_POST['student_secondary_official_id'];
-    //TSI always code 4 TODO
+    
+    //TSI always code 4 TODO: put harcoded value in config file
     $student['person_secondary_official_id_type'] = 4;
 
     $student['person_givenName'] = $_POST['student_givenName'];

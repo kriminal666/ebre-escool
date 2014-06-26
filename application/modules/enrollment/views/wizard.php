@@ -238,7 +238,7 @@ STEP 0 - STUDENT DATA
                                     </div>
                                     
                                     <div class="span3">
-                                        <label class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
+                                        <label id="generated_password_label" class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
                                         <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" readonly />
                                     </div>
                                     <div class="span3">
@@ -297,11 +297,11 @@ STEP 0 - STUDENT DATA
                                     <div class="span5">
                                       <div class="span4">
                                         <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label>
-                                        <input class="span12 input-mask-postalcode" type="text" name="person_postal_code" id="person_postal_code" placeholder="Escriu el codi postal" />                 
+                                        <input class="span12 input-mask-postalcode" type="text" name="postalcode_code" id="postalcode_code" placeholder="Escriu el codi postal" />                 
                                       </div>  
                                       <div class="span8">
                                         <label class="control-label" for="student_locality"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
-                                        <select id="person_locality" name="person_locality" class="select2 span4" data-placeholder="Escriu la població" style="width:300px">
+                                        <select id="person_locality_id" name="person_locality_id" class="select2 span4" data-placeholder="Escriu la població" style="width:300px">
                                           <? foreach($localities as $locality): ?>
                                           <option id="locality_postal_code_<?php echo $locality['locality_postal_code'];;?>" value="<?php echo $locality['locality_id']; ?>" <?php if ( $this->config->item('default_locality_id') == $locality['locality_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $locality['locality_name']; ?></option>
                                           <? endforeach; ?>
@@ -560,9 +560,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
   <div style="height: 35px;"></div>  
 
-  <div id="dialog-confirm" title="Empty the recycle bin?">
-    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
-  </div>
 <!--  
   JAVASCRIPT
 -->  
@@ -575,6 +572,88 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
     <script type="text/javascript">
 
       var existeix=false;
+
+      function insert_update_user(student,action) {
+        $.ajax({
+          url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
+          type: 'post',
+          data: {
+              student_official_id : student.student_official_id,
+              student_official_id_type : student.student_official_id_type,   
+              student_secondary_official_id : student.student_secondary_official_id,
+              student_givenName : student.student_givenName,
+              student_sn1 : student.student_sn1,
+              student_sn2 : student.student_sn2,
+              student_username : student.student_username,
+              student_generated_password : student.student_generated_password,
+              student_password : student.student_password,
+              student_verify_password : student.student_verify_password,
+              student_email : student.student_email,
+              student_homePostalAddress : student.student_homePostalAddress,
+              student_locality : student.student_locality,
+              student_postal_code : student.student_postal_code,
+              student_telephoneNumber : student.student_telephoneNumber,
+              student_mobile : student.student_mobile,
+              student_date_of_birth : student.student_date_of_birth,
+              student_gender : student.student_gender,
+              action : action
+          },
+          datatype: 'json'
+        }).done(function(data){
+            //TODO: Something to check?
+        
+        });
+      }
+
+      function prepare_step1() {
+        //Preparing step1
+        //SHOW PREVIOUS ENROLLENTS
+        var ex = document.getElementById('previous_enrollments');
+        if ( ! $.fn.DataTable.isDataTable( ex ) ) {
+            $('#previous_enrollments').dataTable( {
+              "bDestroy": true,
+              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>",
+              "aoColumns": [
+                { "mData": "enrollment_periodid" },
+                { "mData": "studies" },
+                { "mData": "course_shortname" }
+              ],
+              "bPaginate": false,
+              "bFilter": false,
+              "bInfo": false,
+              "bSort": false,
+              "oLanguage": {
+                          "sProcessing":   "Processant...",
+                          "sLengthMenu":   "Mostra _MENU_ registres",
+                          "sZeroRecords":  "No s'han trobat registres.",
+                          "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                          "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                          "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                          "sInfoPostFix":  "",
+                          "sSearch":       "Filtrar:",
+                          "sUrl":          "",
+                          "oPaginate": {
+                                  "sFirst":    "Primer",
+                                  "sPrevious": "Anterior",
+                                  "sNext":     "Següent", 
+                                  "sLast":     "Últim"    
+                          }
+              }
+            } );
+        }
+        //END SHOW PREVIOUS ENROLLENTS
+
+        //CHECK student_person_id if undefined?!!!!!!
+        $("#student option[value=" + student_person_id +"]").attr("selected","selected");
+        $("#student").select2();
+        
+        $(".step1_student").html( student_sn1 + " " + student_sn2 + ", " + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
+        if($.trim($("[name = 'step1_title' ]").html())=='') {
+            $("[name = 'step1_title' ]").html("<b><small><?php echo lang('enrollment_academic_period_title');?></b></small>");     
+        }
+        
+        $("[name = 'step1_title' ]").addClass("green");
+      }
 
       /******************
        *  Editable Avatar
@@ -684,10 +763,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           $('.input-mask-date').mask('99-99-9999'); 
           $('.input-mask-postalcode').mask('99999');
 
-          $('#person_postal_code').change(function () {
-              postalcode = $('#person_postal_code').val();
+          $('#postalcode_code').change(function () {
+              postalcode = $('#postalcode_code').val();
               //console.debug("Postal code: " + postalcode);
-              _person_locality =  $('#person_locality');              
+              _person_locality_id =  $('#person_locality_id');              
               value_to_select= $('#locality_postal_code_' + postalcode).val(); 
               //console.debug("value_to_select: " + value_to_select);
 
@@ -695,8 +774,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                alert("El codi postal no correspon a cap població");
               }
 
-              _person_locality.val(value_to_select);
-              _person_locality.select2();
+              _person_locality_id.val(value_to_select);
+              _person_locality_id.select2();
 
           });
 
@@ -732,7 +811,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             editableAvatar();
 
             $('select.academic_period').select2();
-            $('#person_locality').select2();
+            $('#person_locality_id').select2();
             
             $("select.academic_period").css('width','400px').select2({
               allowClear:true
@@ -786,12 +865,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               });
 
         $("#student_official_id").blur( function(){
-            console.debug("Blur event");
+            //console.debug("Blur event");
+            //TODO?
         });  
 
 
         $("#student_official_id").change(function(){
-          console.debug("change event");
+          //console.debug("change event");
           student = $(this).val();
 
               $.ajax({
@@ -808,6 +888,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   student_exist = $("#student_exists");
                   existeix = true;
          
+                  //hide generated_password
+                  $("input[name$='person_generated_password']").hide();
+                  $("#generated_password_label").hide();
+
+
                   $.gritter.add({
                     // (string | mandatory) the heading of the notification
                     title: 'La persona ja existeix!',
@@ -820,8 +905,16 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 $.each(all_data, function(idx,obj) {
                   
                   /* Fill form with student data from Database */
+                  //console.debug("idx:" + idx);
+                  //console.debug("set value to:" + obj);
                   $("#step0 input[name$="+idx+"]").val(obj);
-                    student_full_name = $('#student_full_name').find("span.white");
+                  
+                  if(idx=='person_locality_id') {
+                      //console.debug("test");
+                      $('#person_locality_id').select2();
+                  }
+                    
+                  student_full_name = $('#student_full_name').find("span.white");
                   if(idx=='person_photo'){
                     var student_photo = $('#student_photo');
 
@@ -846,7 +939,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     empty_student = {"person_id":"",
                     "person_photo":"","person_secondary_official_id":"","person_givenName":"",
                     "person_sn1":"","person_sn2":"","person_email":"","person_date_of_birth":"",
-                    "person_gender":"","person_homePostalAddress":"","person_locality":"","username":"",
+                    "person_gender":"","person_homePostalAddress":"","postalcode_code":"","person_locality_id":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
 
                     /*
@@ -977,229 +1070,101 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           continue_processing = true;
 
+          //FIRST VALIDATE FORM. IS NOT VALID DONT FORWARD STEP
           if (! $('#validation-form').valid() ) {
             console.debug("Form still NOT VALID!!!!");
             continue_processing = false;
           } 
 
+          //TODO RECHECK PASSWORD?
+          /*
+          if(student_password != student_verify_password){
+            //alert("NO");
+          } else {
+            //alert("SI");
+          }
+          */
+
+          if (continue_processing) {
+            var r = confirm("Esteu segur que voleu modificar les dades d'aquest estudiant?");
+            if (r == true) {
+                continue_processing = true;
+            } else {
+                console.debug("Canceled by user!!!!");
+                step=0;
+                return false;
+            }
+          }
+          
           if (continue_processing) {
 
-            student_official_id = $("#"+step+" input[name$='student_official_id']").val();
+            var student = {
+                student_official_id:$("#"+step+" input[name$='student_official_id']").val(),
+                student_person_id: $("#"+step+" input[name$='person_id']").val(),
+                student_official_id_type: $("#"+step+" input[name$='official_id_type']").val(),
+                student_secondary_official_id: $("#"+step+" input[name$='person_secondary_official_id']").val(),
+                
+                student_givenName: $("#"+step+" input[name$='person_givenName']").val(),
+                student_sn1: $("#"+step+" input[name$='person_sn1']").val(),
+                student_sn2: $("#"+step+" input[name$='person_sn2']").val(),
+
+                student_username: $("#"+step+" input[name$='person_username']").val(),
+                student_generated_password: $("#"+step+" input[name$='person_generated_password']").val(),
+                student_password: $("#"+step+" input[name$='person_password']").val(),
+                student_verify_password: $("#"+step+" input[name$='person_verify_password']").val(),
+                
+                student_telephoneNumber: $("#"+step+" input[name$='person_telephoneNumber']").val(),
+                student_mobile: $("#"+step+" input[name$='person_mobile']").val(),
+                student_email: $("#"+step+" input[name$='person_email']").val(),
+
+                student_homePostalAddress: $("#"+step+" input[name$='person_homePostalAddress']").val(),
+
+                student_locality: $("#"+step+" select[name$='person_locality_id']").val(),
+                student_postal_code: $("#"+step+" input[name$='postalcode_code']").val(),
+
+                student_date_of_birth: $("#"+step+" input[name$='person_date_of_birth']").val(),
+                student_gender: $("input:radio[name=sexe]").val()
+            };
 
             $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/check_student");?>',
                 type: 'post',
                 data: {
-                    student_official_id : student_official_id
+                    student_official_id : student.student_official_id
                 },
                 datatype: 'json'
               }).done(function(data){
 
-                /* Student Exists */
-                if(data != false){
+                /* Student NOT Exists */
+                if(data == false) {
+                    console.debug("User NOT exists on database");
+                    existeix = false;
+                    //INSERT
+
+                    // AJAX INSERT! action=insert
+                    insert_update_user(student,"insert");
+
+                    prepare_step1();
+
+                    
+                } /* Student Exists */
+                else {                  
                   console.debug("User already exists on database");
+                  //UPDATE
+                  //UPDATE OPERATIONS IN MYSQL RETURN 0 affected rows if nothing is changed SO ALWAYS UPDATE INCLUDE CASES WHERE NO REALLY CHANGES ARE MADE
+
+                  //SEGUR VOLEM MODIFICAR?
                   existeix = true;
-                 
-                   $( "#dialog-confirm" ).dialog({
-                    resizable: false,
-                    height:140,
-                    modal: true,
-                    buttons: {
-                    "Correcte": function() {
-                      $( this ).dialog( "close" );
 
+                  // AJAX UPDATE. action=update
+                  insert_update_user(student,"update");
 
+                  prepare_step1();
 
-
-
-
-
-
-
-
-
-
-
-
-                              /* store student data from form */
-                              student_person_id = $("#"+step+" input[name$='person_id']").val();
-                              //console.debug("student_person_id: " . student_person_id);
-                              
-                              student_official_id_type = $("#"+step+" input[name$='official_id_type']").val();
-                              student_secondary_official_id = $("#"+step+" input[name$='person_secondary_official_id']").val();          
-
-                              student_givenName = $("#"+step+" input[name$='person_givenName']").val();
-                              student_sn1 = $("#"+step+" input[name$='person_sn1']").val();
-                              student_sn2 = $("#"+step+" input[name$='person_sn2']").val();
-
-                              student_username = $("#"+step+" input[name$='person_username']").val();
-                              student_generated_password = $("#"+step+" input[name$='person_generated_password']").val();
-                              student_password = $("#"+step+" input[name$='person_password']").val();
-                              student_verify_password = $("#"+step+" input[name$='person_verify_password']").val();
-
-                              student_telephoneNumber = $("#"+step+" input[name$='person_telephoneNumber']").val();
-                              student_mobile = $("#"+step+" input[name$='person_mobile']").val();
-                              student_email = $("#"+step+" input[name$='person_email']").val();
-
-                              student_homePostalAddress = $("#"+step+" input[name$='person_homePostalAddress']").val();
-
-                              student_locality = $("#"+step+" select[name$='person_locality']").val();          
-                              student_postal_code = $("#"+step+" input[name$='person_postal_code']").val();
-
-                              student_date_of_birth = $("#"+step+" input[name$='person_date_of_birth']").val();
-                              student_gender = $("input:radio[name=sexe]").val();
-
-                              /*
-                              if(student_password != student_verify_password){
-                                //alert("NO");
-                              } else {
-                                //alert("SI");
-                              }
-                              */
-
-                              console.debug("Variable existeix: " + existeix);          
-                              console.debug("Cheking if user exists...");
-                            
-                              if(existeix) {
-                                  //UPDATE OPERATIONS IN MYSQL RETURN 0 affected rows if nothing is changed!
-                                  
-                                  // AJAX get Classroom_Group from Study for step 4
-                                  $.ajax({
-                                    url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
-                                    type: 'post',
-                                    data: {
-                                        student_person_id : student_person_id,
-                                        student_official_id : student_official_id,
-                                        student_official_id_type : student_official_id_type,                    
-                                        student_secondary_official_id : student_secondary_official_id,
-                                        student_givenName : student_givenName,
-                                        student_sn1 : student_sn1,
-                                        student_sn2 : student_sn2,
-                                        student_username : student_username,
-                                        student_generated_password : student_generated_password,
-                                        student_password : student_password,
-                                        student_verify_password : student_verify_password,
-                                        student_email : student_email,
-                                        student_homePostalAddress : student_homePostalAddress,
-                                        student_locality : student_locality,
-                                        student_postal_code : student_postal_code,
-                                        student_telephoneNumber : student_telephoneNumber,
-                                        student_mobile : student_mobile,
-                                        student_date_of_birth : student_date_of_birth,
-                                        student_gender : student_gender,
-                                        action : "update"
-                                    },
-                                    datatype: 'json'
-                                  }).done(function(data){
-
-                                  
-                                  });
-                              /**/
-                              } else {
-                                  // AJAX get Classroom_Group from Study for step 4
-                                  $.ajax({
-                                    url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
-                                    type: 'post',
-                                    data: {
-                                        student_official_id : student_official_id,
-                                        student_official_id_type : student_official_id_type,   
-                                        student_secondary_official_id : student_secondary_official_id,
-                                        student_givenName : student_givenName,
-                                        student_sn1 : student_sn1,
-                                        student_sn2 : student_sn2,
-                                        student_username : student_username,
-                                        student_generated_password : student_generated_password,
-                                        student_password : student_password,
-                                        student_verify_password : student_verify_password,
-                                        student_email : student_email,
-                                        student_homePostalAddress : student_homePostalAddress,
-                                        student_locality : student_locality,
-                                        student_postal_code : student_postal_code,
-                                        student_telephoneNumber : student_telephoneNumber,
-                                        student_mobile : student_mobile,
-                                        student_date_of_birth : student_date_of_birth,
-                                        student_gender : student_gender,
-                                        action : "insert"
-                                    },
-                                    datatype: 'json'
-                                  }).done(function(data){
-
-                                  
-                                  });
-                              }
-
-                              //Preparing step1
-                              var ex = document.getElementById('previous_enrollments');
-                              if ( ! $.fn.DataTable.isDataTable( ex ) ) {
-                                  $('#previous_enrollments').dataTable( {
-                                    "bDestroy": true,
-                                    "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>",
-                                    "aoColumns": [
-                                      { "mData": "enrollment_periodid" },
-                                      { "mData": "studies" },
-                                      { "mData": "course_shortname" }
-                                    ],
-                                    "bPaginate": false,
-                                    "bFilter": false,
-                                    "bInfo": false,
-                                    "bSort": false,
-                                    "oLanguage": {
-                                                "sProcessing":   "Processant...",
-                                                "sLengthMenu":   "Mostra _MENU_ registres",
-                                                "sZeroRecords":  "No s'han trobat registres.",
-                                                "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
-                                                "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
-                                                "sInfoFiltered": "(filtrat de _MAX_ total registres)",
-                                                "sInfoPostFix":  "",
-                                                "sSearch":       "Filtrar:",
-                                                "sUrl":          "",
-                                                "oPaginate": {
-                                                        "sFirst":    "Primer",
-                                                        "sPrevious": "Anterior",
-                                                        "sNext":     "Següent", 
-                                                        "sLast":     "Últim"    
-                                                }
-                                    }
-                                  } );
-                              }
-                            
-                              //CHECK student_person_id if undefined?!!!!!!
-                              $("#student option[value=" + student_person_id +"]").attr("selected","selected");
-                              $("#student").select2();
-                              
-                              $(".step1_student").html( student_sn1 + " " + student_sn2 + ", " + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
-                              if($.trim($("[name = 'step1_title' ]").html())=='') {
-                                  $("[name = 'step1_title' ]").html("<b><small><?php echo lang('enrollment_academic_period_title');?></b></small>");     
-                              }
-                              
-                              $("[name = 'step1_title' ]").addClass("green");
-
-
-
-
-
-
-
-
-
-                    },
-                    Cancel: function() {
-                      $( this ).dialog( "close" );
-                    }
-                    }
-                    });
-                  
-
-                /* Student doesn't exists. Then update! */
-                } else {
-                  console.debug("User NOT exists");                
-                  existeix = false;
                 }
-
-            });
-
-            
-          }
+                //END IF ELSE
+            }); //END AJAX CHECK STUDENT
+          } //END IF CONTINUE PROCESSING
           
 // End step 0
         
@@ -1690,12 +1655,15 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
 // End step 6
 
-
+        //console.debug("TEST TEST!");
 
         var $validation = true;
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){
           if(info.step == 1 && $validation) {
-            if(!$('#validation-form').valid()) return false;
+            if(!$('#validation-form').valid()) {
+              console.debug("Cancel step forward");
+              return false;
+            }
           }
         }).on('finished', function(e) {
 
