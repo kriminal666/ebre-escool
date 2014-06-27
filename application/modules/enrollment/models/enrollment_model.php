@@ -567,7 +567,7 @@ class enrollment_model  extends CI_Model  {
 
         $this->db->where('person_id', $person_id);
 		$this->db->update('person', $student); 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
 			return true;
@@ -580,7 +580,7 @@ class enrollment_model  extends CI_Model  {
 
 		$this->db->where('username', $username);
 		$this->db->update('users', $user); 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
 			return true;
@@ -595,7 +595,7 @@ class enrollment_model  extends CI_Model  {
 
 		//First INSERT DATA AT PESON TABLE
         $this->db->insert('person', $student); 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
 			return $this->db->insert_id();
@@ -609,7 +609,7 @@ class enrollment_model  extends CI_Model  {
 
 		//First INSERT DATA AT PESON TABLE
         $this->db->insert('users', $user); 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
 			return true;

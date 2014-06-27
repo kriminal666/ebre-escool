@@ -412,7 +412,7 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                         <br />
                          <!-- Student -->
                         <label class="control-label" for="student"><?php echo lang('student'); ?>:&nbsp;&nbsp;</label>
-                        <select id="student" name="student" class="select2" data-placeholder="Selecciona un estudiant..." style="width:800px;">
+                        <select id="student" name="student" class="select2" data-placeholder="Selecciona un estudiant..." style="width:500px;">
                           <option value=""></option>
                           <? foreach($enrollment_students as $enrollment_student): ?>
                            <option value="<?php echo $enrollment_student['student_person_id'];?>" >
@@ -618,6 +618,12 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
       function prepare_step1(student) {
         //Preparing step1
         //SHOW PREVIOUS ENROLLENTS
+        console.debug("prepare_step1");
+
+        console.debu("Student:");
+        console.debu("Student:");
+
+        console.debug("BEGIN get_previous_enrollments");
         var ex = document.getElementById('previous_enrollments');
         if ( ! $.fn.DataTable.isDataTable( ex ) ) {
             $('#previous_enrollments').dataTable( {
@@ -651,6 +657,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               }
             } );
         }
+        console.debug("END get_previous_enrollments");
         //END SHOW PREVIOUS ENROLLENTS
 
         //CHECK student_person_id if undefined?!!!!!!
@@ -1150,8 +1157,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 student_gender: $("input:radio[name=sexe]:checked").val()
             };
 
-            console.debug("Person:");
-            console.debug(student);
+            //console.debug("Person:");
+            //console.debug(student);
 
             $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/check_student");?>',
@@ -1164,7 +1171,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                 /* Student NOT Exists */
                 if(data == false) {
-                    console.debug("User NOT exists on database");
+                    //console.debug("User NOT exists on database");
                     existeix = false;
                     //INSERT
 
@@ -1177,7 +1184,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 } /* Student Exists */
                 else {           
                   person = $.parseJSON(data);       
-                  console.debug("User already exists on database");
+                  //console.debug("User already exists on database");
                   //UPDATE
                   //UPDATE OPERATIONS IN MYSQL RETURN 0 affected rows if nothing is changed SO ALWAYS UPDATE INCLUDE CASES WHERE NO REALLY CHANGES ARE MADE
 
