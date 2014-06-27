@@ -22,7 +22,10 @@ $config['current_period'] = "2014-15";
 $config['default_study_id'] = "1";
 
 //TORTOSA
-$config['default_locality_id'] = 414;
+$config['default_locality_id'] = 360;
+$config['default_postalcode'] = 43500;
+
+$config['default_emaildomain'] = "iesebre.com";
 
 /* Enrollment Configurations */
 // URL LINKS

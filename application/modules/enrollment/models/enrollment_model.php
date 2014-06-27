@@ -63,7 +63,7 @@ class enrollment_model  extends CI_Model  {
 	public function get_student_by_username($username, $orderby="asc") {
 
         $this->db->select('username');
-		$this->db->from('person');
+		$this->db->from('users');
 		$this->db->where('username',$username);
 		       
         $query = $this->db->get();
@@ -541,7 +541,7 @@ class enrollment_model  extends CI_Model  {
 	/* Student Data */
 	public function get_student_data($official_id) {
 
-        $this->db->select('person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email, person_date_of_birth, person_gender, 
+        $this->db->select('person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email,person_secondary_email, person_date_of_birth, person_gender, 
             				   person_homePostalAddress, person_telephoneNumber, person_mobile, person_locality_id , locality_name, postalcode_code,users.username ');
 		$this->db->from('person');
 		$this->db->join('locality','locality.locality_id = person.person_locality_id',"left");
@@ -576,26 +576,47 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
-	/* Insert Student Data */
-	public function insert_student_data($student_data_to_person_table,$student_data_to_users_table) {
+	public function update_user_data($username,$user) {
 
-		//First INSERT DATA AT PESON TABLE
-        $this->db->insert('person', $student_data_to_person_table); 
-		//echo $this->db->last_query();
+		$this->db->where('username', $username);
+		$this->db->update('users', $user); 
+		echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
-			//Continue with oter tables
-			//User table:
-			$this->db->insert('users', $student_data_to_users_table); 
-			if ($this->db->affected_rows() == 1) {
-				return true;
-			} else {
-				return false;
-			}
+			return true;
+		}			
+		else
+			return false;
+
+	}
+
+	/* Insert Student Data */
+	public function insert_student_data($student) {
+
+		//First INSERT DATA AT PESON TABLE
+        $this->db->insert('person', $student); 
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+			return $this->db->insert_id();
 		}			
 		else
 			return false;
 	}	
+
+	/* Insert User Data */
+	public function insert_user_data($user) {
+
+		//First INSERT DATA AT PESON TABLE
+        $this->db->insert('users', $user); 
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+			return true;
+		}			
+		else
+			return false;
+	}
 
 	/* ENROLLMENT */
 

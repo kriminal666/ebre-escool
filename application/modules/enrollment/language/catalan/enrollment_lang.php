@@ -119,6 +119,7 @@ $lang['wizzard_sn2'] = 'Segon Cognom: ';
 $lang['wizzard_telephoneNumber'] = 'Telèfon fixe: ';
 $lang['wizzard_mobile'] = 'Telèfon mòbil: ';
 $lang['wizzard_email'] = 'Correu electrònic: ';
+$lang['wizzard_personal_email'] = 'Correu electrònic personal: ';
 $lang['wizzard_homePostalAddress'] = 'Adreça Postal: ';
 $lang['wizzard_locality_name'] = 'Localitat: ';
 $lang['wizzard_postal_code'] = 'Codi Postal: ';

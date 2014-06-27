@@ -234,7 +234,7 @@ STEP 0 - STUDENT DATA
                                   <div class="span11" >
                                     <div class="span3">
                                       <label class="control-label" for="student_username">Username:&nbsp;</label>
-                                      <input id="username" type="text" name="person_username" placeholder="Username" readonly />                                    
+                                      <input id="username" type="text" name="person_username" placeholder="Username" readonly="true" />                                    
                                     </div>
                                     
                                     <div class="span3">
@@ -279,11 +279,19 @@ STEP 0 - STUDENT DATA
                                         <input type="text" name="person_mobile" placeholder="Escriu el telèfon mòbil" />                      
                                       </div>
                                     </div>
-                                    <div class="span6">
+                                    <div class="span3">
                                       <div class="control-group">
                                         <label class="control-label" for="student_email"><?php echo lang('wizzard_email');?>&nbsp;</label>    
                                         <div class="controls">                      
-                                          <input type="text" name="person_email" placeholder="Escriu el Correu electrònic" />                         
+                                          <input type="text" id="person_email" name="person_email" readonly="readonly" value="@<?php echo $this->config->item('default_emaildomain');?>"/>                         
+                                        </div>  
+                                      </div>  
+                                    </div>
+                                     <div class="span3">
+                                      <div class="control-group">
+                                        <label class="control-label" for="student_email"><?php echo lang('wizzard_personal_email');?>&nbsp;</label>    
+                                        <div class="controls">                      
+                                          <input type="text" name="person_secondary_email" id="person_secondary_email" placeholder="Correu electrònic personal"/>                         
                                         </div>  
                                       </div>  
                                     </div>
@@ -296,8 +304,8 @@ STEP 0 - STUDENT DATA
                                     </div>
                                     <div class="span5">
                                       <div class="span4">
-                                        <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label>
-                                        <input class="span12 input-mask-postalcode" type="text" name="postalcode_code" id="postalcode_code" placeholder="Escriu el codi postal" />                 
+                                        <label class="control-label" for="student_postal_code"><?php echo lang('wizzard_postal_code');?>&nbsp;</label> 
+                                        <input class="span12 input-mask-postalcode" type="text" name="postalcode_code" id="postalcode_code" placeholder="Escriu el codi postal" value="<?php echo $this->config->item('default_postalcode');?>"/>
                                       </div>  
                                       <div class="span8">
                                         <label class="control-label" for="student_locality"><?php echo lang('wizzard_locality_name');?>&nbsp;</label>
@@ -578,6 +586,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
           type: 'post',
           data: {
+              student_person_id: student.person_id,
               student_official_id : student.student_official_id,
               student_official_id_type : student.student_official_id_type,   
               student_secondary_official_id : student.student_secondary_official_id,
@@ -589,6 +598,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               student_password : student.student_password,
               student_verify_password : student.student_verify_password,
               student_email : student.student_email,
+              student_secondary_email : student.student_secondary_email,
               student_homePostalAddress : student.student_homePostalAddress,
               student_locality : student.student_locality,
               student_postal_code : student.student_postal_code,
@@ -605,7 +615,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         });
       }
 
-      function prepare_step1() {
+      function prepare_step1(student) {
         //Preparing step1
         //SHOW PREVIOUS ENROLLENTS
         var ex = document.getElementById('previous_enrollments');
@@ -644,10 +654,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         //END SHOW PREVIOUS ENROLLENTS
 
         //CHECK student_person_id if undefined?!!!!!!
-        $("#student option[value=" + student_person_id +"]").attr("selected","selected");
+        $("#student option[value=" + student.student_person_id +"]").attr("selected","selected");
         $("#student").select2();
         
-        $(".step1_student").html( student_sn1 + " " + student_sn2 + ", " + student_givenName + " ("+student_official_id+") <i class='icon-double-angle-right'></i>");    
+        $(".step1_student").html( student.student_sn1 + " " + student.student_sn2 + ", " + student.student_givenName + " ("+student.student_official_id+") <i class='icon-double-angle-right'></i>");    
         if($.trim($("[name = 'step1_title' ]").html())=='') {
             $("[name = 'step1_title' ]").html("<b><small><?php echo lang('enrollment_academic_period_title');?></b></small>");     
         }
@@ -777,6 +787,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               _person_locality_id.val(value_to_select);
               _person_locality_id.select2();
 
+
           });
 
           
@@ -869,7 +880,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             //TODO?
         });  
 
-
         $("#student_official_id").change(function(){
           //console.debug("change event");
           student = $(this).val();
@@ -884,7 +894,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               }).done(function(data){
 
                 /* Student Exists */
-                if(data != false){
+                if(data != false) {
                   student_exist = $("#student_exists");
                   existeix = true;
          
@@ -911,9 +921,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   
                   if(idx=='person_locality_id') {
                       //console.debug("test");
+                      $('#person_locality_id').val(obj);
                       $('#person_locality_id').select2();
                   }
-                    
+
                   student_full_name = $('#student_full_name').find("span.white");
                   if(idx=='person_photo'){
                     var student_photo = $('#student_photo');
@@ -938,9 +949,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     existeix = false;
                     empty_student = {"person_id":"",
                     "person_photo":"","person_secondary_official_id":"","person_givenName":"",
-                    "person_sn1":"","person_sn2":"","person_email":"","person_date_of_birth":"",
-                    "person_gender":"","person_homePostalAddress":"","postalcode_code":"","person_locality_id":"","username":"",
+                    "person_sn1":"","person_sn2":"","person_email":"@<?php echo $this->config->item('default_emaildomain');?>","person_secondary_email":"","person_date_of_birth":"",
+                    "person_gender":"","person_homePostalAddress":"","postalcode_code":"<?php echo $this->config->item('default_postalcode');?>","person_locality_id":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
+
+                    value_to_select= $('#locality_postal_code_' + postalcode).val(); 
+                    $('#person_locality_id').val(value_to_select);
+                    $('#person_locality_id').select2();
 
                     /*
                     student_photo = $('#student_photo');
@@ -974,22 +989,27 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
         });
 
-        /* username */
+
+
+        /* username i Mostrar correu electrònic de centre */
         username_input = $('#username');
         givenName_input = $('#givenName');
         sn1_input = $('#sn1');                
+        person_email = $('#person_email');
 
         givenName = givenName_input.val();
         sn1 = $.trim(sn1_input.val());
         username = username_input.val();
 
         givenName_input.blur(function(){
+          console.debug("existeix:" + existeix );
           givenName = $.trim(givenName_input.val());
           if (!existeix) {
-            username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));  
+             username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));  
+            person_email.val(username.val() + "@<?php echo $this->config->item('default_emaildomain');?>" );
           }
           if(givenName!='' && sn1!='' && !existeix){
-            generate_username();
+             generate_username();            
           }
         });
 
@@ -997,13 +1017,14 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           sn1 = $.trim(sn1_input.val());
           if (!existeix) {
             username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
+             person_email.val(username.val() + "@<?php echo $this->config->item('default_emaildomain');?>");
           }
           if(givenName!='' && sn1!='' && !existeix){
             generate_username();
           }
         });
         
-        /* /username */
+        /* END /username */
 
         function generate_username()  {
 
@@ -1019,6 +1040,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                 if(data!=false){
                   $('#username').val(data);
+                  $('#person_email').val(data +"@<?php echo $this->config->item('default_emaildomain');?>");
                 }
             });
         }          
@@ -1069,6 +1091,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         if(step == "step0") {
 
           continue_processing = true;
+          skip_forward_step = false;
 
           //FIRST VALIDATE FORM. IS NOT VALID DONT FORWARD STEP
           if (! $('#validation-form').valid() ) {
@@ -1090,8 +1113,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             if (r == true) {
                 continue_processing = true;
             } else {
-                console.debug("Canceled by user!!!!");
-                step=0;
+                //console.debug("Canceled by user!!!!");
+                skip_forward_step = true;
                 return false;
             }
           }
@@ -1101,7 +1124,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             var student = {
                 student_official_id:$("#"+step+" input[name$='student_official_id']").val(),
                 student_person_id: $("#"+step+" input[name$='person_id']").val(),
-                student_official_id_type: $("#"+step+" input[name$='official_id_type']").val(),
+                student_official_id_type: $("#"+step+" input[name$='official_id_type']:checked").val(),
                 student_secondary_official_id: $("#"+step+" input[name$='person_secondary_official_id']").val(),
                 
                 student_givenName: $("#"+step+" input[name$='person_givenName']").val(),
@@ -1116,6 +1139,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 student_telephoneNumber: $("#"+step+" input[name$='person_telephoneNumber']").val(),
                 student_mobile: $("#"+step+" input[name$='person_mobile']").val(),
                 student_email: $("#"+step+" input[name$='person_email']").val(),
+                student_secondary_email: $("#"+step+" input[name$='person_secondary_email']").val(),
 
                 student_homePostalAddress: $("#"+step+" input[name$='person_homePostalAddress']").val(),
 
@@ -1123,8 +1147,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 student_postal_code: $("#"+step+" input[name$='postalcode_code']").val(),
 
                 student_date_of_birth: $("#"+step+" input[name$='person_date_of_birth']").val(),
-                student_gender: $("input:radio[name=sexe]").val()
+                student_gender: $("input:radio[name=sexe]:checked").val()
             };
+
+            console.debug("Person:");
+            console.debug(student);
 
             $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/check_student");?>',
@@ -1144,11 +1171,12 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     // AJAX INSERT! action=insert
                     insert_update_user(student,"insert");
 
-                    prepare_step1();
+                    prepare_step1(student);
 
                     
                 } /* Student Exists */
-                else {                  
+                else {           
+                  person = $.parseJSON(data);       
                   console.debug("User already exists on database");
                   //UPDATE
                   //UPDATE OPERATIONS IN MYSQL RETURN 0 affected rows if nothing is changed SO ALWAYS UPDATE INCLUDE CASES WHERE NO REALLY CHANGES ARE MADE
@@ -1157,9 +1185,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   existeix = true;
 
                   // AJAX UPDATE. action=update
+                  //Add person_id to person object:
+                  student.person_id = person.person_id;                  
                   insert_update_user(student,"update");
 
-                  prepare_step1();
+                  prepare_step1(student);
 
                 }
                 //END IF ELSE
@@ -1268,7 +1298,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
              }
              
           });
-
 
           $("#enrollment_study").change(function(){
               study_id = $("#enrollment_study").val();
@@ -1658,12 +1687,19 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         //console.debug("TEST TEST!");
 
         var $validation = true;
+
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){
+          //console.debug("Change on wizard!");
           if(info.step == 1 && $validation) {
             if(!$('#validation-form').valid()) {
-              console.debug("Cancel step forward");
+              //console.debug("Cancel step forward");
               return false;
             }
+          }
+          //console.debug("skip_forward_step:" + skip_forward_step);
+          if (skip_forward_step) {
+            //console.debug("SKIP FORWARD!");
+            return false;
           }
         }).on('finished', function(e) {
 
@@ -1777,6 +1813,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               required: false,
               email:true
             },
+            person_secondary_email: {
+              required: false,
+              email:true
+            },
             person_password: {
               required: false,
               minlength: 6
@@ -1796,6 +1836,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
       
           messages: {
             person_email: {
+              required: "Si us plau especifiqueu un email vàlid.",
+              email: "Si us plau especifiqueu un email vàlid."
+            },
+            person_secondary_email: {
               required: "Si us plau especifiqueu un email vàlid.",
               email: "Si us plau especifiqueu un email vàlid."
             },
@@ -1840,8 +1884,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           invalidHandler: function (form) {
           }
         });
-
+        console.debug("before ace wizard!");
         $('#modal-wizard .modal-header').ace_wizard();
+        console.debug("after ace wizard!");
         $('#modal-wizard .wizard-actions .btn[data-dismiss=modal]').removeAttr('disabled');
       })
     </script>

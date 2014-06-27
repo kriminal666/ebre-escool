@@ -1115,17 +1115,29 @@ public function get_previous_enrollments( $person_official_id = false ) {
 function insert_update_user()   {
 
     $current_userid = $this->session->userdata("user_id");
-
     $student = array();
+    $user = array();
+
+    $person_id = -1;
+
+    $action = $_POST['action'];
 
     if(isset($_POST['student_person_id'])){
         $person_id = $_POST['student_person_id'];    
-    }
+    } 
+
+    //Not to be saved at table persons instead on users table. The existent username field in person table 
+    //is a temporal one for migration purposes
+    //$student['username'] = $_POST['student_username'];
+    $user['username'] = $_POST['student_username']; 
+
+    $student_generated_password = $_POST['student_generated_password'];
+    $student_password = $_POST['student_password'];
+    $student_verify_password = $_POST['student_verify_password'];    
     
     $student['person_official_id'] = $_POST['student_official_id'];
     $student['person_official_id_type'] = $_POST['student_official_id_type'];
-    $student['person_secondary_official_id'] = $_POST['student_secondary_official_id'];
-    
+    $student['person_secondary_official_id'] = $_POST['student_secondary_official_id'];    
     //TSI always code 4 TODO: put harcoded value in config file
     $student['person_secondary_official_id_type'] = 4;
 
@@ -1133,36 +1145,30 @@ function insert_update_user()   {
     $student['person_sn1'] = $_POST['student_sn1'];
     $student['person_sn2'] = $_POST['student_sn2'];
     
-    //Not to be saved at table persons instead on users table. The existent username field in person table 
-    //is a temporal one for migration purposes
-    //$student['username'] = $_POST['student_username'];
-
-/*    
-    if($_POST['student_password'] != ''){
-        if($_POST['student_password'] == $_POST['student_verify_password']){
-            $student['student_password'] = $_POST['student_password'];
-    } else {
-        $_POST['student_password'] == $_POST['student_generated_password'] &&
-    }
-*/
     $student['person_photo'] = $_POST['student_username'].'.jpg';
     
-    $student['person_secondary_email'] = $_POST['student_email'];
-
     $student['person_email'] = $_POST['student_username'] . "@iesebre.com";
+    $student['person_secondary_email'] = $_POST['student_secondary_email'];
     
     $student['person_homePostalAddress'] = $_POST['student_homePostalAddress'];
-    //$student['person_locality_name'] = $_POST['student_locality_name'];
+    
     $student['person_locality_id'] = $_POST['student_locality'];
-//    $student['student_postal_code'] = $_POST['student_postal_code'];
+    //$student['student_postal_code'] = $_POST['student_postal_code'];
+    $postalcode = $_POST['student_postal_code'];
+
     $student['person_telephoneNumber'] = $_POST['student_telephoneNumber'];                
     $student['person_mobile'] = $_POST['student_mobile'];   
-    $student['person_date_of_birth'] = $_POST['student_date_of_birth'];   
+    
+    //CONVERT TO MYSQL FORMAT DATE OF BIRTH DATE
+    $date = date('Y-m-d', strtotime($_POST['student_date_of_birth']));
+
+    $student['person_date_of_birth'] = $date;   
+
     $student['person_gender'] = $_POST['student_gender']; 
 
 
     //TODO:
-    $student['person_photo'] = $_POST['student_username'] . "jpg"; 
+    $student['person_photo'] = $_POST['student_username'] . ".jpg"; 
 
     $student['person_lastupdateUserId'] = $current_userid;
     $date = date('Y-m-d H:i:s');
@@ -1170,40 +1176,126 @@ function insert_update_user()   {
     $student['person_markedForDeletion'] = "n";
     $student['person_markedForDeletionDate'] = "0000-00-00 00:00:00";
 
+    //print_r($student);
+    //print_r($user);
+
+    //echo "person_email: " . $student['person_email'] . "\n";
+    //echo "person_personal_email: " . $student['person_secondary_email']. "\n";
+    //echo "username: " . $user['username'] . "\n";
+    //echo "student_generated_password: " . $student_generated_password . "\n";
+    //echo "student_password: " . $student_password . "\n";
+    //echo "student_verify_password: " . $student_verify_password . "\n";
 
     //Data validation for update and insert
     //Email: correct format
-    if (filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid email format";
+    if (!filter_var($student['person_email'], FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid person_email format\n";
+        return false;
+    }
+    if (!filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid person_personal_email format\n";
         return false;
     }
 
-    $action = $_POST['action'];
+    
     if($action=='update'){
-        //echo "S'ha d'actualitzar";
-        $enrollment = $this->enrollment_model->update_student_data($person_id, $student);
+
+        $updated_password="";
+        //ONLY UPDATE PASSWORD IF CHANGED
+        if ($student_password != "") {
+            if ($student_password  == $student_verify_password ) {
+                $updated_password=$student_password;
+            } else {
+                echo "Passwords doesn't match\n";
+                return false;
+            }
+        }
+        
+
+        //Username not changes if action is update
+        //FIRST UPDATE TABLE PERSON
+        if ($person_id != -1 ) {
+            $result = $this->enrollment_model->update_student_data($person_id, $student);    
+            if ($result) { //UPDATE Person table is correct
+                //Check if password is set. Then update users table
+                if ($student_password != "") {
+                    $user['password'] = md5($updated_password);
+
+                    //Last user to modify
+                    $result = $this->enrollment_model->update_user_data($user['username'], $user);  
+
+                    if (!result) {
+                        echo "Error updating users table!";
+                        return false;
+                    } 
+                }
+            }
+        } else {
+            echo "Person id not specified!";
+            return false;
+        }
+        
     } else {
+
+
+        $updated_password="";
+
+        if ($student_password != "") {
+            if ($student_password  == $student_verify_password ) {
+            $updated_password=$student_password;
+            } else {
+                echo "Passwords doesn't match\n";
+                return false;
+            }
+        }
+        else { //USE GENERATED PASSWORD IF PASSWORD IS NOT ESPECIFIED
+            if ($student_generated_password  != "" ) {
+                $updated_password=$student_generated_password;
+            } else {
+                echo "Password no especified!\n";
+                return false;
+            }    
+        }
+        
         
         //Data validation for insert
         //Mandatory fields: person_givenName, person_sn1, person_official_id, person_official_id_type
         if ( $student['person_givenName'] == "" || $student['person_sn1'] == "" | $student['person_official_id'] == "" || $student['person_official_id_type'] == "") {
+            echo "Some of the mandatory files are not specified!";
             return false;
         }
              
-    $student['person_sn1'] = $_POST['student_sn1'];
+        $student['person_sn1'] = $_POST['student_sn1'];
 
         $student['person_creationUserId'] = $current_userid;
         $date = date('Y-m-d H:i:s');
         $student['person_entryDate'] = $date;
 
-        $enrollment = $this->enrollment_model->insert_student_data($student);
-        if($enrollment){
+        //echo "Student:\n";
+        //print_r($student);
+
+        $result = $this->enrollment_model->insert_student_data($student);
+        if($result){
+            $user['password'] = md5($updated_password);
+            $user['person_id'] = $result;
+            $user['created_on'] = $date;
+            $user['active'] = 1;
+
+            //echo "User:\n";            
+            //print_r($user);
+            $result = $this->enrollment_model->insert_user_data($user);  
+
+            if (!$result) {
+                echo "Error inserting user data to users table!";
+                return false;
+            }  
+
             $inserted_student = $this->check_student($student['person_official_id']);
             print_r($inserted_student);
         }
     }
 
-    return $enrollment;
+    return $result;
 
 }
 
