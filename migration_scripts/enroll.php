@@ -50,10 +50,10 @@ foreach ($academic_periods_info as $academic_period_info_key => $academic_period
 		$classroomgroup->course_id = $row['classroom_group_course_id'];
 		$classroomgroup->study_id = $row['course_study_id'];
 
-		$enrollment_class_group_entryDate = "2014-06-20 00:00:00";
-		$enrollment_class_group_last_update = "2014-06-20 00:00:00";
-		$enrollment_class_group_creationUserId = 1421;
-		$enrollment_class_group_lastupdateUserId = 1421;
+		$enrollment_class_group_entryDate = "2014-06-29 00:00:00";
+		$enrollment_class_group_last_update = "2014-06-29 00:00:00";
+		$enrollment_class_group_creationUserId = 2;
+		$enrollment_class_group_lastupdateUserId = 2;
 		$enrollment_class_group_markedForDeletion = "n";
 		$enrollment_class_group_markedForDeletionDate = "0000-00-00 00:00:00" ;
 
@@ -105,11 +105,29 @@ foreach ($academic_periods_info as $academic_period_info_key => $academic_period
 					$irispersonaluniqueid=$info[$i]["irispersonaluniqueid"][0];	
 				} 
 
+				/*
+				CREATE TABLE IF NOT EXISTS `enrollment` (
+				  `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
+				  `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
+				  `enrollment_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
+				  `enrollment_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+				  `enrollment_course_id` int(11) NOT NULL,
+				  `enrollment_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+				  `enrollment_entryDate` datetime NOT NULL,
+				  `enrollment_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				  `enrollment_creationUserId` int(11) DEFAULT NULL,
+				  `enrollment_lastupdateUserId` int(11) DEFAULT NULL,
+				  `enrollment_markedForDeletion` enum('n','y') NOT NULL,
+				  `enrollment_markedForDeletionDate` datetime NOT NULL,
+				  PRIMARY KEY (`enrollment_id`),
+				  UNIQUE KEY `enrollment_periodid` (`enrollment_periodid`,`enrollment_personid`,`enrollment_study_id`,`enrollment_course_id`,`enrollment_group_id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+				*/
 
 				if (array_key_exists ( $uid , $persons )) {
 					echo " i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons[$uid]->id  . "\n"; 
 
-					if (!mysqli_query($con,"INSERT INTO enrollment_class_group (enrollment_class_group_periodid,enrollment_class_group_personid,enrollment_class_group_study_id,enrollment_class_group_course_id,enrollment_class_group_group_id,enrollment_class_group_entryDate,enrollment_class_group_last_update,enrollment_class_group_creationUserId,enrollment_class_group_lastupdateUserId,enrollment_class_group_markedForDeletion,enrollment_class_group_markedForDeletionDate) VALUES ('" . $academic_period_info->name . "','" . $persons[$uid]->id . "','" . $classroomgroup->study_id . "','" . $classroomgroup->course_id . "','" . $classroomgroup->id ."','" . $enrollment_class_group_entryDate . "','" . $enrollment_class_group_last_update . "','" . $enrollment_class_group_creationUserId . "','" . $enrollment_class_group_lastupdateUserId . "','" . $enrollment_class_group_markedForDeletion . "','" . $enrollment_class_group_markedForDeletionDate ."')")) {
+					if (!mysqli_query($con,"INSERT INTO enrollment (enrollment_periodid,enrollment_personid,enrollment_study_id,enrollment_course_id,enrollment_group_id,enrollment_entryDate,enrollment_last_update,enrollment_creationUserId,enrollment_lastupdateUserId,enrollment_markedForDeletion,enrollment_markedForDeletionDate) VALUES ('" . $academic_period_info->name . "','" . $persons[$uid]->id . "','" . $classroomgroup->study_id . "','" . $classroomgroup->course_id . "','" . $classroomgroup->id ."','" . $enrollment_class_group_entryDate . "','" . $enrollment_class_group_last_update . "','" . $enrollment_class_group_creationUserId . "','" . $enrollment_class_group_lastupdateUserId . "','" . $enrollment_class_group_markedForDeletion . "','" . $enrollment_class_group_markedForDeletionDate ."')")) {
 						//die('Error: ' . mysqli_error($con));
 						echo " ERROR! " . mysqli_error($con) . "\n";
 					} else {
@@ -122,7 +140,7 @@ foreach ($academic_periods_info as $academic_period_info_key => $academic_period
 					if ($irispersonaluniqueid != ""){ 
 						if (array_key_exists ( $irispersonaluniqueid , $persons_dni )) {
 							echo " i FOUND!: " . $i . "| dni:" . $irispersonaluniqueid . "| uid: " . $uid . "| database id: " . $persons_dni[$irispersonaluniqueid]->id; 
-							if (!mysqli_query($con,"INSERT INTO  enrollment_class_group (enrollment_class_group_periodid,enrollment_class_group_personid,enrollment_class_group_study_id,enrollment_class_group_course_id,enrollment_class_group_group_id,enrollment_class_group_entryDate,enrollment_class_group_last_update,enrollment_class_group_creationUserId,enrollment_class_group_lastupdateUserId,enrollment_class_group_markedForDeletion,enrollment_class_group_markedForDeletionDate) VALUES ('" . $academic_period_info->name . "','" . $persons_dni[$irispersonaluniqueid]->id . "','" . $classroomgroup->study_id . "','" . $classroomgroup->course_id . "','" . $classroomgroup->id ."','" . $enrollment_class_group_entryDate . "','" . $enrollment_class_group_last_update . "','" . $enrollment_class_group_creationUserId . "','" . $enrollment_class_group_lastupdateUserId . "','" . $enrollment_class_group_markedForDeletion . "','" . $enrollment_class_group_markedForDeletionDate ."')")) {
+							if (!mysqli_query($con,"INSERT INTO  enrollment (enrollment_periodid,enrollment_personid,enrollment_study_id,enrollment_course_id,enrollment_group_id,enrollment_entryDate,enrollment_last_update,enrollment_creationUserId,enrollment_lastupdateUserId,enrollment_markedForDeletion,enrollment_markedForDeletionDate) VALUES ('" . $academic_period_info->name . "','" . $persons_dni[$irispersonaluniqueid]->id . "','" . $classroomgroup->study_id . "','" . $classroomgroup->course_id . "','" . $classroomgroup->id ."','" . $enrollment_class_group_entryDate . "','" . $enrollment_class_group_last_update . "','" . $enrollment_class_group_creationUserId . "','" . $enrollment_class_group_lastupdateUserId . "','" . $enrollment_class_group_markedForDeletion . "','" . $enrollment_class_group_markedForDeletionDate ."')")) {
 								//die('Error: ' . mysqli_error($con));
 								echo " ERROR! " . mysqli_error($con) . "\n";
 
