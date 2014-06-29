@@ -15,13 +15,23 @@ include "/usr/share/ebre-escool/application/config/database.php";
 # 0 -> ONLY ONE PERIOD 1 -> ALL PERIODS
 $BOOLEAN_PERIODS=1;
 
-include "/usr/share/ebre-escool/academicperiods.php";
+include "/usr/share/ebre-escool/migration_scripts/academicperiods.php";
 
 //DATABASE:
-include "/usr/share/ebre-escool/mysqlconnection.php";
+include "/usr/share/ebre-escool/migration_scripts/mysqlconnection.php";
 
 //LDAP
-include "/usr/share/ebre-escool/ldapconnection.php";
+include "/usr/share/ebre-escool/migration_scripts/ldapconnection.php";
+
+$query="TRUNCATE TABLE enrollment";  
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR TRUNCATING TABLE enrollment!\n";
+	die();
+} else {
+	echo "TABLE locality enrollment Ok!\n";
+}
 
 //PERIODS
 foreach ($academic_periods_info as $academic_period_info_key => $academic_period_info) {

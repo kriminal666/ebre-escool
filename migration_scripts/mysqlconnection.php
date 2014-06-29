@@ -6,7 +6,7 @@ if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$result = mysqli_query($con,"SELECT * FROM person");
+$result = mysqli_query($con,"SELECT * FROM person INNER JOIN users ON users.person_id=person.person_id");
 
 $persons = array();
 $persons_dni = array();
