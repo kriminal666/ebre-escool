@@ -26,6 +26,74 @@ if (!mysqli_set_charset($con, "utf8")) {
     printf("Current character set: %s\n", mysqli_character_set_name($con));
 }
 
+$person_creationUserId = 2;
+$person_lastupdateUserId = 2;
+
+//TRUNCATE TABLES:
+
+$query="TRUNCATE TABLE person";  
+echo $query."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR TRUNCATING TABLE person!\n";
+	die();
+} else {
+	echo "TABLE person truncated Ok!\n";
+}
+
+$query="TRUNCATE TABLE person_duplicatedfromldap";  
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR TRUNCATING TABLE person_duplicatedfromldap!\n";
+	die();
+} else {
+	echo "TABLE person_duplicatedfromldap truncated Ok!\n";
+}
+
+$query="TRUNCATE TABLE users";  
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR TRUNCATING TABLE users!\n";
+	die();
+} else {
+	echo "TABLE users truncated Ok!\n";
+}
+
+
+$query="INSERT INTO `person` (`person_id`, `person_givenName`, `person_sn1`, `person_sn2`, `person_email`, `person_secondary_email`, `person_terciary_email`, `person_official_id`, `person_official_id_type`, `person_date_of_birth`, `person_gender`, `person_secondary_official_id`, `person_secondary_official_id_type`, `person_homePostalAddress`, `person_photo`, `person_locality_id`, `person_locality_name`, `person_telephoneNumber`, `person_mobile`, `person_bank_account_id`, `person_notes`, `person_entryDate`, `person_last_update`, `person_creationUserId`, `person_lastupdateUserId`, `person_markedForDeletion`, `person_markedForDeletionDate`, `dn`, `date_of_birth`, `user_type`, `username_original_ldap`, `calculated_username`, `duplicated_username`, `original_username`, `uidnumber`, `homedirectory`, `employeenumber`, `employeetype`, `createbydn`, `modifiedbydn`, `userpassword`, `postalcode`, `state`) VALUES
+(1, 'Sergi', 'Tur', 'Badenas', 'sergitur@iesebre.com', 'sergi.tur@upc.edu', '', '14268002K', 0, '1978-03-02', 'M', '', 999, 'Alcanyiz 26 Atic 2', 'sergitur.jpg', 99999, '', '', '', 9999, 'Imported using script personsFromLdapToDatabase.php', '2011-09-14 15:32:37', '2011-10-14 07:45:38', " . $person_creationUserId . ", " . $person_lastupdateUserId . ", 'n', '0000-00-00 00:00:00', 'cn=admin Tur AsAdmin,ou=people,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com', '1978-03-02', 3, 'sergitur', 'adminadmin', 0, 'adminadmin', 2262, '/home/sergitur', 999999, '', 'cn=Sergi Tur AsAdmin,ou=people,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com', 'cn=admin Tur AsAdmin,ou=people,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com', '{MD5}mjkX+mxCHX+1FbE7OPo8DQ==', '', '')";
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR INSERTING FIXED PERSONS!\n";
+	die();
+} else {
+	echo "OK INSERTING FIXED PERSONS!\n";
+}
+
+
+$query="INSERT INTO users (id,person_id,username,password,mainOrganizationaUnitId,email,secondary_email,created_on,active) VALUES ('1','1','admin','9a3917fa6c421d7fb515b13b38fa3c0d','99','sergitur@iesebre.com','sergi.tur@upc.edu','2011-09-14 15:32:37','1')";
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR INSERTING FIXED USERS 1!\n";
+	die();
+} else {
+	echo "OK INSERTING FIXED USERS 1 !\n";
+}
+
+$query="INSERT INTO users (id,person_id,username,password,mainOrganizationaUnitId,email,secondary_email,created_on,active) VALUES ('2','1','admin_migration','9a3917fa6c421d7fb515b13b38fa3c0d','99','sergitur@iesebre.com','sergi.tur@upc.edu','2011-09-14 15:32:37','1')";
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR INSERTING FIXED USERS 2 !\n";
+	die();
+} else {
+	echo "OK INSERTING FIXED USERS 2!\n";
+}
+
 //LDAP
 $ldapconfig['host'] = $config['hosts'][0];
 #Només cal indicar el port si es diferent del port per defecte
@@ -62,7 +130,7 @@ echo "Poblacions trobades: ". count($localities) ."\n";
 $info = ldap_get_entries($ds, $sr); 
 echo "Data for ".$info["count"]." items returned:\n"; 
 
-$users_to_skip = array ( "root", "nobody", "alumnenou", "profenou", "admin", "201213alumnenou","prova","201213cooperativa","iewu5fvextrty");
+$users_to_skip = array ( "root", "nobody", "alumnenou", "profenou", "admin","sergitur", "201213alumnenou","prova","201213cooperativa","iewu5fvextrty");
 
 $skipped = 0; 
 $skipped_withoutuid = 0;
@@ -102,8 +170,7 @@ for ($i=0; $i<$info["count"]; $i++  ) {
 	$person_entryDate = "2014-06-30 00:00:00";
 	$person_last_update = "2014-06-30 00:00:00";
 	//Id of user 5273 is sergiturmigration. Put your required value here
-	$person_creationUserId = 5273;
-	$person_lastupdateUserId = 5273;
+	
 	$person_markedForDeletion = "n";
 	$person_markedForDeletionDate = "0000-00-00 00:00:00";
 	$dn = "";
