@@ -23,6 +23,16 @@ if (!mysqli_set_charset($con, "utf8")) {
     printf("Current character set: %s\n", mysqli_character_set_name($con));
 }
 
+$query="TRUNCATE TABLE locality";  
+echo $query ."\n";
+if (!mysqli_query($con, $query ))  {
+	//ERROR
+	echo "ERROR TRUNCATING TABLE locality!\n";
+	die();
+} else {
+	echo "TABLE locality truncated Ok!\n";
+}
+
 //GET ALL INFO FORM DATABASE postalcode
 $query = "SELECT postalcode_id,postalcode_code,postalcode_name,postalcode_localityid FROM postalcode";
 echo $query . "\n";
