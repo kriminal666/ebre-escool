@@ -238,12 +238,12 @@ STEP 0 - STUDENT DATA
                                     </div>
                                     
                                     <div class="span3">
-                                        <label id="generated_password_label" class="control-label" for="student_generated_password">Generated Password:&nbsp;</label>
+                                        <label id="generated_password_label" class="control-label" for="student_generated_password">Paraula de pas autogenerada:&nbsp;</label>
                                         <input id="generated_password" type="text" name="person_generated_password" placeholder="Generated Password" readonly />
                                     </div>
                                     <div class="span3">
                                       <div class="control-group">
-                                        <label class="control-label" for="student_password">Password:&nbsp;</label>
+                                        <label class="control-label" for="student_password">Paraula de pas:&nbsp;</label>
                                         <div class="controls">
                                           <input type="password" name="person_password" id="person_password" placeholder="Password"/>
                                         </div>    
@@ -251,7 +251,7 @@ STEP 0 - STUDENT DATA
                                     </div>
                                     <div class="span3">
                                       <div class="control-group">
-                                        <label class="control-label" for="student_verify_password">Verify Password:&nbsp;</label>
+                                        <label class="control-label" for="student_verify_password">Verificació de la paraula de pas:&nbsp;</label>
                                         <div class="controls">
                                           <input type="password" name="person_verify_password" placeholder="Verify Password"/>
                                         </div>    
@@ -369,6 +369,7 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
 -->
               <div class="step-pane" id="step1">
 
+                <!-- !!! PREVIOUS ENROLLMENT WIDGET BOX!!!! --> 
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4><?php echo "Matrícules anteriors"?></h4>
@@ -376,23 +377,25 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                   <div class="widget-body">
                     <div class="widget-main">
 
-
+                      <!-- !!! PREVIOUS ENROLLMENT PERIODS!!!! --> 
                       <table class="table table-striped table-bordered table-hover table-condensed" id="previous_enrollments">
                        <thead style="background-color: #d9edf7;">
                         <tr> 
-                           <th>academic_period</th>
-                           <th>study</th>
-                           <th>course</th>
+                           <th>Període acadèmic</th>
+                           <th>Estudi</th>
+                           <th>Curs</th>
+                           <th>Grup de classe</th>
                         </tr>
                        </thead>
                       </table> 
-
+                      <!-- !!! END PREVIOUS ENROLLMENT PERIODS!!!! --> 
 
 
 
                     </div><!-- /widget-main -->
                   </div><!-- /widget-body -->  
                 </div><!-- -/widget-box -->    
+                <!-- !!! END PREVIOUS ENROLLMENT WIDGET BOX!!!! --> 
 
                 <div class="widget-box ">
                   <div class="widget-header">
@@ -415,7 +418,7 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                         <select id="student" name="student" class="select2" data-placeholder="Selecciona un estudiant..." style="width:500px;">
                           <option value=""></option>
                           <? foreach($enrollment_students as $enrollment_student): ?>
-                           <option value="<?php echo $enrollment_student['student_person_id'];?>" >
+                           <option value="<?php echo $enrollment_student['student_person_id'];?>">
                             <?php echo $enrollment_student['person_official_id'] . ". " . $enrollment_student['student_fullName']; ?>
                            </option>
                           <? endforeach; ?>
@@ -431,6 +434,35 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
 STEP 2 - ALL STUDIES
 -->                
               <div class="step-pane" id="step2">
+
+                <!-- !!! SIMULTANEOUS STUDIES WIDGET BOX!!!! --> 
+                <div class="widget-box ">
+                  <div class="widget-header">
+                    <h4><?php echo "Estudis simultànis"?></h4>
+                  </div>
+                  <div class="widget-body">
+                    <div class="widget-main">
+
+                      <!-- !!! SIMULTANEOUS STUDIES!!!! --> 
+                      <table class="table table-striped table-bordered table-hover table-condensed" id="simultaneous_studies">
+                       <thead style="background-color: #d9edf7;">
+                        <tr> 
+                           <th>Estudi</th>
+                           <th>Curs</th>
+                           <th>Grup de classe</th>
+                        </tr>
+                       </thead>
+                      </table> 
+                      <!-- !!! END SIMULTANEOUS STUDIES PERIODS!!!! --> 
+
+
+
+                    </div><!-- /widget-main -->
+                  </div><!-- /widget-body -->  
+                </div><!-- -/widget-box -->    
+                <!-- !!! END SIMULTANEOUS STUDIES WIDGET BOX!!!! --> 
+
+
                 <div class="widget-box ">
                   <div class="widget-header">
                     <h4>Estudi</h4>
@@ -439,7 +471,7 @@ STEP 2 - ALL STUDIES
                     <div class="widget-main">
                       <form class="form-horizontal" id="enrollment_study-form" method="get">
                         <label class="control-label" for="enrollment_study">Estudi:&nbsp;&nbsp;</label>
-                        <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="<?php echo lang('enrollment_select_study_title') ;?>">
+                        <select id="enrollment_study" name="enrollment_study" class="select2" data-placeholder="<?php echo lang('enrollment_select_study_title') ;?>" style="width:700px">
                           <? foreach($enrollment_studies as $enrollment_study): ?>
                           <option value="<?php echo $enrollment_study['studies_id']; ?>" <?php if ( $this->config->item('default_study_id') == $enrollment_study['studies_id'] ) { echo "selected=\"selected\""; } ;?> ><?php echo $enrollment_study['studies_shortname'] . ". " . $enrollment_study['studies_name'] . " ( " . $enrollment_study['studies_law_shortname'] . " - " . $enrollment_study['studies_organizational_unit_shortname'] . " )"; ?></option>
                           <? endforeach; ?>
@@ -462,7 +494,7 @@ STEP 3 - ALL COURSES
                     <div class="widget-main">
                       <form class="form-horizontal" id="enrollment_course-form" method="get">
                         <label class="control-label" for="enrollment_course">Curs:&nbsp;&nbsp;</label>
-                        <select id="enrollment_course" name="enrollment_course" class="select2" data-placeholder="Selecciona un Curs">
+                        <select id="enrollment_course" name="enrollment_course" class="select2" data-placeholder="Selecciona un Curs" style="width:400px">
                           <option value=""></option>                          
                         </select>
                         <div class="space-2"></div>
@@ -544,7 +576,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     </div><!-- /widget-main -->
                   </div><!-- /widget-body -->
                 </div><!-- /widget-box -->
-<!-- /STUDY WIDGET -->
+<!-- END STUDY WIDGET -->
 
               </div><!-- /step6 -->
             </div><!-- /step-container -->
@@ -615,24 +647,100 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         });
       }
 
-      function prepare_step1(student) {
+      function get_student_object_from_form_data() {
+          
+          var student = {
+                student_official_id:$("#"+step+" input[name$='student_official_id']").val(),
+                student_person_id: $("#"+step+" input[name$='person_id']").val(),
+                student_official_id_type: $("#"+step+" input[name$='official_id_type']:checked").val(),
+                student_secondary_official_id: $("#"+step+" input[name$='person_secondary_official_id']").val(),
+                
+                student_givenName: $("#"+step+" input[name$='person_givenName']").val(),
+                student_sn1: $("#"+step+" input[name$='person_sn1']").val(),
+                student_sn2: $("#"+step+" input[name$='person_sn2']").val(),
+
+                student_username: $("#"+step+" input[name$='person_username']").val(),
+                student_generated_password: $("#"+step+" input[name$='person_generated_password']").val(),
+                student_password: $("#"+step+" input[name$='person_password']").val(),
+                student_verify_password: $("#"+step+" input[name$='person_verify_password']").val(),
+                
+                student_telephoneNumber: $("#"+step+" input[name$='person_telephoneNumber']").val(),
+                student_mobile: $("#"+step+" input[name$='person_mobile']").val(),
+                student_email: $("#"+step+" input[name$='person_email']").val(),
+                student_secondary_email: $("#"+step+" input[name$='person_secondary_email']").val(),
+
+                student_homePostalAddress: $("#"+step+" input[name$='person_homePostalAddress']").val(),
+
+                student_locality: $("#"+step+" select[name$='person_locality_id']").val(),
+                student_postal_code: $("#"+step+" input[name$='postalcode_code']").val(),
+
+                student_date_of_birth: $("#"+step+" input[name$='person_date_of_birth']").val(),
+                student_gender: $("input:radio[name=sexe]:checked").val()
+            };
+  
+          return student;
+      }
+
+      function prepare_step2(student_id) {
+          //If user have previous enrollments propose this study as default selected
+          study_id = "";
+
+          //AJAX
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/get_last_study_id");?>',
+            type: 'post',
+            data: {
+                student_id : student_id
+            },
+            datatype: 'json'
+          }).done(function(data){
+            /* Student Exists */
+            if(data != false) {
+              
+                var all_data = $.parseJSON(data);
+                study_id = all_data.study_id;
+            } else {
+                console.debug("ERROR!");
+                return false;
+            }
+
+          });
+
+          if ( study_id != "" ) {
+              $("#enrollment_study option[value=" + study_id +"]").attr("selected","selected");
+              $("#enrollment_study").select2();
+          }
+
+          
+          
+      }
+
+      function prepare_step1(student,objecttype) {
         //Preparing step1
-        //SHOW PREVIOUS ENROLLENTS
-        console.debug("prepare_step1");
+        //SHOW PREVIOUS ENROLLMENTS
+        
 
-        console.debu("Student:");
-        console.debu("Student:");
+        //console.debug("Student:");
+        //console.debug(student);
 
-        console.debug("BEGIN get_previous_enrollments");
+        //console.debug("BEGIN get_previous_enrollments");
+
+        if (objecttype == "person") {
+          student.student_person_id = student.person_id;
+          student.student_sn1 = student.person_sn1;
+          student.student_sn2 = student.person_sn2;
+          student.student_givenName = student.person_givenName;
+        } 
         var ex = document.getElementById('previous_enrollments');
-        if ( ! $.fn.DataTable.isDataTable( ex ) ) {
+        //if ( ! $.fn.DataTable.isDataTable( ex ) ) {
             $('#previous_enrollments').dataTable( {
               "bDestroy": true,
-              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>",
+              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>/" + student.student_official_id,
               "aoColumns": [
                 { "mData": "enrollment_periodid" },
                 { "mData": "studies" },
-                { "mData": "course_shortname" }
+                { "mData": "course_shortname" },
+                { "mData": "classroomgroup_shortname" }
               ],
               "bPaginate": false,
               "bFilter": false,
@@ -656,8 +764,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                           }
               }
             } );
-        }
-        console.debug("END get_previous_enrollments");
+        /*} else {
+          console.debug("XIVATO 1!");
+        }*/
+
+        //console.debug("END get_previous_enrollments");
         //END SHOW PREVIOUS ENROLLENTS
 
         //CHECK student_person_id if undefined?!!!!!!
@@ -797,6 +908,48 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           });
 
+          $('#student').change(function () {
+              //console.debug("STUDENT SELECT 2 CHANGED!!!!!!!!!!!");
+              student_id = $('#student').val();
+              student_text = $('#student').text();
+              //console.debug("STUDENT: " + student_id);
+              //console.debug("STUDENT TEXT: " + student_text);
+
+              var data = $('#student').select2('data');
+              var res = data.text.split("."); 
+              student_official_id = res[0].trim();
+              //console.debug("STUDENT TEXT: " + data.text);
+              //console.debug("student_official_id: " + student_official_id);
+
+              
+              //Student object declaration
+              student = {};
+
+              //AJAX
+              $.ajax({
+                url:'<?php echo base_url("index.php/enrollment/check_student");?>',
+                type: 'post',
+                data: {
+                    student_official_id : student_official_id
+                },
+                datatype: 'json'
+              }).done(function(data){
+                /* Student Exists */
+                if(data != false) {
+                  
+                    var all_data = $.parseJSON(data);
+                    all_data.student_official_id = student_official_id;
+                    prepare_step1(all_data,"person");
+                /* Student doesn't exists, clear form data */
+                } else {
+                    console.debug("ERROR!");
+                    return false;
+                }
+
+              });
+
+              
+          });
           
       
           student_official_id = $('#student_official_id');
@@ -1128,34 +1281,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           
           if (continue_processing) {
 
-            var student = {
-                student_official_id:$("#"+step+" input[name$='student_official_id']").val(),
-                student_person_id: $("#"+step+" input[name$='person_id']").val(),
-                student_official_id_type: $("#"+step+" input[name$='official_id_type']:checked").val(),
-                student_secondary_official_id: $("#"+step+" input[name$='person_secondary_official_id']").val(),
-                
-                student_givenName: $("#"+step+" input[name$='person_givenName']").val(),
-                student_sn1: $("#"+step+" input[name$='person_sn1']").val(),
-                student_sn2: $("#"+step+" input[name$='person_sn2']").val(),
-
-                student_username: $("#"+step+" input[name$='person_username']").val(),
-                student_generated_password: $("#"+step+" input[name$='person_generated_password']").val(),
-                student_password: $("#"+step+" input[name$='person_password']").val(),
-                student_verify_password: $("#"+step+" input[name$='person_verify_password']").val(),
-                
-                student_telephoneNumber: $("#"+step+" input[name$='person_telephoneNumber']").val(),
-                student_mobile: $("#"+step+" input[name$='person_mobile']").val(),
-                student_email: $("#"+step+" input[name$='person_email']").val(),
-                student_secondary_email: $("#"+step+" input[name$='person_secondary_email']").val(),
-
-                student_homePostalAddress: $("#"+step+" input[name$='person_homePostalAddress']").val(),
-
-                student_locality: $("#"+step+" select[name$='person_locality_id']").val(),
-                student_postal_code: $("#"+step+" input[name$='postalcode_code']").val(),
-
-                student_date_of_birth: $("#"+step+" input[name$='person_date_of_birth']").val(),
-                student_gender: $("input:radio[name=sexe]:checked").val()
-            };
+            var student = get_student_object_from_form_data();
 
             //console.debug("Person:");
             //console.debug(student);
@@ -1178,7 +1304,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     // AJAX INSERT! action=insert
                     insert_update_user(student,"insert");
 
-                    prepare_step1(student);
+                    prepare_step1(student,"student");
 
                     
                 } /* Student Exists */
@@ -1196,7 +1322,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   student.person_id = person.person_id;                  
                   insert_update_user(student,"update");
 
-                  prepare_step1(student);
+                  prepare_step1(student,"student");
 
                 }
                 //END IF ELSE
@@ -1212,9 +1338,18 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         } else if(step == "step1"){
 
           academic_period = $("#academic_period option:selected").text();
-          student_dni = $("#"+step+" input[name$='student_personal_id']").val();
+          
           student_name = $("#student option:selected").text();
           student_id = $("#student option:selected").val();
+          var res = student_name.split("."); 
+          student_dni = res[0].trim();
+          
+          console.debug("academic_period: " + academic_period);
+          console.debug("student_dni: " + student_dni);
+          console.debug("student_name: " + student_name);
+          console.debug("student_id: " + student_id);
+
+          prepare_step2();
           
 
           $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
@@ -1658,17 +1793,17 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step6") {
-
-        var study_submodules_names = $('#checkbox_study_submodules input:checked').map(function(){
+          //$( "input[name^='news']" )
+        var study_submodules_names = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
           return this.name;
         }).get();
 
-        var study_submodules_ids = $('#checkbox_study_submodules input:checked').map(function(){
+        var study_submodules_ids = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
           return $(this).val()
         }).get();
         study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
 
-          alert("Alumne: "+student_name+"\nEstudi: "+study_name+"\nGrup de Classe: "+classroom_group_name+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
+          alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
 
               // AJAX insert Enrollment data into database
               $.ajax({
@@ -1678,6 +1813,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                         person_id: student_id,
                         period_id: academic_period,
                         study_id: study_id,
+                        course_id: course_id,
                         classroom_group_id: classroom_group_id,
                         study_module_ids: study_module_ids,
                         study_submodules_ids: study_submodules_ids

@@ -103,6 +103,46 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}
 
+	public function get_last_study_id($person_id) {
+		/*
+	    SELECT `enrollment_id` , `enrollment_periodid` , `enrollment_personid` , `person_sn1` , `person_sn2` , 
+	    	   `person_givenName` , `person_official_id`,`enrollment_studies_study_id`,`studies_shortname`,`studies_id`
+		FROM `enrollment`
+		INNER JOIN person ON person.person_id = enrollment.enrollment_personid
+		LEFT JOIN enrollment_studies ON enrollment_studies.`enrollment_studies_periodid` = enrollment.enrollment_periodid
+		INNER JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
+		WHERE person_official_id = "47623732R"
+	    */
+
+	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
+	    				   person_official_id,enrollment_studies_study_id,studies_shortname,studies_name,studies_id');
+		$this->db->from('enrollment_studies');
+		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
+		
+		$this->db->where('person_official_id',$person_id);
+
+		       
+        $query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		$last_study_id = array();
+		
+		if ($query->num_rows() > 0) {
+
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+   				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+
+   				$i++;
+			}
+		}			
+		return $last_study_id;
+
+
+		return 13;
+	}	
+
 	public function get_previous_enrollments($person_official_id,$orderby="desc") {
 
 		/*
@@ -130,10 +170,11 @@ class enrollment_model  extends CI_Model  {
         $query = $this->db->get();
 
 		//echo $this->db->last_query();
+
+		$previous_enrollments = array();
 		
 		if ($query->num_rows() > 0) {
 
-			$previous_enrollments = array();
 			$i=0;
 			foreach ($query->result_array() as $row)	{
    				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
@@ -141,12 +182,11 @@ class enrollment_model  extends CI_Model  {
    				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
    				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'];
    				$previous_enrollments[$i]['course_shortname'] = "TODO";
+   				$previous_enrollments[$i]['classroomgroup_shortname'] = "TODO 1";
    				$i++;
 			}
-			return $previous_enrollments;
 		}			
-		else
-			return false;
+		return $previous_enrollments;
 	}
 
 	/* Localities */

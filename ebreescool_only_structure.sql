@@ -275,6 +275,7 @@ CREATE TABLE IF NOT EXISTS `cycle` (
 -- --------------------------------------------------------
 
 
+/* OBSOLET
 CREATE TABLE IF NOT EXISTS `enrollment` (
   `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
@@ -286,12 +287,13 @@ CREATE TABLE IF NOT EXISTS `enrollment` (
   `enrollment_markedForDeletion` enum('n','y') NOT NULL,
   `enrollment_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`enrollment_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;*/
 
 --
 -- Estructura de la taula `enrollment_studies`
 --
 
+/* OBSOLET
 CREATE TABLE IF NOT EXISTS `enrollment_studies` (
   `enrollment_studies_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_studies_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
@@ -305,11 +307,12 @@ CREATE TABLE IF NOT EXISTS `enrollment_studies` (
   `enrollment_studies_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`enrollment_studies_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+*/
 
 --
 -- Estructura de la taula `enrollment_courses`
 --
-
+/* OBSOLET
 CREATE TABLE IF NOT EXISTS `enrollment_courses` (
   `enrollment_courses_id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_courses_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
@@ -324,6 +327,7 @@ CREATE TABLE IF NOT EXISTS `enrollment_courses` (
   `enrollment_courses_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`enrollment_courses_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+*/
 
 
 --
