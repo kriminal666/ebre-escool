@@ -584,7 +584,10 @@ function load_wizard_files($active_menu){
         base_url('assets/js/bootstrap-editable.min.js'));          
     $header_data= $this->add_javascript_to_html_header_data(
         $header_data,
-        base_url('assets/js/ace-editable.min.js'));                   
+        base_url('assets/js/ace-editable.min.js'));       
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap.min.js'));
     $header_data= $this->add_javascript_to_html_header_data(
         $header_data,
         base_url('assets/js/fuelux.wizard.min.js'));
@@ -713,7 +716,6 @@ public function get_last_study_id ( $person_id ) {
 public function get_previous_enrollments( $person_official_id = false ) {
 
     $previous_enrollments = $this->enrollment_model->get_previous_enrollments($person_official_id);
-
 
     echo '{
     "aaData": ';
@@ -1104,16 +1106,22 @@ public function get_previous_enrollments( $person_official_id = false ) {
             $study_module_ids = explode('-',$study_module_ids);
 
             //echo "<script>alert(".print_r($study_module_ids).")</script>";die();
-
             /*echo "<script>alert(".print_r($study_submodules_ids).")</script>";die();*/
-            $enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id, $study_id, $course_id, $classroom_group_id, $study_module_ids, $study_submodules_ids);
+
+            $enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id, $study_id, $course_id, $classroom_group_id);
 
             //CHECK IF CORRECT THEN CONTINUE
-            $enrollment_id  = $this->db->insert_id();
-
-            if (true) {
+            if ( $enrollment != false) {                
+                $enrollment_id  = $this->db->insert_id();
                 //WHEN LOGSE SUBMODULES NOT EXISTS! --> 
-                $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids, $study_submodules_ids);   
+                //TODO LOGSE: study_module_ids is void. Create with study_module_ids and study_submodules_ids to NULL
+                if ( count($study_submodules_ids) == 0 )  {
+                    foreach ($study_module_ids as $study_module_id) {
+                        $study_submodules_ids[]= $study_module_id."#NULL";
+                    }
+                }
+
+                $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids);   
             }
             
             //OBSOLET
@@ -1131,6 +1139,39 @@ public function get_previous_enrollments( $person_official_id = false ) {
             $resultat['enrollment_submodules'] = $enrollment_submodules;
 
             print_r(json_encode($resultat));
+
+            /*
+            CREATE TABLE IF NOT EXISTS `enrollment` (
+              `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
+              `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
+              `enrollment_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
+              `enrollment_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+              `enrollment_course_id` int(11) NOT NULL,
+              `enrollment_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+              `enrollment_entryDate` datetime NOT NULL,
+              `enrollment_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `enrollment_creationUserId` int(11) DEFAULT NULL,
+              `enrollment_lastupdateUserId` int(11) DEFAULT NULL,
+              `enrollment_markedForDeletion` enum('n','y') NOT NULL,
+              `enrollment_markedForDeletionDate` datetime NOT NULL,
+              PRIMARY KEY (`enrollment_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+            CREATE TABLE IF NOT EXISTS `enrollment_submodules` (
+              `enrollment_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
+              `enrollment_submodules_enrollment_id` int(11) DEFAULT NULL,
+              `enrollment_submodules_moduleid` int(11) DEFAULT NULL,
+              `enrollment_submodules_submoduleid` int(11) DEFAULT NULL,
+              `enrollment_submodules_entryDate` datetime NOT NULL,
+              `enrollment_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `enrollment_submodules_creationUserId` int(11) DEFAULT NULL,
+              `enrollment_submodules_lastupdateUserId` int(11) DEFAULT NULL,
+              `enrollment_submodules_markedForDeletion` enum('n','y') NOT NULL,
+              `enrollment_submodules_markedForDeletionDate` datetime NOT NULL,
+              PRIMARY KEY (`enrollment_submodules_id`)
+            ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+            */
     }   
 
 function insert_update_user()   {

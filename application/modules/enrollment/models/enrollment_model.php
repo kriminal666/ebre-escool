@@ -146,21 +146,15 @@ class enrollment_model  extends CI_Model  {
 	public function get_previous_enrollments($person_official_id,$orderby="desc") {
 
 		/*
-	    SELECT `enrollment_id` , `enrollment_periodid` , `enrollment_personid` , `person_sn1` , `person_sn2` , 
-	    	   `person_givenName` , `person_official_id`,`enrollment_studies_study_id`,`studies_shortname`,`studies_id`
-		FROM `enrollment`
-		INNER JOIN person ON person.person_id = enrollment.enrollment_personid
-		LEFT JOIN enrollment_studies ON enrollment_studies.`enrollment_studies_periodid` = enrollment.enrollment_periodid
-		INNER JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
+	    
 		WHERE person_official_id = "47623732R"
 	    */
 
 	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
-	    				   person_official_id,enrollment_studies_study_id,studies_shortname,studies_name,studies_id');
-		$this->db->from('enrollment_studies');
-		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
-		$this->db->join('studies','studies.studies_id = enrollment_studies.enrollment_studies_study_id');
-		$this->db->join('enrollment','enrollment.enrollment_personid = enrollment_studies.enrollment_studies_personid AND  enrollment.enrollment_periodid= enrollment_studies.enrollment_studies_periodid','left');		
+	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id');
+		$this->db->from('enrollment');
+		$this->db->join('person','person.person_id = enrollment.enrollment_personid');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
 
 		$this->db->where('person_official_id',$person_official_id);
 
@@ -661,11 +655,38 @@ class enrollment_model  extends CI_Model  {
 	/* ENROLLMENT */
 
 	/* Enrollment */
-	public function insert_enrollment($period_id=false,$person_id=false) {
+	// $enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id, $study_id, $course_id, $classroom_group_id);
+
+	public function insert_enrollment($period_id=false,$person_id=false,$study_id=false,$course_id=false,$class_group_id=false) {
+		/*
+		CREATE TABLE IF NOT EXISTS `enrollment` (
+		  `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
+		  `enrollment_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
+		  `enrollment_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+		  `enrollment_course_id` int(11) NOT NULL,
+		  `enrollment_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+		  `enrollment_entryDate` datetime NOT NULL,
+		  `enrollment_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		  `enrollment_creationUserId` int(11) DEFAULT NULL,
+		  `enrollment_lastupdateUserId` int(11) DEFAULT NULL,
+		  `enrollment_markedForDeletion` enum('n','y') NOT NULL,
+		  `enrollment_markedForDeletionDate` datetime NOT NULL,
+		  PRIMARY KEY (`enrollment_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+		*/
 
         $data = array(
-        	'enrollment_periodid' => $period_id,
-        	'enrollment_personid' => $person_id 
+        	'enrollment_periodid'  =>  $period_id,
+        	'enrollment_personid'  =>  $person_id,
+        	'enrollment_study_id'  =>  $study_id,
+        	'enrollment_course_id' =>  $course_id,
+        	'enrollment_group_id'  =>  $class_group_id,
+        	'enrollment_entryDate' => date('Y-m-d H:i:s'),
+        	'enrollment_creationUserId' => $this->session->userdata("user_id"),
+        	'enrollment_lastupdateUserId' => $this->session->userdata("user_id"),
+        	'enrollment_markedForDeletion' => 'n',
+        	'enrollment_markedForDeletionDate' => '0000-00-00 00:00:00'
         );
 
         $this->db->insert('enrollment',$data);
@@ -680,50 +701,107 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
-	/* Enrollment Studies */
-	public function insert_enrollment_studies($period_id=false,$person_id=false,$study_id=false) {
 
-        $data = array(
-        	'enrollment_studies_periodid' => $period_id,
-        	'enrollment_studies_personid' => $person_id,
-        	'enrollment_studies_study_id' => $study_id
-        );
 
-        $this->db->insert('enrollment_studies',$data);
-		       
-		echo $this->db->last_query();
+	/* Enrollment Submodules */
+	// $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids);   
 
-		if ($this->db->affected_rows() > 0) {
+	public function insert_enrollment_submodules($enrollment_id=false,$submodules_id=false) {
 
-			return $this->db->affected_rows();
-		}			
-		else
-			return false;
-	}	
+		$affected_rows = 0;
+		$data = array();
 
-	/* Enrollment Classroom Group */
-	public function insert_enrollment_class_group($period_id=false,$person_id=false,$study_id=false,$class_group_id=false) {
+		foreach($submodules_id as $elements){
 
-        $data = array(
-        	'enrollment_class_group_periodid' => $period_id,
-        	'enrollment_class_group_personid' => $person_id,
-        	'enrollment_class_group_study_id' => $study_id,
-        	'enrollment_class_group_group_id' => $class_group_id
-        );
+			$submodules_id = explode('#',$elements);
 
-        $this->db->insert('enrollment_class_group',$data);
-		       
-		echo $this->db->last_query();
+			if ($submodules_id[1]="NULL") {
+				$data = array(
+		        	'enrollment_submodules_enrollment_id' => $enrollment_id,
+		        	'enrollment_submodules_moduleid' => $submodules_id[0],
+		        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+		        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+		        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
+		        	'enrollment_submodules_markedForDeletion' => 'n',
+		        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
+		        );	
+			} else {
+				$data = array(
+		        	'enrollment_submodules_enrollment_id' => $enrollment_id,
+		        	'enrollment_submodules_moduleid' => $submodules_id[0],
+		        	'enrollment_submodules_submoduleid' => $submodules_id[1],
+		        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+		        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+		        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
+		        	'enrollment_submodules_markedForDeletion' => 'n',
+		        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
+		        );	
+			}
+		    
 
-		if ($this->db->affected_rows() > 0) {
+	        $this->db->insert('enrollment_submodules',$data);
+			       
+			//echo $this->db->last_query();
+			$affected_rows += $this->db->affected_rows();
 
-			return $this->db->affected_rows();
-		}			
-		else
-			return false;
-	}	
+		}
+
+
+		/*
+		CREATE TABLE IF NOT EXISTS `enrollment_submodules` (
+		  `enrollment_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `enrollment_submodules_enrollment_id` int(11) DEFAULT NULL,
+		  `enrollment_submodules_moduleid` int(11) DEFAULT NULL,
+		  `enrollment_submodules_submoduleid` int(11) DEFAULT NULL,
+		  `enrollment_submodules_entryDate` datetime NOT NULL,
+		  `enrollment_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		  `enrollment_submodules_creationUserId` int(11) DEFAULT NULL,
+		  `enrollment_submodules_lastupdateUserId` int(11) DEFAULT NULL,
+		  `enrollment_submodules_markedForDeletion` enum('n','y') NOT NULL,
+		  `enrollment_submodules_markedForDeletionDate` datetime NOT NULL,
+		  PRIMARY KEY (`enrollment_submodules_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+		*/
+	}
+
+
+	/* Enrollment Submodules */
+	/* OBSOLET
+	public function insert_enrollment_submodules($period_id=false,$person_id=false,$study_id=false,$class_group_id=false,$modules_id=false,$submodules_id=false) {
+
+		$modules = array();
+		$submodules = array();
+
+		$affected_rows = 0;
+
+		foreach($submodules_id as $elements){
+
+			$submodules_id = explode('#',$elements);
+
+			//$modules[] = $submodules_id[0];
+			//$submodules[] = $submodules_id[1];
+
+		    $data = array(
+	        	'enrollment_submodules_periodid' => $period_id,
+	        	'enrollment_submodules_personid' => $person_id,
+	        	'enrollment_submodules_study_id' => $study_id,
+	        	'enrollment_submodules_group_id' => $class_group_id,
+	        	'enrollment_submodules_moduleid' => $submodules_id[0],
+	        	'enrollment_submodules_submoduleid' => $submodules_id[1]
+	        );
+
+	        $this->db->insert('enrollment_submodules',$data);
+			       
+			//echo $this->db->last_query();
+			$affected_rows += $this->db->affected_rows();
+
+		}
+
+	}
+	*/
 
 	/* Enrollment Modules */
+	/*OBSOLET
 	public function insert_enrollment_modules($period_id=false,$person_id=false,$study_id=false,$class_group_id=false,$modules_id=false) {
 
 	$affected_rows = 0;
@@ -751,38 +829,51 @@ class enrollment_model  extends CI_Model  {
 		//}			
 		//else
 		//	return false;
-	}	
+	}	*/
 
-	/* Enrollment Submodules */
-	public function insert_enrollment_submodules($period_id=false,$person_id=false,$study_id=false,$class_group_id=false,$modules_id=false,$submodules_id=false) {
+	/* Enrollment Studies */
+	/* OBSOLET
+	public function insert_enrollment_studies($period_id=false,$person_id=false,$study_id=false) {
 
-	$modules = array();
-	$submodules = array();
-
-	$affected_rows = 0;
-
-	foreach($submodules_id as $elements){
-
-		$submodules_id = explode('#',$elements);
-
-		//$modules[] = $submodules_id[0];
-		//$submodules[] = $submodules_id[1];
-
-	    $data = array(
-        	'enrollment_submodules_periodid' => $period_id,
-        	'enrollment_submodules_personid' => $person_id,
-        	'enrollment_submodules_study_id' => $study_id,
-        	'enrollment_submodules_group_id' => $class_group_id,
-        	'enrollment_submodules_moduleid' => $submodules_id[0],
-        	'enrollment_submodules_submoduleid' => $submodules_id[1]
+        $data = array(
+        	'enrollment_studies_periodid' => $period_id,
+        	'enrollment_studies_personid' => $person_id,
+        	'enrollment_studies_study_id' => $study_id
         );
 
-        $this->db->insert('enrollment_submodules',$data);
+        $this->db->insert('enrollment_studies',$data);
 		       
-		//echo $this->db->last_query();
-		$affected_rows += $this->db->affected_rows();
+		echo $this->db->last_query();
 
-	}
+		if ($this->db->affected_rows() > 0) {
 
-}
+			return $this->db->affected_rows();
+		}			
+		else
+			return false;
+	}	
+	*/
+
+	/* Enrollment Classroom Group */
+	/*OBSOLET
+	public function insert_enrollment_class_group($period_id=false,$person_id=false,$study_id=false,$class_group_id=false) {
+
+        $data = array(
+        	'enrollment_class_group_periodid' => $period_id,
+        	'enrollment_class_group_personid' => $person_id,
+        	'enrollment_class_group_study_id' => $study_id,
+        	'enrollment_class_group_group_id' => $class_group_id
+        );
+
+        $this->db->insert('enrollment_class_group',$data);
+		       
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() > 0) {
+
+			return $this->db->affected_rows();
+		}			
+		else
+			return false;
+	}	*/
 }

@@ -1421,7 +1421,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 study_type = $.parseJSON(data);
                 study_type_shortname =study_type.studies_organizational_unit_shortname
              
-                console.debug("study_type_shortname: " + studies_organizational_unit_shortname);
+                console.debug("study_type_shortname: " + study_type_shortname);
              
                  switch (study_type_shortname)
                     {
@@ -1723,11 +1723,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               }).done(function(data){
 
                 $.each(JSON.parse(data), function(idx, obj) {
-                  console.debug("idx: " + idx);
+                  //console.debug("idx: " + idx);
                   //console.debug("study_submodules: " + JSON.stringify(obj));
-                  console.debug("study_submodules_id: " + obj.study_submodules_id);
-                  console.debug("study_submodules_shortname: " + obj.study_submodules_shortname);
-                  console.debug("study_submodules_name: " + obj.study_submodules_name);
+                  //console.debug("study_submodules_id: " + obj.study_submodules_id);
+                  //console.debug("study_submodules_shortname: " + obj.study_submodules_shortname);
+                  //console.debug("study_submodules_name: " + obj.study_submodules_name);
 
                   checked_study_submodules_id.push(parseInt(obj.study_submodules_id));
                 });
@@ -1794,40 +1794,39 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
         } else if(step == "step6") {
           //$( "input[name^='news']" )
-        var study_submodules_names = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
-          return this.name;
-        }).get();
+          var study_submodules_names = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
+            return this.name;
+          }).get();
 
-        var study_submodules_ids = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
-          return $(this).val()
-        }).get();
-        study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
+          var study_submodules_ids = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
+            return $(this).val()
+          }).get();
 
-          alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
+          study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
 
-              // AJAX insert Enrollment data into database
-              $.ajax({
-                url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
-                type: 'post',
-                data: { 
-                        person_id: student_id,
-                        period_id: academic_period,
-                        study_id: study_id,
-                        course_id: course_id,
-                        classroom_group_id: classroom_group_id,
-                        study_module_ids: study_module_ids,
-                        study_submodules_ids: study_submodules_ids
-                      },
-                datatype: 'json'
-              }).done(function(data){
-                
-              });
+          //alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
+
+          // AJAX insert Enrollment data into database
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
+            type: 'post',
+            data: { 
+                    person_id: student_id,
+                    period_id: academic_period,
+                    study_id: study_id,
+                    course_id: course_id,
+                    classroom_group_id: classroom_group_id,
+                    study_module_ids: study_module_ids,
+                    study_submodules_ids: study_submodules_ids
+                  },
+            datatype: 'json'
+          }).done(function(data){
+            
+          });
         }
       });  
 
 // End step 6
-
-        //console.debug("TEST TEST!");
 
         var $validation = true;
 
@@ -1846,15 +1845,24 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           }
         }).on('finished', function(e) {
 
+          console.debug("FINISH!");
+
           bootbox.dialog({
-            message: "Thank you! Your information was successfully saved!", 
+            message: "La matrícula s'ha realitzat correctament!", 
             buttons: {
               "success" : {
                 "label" : "OK",
-                "className" : "btn-sm btn-primary"
+                "className" : "btn-sm btn-primary",
+                callback: function() {
+                            window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
+                      }
               }
             }
           });
+
+          //NEXT enrollment
+          //window.location.href = '<?php echo base_url('index.php/enrollment/wizard');?>';
+
 
         }).on('stepclick', function(e){
           //return false;//prevent clicking on steps
