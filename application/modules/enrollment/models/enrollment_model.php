@@ -151,10 +151,12 @@ class enrollment_model  extends CI_Model  {
 	    */
 
 	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
-	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id');
+	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id,classroom_group_id,classroom_group_code,classroom_group_shortName,course_id,course_shortname,course_name');
 		$this->db->from('enrollment');
 		$this->db->join('person','person.person_id = enrollment.enrollment_personid');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
+		$this->db->join('course','course.course_id = enrollment.enrollment_course_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
 
 		$this->db->where('person_official_id',$person_official_id);
 
@@ -175,8 +177,8 @@ class enrollment_model  extends CI_Model  {
    				$previous_enrollments[$i]['studies_shortname'] = $row['studies_shortname'];
    				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
    				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'];
-   				$previous_enrollments[$i]['course_shortname'] = "TODO";
-   				$previous_enrollments[$i]['classroomgroup_shortname'] = "TODO 1";
+   				$previous_enrollments[$i]['course_shortname'] = $row['course_shortname'] . ". " . $row['course_name'];
+   				$previous_enrollments[$i]['classroomgroup_shortname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
    				$i++;
 			}
 		}			
