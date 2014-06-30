@@ -598,6 +598,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
   </div>
     <!-- PAGE CONTENT ENDS -->
 
+  <!-- ENROLLMENT PDF MODAL WINDOW -->  
+ 
+  <div id="enrollment_pdf_dialog" style="display:none"></div> 
+
   <div style="height: 35px;"></div>  
 
 <!--  
@@ -1847,18 +1851,64 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           console.debug("FINISH!");
 
-          bootbox.dialog({
-            message: "La matrícula s'ha realitzat correctament!", 
-            buttons: {
-              "success" : {
-                "label" : "OK",
-                "className" : "btn-sm btn-primary",
-                callback: function() {
-                            window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
+          student_generated_password = $("#step0 input[name$='person_generated_password']").val();
+          student_password = $("#step0 input[name$='person_password']").val();
+          student_verify_password = $("#step0 input[name$='person_verify_password']").val();
+
+          password = "";
+          if ( student_password == "") {
+              password = student_generated_password;            
+          } else if ( student_password != student_verify_password ) {
+            console.debug("ERROR. student_password and student_verify_password are not the same");
+            return false;
+          } else {
+              password = student_password;
+          }
+
+          person_id = $("#step0 input[name$='person_id']").val();
+
+          console.debug("password: " + password);
+          console.debug("person_id: " + person_id);
+
+          var iframe = $('<iframe height="750" width="1000">');
+          iframe.attr("src","<?php echo base_url('index.php/enrollment/enrollment_pdf?password=');?>" + password + "&person_id=" + person_id);
+          $('#enrollment_pdf_dialog').append(iframe);
+
+          console.debug("Xivato2");
+
+          //Print enrollment PDF          
+          $("#enrollment_pdf_dialog").dialog({
+
+              resizable: true,
+              height:800,
+              width: 1050,
+              modal: true,
+              buttons: {
+                "Ok": function() {
+                    $( this ).dialog( "close" );
+
+                    bootbox.dialog({
+                      message: "La matrícula s'ha realitzat correctament!", 
+                      buttons: {
+                        "success" : {
+                          "label" : "OK",
+                          "className" : "btn-sm btn-primary",
+                          callback: function() {
+                                      window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
+                                }
+                        }
                       }
+                    });
+
+                  },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                  }
               }
-            }
-          });
+
+          }); 
+
+          
 
           //NEXT enrollment
           //window.location.href = '<?php echo base_url('index.php/enrollment/wizard');?>';

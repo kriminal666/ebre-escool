@@ -21,6 +21,11 @@ class enrollment extends skeleton_main {
         //$this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
         $this->config->load('wizard');
+
+         // Load FPDF        
+        $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
+        $params = array ('orientation' => 'P', 'unit' => 'mm', 'size' => 'A4', 'font_path' => 'font/');        
+        $this->load->library('pdf',$params); // Load library
         
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -1177,6 +1182,352 @@ public function get_previous_enrollments( $person_official_id = false ) {
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
             */
     }   
+
+function enrollment_pdf() {
+
+$password = "";
+
+if(isset($_GET['password'])){
+    $password = $_GET['password'];    
+} 
+
+$person_id = "";
+
+if(isset($_GET['person_id'])){
+    $person_id = $_GET['person_id'];    
+} 
+    
+ob_start();
+
+// UNCOMMENT THIS TO ACTIVATE ERROR REPORTING!
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+//error_reporting(0);
+//ini_set("display_errors", 0);
+//$old_level_reporting=error_reporting();
+//error_reporting(0);
+
+
+/*
+require_once ("../../include/php_setup.inc");
+require_once ("functions.inc");
+require_once ("../../plugins/admin/HighSchoolUsers/functions.php");
+require_once ("/usr/share/php/fpdf/fpdf.php");
+*/
+               
+/*
+session::start();
+$config= session::global_get('config');
+*/
+
+//*******************************************************************
+//**                  CONFIGURATION                                **           
+//*******************************************************************
+
+//GENERAL CONFIG
+
+//URL LINKS
+$rulesURL= $this->config->item('rulesURL');
+$servicesURL= $this->config->item('servicesURL');
+
+$HIGHSCHOOLSNAME = $this->config->item('highSchoolName'); 
+$HIGHSCHOOLSUFFIXEMAIL = $this->config->item('highSchoolSuffixEmail'); 
+
+/////////////////// DO NOT TOUCH WHEN CONFIGURING 
+//PDF DOCUMENT
+// DOCUMENT NAME= externalID_internalID_documentNameSufix
+$documentNameSufix= $this->config->item('documentNameSufix');
+
+//WINDOWS HEADER AT PDF DOCUMENT
+// TITLE USER FULL NAME
+$windowheadertitle= $this->config->item('windowheadertitle'); 
+
+//IMAGES PATHS
+$logo_image= $this->config->item('logo_image');
+$signature_image=$this->config->item('signature_image');
+
+//STRINGS
+$STR_TITLE= $this->config->item('STR_Title');
+$STR_User= $this->config->item('STR_User');
+$STR_Password= $this->config->item('STR_Password');
+$STR_PersonalEmail= $this->config->item('STR_PersonalEmail');
+$STR_Email= $this->config->item('STR_Email');
+$STR_UserSignature= $this->config->item('STR_UserSignature');
+$STR_SchoolSignature= $this->config->item('STR_SchoolSignature');
+$STR_UserPageType= $this->config->item('STR_UserPageType');
+$STR_SchoolPageType= $this->config->item('STR_SchoolPageType');
+$STR_TutorPageType= $this->config->item('STR_TutorPageType');
+
+$IMPORTANT_NOTE= $this->config->item('IMPORTANT_NOTE');
+
+$LOCALITY_NAME = $this->config->item('Locality');
+
+/////////////////// DO NOT TOUCH WHEN CONFIGURING 
+
+if ($password== "") {
+    echo "<br/>Fatal Error! No Password provided at query string!";
+    exit(1);
+}
+
+//Obtain enrollment data.
+/*
+$enrollment_data=getEnrollmentData($dn);
+
+if ($enrollment_data== "") {
+    echo "<br/>Fatal Error! No enrollment data found for DN: " . $dn;
+    exit(1);
+}*/
+
+$enrollment_data = $this->enrollment_model->getEnrollmentDataforPDF($person_id);
+
+$givenName = $enrollment_data->person_givenName;
+$externalID = $enrollment_data->person_official_id;
+$personal_email = $enrollment_data->person_secondary_email;
+$emailCorporatiu = $enrollment_data->person_email;
+$uid = $enrollment_data->username;
+$sn1 = $enrollment_data->person_sn1;
+$sn2 = $enrollment_data->person_sn2;
+
+//TODO
+$academic_period= "2014-15";
+
+
+/*
+$givenName = "Name here";
+//$internalID = "Internal ID Here";
+//$employeeNumber = "employee number here";
+$externalID = "DNI/ID HERE";
+$personal_email = "EMAIL HERE";
+$emailCorporatiu = "EMAIL CORPORATIU HERE";
+$uid = "UID HERE";
+$sn1 = "SN1 HERE";
+$sn2 = "SN2 HERE";
+$academic_period="2014-15";
+*/
+// Assuming today is March 10th, 2001, 5:16:18 pm, and that we are in the
+// Mountain Standard Time (MST) Time Zone
+$date= date('j-m-y');   
+setlocale(LC_TIME, "ca_ES.UTF-8");
+$day_of_month = strftime("%e");
+$month = strftime("%B");
+$year = strftime("%G");
+//$date2= strftime("%B");
+
+/////////////////// END DO NOT TOUCH WHEN CONFIGURING 
+
+//TEXTS
+
+$text1 = <<<EOF
+En/Na $givenName $sn1 $sn2, amb número identificatiu $externalID, ha estat matriculat/da el $date per tal de tenir accés als recursos TIC de l'$HIGHSCHOOLSNAME. Les dades que heu d'utilitzar per accedir als recursos TIC del centre són:
+EOF;
+
+$text2 = <<<EOF
+En firmar aquesta matrícula esteu acceptant les normes d'ús dels recursos TIC del centre. Les normes les podeu consultar a: 
+
+
+EOF;
+
+$text3 = <<<EOF
+Amb el vostre compte d'usuari de centre podeu accedir a una sèrie de serveis que us ofereix el centre i que podeu consultar a:
+
+
+EOF;
+
+$text4 = <<<EOF
+En aquesta pàgina web també podeu trobar les instruccions per tal de modificar la vostra paraula de pas. És important que escolliu una paraula de pas prou segura i que us sigui fàcil de recordar. 
+
+IMPORTANT: Si oblideu la vosta paraula de pas, la forma de recuperar-la serà enviar-vos una de nova a la vostra adreça de correu electrònic personal, per tant és molt important que ens proporcioneu una adreça de correu electrònic vàlida.
+
+EOF;
+
+$text5 = <<<EOF
+$LOCALITY_NAME, $day_of_month de $month de $year
+EOF;
+    
+
+//*******************************************************************
+//**                  CONFIGURATION END                            **           
+//*******************************************************************
+
+
+//PDF Document Name when downloading:
+$documentName=$externalID."_".$academic_period.$documentNameSufix;
+$fullName= $givenName ." ". $sn1 . " " . $sn2;
+
+//uncomment when debugging
+//exit();
+
+//FPDF needs a clean output --> force:
+ob_end_clean();
+
+//CREATE PDF OUPUT:
+$pdf = new FPDF('P', 'mm', 'A4','font/');
+
+
+//DOCUMENT TITLE: Appears at PDF window title 
+$pdf->SetTitle(utf8_decode($windowheadertitle)." ". utf8_decode($fullName), false);
+
+
+//CREATE PAGES: Multiple similar pages with some changes
+
+$numPages=3;
+$pageTypes=array("user","school","tutor");
+
+$pdf->SetMargins(20, 20, 20);
+$pdf->SetLeftMargin(20);
+
+for ($i = 1; $i <= $numPages; $i++) {
+    $pdf->AddPage();
+    $pdf->SetFont('Times','',18);
+
+    //HEADER IMAGE
+    $pdf->Image($logo_image,$pdf->GetX(),$pdf->GetY());
+    
+    //TITLE
+    $pdf->SetY(45);
+    $pdf->Cell(170,10,utf8_decode($STR_TITLE),1,2,'C');
+    
+    //TEXT1
+    $pdf->SetFont('Times','',10);   
+    $pdf->Ln();
+    $pdf->write(5,utf8_decode($text1));
+    
+    //ENROLLMENT DATA
+    //USER
+    $pdf->Ln();
+    $pdf->Ln();
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,"- ". utf8_decode($STR_User).": ",0);
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($uid),0);
+    $pdf->Ln();
+    
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,"- ". utf8_decode($STR_Password).": ",0);
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($password),0);
+    $pdf->Ln();
+    
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,"- ". utf8_decode($STR_PersonalEmail).": ",0);
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($personal_email),0);
+    $pdf->Ln();
+    
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,"- ". utf8_decode($STR_Email).": ",0);
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($emailCorporatiu),0);
+    $pdf->Ln();
+    
+    //TEXT 2
+    $pdf->Ln();     
+    $pdf->write(5,utf8_decode($text2));
+    
+    //RULES URL
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,utf8_decode($rulesURL));
+    $pdf->Ln();
+    $pdf->Ln();
+
+    //IMPORTANT NOTE
+    $pdf->SetFont('Times','',10);   
+    $pdf->SetLeftMargin(20+10); 
+    $pdf->SetRightMargin(20+10); 
+    $pdf->MultiCell(0,5,utf8_decode($IMPORTANT_NOTE),1,"L");
+    $pdf->SetLeftMargin(20); 
+    $pdf->SetRightMargin(20); 
+    $pdf->Ln();
+    
+    //TEXT3
+    $pdf->write(5,utf8_decode($text3));
+    
+    //SERVICES URL
+    $pdf->SetX($pdf->GetX()+10);    
+    $pdf->SetFont('Times','B',10); 
+    $pdf->write(5,utf8_decode($servicesURL));
+    $pdf->Ln();
+    $pdf->Ln();
+    
+    //TEXT 4
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($text4));
+    $pdf->Ln();
+    
+    //USER_SIGNATURE
+    $pdf->SetFont('Times','',10); 
+    $pdf->write(5,utf8_decode($STR_UserSignature. ","));
+    $pdf->Ln();
+    
+    //FOOTNOTE
+    $pdf->SetY(-50);
+    $pdf->SetFont('Times','',10);   
+    $pdf->write(5,utf8_decode($text5));
+    
+    //OFICIAL SIGNATURE
+    $pdf->Ln();
+    $pdf->Image($signature_image,$pdf->GetX()-3, $pdf->GetY());
+    $pdf->write(5,utf8_decode($STR_SchoolSignature),0);
+    
+    //TYPE    
+    $pdf->Ln();
+    $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+170, $pdf->GetY());
+    $pdf->SetX(133);
+    
+    switch ($pageTypes[$i-1]) {
+        case "user":
+            $pdf->write(5,utf8_decode($STR_UserPageType),0);
+            break;
+        case "school":
+            $pdf->write(5,utf8_decode($STR_SchoolPageType),0);
+            break;
+        case "tutor":
+            $pdf->write(5,utf8_decode($STR_TutorPageType),0);
+            break;
+    }
+}
+    
+$pdf->Output($documentName,"D");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 function insert_update_user()   {
 

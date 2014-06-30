@@ -29,8 +29,8 @@ $config['default_emaildomain'] = "iesebre.com";
 
 /* Enrollment Configurations */
 // URL LINKS
-$config['rulesURL'] = "http://moodle.iesmontsia.org/normesTIC";
-$config['servicesURL'] = "http://moodle.iesmontsia.org/serveisTIC";
+$config['rulesURL'] = "http://www.iesebre.com/normesTIC";
+$config['servicesURL'] = "http://www.iesebre.com/serveisTIC";
 
 $config['highSchoolName'] = "Institut de l'Ebre";
 $config['highSchoolSuffixEmail'] = "iesebre.com";
@@ -48,7 +48,6 @@ $config['signature_image'] = base_url('assets/img').'/signature.jpeg';
 $config['STR_Title'] = "MATRÍCULA TIC";
 $config['STR_User'] = "Usuari";
 $config['STR_Password'] = "Paraula de pas";
-$config['STR_InternalID'] = "Identificador del centre";
 $config['STR_PersonalEmail'] = "Correu electrònic personal";
 $config['STR_Email'] = "Correu electrònic del centre";
 $config['STR_UserSignature'] = "Signatura de l'interessat/interessada";
@@ -58,6 +57,8 @@ $config['STR_SchoolPageType'] = "Exemplar per a l'escola";
 $config['STR_TutorPageType'] = "Exemplar per al tutor";
 
 $config['IMPORTANT_NOTE'] = "IMPORTANT: La paraula de pas ha de ser PERSONAL i INTRANSFERIBLE, s'ha d'utilitzar en cura i no es pot deixar-la o prestar-la a altres usuaris. És la vostra responsabilitat no facilitar el vostre usuari o paraula de pas a NINGÚ. Queda expressament prohibit assumir la identitat d'altres usuaris.";
+
+$config['Locality'] = "Tortosa";
 
 /* Comprovar els valors de les variables */
 // TEXTS

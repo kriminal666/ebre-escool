@@ -611,6 +611,40 @@ class enrollment_model  extends CI_Model  {
 
 	}
 
+	public function getEnrollmentDataforPDF($person_id) {
+
+		/*
+		$givenName = $enrollment_data->givenName;
+		$externalID = $enrollment_data->official_id;
+		$personal_email = $enrollment_data->email;
+		$emailCorporatiu = $enrollment_data->secondary_email;
+		$uid = $enrollment_data->uid;
+		$sn1 = $enrollment_data->sn1;
+		$sn2 = $enrollment_data->sn2;
+		*/
+
+		$this->db->select('person_givenName,person_official_id,person_email,person_secondary_email,username,person_sn1,person_sn2');
+		$this->db->from('person');
+		$this->db->join('users','users.person_id = person.person_id');
+		$this->db->where('person.person_id',$person_id);
+
+		$this->db->limit(1);
+		       
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+
+		if ($query->num_rows() == 1) {
+			return $query->row();
+		}			
+
+		return false;
+		
+	}
+
+
+
+
+
 	/* Insert Student Data */
 	public function insert_student_data($student) {
 
