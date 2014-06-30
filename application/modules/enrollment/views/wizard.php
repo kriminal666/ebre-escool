@@ -1349,7 +1349,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           console.debug("student_name: " + student_name);
           console.debug("student_id: " + student_id);
 
-          prepare_step2();
+          prepare_step2(student_id);
           
 
           $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  

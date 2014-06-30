@@ -104,23 +104,16 @@ class enrollment_model  extends CI_Model  {
 	}
 
 	public function get_last_study_id($person_id) {
-		/*
-	    SELECT `enrollment_id` , `enrollment_periodid` , `enrollment_personid` , `person_sn1` , `person_sn2` , 
-	    	   `person_givenName` , `person_official_id`,`enrollment_studies_study_id`,`studies_shortname`,`studies_id`
-		FROM `enrollment`
-		INNER JOIN person ON person.person_id = enrollment.enrollment_personid
-		LEFT JOIN enrollment_studies ON enrollment_studies.`enrollment_studies_periodid` = enrollment.enrollment_periodid
-		INNER JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
-		WHERE person_official_id = "47623732R"
-	    */
 
 	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
-	    				   person_official_id,enrollment_studies_study_id,studies_shortname,studies_name,studies_id');
-		$this->db->from('enrollment_studies');
-		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
+	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id');
+		$this->db->from('enrollment');
+		$this->db->join('person','person.person_id = enrollment.enrollment_personid');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
 		
-		$this->db->where('person_official_id',$person_id);
-
+		$this->db->where('person_id',$person_id);
+		$this->db->limit(1);		
+		$this->db->order_by('enrollment_periodid', "DESC");
 		       
         $query = $this->db->get();
 
@@ -128,19 +121,11 @@ class enrollment_model  extends CI_Model  {
 
 		$last_study_id = array();
 		
-		if ($query->num_rows() > 0) {
-
-			$i=0;
-			foreach ($query->result_array() as $row)	{
-   				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
-
-   				$i++;
-			}
+		if ($query->num_rows() == 1) {
+			return $query->row();
 		}			
-		return $last_study_id;
 
-
-		return 13;
+		return false;
 	}	
 
 	public function get_previous_enrollments($person_official_id,$orderby="desc") {

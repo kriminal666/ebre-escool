@@ -701,10 +701,14 @@ function load_ace_files($active_menu,$header_data=false){
         return $header_data;
 }
 
-public function get_last_study_id ( $person_id ) {
+public function get_last_study_id () {
+
+    if(isset($_POST['student_id'])) {
+        $person_id = $_POST['student_id'];
+    }
 
     $last_study_id = $this->enrollment_model->get_last_study_id($person_id);
-
+    
     echo '{
     "aaData": ';
 
