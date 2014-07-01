@@ -738,11 +738,20 @@ public function upload_photo() {
         $extension = strtolower(preg_replace('/^.*\./', '', $file['name']));
         $base_filename = $_POST['official_id'] . "_" . $_POST['username'];
         $filename = $base_filename . "." . $extension;
-        $save_path = "/usr/share/ebre-escool/uploads/person_photos/test_" . $filename;
-        $thumb_path = "/usr/share/ebre-escool/uploads/person_photos/test_thumb_" . $filename;
+        $filename1 = $base_filename . "_" . $file['name'] . "." . $extension;
+        $filename_thumb = $base_filename . "_thumb." . $extension;
+        $save_path = "/usr/share/ebre-escool/uploads/person_photos/" . $filename;
+        $save_path1 = "/usr/share/ebre-escool/uploads/person_photos/" . $filename1;
+        $thumb_path = "/usr/share/ebre-escool/uploads/person_photos/" . $filename_thumb;
+
+        //echo "save_path: " . $save_path . "\n";
+        //echo "save_path1: " . $save_path1 . "\n";
+        //echo "thumb_path: " . $thumb_path . "\n";
 
         if( 
             ! move_uploaded_file($file['tmp_name'] , $save_path)
+            OR 
+            ! copy($save_path, $save_path1)
             OR
             !$this->resize($save_path, $thumb_path, 150) 
           )
@@ -754,7 +763,8 @@ public function upload_photo() {
         else {
             $result['status'] = 'OK';
             $result['message'] = 'Avatar changed successfully!';
-            $result['url'] = base_url('uploads/person_photos') . "/test_thumb_" . $filename;
+            $result['url'] = base_url('uploads/person_photos') . "/" . $filename_thumb;
+            $result['person_photo'] = $filename_thumb;
         }
      }
 
@@ -1667,9 +1677,7 @@ function insert_update_user()   {
     $student['person_givenName'] = $_POST['student_givenName'];
     $student['person_sn1'] = $_POST['student_sn1'];
     $student['person_sn2'] = $_POST['student_sn2'];
-    
-    $student['person_photo'] = $_POST['student_username'].'.jpg';
-    
+       
     $student['person_email'] = $_POST['student_username'] . "@iesebre.com";
     $student['person_secondary_email'] = $_POST['student_secondary_email'];
     
@@ -1689,9 +1697,7 @@ function insert_update_user()   {
 
     $student['person_gender'] = $_POST['student_gender']; 
 
-
-    //TODO:
-    $student['person_photo'] = $_POST['student_username'] . ".jpg"; 
+    $student['person_photo'] = $_POST['student_photo']; 
 
     $student['person_lastupdateUserId'] = $current_userid;
     $date = date('Y-m-d H:i:s');

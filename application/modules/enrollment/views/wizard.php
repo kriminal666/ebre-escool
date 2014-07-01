@@ -146,6 +146,7 @@ STEP 0 - STUDENT DATA
                                       <div id="student_photo">
                                         <span class="profile-picture">
                                           <img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('assets/img/alumnes').'/foto.png';?>" alt="photo" />
+                                          <input id="person_photo" name="person_photo" type="hidden" />  
                                         </span>
                                       </div>                                        
 
@@ -650,6 +651,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               student_mobile : student.student_mobile,
               student_date_of_birth : student.student_date_of_birth,
               student_gender : student.student_gender,
+              student_photo : student.student_photo,
               action : action
           },
           datatype: 'json'
@@ -687,7 +689,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 student_postal_code: $("#"+step+" input[name$='postalcode_code']").val(),
 
                 student_date_of_birth: $("#"+step+" input[name$='person_date_of_birth']").val(),
-                student_gender: $("input:radio[name=sexe]:checked").val()
+                student_gender: $("input:radio[name=sexe]:checked").val(),
+                student_photo: $("#"+step+" input[name$='person_photo']").val(),
+
             };
   
           return student;
@@ -854,7 +858,35 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             },
               url: function(params) {
 
-                    //
+                    //Get username an DNI
+                    username = $("#username").val();
+                    sn1 = $("#sn1").val();
+                    givenName = $("#givenName").val();
+                    official_id = $("#student_official_id").val();
+
+                    //Check values
+                    if (official_id == "") {
+                      alert ("Si us plau indiqueu abans un NIF correcte!");
+                      return false;
+                    }
+
+                    if (username == "") {
+                      alert ("Si us plau indiqueu abans un nom d'usuari correcte!");
+                      return false;
+                    }
+
+                    if (givenName == "") {
+                      alert ("Si us plau indiqueu abans un nom d'usuari!");
+                      return false;
+                    }
+
+                    if (givenName == "") {
+                      var r = confirm("El primer cognom és buit. Esteu segurs que voleu pujar la imatge igualment?");
+                      if (r != true) {
+                          return false;
+                      }
+                    }
+
 
                     //please modify submit_url accordingly
                     var submit_url = '<?php echo base_url("index.php/enrollment/upload_photo");?>';
@@ -871,8 +903,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                       return deferred.promise();
                     }
                     
-                    username = "sergitur";
-                    official_id = "14268002K";
+                    
 
                     var $form = $('#avatar').next().find('.editableform:eq(0)');
                     $form.append('<input type="hidden" name="username" value="'+username+'" />');
@@ -962,7 +993,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
 
                     deferred.done(function(res){
-                      if(res.status == 'OK') $('#avatar').get(0).src = res.url;
+                      if(res.status == 'OK') {
+                        $('#avatar').get(0).src = res.url;
+                        $('#person_photo').val (res.person_photo);
+                      }
                       else alert(res.message);
                     }).fail(function(res){
                       alert("Failure");
