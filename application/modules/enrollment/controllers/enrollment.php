@@ -144,7 +144,7 @@ class enrollment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_submoduleid',lang('submoduleid'));               
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_enrollment_id','enrollment','{enrollment_periodid} - {enrollment_personid} - {enrollment_study_id} - {enrollment_course_id} - {enrollment_group_id}');
+        $this->grocery_crud->set_relation($this->current_table.'_enrollment_id','enrollment','{enrollment_periodid} - {enrollment_personid} - {enrollment_study_id} - {enrollment_course_id} - {enrollment_group_id}');
         $this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
         $this->grocery_crud->set_relation($this->current_table.'_submoduleid','study_submodules','{study_submodules_name}');      
 
@@ -970,7 +970,7 @@ public function get_previous_enrollments( $person_official_id = false ) {
             $study_id = $_POST['study_id'];
         }
 
-        $study_type = $this->enrollment_model->get_study_law($study_id);
+        $study_type = $this->enrollment_model->get_study_type($study_id);
         if($study_type){
             print_r(json_encode($study_type));
         } else {

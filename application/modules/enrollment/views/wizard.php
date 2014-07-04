@@ -2020,6 +2020,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step6") {
+          console.debug("STEP6!!!!!!!!!!!!!!!!!!!");
           //$( "input[name^='news']" )
           var study_submodules_names = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
             return this.name;
@@ -2031,8 +2032,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
 
+          console.debug("study_submodules_ids:" + study_submodules_ids);
+
           //alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
 
+          console.debug("Before ajax request enrollment_wizard");
           // AJAX insert Enrollment data into database
           $.ajax({
             url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
@@ -2048,7 +2052,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   },
             datatype: 'json'
           }).done(function(data){
-            
+              //Check errors!
           });
         }
       });  
