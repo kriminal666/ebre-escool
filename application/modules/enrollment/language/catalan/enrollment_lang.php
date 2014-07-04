@@ -126,7 +126,9 @@ $lang['wizzard_postal_code'] = 'Codi Postal: ';
 $lang['wizzard_date_of_birth'] = 'Data de naixement: ';
 $lang['wizzard_gender'] = 'Sexe: ';
 
+
 $lang['wizard'] = 'Assistent';
+$lang['enrollment_by_academic_period'] = 'Per períodes acadèmics';
 $lang['enrollment_academic_period'] = 'Període';
 $lang['enrollment_studies'] = 'Estudi';
 $lang['enrollment_courses'] = 'Curs';

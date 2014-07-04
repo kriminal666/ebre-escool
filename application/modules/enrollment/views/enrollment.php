@@ -22,7 +22,7 @@
                             <?php echo lang("enrollment");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo "TODO ".lang('enrollment');?>
+                                <?php echo lang('enrollment_by_academic_period');?>
                             </small>
                         </h1>
         </div><!-- /.page-header -->

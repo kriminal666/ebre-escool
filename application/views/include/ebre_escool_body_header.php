@@ -894,9 +894,6 @@
             <ul class="submenu">
               <!-- Matrícules -->
               <li id="enrollment"><a href='<?=base_url()?>index.php/enrollment/enrollment'><?php echo lang('enrollment');?></a></li>              
-              <li id="enrollment_studies"><a href='<?=base_url()?>index.php/enrollment/enrollment_studies'><?php echo lang('enrollment_studies');?></a></li>              
-              <li id="enrollment_class_group"><a href='<?=base_url()?>index.php/enrollment/enrollment_class_group'><?php echo lang('enrollment_class_group');?></a></li>              
-              <li id="enrollment_modules"><a href='<?=base_url()?>index.php/enrollment/enrollment_modules'><?php echo lang('enrollment_modules');?></a></li>              
               <li id="enrollment_submodules"><a href='<?=base_url()?>index.php/enrollment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>      

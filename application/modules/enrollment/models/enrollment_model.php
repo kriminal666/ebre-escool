@@ -736,7 +736,7 @@ class enrollment_model  extends CI_Model  {
 
 			$submodules_id = explode('#',$elements);
 
-			if ($submodules_id[1]="NULL") {
+			if ($submodules_id[1]=="NULL") {
 				$data = array(
 		        	'enrollment_submodules_enrollment_id' => $enrollment_id,
 		        	'enrollment_submodules_moduleid' => $submodules_id[0],

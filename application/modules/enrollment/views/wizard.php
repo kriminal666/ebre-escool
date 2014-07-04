@@ -1310,18 +1310,30 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
         $("#givenName").change(function(){
           student_full_name = $('#student_full_name').find("span.white");
-          student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
+          student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );  
+          givenName = document.getElementById("givenName"); 
+          givenNameValue = givenName.value; 
+          //console.debug(givenNameValue.substr(0,1).toUpperCase() + givenNameValue.substr(1));   
+          givenName.value = givenNameValue.substr(0,1).toUpperCase() + givenNameValue.substr(1).toLowerCase();
 
         });
 
         $("#sn1").change(function(){
           student_full_name = $('#student_full_name').find("span.white");
           student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
+          sn1 = document.getElementById("sn1"); 
+          sn1Value = sn1.value; 
+          //console.debug(givenNameValue.substr(0,1).toUpperCase() + givenNameValue.substr(1));   
+          sn1.value = sn1Value.substr(0,1).toUpperCase() + sn1Value.substr(1).toLowerCase();
         });
 
         $("#sn2").change(function(){
           student_full_name = $('#student_full_name').find("span.white");
           student_full_name.text( $("#givenName").val() + " " + $("#sn1").val() + " " + $("#sn2").val() );      
+          sn2 = document.getElementById("sn2"); 
+          sn2Value = sn2.value; 
+          //console.debug(givenNameValue.substr(0,1).toUpperCase() + givenNameValue.substr(1));   
+          sn2.value = sn2Value.substr(0,1).toUpperCase() + sn2Value.substr(1).toLowerCase();
         });
 
 
@@ -1401,7 +1413,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
       
 
       $("#print_tic_enrollment").click(function(){
-          console.debug("print_tic_enrollment click!");
+          //console.debug("print_tic_enrollment click!");
 
           student_generated_password = $("#step0 input[name$='person_generated_password']").val();
           student_password = $("#step0 input[name$='person_password']").val();
@@ -1419,8 +1431,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           person_id = $("#step0 input[name$='person_id']").val();
 
-          console.debug("password: " + password);
-          console.debug("person_id: " + person_id);
+          //console.debug("password: " + password);
+          //console.debug("person_id: " + person_id);
 
           var iframe = $('<iframe height="750" width="1000">');
           iframe.attr("src","<?php echo base_url('index.php/enrollment/enrollment_pdf?password=');?>" + password + "&person_id=" + person_id);
@@ -1467,7 +1479,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           //FIRST VALIDATE FORM. IS NOT VALID DONT FORWARD STEP
           if (! $('#validation-form').valid() ) {
-            console.debug("Form still NOT VALID!!!!");
+            //console.debug("Form still NOT VALID!!!!");
             continue_processing = false;
           } 
 
@@ -2244,9 +2256,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           invalidHandler: function (form) {
           }
         });
-        console.debug("before ace wizard!");
         $('#modal-wizard .modal-header').ace_wizard();
-        console.debug("after ace wizard!");
         $('#modal-wizard .wizard-actions .btn[data-dismiss=modal]').removeAttr('disabled');
       })
     </script>

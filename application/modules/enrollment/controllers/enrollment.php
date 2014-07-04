@@ -80,9 +80,16 @@ class enrollment extends skeleton_main {
 
         $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));        
         $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
+        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('enrollment_studies'));
+        $this->grocery_crud->display_as($this->current_table.'_course_id',lang('enrollment_courses'));
+        $this->grocery_crud->display_as($this->current_table.'_group_id',lang('enrollment_classgroups'));
+            
 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname} - {studies_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_shortname} - {course_shortname}');
+        $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code} -  {classroom_group_name}');
 
         //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -105,9 +112,65 @@ class enrollment extends skeleton_main {
 
 /* FI ENROLLMENT */
 
+/* ENROLLMENT SUBMODULES */
+
+    public function enrollment_submodules() {
+
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_submodules';
+
+        $this->check_logged_user();
+        
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        /* Grocery Crud */
+        $this->current_table="enrollment_submodules";
+        $this->grocery_crud->set_table($this->current_table);
+        $this->session->set_flashdata('table_name', $this->current_table);
+        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('enrollment_submodules'));       
+
+        $this->common_callbacks($this->current_table);
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);
+
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));             
+        $this->grocery_crud->display_as($this->current_table.'_submoduleid',lang('submoduleid'));               
+
+        //RELACIONS
+        //$this->grocery_crud->set_relation($this->current_table.'_enrollment_id','enrollment','{enrollment_periodid} - {enrollment_personid} - {enrollment_study_id} - {enrollment_course_id} - {enrollment_group_id}');
+        $this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
+        $this->grocery_crud->set_relation($this->current_table.'_submoduleid','study_submodules','{study_submodules_name}');      
+
+        //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
+
+        $this->userCreation_userModification($this->current_table);
+           
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+                   
+        $this->renderitzar($this->current_table,$header_data);  ;
+    }
+
+/* FI ENROLLMENT SUBMODULES */
+
 /* ENROLLMENT STUDIES */
 
-	public function enrollment_studies() {
+	/*OBSOLET
+    public function enrollment_studies() {
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
@@ -116,10 +179,10 @@ class enrollment extends skeleton_main {
 
         $this->check_logged_user();
         
-        /* Ace */
+        //Ace 
         $header_data = $this->load_ace_files($active_menu);
 
-		/* Grocery Crud */
+		//Grocery Crud 
 		$this->current_table="enrollment_studies";
         $this->grocery_crud->set_table($this->current_table);
         $this->session->set_flashdata('table_name', $this->current_table);
@@ -159,9 +222,9 @@ class enrollment extends skeleton_main {
         $this->renderitzar($this->current_table,$header_data);
 	}
 
-/* FI ENROLLMENT STUDIES */
+ FI ENROLLMENT STUDIES */
 
-/* ENROLLMENT CLASS GROUP */
+/* OBSOLET! ENROLLMENT CLASS GROUP 
 
 	public function enrollment_class_group() {
 
@@ -172,10 +235,10 @@ class enrollment extends skeleton_main {
 
         $this->check_logged_user();
         
-        /* Ace */
+        //Ace 
         $header_data = $this->load_ace_files($active_menu);
 
-		/* Grocery Crud */
+		// Grocery Crud 
 		$this->current_table="enrollment_class_group";
         $this->grocery_crud->set_table($this->current_table);
         $this->session->set_flashdata('table_name', $this->current_table);
@@ -216,9 +279,9 @@ class enrollment extends skeleton_main {
         $this->renderitzar($this->current_table,$header_data);	
 	}
 
-/* FI ENROLLMENT CLASS GROUP */
+ FI ENROLLMENT CLASS GROUP */
 
-/* ENROLLMENT MODULES */
+/* OBSOLET! ENROLLMENT MODULES 
 
 	public function enrollment_modules() {
 
@@ -229,10 +292,10 @@ class enrollment extends skeleton_main {
 
         $this->check_logged_user();
         
-        /* Ace */
+        // Ace 
         $header_data = $this->load_ace_files($active_menu);
 
-		/* Grocery Crud */
+		// Grocery Crud 
 		$this->current_table="enrollment_modules";
         $this->grocery_crud->set_table($this->current_table);
         $this->session->set_flashdata('table_name', $this->current_table);
@@ -277,66 +340,7 @@ class enrollment extends skeleton_main {
 
 /* FI ENROLLMENT MODULES */
 
-/* ENROLLMENT SUBMODULES */
 
-	public function enrollment_submodules() {
-
-        $active_menu = array();
-        $active_menu['menu']='#maintenances';
-        $active_menu['submenu1']='#enrollment_menu';
-        $active_menu['submenu2']='#enrollment_submodules';
-
-        $this->check_logged_user();
-        
-        /* Ace */
-        $header_data = $this->load_ace_files($active_menu);
-
-		/* Grocery Crud */
-		$this->current_table="enrollment_submodules";
-        $this->grocery_crud->set_table($this->current_table);
-        $this->session->set_flashdata('table_name', $this->current_table);
-        
-        //ESTABLISH SUBJECT
-        $this->grocery_crud->set_subject(lang('enrollment_submodules'));       
-
-        $this->common_callbacks($this->current_table);
-
-        //COMMON_COLUMNS               
-        $this->set_common_columns_name($this->current_table);
-
-        //SPECIFIC COLUMNS
-        $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));
-        $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
-        $this->grocery_crud->display_as($this->current_table.'_study_id',lang('study_id'));          
-        $this->grocery_crud->display_as($this->current_table.'_group_id',lang('group_id'));   
-        $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));        		
-		$this->grocery_crud->display_as($this->current_table.'_submoduleid',lang('submoduleid'));        		
-
-        //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
-        $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname}');
-        $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code}');      
-        $this->grocery_crud->set_relation($this->current_table.'_moduleid','study_module','{study_module_name}');      
-        $this->grocery_crud->set_relation($this->current_table.'_submoduleid','study_submodules','{study_submodules_name}');      
-
-        //UPDATE AUTOMATIC FIELDS
-		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
-		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
-        
-        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
-        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId','study_submodules_lastupdateUserId');
-
-        $this->userCreation_userModification($this->current_table);
-           
-        $this->set_theme($this->grocery_crud);
-        $this->set_dialogforms($this->grocery_crud);
-
-        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
-                   
-        $this->renderitzar($this->current_table,$header_data);  ;
-	}
-
-/* FI ENROLLMENT SUBMODULES */
 
 	private function set_header_data() {
 

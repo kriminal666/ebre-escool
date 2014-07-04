@@ -357,11 +357,11 @@ CREATE TABLE IF NOT EXISTS `enrollment_courses` (
 
 CREATE TABLE IF NOT EXISTS `enrollment` (
   `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `enrollment_periodid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_personid` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `enrollment_study_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_periodid` int(11) NOT NULL,
+  `enrollment_personid` int(11) NOT NULL,
+  `enrollment_study_id` int(11) NOT NULL,
   `enrollment_course_id` int(11) NOT NULL,
-  `enrollment_group_id` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `enrollment_group_id` int(11) NOT NULL,
   `enrollment_entryDate` datetime NOT NULL,
   `enrollment_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_creationUserId` int(11) DEFAULT NULL,
@@ -401,9 +401,9 @@ CREATE TABLE IF NOT EXISTS `enrollment_modules` (
 
 CREATE TABLE IF NOT EXISTS `enrollment_submodules` (
   `enrollment_submodules_id` int(11) NOT NULL AUTO_INCREMENT,
-  `enrollment_submodules_enrollment_id` int(11) DEFAULT NULL,
-  `enrollment_submodules_moduleid` int(11) DEFAULT NULL,
-  `enrollment_submodules_submoduleid` int(11) DEFAULT NULL,
+  `enrollment_submodules_enrollment_id` int(11) NOT NULL,
+  `enrollment_submodules_moduleid` int(11) NOT NULL,
+  `enrollment_submodules_submoduleid` int(11) NOT NULL,
   `enrollment_submodules_entryDate` datetime NOT NULL,
   `enrollment_submodules_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `enrollment_submodules_creationUserId` int(11) DEFAULT NULL,

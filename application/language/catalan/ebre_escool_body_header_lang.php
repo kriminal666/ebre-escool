@@ -116,10 +116,11 @@ $lang['organizational_unit']="Unitat Organitzativa";
 
 //Matrícules
 $lang['enrollment']="Matrícula";
-$lang['enrollment_studies']="Estudis Matriculats";
-$lang['enrollment_class_group']="Matrícules de Grups de Classe";
-$lang['enrollment_modules']="Matrícules Mòduls";
-$lang['enrollment_submodules']="Matrícules Sub-Mòduls";
+#OBSOLET
+#$lang['enrollment_studies']="Estudis Matriculats";
+#$lang['enrollment_class_group']="Matrícules de Grups de Classe";
+#$lang['enrollment_modules']="Matrícules Mòduls";
+$lang['enrollment_submodules']="Matrícula Unitats Formatives";
 
 //Hores i Lliçons No lectives
 $lang['non_lective_hours'] = "Hores no lectives";
