@@ -411,9 +411,11 @@ class enrollment_model  extends CI_Model  {
         $query = $this->db->get();
 		//echo $this->db->last_query();
 
+        $study_submodules_array = array();
+		
 		if ($query->num_rows() > 0) {
 
-			$study_submodules_array = array();
+			
 			$i=0;
 			foreach ($query->result_array() as $row)	{
 				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
@@ -423,10 +425,10 @@ class enrollment_model  extends CI_Model  {
    				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
    				$i++;
 			}
-			return $study_submodules_array;
+			
 		}			
-		else
-			return false;
+		
+		return $study_submodules_array;
 	}	
 
 	/* Unitats formatives */
@@ -457,10 +459,11 @@ class enrollment_model  extends CI_Model  {
 		       
         $query = $this->db->get();
 		//echo $this->db->last_query();
+		$study_submodules_array = array();
 
 		if ($query->num_rows() > 0) {
 
-			$study_submodules_array = array();
+			
 			$i=0;
 			foreach ($query->result_array() as $row)	{
 				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
@@ -470,10 +473,10 @@ class enrollment_model  extends CI_Model  {
    				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
    				$i++;
 			}
-			return $study_submodules_array;
+			
 		}			
-		else
-			return false;
+		
+		return $study_submodules_array;
 	}	
 
 	/* Unitats formatives */
@@ -712,7 +715,7 @@ class enrollment_model  extends CI_Model  {
 
         $this->db->insert('enrollment',$data);
 		       
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() > 0) {
 
@@ -732,9 +735,12 @@ class enrollment_model  extends CI_Model  {
 		$affected_rows = 0;
 		$data = array();
 
+		print_r($submodules_id);
 		foreach($submodules_id as $elements){
 
 			$submodules_id = explode('#',$elements);
+
+			print_r($elements);
 
 			if ($submodules_id[1]=="NULL") {
 				$data = array(
@@ -767,6 +773,7 @@ class enrollment_model  extends CI_Model  {
 
 		}
 
+		return $affected_rows;
 
 		/*
 		CREATE TABLE IF NOT EXISTS `enrollment_submodules` (
@@ -783,6 +790,7 @@ class enrollment_model  extends CI_Model  {
 		  PRIMARY KEY (`enrollment_submodules_id`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 		*/
+
 	}
 
 
