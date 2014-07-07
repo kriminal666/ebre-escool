@@ -142,8 +142,11 @@ $lang['studies_law']="Llei";
 $lang['studies_cycles']="Cicles";
 $lang['studies_courses']="Cursos";
 $lang['studies_classroomgroups']="Grups de classe";
+$lang['studies_classroomgroups_short']="Grups";
 $lang['studies_studymodules']="Mòduls";
 $lang['studies_studysubmodules']="Unitats formatives";
+$lang['studies_studysubmodules_short']="UFs";
+$lang['studies_enrolled']="# Matrículats";
 
 
 $lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";

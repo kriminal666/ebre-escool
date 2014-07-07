@@ -167,6 +167,55 @@ class managment_model  extends CI_Model  {
 
 		return $studymodules_by_study;
 	}
+
+	function get_enrollmentdata_by_study ($withtotal = true) {
+
+		/* studysubmodules by study
+		SELECT enrollment_study_id,studies_shortname,studies_name,count(enrollment_id) as total 
+		FROM enrollment 
+		INNER JOIN studies ON studies.`studies_id` = enrollment.enrollment_study_id
+		WHERE enrollment_periodid="2014-15"
+		GROUP BY enrollment_study_id,studies_shortname,studies_name
+		 */
+
+		//
+		$this->db->select('enrollment_study_id,studies_shortname,studies_name,count(enrollment_id) as total ');
+		$this->db->from('enrollment');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
+		$this->db->group_by('enrollment_study_id,studies_shortname,studies_name');
+		$this->db->where('enrollment_periodid','2014-15');
+		$query = $this->db->get();
+
+		$enrollment_by_study = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$deposit = new stdClass;
+				$deposit->total =  $row->total;
+
+				$enrollment_ids = array();
+				//study_modules
+				$this->db->select('enrollment_id');
+				$this->db->from('enrollment');
+				$this->db->where('enrollment_study_id',$row->enrollment_study_id);
+				$query1 = $this->db->get();
+				if ($query1->num_rows() > 0){
+					foreach($query1->result() as $row1){
+						$enrollment_ids[]=$row1->enrollment_id;
+					}
+				}
+				$deposit->enrollment_ids =  $enrollment_ids;
+
+				if ($withtotal) {
+					$enrollment_by_study[$row->enrollment_study_id] = $deposit;
+				} else {
+					$enrollment_by_study[$row->enrollment_study_id] = $enrollment_ids;
+				}
+				
+			}
+		}
+
+		return $enrollment_by_study;
+	}
 		
 
 	function get_studysubmodules_by_study( $withtotal = true) {
@@ -268,7 +317,7 @@ class managment_model  extends CI_Model  {
 	}
 
 
-	function get_courses_by_study( $withtotal = true) {
+	function get_courses_by_study( $withtotal = true ) {
 		/* courses by study
 		SELECT course_study_id, count(`course_id`) 
 		FROM course 
@@ -282,7 +331,7 @@ class managment_model  extends CI_Model  {
 		$query = $this->db->get();
 
 		$courses_by_study = array();
-		if ($query->num_rows() > 0){
+		if ($query->num_rows() > 0)	{
 			foreach($query->result() as $row){
 				$deposit = new stdClass;
 				$deposit->total =  $row->total;
@@ -417,6 +466,7 @@ class managment_model  extends CI_Model  {
 		$classroomgroups_by_study = $this->get_classroomgroups_by_study();
 		$studymodules_by_study = $this->get_studymodules_by_study();
 		$studysubmodules_by_study = $this->get_studysubmodules_by_study();
+		$enrollmentdata_by_study = $this->get_enrollmentdata_by_study();
 
 		//deparments
 		$this->db->select('studies_id,studies_shortname,studies_name,studies_studies_organizational_unit_id,studies_organizational_unit_shortname,
@@ -480,6 +530,17 @@ class managment_model  extends CI_Model  {
 				}	else {
 					$study->numberOfStudySubModules = "";
 					$study->studysubmodules_ids = "";
+				}	
+
+
+				//get ENROLLMENT INFO
+				if ( array_key_exists ( $row->studies_id , $enrollmentdata_by_study )) {					
+					$study->numberOfEnrolledStudies = $enrollmentdata_by_study[$row->studies_id]->total;
+					//$study->studysubmodules_ids = $studysubmodules_by_study[$row->studies_id]->studysubmodules_ids;
+
+				}	else {
+					$study->numberOfEnrolledStudies = "";
+					//$study->studysubmodules_ids = "";
 				}		
 				
 

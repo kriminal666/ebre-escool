@@ -94,9 +94,9 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="10" style="text-align: center;"> <h4>
+    <td colspan="11" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/studies') ;?>">
-        <?php echo $studies_table_title?>
+        <?php echo $enrollment_reports_by_studies_table_title?>
       </a>
       </h4></td>
   </tr>
@@ -108,17 +108,18 @@
      <th><?php echo lang('studies_law')?></th>
      <th><?php echo lang('studies_cycles')?></th>
      <th><?php echo lang('studies_courses')?></th>
-     <th><?php echo lang('studies_classroomgroups')?></th>
+     <th><?php echo lang('studies_classroomgroups_short')?></th>
      <th><?php echo lang('studies_studymodules')?></th>
-     <th><?php echo lang('studies_studysubmodules')?></th>
+     <th><?php echo lang('studies_studysubmodules_short')?></th>
+     <th><?php echo lang('studies_enrolled')?></th>
   </tr>
  </thead>
  <tbody> 
   <?php //$this->session->set_flashdata('cycles_by_study', $studies_by_department);?>  
-  <?php $this->session->set_flashdata('courses_by_study', $courses_by_study);?>
-  <?php $this->session->set_flashdata('classroomgroups_by_study', $classroomgroups_by_study);?>
-  <?php $this->session->set_flashdata('studymodules_by_study', $studymodules_by_study);?>
-  <?php $this->session->set_flashdata('studysubmodules_by_study', $studysubmodules_by_study);?>
+  <?php //$this->session->set_flashdata('courses_by_study', $courses_by_study);?>
+  <?php //$this->session->set_flashdata('classroomgroups_by_study', $classroomgroups_by_study);?>
+  <?php //$this->session->set_flashdata('studymodules_by_study', $studymodules_by_study);?>
+  <?php //$this->session->set_flashdata('studysubmodules_by_study', $studysubmodules_by_study);?>
   
 
   <!-- Iteration that shows study-->
@@ -141,16 +142,16 @@
      </td>
      <td>
       ( <a href="<?php echo base_url('/index.php/curriculum/studies_organizational_unit/index/read/' . $study->studies_studies_organizational_unit_id ) ;?>">
-          <?php echo $study->studies_studies_organizational_unit_id ;?>
+          <?php echo $study->studies_studies_organizational_unit_id;?>
       </a> ) <a href="<?php echo base_url('/index.php/curriculum/studies_organizational_unit/index/edit/' . $study->studies_studies_organizational_unit_id ) ;?>">
-          <?php echo $study->studies_organizational_unit_shortname; ;?>
+          <?php echo $study->studies_organizational_unit_shortname;?>
       </a>
      </td>
      <td>
       ( <a href="<?php echo base_url('/index.php/curriculum/studieslaw/index/read/' . $study->studies_studies_law_id ) ;?>">
-          <?php echo $study->studies_studies_law_id ;?>
+          <?php echo $study->studies_studies_law_id;?>
       </a> ) <a href="<?php echo base_url('/index.php/curriculum/studieslaw/index/edit/' . $study->studies_studies_law_id ) ;?>">
-          <?php echo $study->studies_studies_law_shortname; ;?>
+          <?php echo $study->studies_studies_law_shortname;?>
       </a>
      </td>
      <td>
@@ -158,22 +159,27 @@
      </td>
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/course/' . $study->id );?>">
-        <?php echo $study->numberOfCourses; ;?>
+        <?php echo $study->numberOfCourses;?>
       </a>  
      </td>
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/classroom_group/' . $study->id );?>">
-       <?php echo $study->numberOfClassroomgroups; ;?>
+       <?php echo $study->numberOfClassroomgroups;?>
       </a>   
      </td>
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/study_module/' . $study->id );?>">
-       <?php echo $study->numberOfStudyModules; ;?>
+       <?php echo $study->numberOfStudyModules;?>
       </a>   
      </td>
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/study_submodules/' . $study->id );?>">
-       <?php echo $study->numberOfStudySubModules; ;?>
+       <?php echo $study->numberOfStudySubModules;?>
+      </a>   
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/enrollment/enrollment/' . $study->id );?>">
+       <?php echo $study->numberOfEnrolledStudies;?>
       </a>   
      </td>
    </tr>

@@ -115,10 +115,10 @@
  </thead>
  <tbody> 
   <?php //$this->session->set_flashdata('cycles_by_study', $studies_by_department);?>  
-  <?php $this->session->set_flashdata('courses_by_study', $courses_by_study);?>
-  <?php $this->session->set_flashdata('classroomgroups_by_study', $classroomgroups_by_study);?>
-  <?php $this->session->set_flashdata('studymodules_by_study', $studymodules_by_study);?>
-  <?php $this->session->set_flashdata('studysubmodules_by_study', $studysubmodules_by_study);?>
+  <?php //$this->session->set_flashdata('courses_by_study', $courses_by_study);?>
+  <?php //$this->session->set_flashdata('classroomgroups_by_study', $classroomgroups_by_study);?>
+  <?php //$this->session->set_flashdata('studymodules_by_study', $studymodules_by_study);?>
+  <?php //$this->session->set_flashdata('studysubmodules_by_study', $studysubmodules_by_study);?>
   
 
   <!-- Iteration that shows study-->

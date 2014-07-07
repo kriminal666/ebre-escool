@@ -732,7 +732,7 @@
 													$total_study_submodules = $enrollment_statistics['total_study_submodules'];
 													$total_number_of_current_period_enrolled_persons = $enrollment_statistics['total_number_of_current_period_enrolled_persons'];
 													$media = $total_study_submodules / $total_number_of_current_period_enrolled_persons;
-													echo $media;
+													echo round($media,2);
 												?>
 												
 											</span>

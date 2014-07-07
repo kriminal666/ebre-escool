@@ -933,17 +933,7 @@ class managment extends skeleton_main {
 
 		$all_studies = $this->managment_model->get_all_studies_report_info();
 
-		$studies_by_department = $this->managment_model->get_courses_by_study(false);
-		$classroomgroups_by_study = $this->managment_model->get_classroomgroups_by_study(false);
-		$studymodules_by_study = $this->managment_model->get_studymodules_by_study(false);
-		$studysubmodules_by_study = $this->managment_model->get_studysubmodules_by_study(false);
-
 		$data['all_studies'] = $all_studies;
-
-		$data['courses_by_study'] = $studies_by_department;
-		$data['classroomgroups_by_study'] = $classroomgroups_by_study;
-		$data['studymodules_by_study'] = $studymodules_by_study;
-		$data['studysubmodules_by_study'] = $studysubmodules_by_study;
 
 		$this->load->view('curriculum_reports_study.php',$data);
 		
@@ -1213,6 +1203,12 @@ class managment extends skeleton_main {
 		$this->_load_body_header();
 
 		$data = array();
+
+		$all_studies = $this->managment_model->get_all_studies_report_info();
+
+		$data['enrollment_reports_by_studies_table_title'] = "Dades estudis / matrícula";
+
+		$data['all_studies'] = $all_studies;
 
 		$this->load->view('enrollment_reports_by_studies.php',$data);
 		
