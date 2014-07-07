@@ -713,20 +713,10 @@
 											<i class="icon-book"></i>
 										</div>
 
-										<div class="infobox-data">
-											<?php $this->session->set_flashdata('without_photo_persons_id', $person_statistics['without_photo_persons_id']); ;?>
-											<?php //print_r($person_statistics['without_photo_persons']); ;?>
-											<?php //print_r($person_statistics['without_photo_persons_id']);?>
-											
-											<span class="infobox-data-number">a<?php echo count($curriculum_statistics['total_studies']);?></span>
+										<div class="infobox-data">												
+											<span class="infobox-data-number"><?php echo $enrollment_statistics['total_study_submodules'];?></span>
 											<div class="infobox-content">
-												<?php if (count($person_statistics['without_photo_persons']) > 0): ?>
-                    								<a href="<?php echo base_url('/index.php/persons/person/without_photo_persons_id')?>">
-												<?php endif; ?>
-													Estudis
-												<?php if (count($person_statistics['without_photo_persons']) > 0): ?>
-													</a>
-												<?php endif; ?>	
+													Total Unitats Formatives matrículades
 											</div>
 										</div>
 									</div>
