@@ -716,7 +716,7 @@
 										<div class="infobox-data">												
 											<span class="infobox-data-number"><?php echo $enrollment_statistics['total_study_submodules'];?></span>
 											<div class="infobox-content">
-													Total Unitats Formatives matrículades
+													Total UFs matrículades
 											</div>
 										</div>
 									</div>
@@ -727,8 +727,16 @@
 										</div>
 
 										<div class="infobox-data">
-											<span class="infobox-data-number">0</span>
-											<div class="infobox-content">Cursos</div>
+											<span class="infobox-data-number">
+												<?php 
+													$total_study_submodules = $enrollment_statistics['total_study_submodules'];
+													$total_number_of_current_period_enrolled_persons = $enrollment_statistics['total_number_of_current_period_enrolled_persons'];
+													$media = $total_study_submodules / $total_number_of_current_period_enrolled_persons;
+													echo $media;
+												?>
+												
+											</span>
+											<div class="infobox-content">Mitjana</div>
 										</div>
 									</div>
 
