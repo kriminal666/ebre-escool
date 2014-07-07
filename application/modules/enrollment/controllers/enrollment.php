@@ -100,7 +100,7 @@ class enrollment extends skeleton_main {
             
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_givenName} {person_sn1} {person_sn2}');
+        $this->grocery_crud->set_relation($this->current_table.'_personid','person','{person_sn1} {person_sn2}, {person_givenName} - {person_official_id} ');
         $this->grocery_crud->set_relation($this->current_table.'_study_id','studies','{studies_shortname} - {studies_name}');
         $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_shortname} - {course_shortname}');
         $this->grocery_crud->set_relation($this->current_table.'_group_id','classroom_group','{classroom_group_code} -  {classroom_group_name}');
