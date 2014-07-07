@@ -1058,7 +1058,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
       jQuery(function($) {
 
-          $("#print_tic_enrollment").hide();
           $("#print_enrollment").hide();
           
 
@@ -1414,6 +1413,16 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
       $("#print_tic_enrollment").click(function(){
           //console.debug("print_tic_enrollment click!");
+
+          var txt;
+          var r = confirm("Esteu segur que voleu imprimir la matrícula TIC? al imprimir la matrícula es canviarà la paraula de pas de i no podrà entrar al sistema fins que li proporcioneu.");
+          if (r == true) {
+              console.debug("Continue...");
+          } else {
+              return false;
+          }
+
+          //change user password
 
           student_generated_password = $("#step0 input[name$='person_generated_password']").val();
           student_password = $("#step0 input[name$='person_password']").val();
@@ -2010,7 +2019,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         }
         $("[name = 'step6_title' ]").addClass("green"); 
 
-        $("#print_tic_enrollment").show();
         $("#print_enrollment").show();
 
 // End step 5

@@ -129,6 +129,7 @@ $lang['wizzard_gender'] = 'Sexe: ';
 
 $lang['wizard'] = 'Assistent';
 $lang['enrollment_by_academic_period'] = 'Per períodes acadèmics';
+$lang['enrollment_only_current_period'] = 'Matrícula període acadèmic actual';
 $lang['enrollment_academic_period'] = 'Període';
 $lang['enrollment_studies'] = 'Estudi';
 $lang['enrollment_courses'] = 'Curs';

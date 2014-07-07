@@ -49,14 +49,28 @@ class enrollment extends skeleton_main {
 		$this->enrollment();
 	}
 
-/* ENROLLMENT */
-
-	public function enrollment() {
+    public function enrollment_only_current_period(){
+        $valuetoreturn =  $this->enrollment(true);
 
         $active_menu = array();
         $active_menu['menu']='#maintenances';
         $active_menu['submenu1']='#enrollment_menu';
-        $active_menu['submenu2']='#enrollment';
+        $active_menu['submenu2']='#enrollment_submodules';
+
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        return $valuetoreturn;
+    }
+
+/* ENROLLMENT */
+
+	public function enrollment($only_current_academic_period = false) {
+
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#enrollment_menu';
+        $active_menu['submenu2']='#enrollment_only_current_period';
 
         $this->check_logged_user();
 		
@@ -105,6 +119,10 @@ class enrollment extends skeleton_main {
         $this->set_dialogforms($this->grocery_crud);
         
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        if ($only_current_academic_period) {
+            $this->grocery_crud->where($this->current_table.'_periodid','2014-15');
+        }
 
         $this->renderitzar($this->current_table,$header_data);                   
 

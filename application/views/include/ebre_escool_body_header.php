@@ -894,6 +894,7 @@
             <ul class="submenu">
               <!-- Matrícules -->
               <li id="enrollment"><a href='<?=base_url()?>index.php/enrollment/enrollment'><?php echo lang('enrollment');?></a></li>              
+              <li id="enrollment_only_current_period"><a href='<?=base_url()?>index.php/enrollment/enrollment_only_current_period'><?php echo lang('enrollment_only_current_period');?></a></li>              
               <li id="enrollment_submodules"><a href='<?=base_url()?>index.php/enrollment/enrollment_submodules'><?php echo lang('enrollment_submodules');?></a></li>                            
             </ul>                                                                                                                                                                                                                                                                                                                                      
          </li>      
