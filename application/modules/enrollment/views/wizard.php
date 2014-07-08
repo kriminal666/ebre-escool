@@ -679,8 +679,16 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 class_name: 'gritter-error gritter-center'
               });
           },
-          success: function() {
-            prepare_step1(student,"student");
+          success: function(data) {
+            //console.debug("data:" + JSON.stringify(data));
+            if (action == "insert") {
+              var all_data = $.parseJSON(data);
+              person_id = all_data.person_id;
+              prepare_step1(student,"student",person_id);
+            } else { //update. ot necessary to add new created user/student to student select2
+              prepare_step1(student,"student",-1);
+            }
+            
           }
         }).done(function(data){
             //TODO: Something to check?
@@ -784,7 +792,17 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           
       }
 
-      function prepare_step1(student,objecttype) {
+      function selectItemByValue(elmnt, value){
+
+          for(var i=0; i < elmnt.options.length; i++)
+          {
+            if(elmnt.options[i].value == value)
+              elmnt.selectedIndex = i;
+          }
+
+      }
+
+      function prepare_step1(student,objecttype,adduser) {
         //Preparing step1
         //SHOW PREVIOUS ENROLLMENTS
         
@@ -833,15 +851,29 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                           }
               }
             } );
-        /*} else {
-          console.debug("XIVATO 1!");
-        }*/
-
-        //console.debug("END get_previous_enrollments");
         //END SHOW PREVIOUS ENROLLENTS
 
-        //CHECK student_person_id if undefined?!!!!!!
-        $("#student option[value=" + student.student_person_id +"]").attr("selected","selected");
+        if (adduser === undefined) {
+            $("#student option[value=" + student.student_person_id +"]").attr("selected","selected");
+        } else {
+            if (adduser != -1) {
+              //ADD NEW USER TO STUDENTS SELECT AN MARK AS SELECTED!
+            var x = document.getElementById("student");
+            var option = document.createElement("option");
+            //console.debug("adduser:" + adduser);
+            //console.debug("student:" + JSON.stringify(student));
+            option.value = adduser;
+            //Example: 40935441P. Maribel Tur Gisberta
+            option.text = $.trim(student.student_official_id + ". " + student.student_givenName + " " +  student.student_sn1 + " " + student.student_sn2 ) ;
+            x.add(option);            
+            selectItemByValue(x,adduser);                      
+          } else {
+            $("#student option[value=" + student.student_person_id +"]").attr("selected","selected");
+          }
+        }
+        
+          
+        //CHECK student_person_id if undefined?!!!!!!        
         $("#student").select2();
         
         $(".step1_student").html( student.student_sn1 + " " + student.student_sn2 + ", " + student.student_givenName + " ("+student.student_official_id+") <i class='icon-double-angle-right'></i>");    
@@ -1189,7 +1221,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 if(data != false) {
                     var all_data = $.parseJSON(data);
                     all_data.student_official_id = student_official_id;
-                    prepare_step1(all_data,"person");
+                    prepare_step1(all_data,"person",-1);
                 /* Student doesn't exists, clear form data */
                 } else {
                     //console.debug("Student doesn't exists!");
