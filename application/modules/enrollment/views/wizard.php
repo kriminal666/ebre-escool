@@ -405,7 +405,7 @@ STEP 1 - ACADEMIC PERIOD AND STUDENT
                   <div class="widget-body">
                     <div class="widget-main">
                       <form class="form-horizontal" id="validation-form" method="get">
-                        <!-- Academin Period -->
+                        <!-- Academic Period -->
                         <label class="control-label" for="academic_period"><?php echo lang('academinc_period'); ?>:&nbsp;&nbsp;</label>
                         <select id="academic_period" name="academic_period" class="select2" >
                           <? foreach($this->config->item('academic_periods') as $key => $periode): ?>
@@ -654,12 +654,41 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               student_photo : student.student_photo,
               action : action
           },
-          datatype: 'json'
+          datatype: 'json',
+          statusCode: {
+            404: function() {
+              $.gritter.add({
+                title: 'Error connectant amb el servidor!',
+                text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/insert_update_user ' ,
+                class_name: 'gritter-error gritter-center'
+              });
+            },
+            500: function() {
+              $("#response").html('A server-side error has occurred.');
+              $.gritter.add({
+                title: 'Error connectant amb el servidor!',
+                text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/insert_update_user ' ,
+                class_name: 'gritter-error gritter-center'
+              });
+            }
+          },
+          error: function() {
+            $.gritter.add({
+                title: 'Error!',
+                text: 'Ha succeït un error!' ,
+                class_name: 'gritter-error gritter-center'
+              });
+          },
+          success: function() {
+            prepare_step1(student,"student");
+          }
         }).done(function(data){
             //TODO: Something to check?
         
         });
       }
+
+        
 
       function get_student_object_from_form_data() {
           
@@ -708,7 +737,31 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             data: {
                 student_id : student_id
             },
-            datatype: 'json'
+            datatype: 'json',
+            statusCode: {
+              404: function() {
+                $.gritter.add({
+                  title: 'Error connectant amb el servidor!',
+                  text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_last_study_id ' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+              },
+              500: function() {
+                $("#response").html('A server-side error has occurred.');
+                $.gritter.add({
+                  title: 'Error connectant amb el servidor!',
+                  text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_last_study_id ' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+              }
+            },
+            error: function() {
+              $.gritter.add({
+                  title: 'Error!',
+                  text: 'Ha succeït un error!' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+            },
           }).done(function(data){
             /* Student Exists */
             if(data != false) {
@@ -1106,23 +1159,44 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     student_official_id : student_official_id
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/insert_update_user ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/insert_update_user ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
                 /* Student Exists */
                 if(data != false) {
-                  
                     var all_data = $.parseJSON(data);
                     all_data.student_official_id = student_official_id;
                     prepare_step1(all_data,"person");
                 /* Student doesn't exists, clear form data */
                 } else {
-                    console.debug("ERROR!");
+                    //console.debug("Student doesn't exists!");
                     return false;
                 }
 
               });
-
-              
           });
           
       
@@ -1202,7 +1276,31 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               $.ajax({
                 url:'<?php echo base_url("index.php/enrollment/generate_password");?>',
                 type: 'post',
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/generate_password ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/generate_password ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
                 data = $.parseJSON(data);
                 password = data['password'];
@@ -1224,7 +1322,31 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     student_official_id : student
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_student ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_student ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
 
                 /* Student Exists */
@@ -1379,6 +1501,30 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 url:'<?php echo base_url("index.php/enrollment/get_user_by_username");?>',
                 type: 'post',
                 datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_user_by_username ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_user_by_username ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
                 data: {
                   username : $("#username").val()
                 }
@@ -1525,7 +1671,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     student_official_id : student.student_official_id
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_student ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_student ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
 
                 /* Student NOT Exists */
@@ -1536,9 +1708,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                     // AJAX INSERT! action=insert
                     insert_update_user(student,"insert");
-
-                    prepare_step1(student,"student");
-
+                    
                     
                 } /* Student Exists */
                 else {           
@@ -1552,10 +1722,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                   // AJAX UPDATE. action=update
                   //Add person_id to person object:
-                  student.person_id = person.person_id;                  
-                  insert_update_user(student,"update");
+                  student.person_id = person.person_id;    
 
-                  prepare_step1(student,"student");
+                  insert_update_user(student,"update");                 
 
                 }
                 //END IF ELSE
@@ -1612,7 +1781,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             data: {
                 study_id : study_id,
             },
-            datatype: 'json'
+            datatype: 'json',
+            statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_study_law ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_study_law ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
           }).done(function(data){
 
              if(data != false) {
@@ -1647,7 +1842,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             data: {
                 study_id : study_id,
             },
-            datatype: 'json'
+            datatype: 'json',
+            statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_study_type ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_study_type ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
           }).done(function(data){
 
              if(data != false) {
@@ -1687,7 +1908,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     study_id : study_id
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/courses ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/courses ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
              
                 courses_ids = [];
@@ -1760,7 +2007,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     study_id : study_id,
                     course_id : course_id
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/classroom_group ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/classroom_group ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
 
                 classroom_groups = [];
@@ -1830,7 +2103,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     course_id : course_id,
                     courses_ids : courses_ids
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/study_modules ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/study_modules ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
                 //study_modules_data = data;
                 var $_study_module = $('#checkbox_study_module');
@@ -1952,7 +2251,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     study_module_ids : study_module_ids
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/all_study_submodules_by_modules ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/all_study_submodules_by_modules ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
 
                 $.each(JSON.parse(data), function(idx, obj) {
@@ -1976,7 +2301,33 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 data: {
                     study_id : study_id,
                 },
-                datatype: 'json'
+                datatype: 'json',
+                statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/all_study_submodules_by_study ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/all_study_submodules_by_study ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
               }).done(function(data){
 
                 study_module_emptied = [];
@@ -2040,11 +2391,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           study_submodules_ids = study_submodules_ids.toString().replace(/,/g ,"-");
 
-          console.debug("study_submodules_ids:" + study_submodules_ids);
+          //console.debug("study_submodules_ids:" + study_submodules_ids);
 
           //alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
 
-          console.debug("Before ajax request enrollment_wizard");
+          //console.debug("Before ajax request enrollment_wizard");
           // AJAX insert Enrollment data into database
           $.ajax({
             url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
@@ -2058,9 +2409,50 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     study_module_ids: study_module_ids,
                     study_submodules_ids: study_submodules_ids
                   },
-            datatype: 'json'
+            datatype: 'json',
+            statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/enrollment_wizard ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/enrollment_wizard ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
+                success: function() {
+                    bootbox.dialog({
+                    message: "La matrícula s'ha realitzat correctament!", 
+                    buttons: {
+                      "success" : {
+                        "label" : "OK",
+                        "className" : "btn-sm btn-primary",
+                        callback: function() {
+                                    window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
+                              }
+                      }
+                    }
+                  });  
+                },
           }).done(function(data){
               //Check errors!
+
           });
         }
       });  
@@ -2084,18 +2476,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           }
         }).on('finished', function(e) {
 
-          bootbox.dialog({
-            message: "La matrícula s'ha realitzat correctament!", 
-            buttons: {
-              "success" : {
-                "label" : "OK",
-                "className" : "btn-sm btn-primary",
-                callback: function() {
-                            window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
-                      }
-              }
-            }
-          });          
+          console.debug ("Form wizard finished!");             
+          
 
         }).on('stepclick', function(e){
           //return false;//prevent clicking on steps

@@ -1003,7 +1003,7 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
         
         if($person_official_id==false){
-                if(isset($_POST['student_official_id'])){
+            if(isset($_POST['student_official_id'])){
                 $official_id = $_POST['student_official_id'];
                 $student_data = $this->enrollment_model->get_student_data($official_id);
                 if($student_data){
@@ -1022,15 +1022,7 @@ public function get_previous_enrollments( $person_official_id = false ) {
                 return false;
             }            
         }
-/*
-        $resultat = array();
-
-        $enrollment_classroom_groups = $this->wizard_model->get_enrollment_classroom_groups($study);
-        foreach($enrollment_classroom_groups as $key => $value){
-            $resultat[$key]=$value;
-        }
-*/        
-
+        
     }
 
     public function courses() {
@@ -1748,6 +1740,7 @@ function insert_update_user()   {
         echo "Invalid person_email format\n";
         return false;
     }
+    //person_secondary_email is not mandatory! Check if exists!
     if ($student['person_secondary_email'] != "") {
 
         if (!filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {

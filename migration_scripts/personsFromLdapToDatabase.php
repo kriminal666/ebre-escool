@@ -269,8 +269,8 @@ for ($i=0; $i<$info["count"]; $i++  ) {
 		}
 	}
 
-	if (array_key_exists ( "telephonenumber" , $info[$i] )) {
-		$person_telephoneNumber= $info[$i]["telephonenumber"][0];	
+	if (array_key_exists ( "homephone" , $info[$i] )) {
+		$person_telephoneNumber= $info[$i]["homephone"][0];	
 	}
 	
 	if (array_key_exists ( "mobile" , $info[$i] )) {
