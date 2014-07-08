@@ -1701,7 +1701,12 @@ function insert_update_user()   {
     $student['person_sn2'] = $_POST['student_sn2'];
        
     $student['person_email'] = $_POST['student_username'] . "@iesebre.com";
-    $student['person_secondary_email'] = $_POST['student_secondary_email'];
+
+    $student['person_secondary_email'] = "";
+    if ($_POST['student_secondary_email'] != "") {
+        $student['person_secondary_email'] = $_POST['student_secondary_email'];    
+    }
+    
     
     $student['person_homePostalAddress'] = $_POST['student_homePostalAddress'];
     
@@ -1743,9 +1748,12 @@ function insert_update_user()   {
         echo "Invalid person_email format\n";
         return false;
     }
-    if (!filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid person_personal_email format\n";
-        return false;
+    if ($student['person_secondary_email'] != "") {
+
+        if (!filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
+            echo "Invalid person_personal_email format\n";
+            return false;
+        }
     }
 
     
