@@ -735,12 +735,12 @@ class enrollment_model  extends CI_Model  {
 		$affected_rows = 0;
 		$data = array();
 
-		print_r($submodules_id);
+		//print_r($submodules_id);
 		foreach($submodules_id as $elements){
 
 			$submodules_id = explode('#',$elements);
 
-			print_r($elements);
+			//print_r($elements);
 
 			if ($submodules_id[1]=="NULL") {
 				$data = array(
@@ -766,11 +766,14 @@ class enrollment_model  extends CI_Model  {
 			}
 		    
 
-	        $this->db->insert('enrollment_submodules',$data);
-			       
-			//echo $this->db->last_query();
-			$affected_rows += $this->db->affected_rows();
+	        $result = $this->db->insert('enrollment_submodules',$data);
 
+	        if ($result) {
+	        	//echo $this->db->last_query();
+				$affected_rows += $this->db->affected_rows();	
+	        } else {
+	        	return false;
+	        }
 		}
 
 		return $affected_rows;

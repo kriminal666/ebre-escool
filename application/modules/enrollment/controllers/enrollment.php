@@ -1255,6 +1255,37 @@ public function get_previous_enrollments( $person_official_id = false ) {
             $study_submodules_ids = explode('-',$study_submodules_ids);
             $study_module_ids = explode('-',$study_module_ids);
 
+            //CHECKS:
+            //person_id: Integer > 0 . Check person exists?
+
+            if ( !is_numeric($person_id) || ! ($person_id > 0)) {
+                $resultat['result_code'] = 201;
+                $resultat['result_message'] = "person_id is not numeric or is 0 or negative";
+                print_r(json_encode($resultat));
+                return false;
+            }
+
+            if ( !is_numeric($study_id) || ! ($study_id > 0)) {
+                $resultat['result_code'] = 202;
+                $resultat['result_message'] = "study_id is not numeric or is 0 or negative";
+                print_r(json_encode($resultat));
+                return false;
+            }
+
+            if ( !is_numeric($course_id) || ! ($course_id > 0)) {
+                $resultat['result_code'] = 203;
+                $resultat['result_message'] = "course_id is not numeric or is 0 or negative";
+                print_r(json_encode($resultat));
+                return false;
+            }
+
+            if ( !is_numeric($classroom_group_id) || ! ($classroom_group_id > 0)) {
+                $resultat['result_code'] = 204;
+                $resultat['result_message'] = "classroom_group_id is not numeric or is 0 or negative";
+                print_r(json_encode($resultat));
+                return false;
+            }
+
             //echo "<script>alert(".print_r($study_module_ids).")</script>";die();
             /*echo "<script>alert(".print_r($study_submodules_ids).")</script>";die();*/
 
@@ -1266,13 +1297,32 @@ public function get_previous_enrollments( $person_official_id = false ) {
                 //WHEN LOGSE SUBMODULES NOT EXISTS! --> 
                 //TODO LOGSE: study_module_ids is void. Create with study_module_ids and study_submodules_ids to NULL
                 if ( count($study_submodules_ids) == 0 )  {
-                    foreach ($study_module_ids as $study_module_id) {
-                        $study_submodules_ids[]= $study_module_id."#NULL";
-                    }
+                    //NOT INSERT ANY RECORD TO TABLE enrollment_submodules
+                    $resultat['result_code'] = 1;
+                    $resultat['result_message'] = "Enrollment done without errors. LOGSE? Any record inserted to enrollment_submodules table";
+                    $resultat['enrollment'] = $enrollment;
+                    $resultat['enrollment_submodules'] = $enrollment_submodules; 
+                }   else {
+                    $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids);
+                    if ($enrollment_submodules != false) {
+                        $resultat['result_code'] = 0;
+                        $resultat['result_message'] = "Enrollment done without errors";
+                        $resultat['enrollment'] = $enrollment;
+                        $resultat['enrollment_submodules'] = $enrollment_submodules;    
+                    } else {
+                        $resultat['result_code'] = 101;
+                            $resultat['result_message'] = "Error inserting enrollment to enrollment_submodules table!";
+                        }    
                 }
 
-                $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids);   
             }
+            else {
+                //ERROR
+                $resultat['result_code'] = 100;
+                $resultat['result_message'] = "Error inserting enrollment to enrollment table!";
+            }
+
+            print_r(json_encode($resultat));
             
             //OBSOLET
             //$enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id);
@@ -1281,14 +1331,7 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
             //$enrollment_modules = $this->enrollment_model->insert_enrollment_modules($period_id, $person_id, $study_id, $classroom_group_id, $study_module_ids);
 
-
-            $resultat['enrollment'] = $enrollment;
-            //$resultat['enrollment_studies'] = $enrollment_studies;
-            //$resultat['enrollment_class_group'] = $enrollment_class_group;
-            //$resultat['enrollment_modules'] = $enrollment_modules;
-            $resultat['enrollment_submodules'] = $enrollment_submodules;
-
-            print_r(json_encode($resultat));
+            
 
             /*
             CREATE TABLE IF NOT EXISTS `enrollment` (

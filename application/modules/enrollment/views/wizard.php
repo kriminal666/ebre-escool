@@ -2468,8 +2468,23 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                       class_name: 'gritter-error gritter-center'
                     });
                 },
-                success: function() {
-                    bootbox.dialog({
+          }).done(function(data){
+              //Check errors!
+              var all_data = $.parseJSON(data);
+              console.debug ("enrollment_wizard result code: " + all_data.result_code);
+              console.debug ("enrollment_wizard result_message: " + all_data.result_message);
+              console.debug ("enrollment records inserted: " + JSON.stringify(all_data.enrollment));
+              console.debug ("enrollment_submodules records inserted: " + JSON.stringify(all_data.enrollment_submodules));
+
+              if ( all_data.result_code != 0 || all_data.result_code != 0 ) {
+                //ERROR
+                $.gritter.add({
+                  title: 'Error al executar index.php/enrollment/enrollment_wizard!',
+                  text: 'Error code: ' + all_data.result_code + ' Error message: ' + all_data.result_message,
+                  class_name: 'gritter-error gritter-center'
+                });
+              } else {
+                bootbox.dialog({
                     message: "La matrícula s'ha realitzat correctament!", 
                     buttons: {
                       "success" : {
@@ -2477,14 +2492,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                         "className" : "btn-sm btn-primary",
                         callback: function() {
                                     window.location.href = "<?php echo base_url('index.php/enrollment/wizard');?>";
-                              }
+                                }
+                        }
                       }
-                    }
-                  });  
-                },
-          }).done(function(data){
-              //Check errors!
-
+                    });  
+              }
           });
         }
       });  
