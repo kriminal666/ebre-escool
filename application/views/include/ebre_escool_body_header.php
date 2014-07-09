@@ -464,11 +464,18 @@
             </a>
 
             <ul class="submenu">
-              <!-- els meus horaris -->
+              <!-- Enrollment wizard -->
               <li id="wizard">
                 <a href="<?php echo base_url('/index.php/enrollment/wizard'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('enrollment');?>
+                </a>
+              </li>
+              <!-- Enrollment query by person -->
+              <li id="enrollment_query_by_person">
+                <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_query_by_person');?>
                 </a>
               </li>
             </ul>
@@ -791,6 +798,17 @@
                 </a>
 
                 <ul class="submenu">
+                  <li id="person">
+                    <a href="<?php echo base_url('/index.php/persons'); ?>">
+                       <?php echo lang('persons');?>
+                    </a>
+                  </li>
+                  <li id="person_alt">
+                    <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/true'); ?>">
+                       <?php echo "Persones vista alternativa";?>
+                    </a>
+                  </li>
+
                   <li id="teachers">
                     <a href="<?php echo base_url('/index.php/teachers'); ?>">
                       <?php echo lang('teachers');?>
@@ -815,12 +833,6 @@
                     </a>
                   </li>
                   
-                  <li id="person">
-                    <a href="<?php echo base_url('/index.php/persons'); ?>">
-                       <?php echo lang('persons');?>
-                    </a>
-                  </li>
-
                   <li id="person_official_id_type">
                     <a href="<?php echo base_url('/index.php/persons/person_official_id_type'); ?>">
                       <?php echo lang('personal_id_type');?>

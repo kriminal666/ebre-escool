@@ -63,6 +63,8 @@ class enrollment extends skeleton_main {
         return $valuetoreturn;
     }
 
+
+
 /* ENROLLMENT */
 
 	public function enrollment($only_current_academic_period = false) {
@@ -672,6 +674,101 @@ function load_wizard_files($active_menu){
 
 }
 
+function load_wizard_files1($active_menu){
+
+    //CSS
+    $header_data= $this->add_css_to_html_header_data(
+        $this->_get_html_header_data(),
+        "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");                
+
+    $header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));  
+
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/select2.css')); 
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/modifications_select2.css')); 
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-fonts.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace.min.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-responsive.min.css'));
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            base_url('assets/css/ace-skins.min.css'));     
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+            'http://cdn.datatables.net/1.10.0/css/jquery.dataTables.css'); 
+    $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css')); 
+    /*                      
+    $header_data= $this->add_css_to_html_header_data(
+        $header_data,
+        base_url('assets/css/no_padding_top.css'));  
+    */
+
+    //JS
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/jquery-1.9.1.js");
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://code.jquery.com/ui/1.10.3/jquery-ui.js");   
+
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/ace-extra.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+            base_url('assets/js/ace-elements.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+            base_url('assets/js/ace.min.js'));    
+    $header_data= $this->add_javascript_to_html_header_data(
+                $header_data,
+                base_url('assets/js/ebre-escool.js'));  
+    
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/select2.min.js'));           
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.gritter.min.js'));          
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/fuelux.spinner.min.js'));         
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap-editable.min.js'));          
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/ace-editable.min.js'));       
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/bootstrap.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/typeahead-bs2.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        base_url('assets/js/jquery.maskedinput.min.js'));
+    $header_data= $this->add_javascript_to_html_header_data(
+        $header_data,
+        "http://cdn.datatables.net/1.10.0/js/jquery.dataTables.js");  
+    $header_data['menu']= $active_menu;
+
+    return $header_data;
+
+}
+
 function load_ace_files($active_menu,$header_data=false){
 
 
@@ -972,6 +1069,42 @@ public function get_previous_enrollments( $person_official_id = false ) {
        // FOOTER     
        $this->_load_body_footer(); 
 
+    }
+
+    public function enrollment_query_by_person($only_person_data = false) {
+
+        $active_menu = array();
+        if ($only_person_data == false) {
+            $active_menu['menu']='#enrollment_wizard';
+            $active_menu['submenu1']='#enrollment_query_by_person';    
+        } else {
+            $active_menu['menu']='#maintenances';
+            $active_menu['submenu1']='#persons';
+            $active_menu['submenu2']='#person_alt';
+        }
+        
+
+        $this->check_logged_user();
+
+        /* Ace */
+        $header_data= $this->load_wizard_files1($active_menu);
+        $this->_load_html_header($header_data); 
+
+
+        $data = array();
+
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        $localities = $this->enrollment_model->get_localities();
+
+        $data['all_person_official_ids'] = $all_person_official_ids;
+        $data['localities'] = $localities;
+       
+        // BODY       
+        $this->_load_body_header();
+        $this->load->view('enrollment_query_by_person.php',$data);     
+
+        // FOOTER     
+        $this->_load_body_footer(); 
     }
 
     public function get_study_law($study_id=false){
