@@ -101,12 +101,12 @@ $lang['day_code']="Codi dia";
 $lang['hour_code']="Codi hora";
 
 //Matrícules
-	$lang['periodid']="Periode";
+	$lang['periodid']="Període";
 	$lang['personid']="Persona";
 	$lang['study_id']="Estudi";
 	$lang['group_id']="Grup";
 	$lang['moduleid']="Mòdul";
-	$lang['submoduleid']="Sub-Mòdul";
+	$lang['submoduleid']="Submòdul";
 
 $lang['wizzard_official_DNI'] = 'DNI: ';
 $lang['wizzard_official_NIE'] = 'NIE: ';
@@ -128,6 +128,7 @@ $lang['wizzard_gender'] = 'Sexe: ';
 
 
 $lang['wizard'] = 'Assistent';
+$lang['enrollment_id'] = 'Id';
 $lang['enrollment_by_academic_period'] = 'Per períodes acadèmics';
 $lang['enrollment_only_current_period'] = 'Matrícula període acadèmic actual';
 $lang['enrollment_academic_period'] = 'Període';

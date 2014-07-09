@@ -91,7 +91,7 @@ class enrollment extends skeleton_main {
         $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
-
+        $this->grocery_crud->display_as($this->current_table.'_id',lang('enrollment_id'));  
         $this->grocery_crud->display_as($this->current_table.'_periodid',lang('periodid'));        
         $this->grocery_crud->display_as($this->current_table.'_personid',lang('personid'));
         $this->grocery_crud->display_as($this->current_table.'_study_id',lang('enrollment_studies'));
@@ -123,6 +123,11 @@ class enrollment extends skeleton_main {
         if ($only_current_academic_period) {
             $this->grocery_crud->where($this->current_table.'_periodid','2014-15');
         }
+
+        $this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_periodid',$this->current_table.'_personid',
+            $this->current_table.'_study_id',$this->current_table.'_course_id',$this->current_table.'_group_id',
+            $this->current_table.'_entryDate',$this->current_table.'_last_update',$this->current_table.'_creationUserId',
+            $this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',$this->current_table.'_markedForDeletionDate');
 
         $this->renderitzar($this->current_table,$header_data);                   
 
@@ -157,7 +162,8 @@ class enrollment extends skeleton_main {
         //COMMON_COLUMNS               
         $this->set_common_columns_name($this->current_table);
 
-        //SPECIFIC COLUMNS
+        ///SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',lang('enrollment_id')); 
         $this->grocery_crud->display_as($this->current_table.'_moduleid',lang('moduleid'));             
         $this->grocery_crud->display_as($this->current_table.'_submoduleid',lang('submoduleid'));               
 
@@ -179,6 +185,11 @@ class enrollment extends skeleton_main {
         $this->set_dialogforms($this->grocery_crud);
 
         $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_enrollment_id',$this->current_table.'_moduleid',
+            $this->current_table.'_submoduleid',$this->current_table.'_entryDate',$this->current_table.'_last_update',
+            $this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',
+            $this->current_table.'_markedForDeletionDate');
                    
         $this->renderitzar($this->current_table,$header_data);  ;
     }
@@ -1022,7 +1033,7 @@ public function get_previous_enrollments( $person_official_id = false ) {
                 return false;
             }            
         }
-        
+
     }
 
     public function courses() {
