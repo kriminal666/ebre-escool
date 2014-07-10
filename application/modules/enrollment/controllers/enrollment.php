@@ -970,7 +970,12 @@ public function get_last_study_id () {
 
 public function get_previous_enrollments( $person_official_id = false ) {
 
-    $previous_enrollments = $this->enrollment_model->get_previous_enrollments($person_official_id);
+    $previous_enrollments = array();
+
+    if ( ! ($person_official_id == false) ) {
+        $previous_enrollments = $this->enrollment_model->get_previous_enrollments($person_official_id);    
+    }
+    
 
     echo '{
     "aaData": ';
@@ -978,31 +983,6 @@ public function get_previous_enrollments( $person_official_id = false ) {
     print_r(json_encode($previous_enrollments));
 
     echo '}';
-    
-    /*echo '{
-    "aaData": [
-        {
-          "academicperiod": "2010-11",
-          "study": "Estudi 1",
-          "course": "Curs 1"
-        },
-        {
-          "academicperiod": "2011-12",
-          "study": "SMX",
-          "course": "Curs 2"
-        },
-        {
-          "academicperiod": "2012-13",
-          "study": "SMX",
-          "course": "Curs 3"
-        },
-        {
-          "academicperiod": "2011-12",
-          "study": "ASIX-DAM",
-          "course": "Curs 4"
-        }
-      ]
-    }';*/
 
 }
 
@@ -1141,6 +1121,59 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
     }
 
+    public function get_student_enrollment_info($person_id=false, $period_id=false) {
+        if($person_id==false){
+            if(isset($_POST['person_id'])){
+                if($period_id==false){
+                    if(isset($_POST['period_id'])) {
+                        $person_id = $_POST['person_id'];
+                        $period_id = $_POST['period_id'];
+                        $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data($person_id,$period_id);
+                        if($student_enrollment_data){
+                            print_r(json_encode($student_enrollment_data));
+                        } else {
+                            return false;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                } else {
+                    $person_id = $_POST['person_id'];
+                    $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data($person_id,$period_id);
+                    if($student_enrollment_data){
+                        print_r(json_encode($student_enrollment_data));
+                    } else {
+                        return false;
+                    }
+                }
+
+            } else {
+                return false;
+            }
+        } else {
+            if($period_id==false) {
+                if(isset($_POST['period_id'])) {
+                    $period_id = $_POST['period_id'];
+                    $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data($person_id,$period_id);
+                    if($student_enrollment_data){
+                        print_r(json_encode($student_enrollment_data));
+                    } else {
+                        return false;
+                    }            
+                } else {
+                    return false;
+                }
+            } else {
+                $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data($person_id,$period_id);
+                if($student_enrollment_data){
+                    print_r(json_encode($student_enrollment_data));
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
     
 
     public function check_student($person_official_id=false) {
@@ -1155,6 +1188,8 @@ public function get_previous_enrollments( $person_official_id = false ) {
                 } else {
                     return false;
                 }
+            } else {
+                return false;
             }
         } else {
             $official_id = $person_official_id;
