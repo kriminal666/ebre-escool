@@ -136,12 +136,16 @@ class enrollment_model  extends CI_Model  {
 	    */
 
 	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
-	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id,classroom_group_id,classroom_group_code,classroom_group_shortName,course_id,course_shortname,course_name');
+	    				   person_official_id,enrollment_study_id,studies_shortname,studies_name,studies_id,classroom_group_id,
+	    				   classroom_group_code,classroom_group_shortName,course_id,course_shortname,course_name,studies_law_shortname,
+	    				   studies_organizational_unit_shortname');
 		$this->db->from('enrollment');
 		$this->db->join('person','person.person_id = enrollment.enrollment_personid');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
 		$this->db->join('course','course.course_id = enrollment.enrollment_course_id');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		$this->db->join('studies_law','studies.studies_studies_law_id = studies_law.studies_law_id');
+		$this->db->join('studies_organizational_unit','studies.studies_studies_organizational_unit_id = studies_organizational_unit.studies_organizational_unit_id');
 
 		$this->db->where('person_official_id',$person_official_id);
 
@@ -158,16 +162,71 @@ class enrollment_model  extends CI_Model  {
 
 			$i=0;
 			foreach ($query->result_array() as $row)	{
-   				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+				$previous_enrollments[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+				$previous_enrollments[$i]['enrollment_id'] = $row['enrollment_id'];
    				$previous_enrollments[$i]['studies_shortname'] = $row['studies_shortname'];
    				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
-   				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'];
+   				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'] . " - " . $row['studies_law_shortname'] . " - " . $row['studies_organizational_unit_shortname'] ;
    				$previous_enrollments[$i]['course_shortname'] = $row['course_shortname'] . ". " . $row['course_name'];
    				$previous_enrollments[$i]['classroomgroup_shortname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
    				$i++;
 			}
 		}			
 		return $previous_enrollments;
+	}
+
+	public function get_enrollment_study_modules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
+
+		/*
+		SELECT DISTINCT enrollment_periodid,enrollment_id,study_module_id, study_module_external_code,study_module_shortname, study_module_name,study_module_courseid,course.course_shortName,course.course_name,study_module_hoursPerWeek
+		FROM study_module
+		INNER JOIN enrollment_submodules ON enrollment_submodules.enrollment_submodules_moduleid = study_module.study_module_id
+		INNER JOIN enrollment ON enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id
+		INNER JOIN course ON course.course_id = study_module.study_module_courseid
+		WHERE enrollment_periodid = "2014-15" AND enrollment_id=4326
+		ORDER BY study_module_order ASC
+		*/
+
+	    $this->db->select('enrollment_periodid,enrollment_id,study_module_id, study_module_external_code,study_module_shortname, study_module_name,
+	    				   study_module_courseid,course.course_shortName,course.course_name,study_module_hoursPerWeek,study_module_order');
+	    $this->db->distinct();
+		$this->db->from('study_module');
+		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_moduleid = study_module.study_module_id');
+		$this->db->join('enrollment','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id');
+		$this->db->join('course','course.course_id = study_module.study_module_courseid');
+
+		$this->db->where('enrollment_periodid',$period);
+		$this->db->where('enrollment_id',$enrollment_id);
+
+		$this->db->order_by('study_module_order', $orderby);
+
+		       
+        $query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		$enrollment_study_modules = array();
+		
+		if ($query->num_rows() > 0) {
+
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+				$enrollment_study_modules[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+				$enrollment_study_modules[$i]['enrollment_id'] = $row['enrollment_id'];
+   				$enrollment_study_modules[$i]['study_module_id'] = $row['study_module_id'];
+   				$enrollment_study_modules[$i]['study_module_external_code'] = $row['study_module_external_code'];
+   				$enrollment_study_modules[$i]['study_module_shortname'] = $row['study_module_shortname'];   				
+   				$enrollment_study_modules[$i]['study_module_name'] = $row['study_module_name'];
+   				$enrollment_study_modules[$i]['study_module_courseid'] = $row['study_module_courseid'];
+   				$enrollment_study_modules[$i]['study_module_course_shortName'] = $row['course_shortName'];
+   				$enrollment_study_modules[$i]['study_module_course_name'] = $row['course_name'];
+   				$enrollment_study_modules[$i]['study_module_course'] = $row['course_shortName'] . " - " . $row['course_name'];
+   				$enrollment_study_modules[$i]['study_module_hoursPerWeek'] = $row['study_module_hoursPerWeek'];
+   				$enrollment_study_modules[$i]['study_module_order'] = $row['study_module_order'];   				
+   				$i++;
+			}
+		}			
+		return $enrollment_study_modules;
 	}
 
 	/* Localities */

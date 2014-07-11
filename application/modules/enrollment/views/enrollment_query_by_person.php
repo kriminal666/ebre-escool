@@ -264,6 +264,7 @@
                            <thead style="background-color: #d9edf7;">
                             <tr> 
                                <th>Període acadèmic</th>
+                               <th>Id</th>
                                <th>Estudi</th>
                                <th>Curs</th>
                                <th>Grup de classe</th>
@@ -295,6 +296,15 @@
                         <div style="margin:10px;">
                           <div class="row-fluid">
                             <div class="span12">
+                                <div class="span1">
+                                    <div class="control-group">
+                                      <label class="control-label" for="student_givenName"><?php echo "Id"?></label>
+
+                                      <div class="controls">
+                                         <input id="enrollment_id" type="text" name="enrollment_id"  readonly="true" style="width:100%;"/>
+                                      </div>
+                                    </div>
+                                </div>
                                 <div class="span6">
                                     <div class="control-group">
                                       <label class="control-label" for="student_givenName"><?php echo "Estudi"?></label>
@@ -304,7 +314,7 @@
                                       </div>
                                     </div>
                                 </div>
-                                <div class="span6">
+                                <div class="span5">
                                     <div class="control-group">
                                       <label class="control-label" for="student_givenName"><?php echo "Curs"?></label>
 
@@ -375,7 +385,7 @@
                             <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules">
                              <thead style="background-color: #d9edf7;">
                               <tr> 
-                                 <th colspan="8" ><b>Unitats formatives<b/></th>
+                                 <th colspan="9" ><b>Unitats formatives<b/></th>
                               </tr>
                               <tr> 
                                  <th>Id</th>
@@ -426,7 +436,8 @@
 <script type="text/javascript">
 
 //DEFAULT PERIOD
-var periode = "2013-14";
+var periode = "2014-15";
+var enrollment_id = "";
 $('#period_title').html(periode);
 
 var previous_enrollments_table;
@@ -485,10 +496,13 @@ function refresh_enrollment_info(person_id, periode) {
           studies_name = all_data['studies_shortname'] + ". " + all_data['studies_name']; 
           course_name = all_data['course_shortname'] + ". " + all_data['course_name']; 
           classroom_group_name = all_data['classroom_group_code'] + ". " + all_data['classroom_group_name'];
+          enrollment_id = all_data['enrollment_id'];
           
           $("input[name$='enrollment_study']").val(studies_name);
           $("input[name$='enrollment_course']").val(course_name);
           $("input[name$='enrollment_classroom_group']").val(classroom_group_name);
+          $("input[name$='enrollment_id']").val(enrollment_id);
+          
           
 
         } else { //ENROLLMENT INFO NOT EXISTS
@@ -524,6 +538,7 @@ jQuery(function($) {
     ajax: "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>/" + student_official_id,
     "aoColumns": [
       { "mData": "enrollment_periodid" },
+      { "mData": "enrollment_id" },
       { "mData": "studies" },
       { "mData": "course_shortname" },
       { "mData": "classroomgroup_shortname" }
@@ -551,19 +566,100 @@ jQuery(function($) {
     }
   } );
   
+  study_modules_table = $('#study_modules').dataTable( {
+    "bDestroy": true,
+    ajax: "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/" + enrollment_id + "/" + periode,
+    "aoColumns": [
+      { "mData": "study_module_id" },
+      { "mData": "study_module_external_code" },
+      { "mData": "study_module_shortname" },
+      { "mData": "study_module_name" },
+      { "mData": "study_module_course" },
+      { "mData": "study_module_hoursPerWeek" }
+    ],
+    "bPaginate": false,
+    "bFilter": false,
+    "bInfo": false,
+    "bSort": false,
+    "oLanguage": {
+                "sProcessing":   "Processant...",
+                "sLengthMenu":   "Mostra _MENU_ registres",
+                "sZeroRecords":  "No s'han trobat registres.",
+                "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                "sInfoPostFix":  "",
+                "sSearch":       "Filtrar:",
+                "sUrl":          "",
+                "oPaginate": {
+                        "sFirst":    "Primer",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Següent", 
+                        "sLast":     "Últim"    
+                }
+    }
+  } );
+
+study_submodules_table = $('#study_submodules').dataTable( {
+    "bDestroy": true,
+    ajax: "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/" + student_official_id + "/" + periode,
+    "aoColumns": [
+      { "mData": "enrollment_periodid" },
+      { "mData": "studies" },
+      { "mData": "course_shortname" },
+      { "mData": "classroomgroup_shortname" }
+    ],
+    "bPaginate": false,
+    "bFilter": false,
+    "bInfo": false,
+    "bSort": false,
+    "oLanguage": {
+                "sProcessing":   "Processant...",
+                "sLengthMenu":   "Mostra _MENU_ registres",
+                "sZeroRecords":  "No s'han trobat registres.",
+                "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                "sInfoPostFix":  "",
+                "sSearch":       "Filtrar:",
+                "sUrl":          "",
+                "oPaginate": {
+                        "sFirst":    "Primer",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Següent", 
+                        "sLast":     "Últim"    
+                }
+    }
+  } );
+
   //Change period on click
   $('#previous_enrollments tbody').on( 'click', 'tr', function () {
       //console.debug("click on row!");
       //change period
       periode = $(this).closest('tr').find('td:first').text();
+      enrollment_id = $(this).closest('tr').find('td:nth-child(2)').text();
       person_id = $('#person_id').val();
 
-      console.debug("periode: " + periode);
-      console.debug("person_id: " + person_id);
+      //console.debug("periode: " + periode);
+      //console.debug("person_id: " + person_id);
+
+      if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            previous_enrollments_table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+      }
       
+      //Refresh enrollment info
       refresh_enrollment_info(person_id,periode);
 
-      //Refresh enrollment info
+      //RELOAD STUDY MODULES DATATABLES
+      get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/";
+      complete_url = get_enrollment_study_modules_url + enrollment_id + "/" + periode;
+      //console.debug(complete_url);
+      study_modules_table.api().ajax.url(complete_url);
+      study_modules_table.api().ajax.reload();
 
       //console.debug( "Selected period:" + selected_period );
 
@@ -623,7 +719,7 @@ jQuery(function($) {
             });
           
             var all_data = $.parseJSON(data);
-            console.debug(JSON.stringify(all_data));
+            //console.debug(JSON.stringify(all_data));
             $.each(all_data, function(idx,obj) {
               
               /* Fill form with student data from Database */
@@ -665,6 +761,22 @@ jQuery(function($) {
 
             //GET/REFRESH ENROLLMENT_INFO
             refresh_enrollment_info(all_data['person_id'],periode);
+
+            //RELOAD STUDY MODULES DATATABLES
+            get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/";
+            complete_url = get_enrollment_study_modules_url + all_data['enrollment_id'] + "/" + periode;
+            //console.debug(complete_url);
+            study_modules_table.api().ajax.url(complete_url);
+            study_modules_table.api().ajax.reload();
+
+            //RELOAD STUDY SUBMODULES DATATABLES
+            get_enrollment_study_submodules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/";
+            //console.debug(previous_enrollments_table);
+            //console.debug(JSON.stringify(previous_enrollments_table));
+            complete_url2 = get_enrollment_study_submodules_url + all_data['enrollment_id'] + "/" + periode;
+            //console.debug(complete_url);
+            study_submodules_table.api().ajax.url(complete_url2);
+            study_submodules_table.api().ajax.reload();
 
 
           /* Student doesn't exists, clear form data */

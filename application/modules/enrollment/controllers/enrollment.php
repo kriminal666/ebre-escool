@@ -986,6 +986,42 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
 }
 
+public function get_enrollment_study_modules( $enrollment_id = false, $period = false) {
+
+    $study_modules = array();
+
+    if ( ! ($enrollment_id == false) ) {
+        $study_modules = $this->enrollment_model->get_enrollment_study_modules_by_enrollment_id_and_period($enrollment_id,$period );    
+    }    
+
+    echo '{
+    "aaData": ';
+
+    print_r(json_encode($study_modules));
+
+    echo '}';
+
+}
+
+public function get_enrollment_study_submodules( $person_official_id = false, $period = false ) {
+
+    $study_submodules = array();
+
+    if ( ! ($person_official_id == false) ) {
+        $study_submodules = $this->enrollment_model->get_enrollment_study_submodules($person_official_id,$period );    
+    }
+    
+
+    echo '{
+    "aaData": ';
+
+    print_r(json_encode($study_submodules));
+
+    echo '}';
+
+}
+
+
 /* Enrollment Wizzard */
 
     public function wizard($study=false,$classroom_group=false,$study_modules=false) {
