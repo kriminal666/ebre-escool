@@ -175,6 +175,70 @@ class enrollment_model  extends CI_Model  {
 		return $previous_enrollments;
 	}
 
+	public function get_enrollment_study_submodules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
+
+		/*
+		SELECT DISTINCT enrollment_periodid,enrollment_id,study_submodules_id, study_module_shortname, study_module_name , study_submodules_shortname, study_submodules_name, study_submodules_courseid,course.course_shortName,course.course_name,study_submodules_initialDate, study_submodules_endDate,study_submodules_totalHours,study_submodules_order
+		FROM study_submodules
+		INNER JOIN study_module ON study_submodules.study_submodules_study_module_id = study_module.study_module_id
+		INNER JOIN enrollment_submodules ON enrollment_submodules.enrollment_submodules_submoduleid = study_submodules.study_submodules_id
+		INNER JOIN enrollment ON enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id
+		INNER JOIN course ON course.course_id = study_submodules.study_submodules_courseid
+		WHERE enrollment_periodid = "2014-15" AND enrollment_id=4326
+		ORDER BY study_module_order ASC,study_submodules_order ASC
+		*/
+
+	    $this->db->select('enrollment_periodid,enrollment_id,study_submodules_id, study_module_shortname, study_module_name , 
+	    				   study_submodules_shortname, study_submodules_name, study_submodules_courseid,course.course_shortName,
+	    				   course.course_name,study_submodules_initialDate, study_submodules_endDate,study_submodules_totalHours,
+	    				   study_module_order, study_submodules_order');
+	    $this->db->distinct();
+		$this->db->from('study_submodules');
+		$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id');
+		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_submoduleid = study_submodules.study_submodules_id');
+		$this->db->join('enrollment','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id');
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
+
+		$this->db->where('enrollment_periodid',$period);
+		$this->db->where('enrollment_id',$enrollment_id);
+
+		$this->db->order_by('study_module_order', $orderby);
+		$this->db->order_by('study_submodules_order', $orderby);
+
+		       
+        $query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		$enrollment_study_submodules = array();
+		
+		if ($query->num_rows() > 0) {
+
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+				$enrollment_study_submodules[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+				$enrollment_study_submodules[$i]['enrollment_id'] = $row['enrollment_id'];
+   				$enrollment_study_submodules[$i]['study_submodules_id'] = $row['study_submodules_id'];
+   				$enrollment_study_submodules[$i]['study_submodules_module_name'] = $row['study_module_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_module_shortname'] = $row['study_submodules_shortname'];
+   				$enrollment_study_submodules[$i]['study_submodules_module'] = $row['study_submodules_shortname'] . " - " . $row['study_module_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_shortname'] = $row['study_module_shortname'];
+   				$enrollment_study_submodules[$i]['study_submodules_name'] = $row['study_submodules_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_courseid'] = $row['study_submodules_courseid'];
+   				$enrollment_study_submodules[$i]['study_submodules_course_shortName'] = $row['course_shortName'];
+   				$enrollment_study_submodules[$i]['study_submodules_course_name'] = $row['course_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_course'] = $row['course_shortName'] . " - " . $row['course_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_initialDate'] = $row['study_submodules_initialDate'];
+   				$enrollment_study_submodules[$i]['study_submodules_endDate'] = $row['study_submodules_endDate'];
+   				$enrollment_study_submodules[$i]['study_submodules_totalHours'] = $row['study_submodules_totalHours'];   				
+   				$enrollment_study_submodules[$i]['study_module_order'] = $row['study_module_order'];   				
+   				$enrollment_study_submodules[$i]['study_submodules_order'] = $row['study_submodules_order'];   				
+   				$i++;
+			}
+		}			
+		return $enrollment_study_submodules;
+	}
+
 	public function get_enrollment_study_modules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
 
 		/*
@@ -658,6 +722,31 @@ class enrollment_model  extends CI_Model  {
 
 		$this->db->where('person.person_id',$person_id);
 		$this->db->where('enrollment.enrollment_periodid',$period_id);
+		$this->db->limit(1);		       
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() == 1) {
+
+			return $query->row();
+		}			
+		else
+			return false;
+	}	
+
+	public function get_student_enrollment_data_by_enrollment_id($enrollment_id) {
+
+        $this->db->select('person_id, enrollment_id, enrollment_periodid, enrollment_personid, enrollment_study_id, studies_shortname , studies_name,
+        				   enrollment_course_id,course_shortname, course_name, enrollment_group_id,classroom_group_code,classroom_group_shortName,
+        				   classroom_group_name, enrollment_entryDate, enrollment_last_update,
+        				   enrollment_creationUserId, enrollment_lastupdateUserId');
+		$this->db->from('person');
+		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
+		$this->db->join('course','course.course_id = enrollment.enrollment_course_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+
+		$this->db->where('enrollment.enrollment_id',$enrollment_id);
 		$this->db->limit(1);		       
 		$query = $this->db->get();
 		//echo $this->db->last_query();

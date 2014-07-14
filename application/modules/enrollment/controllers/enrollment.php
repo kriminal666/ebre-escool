@@ -1003,12 +1003,12 @@ public function get_enrollment_study_modules( $enrollment_id = false, $period = 
 
 }
 
-public function get_enrollment_study_submodules( $person_official_id = false, $period = false ) {
+public function get_enrollment_study_submodules( $enrollment_id = false, $period = false ) {
 
     $study_submodules = array();
 
-    if ( ! ($person_official_id == false) ) {
-        $study_submodules = $this->enrollment_model->get_enrollment_study_submodules($person_official_id,$period );    
+    if ( ! ($enrollment_id == false) ) {
+        $study_submodules = $this->enrollment_model->get_enrollment_study_submodules_by_enrollment_id_and_period($enrollment_id,$period );    
     }
     
 
@@ -1157,7 +1157,23 @@ public function get_enrollment_study_submodules( $person_official_id = false, $p
 
     }
 
-    public function get_student_enrollment_info($person_id=false, $period_id=false) {
+    public function get_student_enrollment_info($person_id=false, $period_id=false, $enrollment_id=false) {
+
+        if ( ( $enrollment_id != false ) || (isset($_POST['enrollment_id']) && $_POST['enrollment_id'] != "false" ) ) {
+            if ( $enrollment_id != false ) {
+                $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data_by_enrollment_id($enrollment_id);
+            } else {
+                $student_enrollment_data = $this->enrollment_model->get_student_enrollment_data_by_enrollment_id($_POST['enrollment_id']);
+            }
+            
+            if($student_enrollment_data){
+                print_r(json_encode($student_enrollment_data));
+                return;
+            } else {
+                return false;                
+            }
+        }
+        
         if($person_id==false){
             if(isset($_POST['person_id'])){
                 if($period_id==false){

@@ -366,7 +366,7 @@
                             </div>  
                           </div>  
                           <div class="row-fluid">
-                            <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules">
+                            <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_table">
                              <thead style="background-color: #d9edf7;">
                               <tr> 
                                  <th colspan="6"><b>Mòduls professionals<b/></th>
@@ -382,7 +382,7 @@
                               </tr>
                              </thead>
                             </table> 
-                            <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules">
+                            <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_table">
                              <thead style="background-color: #d9edf7;">
                               <tr> 
                                  <th colspan="9" ><b>Unitats formatives<b/></th>
@@ -443,7 +443,10 @@ $('#period_title').html(periode);
 var previous_enrollments_table;
 
 
-function refresh_enrollment_info(person_id, periode) {
+function refresh_enrollment_info(person_id, periode, enrollment_id) {
+
+  current_enrollment_id = "";
+
   //Change enrollment table title
   $('#period_title').html(periode);
 
@@ -453,6 +456,7 @@ function refresh_enrollment_info(person_id, periode) {
       data: {
           person_id : person_id,
           period_id : periode,
+          enrollment_id : enrollment_id
       },
       datatype: 'json',
       statusCode: {
@@ -503,15 +507,26 @@ function refresh_enrollment_info(person_id, periode) {
           $("input[name$='enrollment_classroom_group']").val(classroom_group_name);
           $("input[name$='enrollment_id']").val(enrollment_id);
           
-          
+          //RELOAD STUDY MODULES DATATABLES
+          get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/";
+          complete_url = get_enrollment_study_modules_url + enrollment_id + "/" + periode;
+          study_modules_table.api().ajax.url(complete_url);
+          study_modules_table.api().ajax.reload(); 
+
+          //RELOAD STUDY MODULES DATATABLES
+          get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/";
+          complete_url = get_enrollment_study_modules_url + enrollment_id + "/" + periode;
+          //console.debug(complete_url);
+          study_submodules_table.api().ajax.url(complete_url);
+          study_submodules_table.api().ajax.reload(); 
 
         } else { //ENROLLMENT INFO NOT EXISTS
           console.debug("Enrollment data does not exists");
         }
 
   });
-
-
+  
+  return current_enrollment_id;
 }
 
 
@@ -566,7 +581,7 @@ jQuery(function($) {
     }
   } );
   
-  study_modules_table = $('#study_modules').dataTable( {
+  study_modules_table = $('#study_modules_table').dataTable( {
     "bDestroy": true,
     ajax: "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/" + enrollment_id + "/" + periode,
     "aoColumns": [
@@ -600,14 +615,18 @@ jQuery(function($) {
     }
   } );
 
-study_submodules_table = $('#study_submodules').dataTable( {
+study_submodules_table = $('#study_submodules_table').dataTable( {
     "bDestroy": true,
-    ajax: "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/" + student_official_id + "/" + periode,
+    ajax: "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/" + enrollment_id + "/" + periode,
     "aoColumns": [
-      { "mData": "enrollment_periodid" },
-      { "mData": "studies" },
-      { "mData": "course_shortname" },
-      { "mData": "classroomgroup_shortname" }
+      { "mData": "study_submodules_id" },
+      { "mData": "study_submodules_module" },
+      { "mData": "study_submodules_shortname" },
+      { "mData": "study_submodules_name" },      
+      { "mData": "study_submodules_course" },
+      { "mData": "study_submodules_totalHours" },
+      { "mData": "study_submodules_initialDate" },
+      { "mData": "study_submodules_endDate"}
     ],
     "bPaginate": false,
     "bFilter": false,
@@ -640,8 +659,9 @@ study_submodules_table = $('#study_submodules').dataTable( {
       enrollment_id = $(this).closest('tr').find('td:nth-child(2)').text();
       person_id = $('#person_id').val();
 
-      //console.debug("periode: " + periode);
-      //console.debug("person_id: " + person_id);
+      console.debug("periode: " + periode);
+      console.debug("person_id: " + person_id);
+      console.debug("enrollment_id: " + enrollment_id);
 
       if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
@@ -651,17 +671,8 @@ study_submodules_table = $('#study_submodules').dataTable( {
             $(this).addClass('selected');
       }
       
-      //Refresh enrollment info
-      refresh_enrollment_info(person_id,periode);
-
-      //RELOAD STUDY MODULES DATATABLES
-      get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/";
-      complete_url = get_enrollment_study_modules_url + enrollment_id + "/" + periode;
-      //console.debug(complete_url);
-      study_modules_table.api().ajax.url(complete_url);
-      study_modules_table.api().ajax.reload();
-
-      //console.debug( "Selected period:" + selected_period );
+      //Refresh enrollment info AND STUDY MODULES $ STUDY_SUBMODULES DATATABLES
+      refresh_enrollment_info(person_id,periode,enrollment_id);
 
   } );
 
@@ -759,25 +770,8 @@ study_submodules_table = $('#study_submodules').dataTable( {
             previous_enrollments_table.api().ajax.url(get_previous_enrollments_url + all_data['person_official_id']);
             previous_enrollments_table.api().ajax.reload();
 
-            //GET/REFRESH ENROLLMENT_INFO
-            refresh_enrollment_info(all_data['person_id'],periode);
-
-            //RELOAD STUDY MODULES DATATABLES
-            get_enrollment_study_modules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_modules');?>/";
-            complete_url = get_enrollment_study_modules_url + all_data['enrollment_id'] + "/" + periode;
-            //console.debug(complete_url);
-            study_modules_table.api().ajax.url(complete_url);
-            study_modules_table.api().ajax.reload();
-
-            //RELOAD STUDY SUBMODULES DATATABLES
-            get_enrollment_study_submodules_url = "<?php echo base_url('index.php/enrollment/get_enrollment_study_submodules');?>/";
-            //console.debug(previous_enrollments_table);
-            //console.debug(JSON.stringify(previous_enrollments_table));
-            complete_url2 = get_enrollment_study_submodules_url + all_data['enrollment_id'] + "/" + periode;
-            //console.debug(complete_url);
-            study_submodules_table.api().ajax.url(complete_url2);
-            study_submodules_table.api().ajax.reload();
-
+            //GET/REFRESH ENROLLMENT_INFO AND STUDY MODULES ANS SUBMODULES TABLES
+            enrollment_id = refresh_enrollment_info(all_data['person_id'],periode,false);
 
           /* Student doesn't exists, clear form data */
           } else {
