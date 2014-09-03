@@ -116,6 +116,8 @@ foreach($all_secretaria as $secretaria){
 		$secretaria = array();
 
 		/* CONSERGES */
+		//echo "CONSERGES:<br/>";
+		//print_r($all_conserges);
 		foreach($all_conserges as $cons) {
 /*
 echo $cons->givenName;
@@ -124,6 +126,7 @@ echo $cons->sn2;
 echo $cons->photo_url;
 */
 			//$nom = explode(" ",rtrim($cons['name']));
+			//echo "&nbsp;NOM: $cons->givenName<br/>";
 			$conserge[$contador]['name']=$cons->givenName;//$nom[0];
 			$conserge[$contador]['sn']=$cons->sn1." ".$cons->sn2;//$nom[1];
 			$conserge[$contador]['photo']=base_url('uploads/person_photos')."/".$cons->photo_url;
@@ -166,8 +169,11 @@ echo $cons->photo_url;
 		$contador = 0;
 
 		/* SECRETARIES */
+		//echo "SECRETARIES:<br/<";
+		//print_r($all_secretaria);
 		foreach($all_secretaria as $secr) {
 
+			//echo "&nbsp;NOM: $secr->givenName<br/>";
 			$secretaria[$contador]['name']=$secr->givenName;//$nom[0];
 			$secretaria[$contador]['sn']=$secr->sn1." ".$secr->sn2;//$nom[1];
 			$secretaria[$contador]['photo']=base_url('uploads/person_photos')."/".$secr->photo_url;
@@ -217,19 +223,28 @@ echo $cons->photo_url;
 
 		/* PROFESSORS */
 		// Guardo les dades dels professors en un array
+		//echo "TEACHERS:<br/<";
 		foreach($all_teachers as $teacher) {
-
+			//echo "$teacher->givenName $teacher->sn1 $teacher->sn2 FOTO: $teacher->photo_url<br/>";
+			
 			$professor[$contador]['code']=$teacher->teacher_id;
 			$professor[$contador]['name']=$teacher->givenName;
 			$professor[$contador]['sn1']=$teacher->sn1;
 			$professor[$contador]['sn2']=$teacher->sn2;
 
-			if( file_exists(getcwd().'/uploads/person_photos/'.$teacher->photo_url)) {
+			$photo_url = trim($teacher->photo_url);
+
+			if ($photo_url != "") {
+				if( file_exists(getcwd().'/uploads/person_photos/'.$photo_url )) {
 			
-				$professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+					$professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+				} else {
+					$professor[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
+				}
 			} else {
 				$professor[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
 			}
+			
 
 			$professor[$contador]['carrec']="Càrrec ".$professor[$contador]['code'];
 			

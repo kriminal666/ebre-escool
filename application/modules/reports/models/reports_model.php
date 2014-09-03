@@ -34,7 +34,7 @@ class reports_model  extends CI_Model  {
 		$this->db->join('person','teacher_person_id = person_id');
 		$query = $this->db->get();
 
-		//echo $this->db->last_query();
+		//echo $this->db->last_query()."<br/>";
 		
 		if ($query->num_rows() > 0) {
 		
@@ -67,7 +67,7 @@ class reports_model  extends CI_Model  {
 		$this->db->where('employees_type_id',1);
 		$query = $this->db->get();
 
-		//echo $this->db->last_query();
+		//echo $this->db->last_query()."<br/>";
 		
 		if ($query->num_rows() > 0) {
 		
@@ -101,7 +101,7 @@ class reports_model  extends CI_Model  {
 		$this->db->order_by('person_sn1','asc');
 		$query = $this->db->get();
 
-		//echo $this->db->last_query();
+		//echo $this->db->last_query()."<br/>";
 		
 		if ($query->num_rows() > 0) {
 		
