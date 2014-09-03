@@ -36,7 +36,7 @@
                     </button>
 
                     <i class="icon-umbrella bigger-120 blue"></i>
-                    Editeu el vostre perfil!
+                    Si us plau, comproveu si les vostres dades són correctes! Si trobeu algun error feu arribar les correccions al secretari/a del centre
         </div>
 
 
@@ -200,14 +200,14 @@
 
                     <div class="space-12"></div>
 
-                    <?php //print_r($this->session->userdata);?>
+                    <?php print_r($this->session->userdata);?>
 
                     <div class="profile-user-info profile-user-info-striped">
                       <div class="profile-info-row">
                         <div class="profile-info-name"> Id usuari </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="id"><?php echo $this->session->userdata('id'); ?></span>
+                          <span class="editable" id="id"><?php echo $this->session->userdata('id'); ?> (Número identificador intern de l'aplicació)</span>
                         </div>
                       </div>
 
@@ -215,7 +215,7 @@
                         <div class="profile-info-name"> Id persona </div>
 
                         <div class="profile-info-value">
-                          <span class="editable" id="person_id"><?php echo $this->session->userdata('person_id'); ?></span>
+                          <span class="editable" id="person_id"><?php $person_id = $this->session->userdata('person_id'); echo $person_id != '' ? $person_id : "No disponible"; ?></span>
                         </div>
                       </div>
                       
@@ -227,6 +227,30 @@
                           <span class="editable" id="username"><?php echo $this->session->userdata('username'); ?></span>
                         </div>
                       </div>
+
+                      <div class="profile-info-row">
+                        <div class="profile-info-name"> Paraula de pas </div>
+
+                        <div class="profile-info-value">
+                          <span class="editable" id="username">La paraula de pas <strong>és privada</strong>. 
+                            Si heu perdut la paraula de pas no hi ha cap forma de recuperar-la i només és possible 
+                            <a href="<?php echo base_url('/index.php/skeleton_auth/ebre_escool_auth/forgot_password');?>">tornar a generar una paraula de pas nova</a></span>
+                        </div>
+                      </div>
+
+                      <?php if ( isset( $is_teacher ) ): ?>
+                        <?php if ( $is_teacher ) : ?>
+                          <div class="profile-info-row">
+                            <div class="profile-info-name"> Codi professor </div>
+
+                            <div class="profile-info-value">
+                              <span class="editable" id="fullname"><?php echo $this->session->userdata('teacher_code'); ?></span>
+                            </div>
+                          </div>
+                        <?php endif; ?>
+                      <?php endif; ?> 
+
+                      
 
                       <div class="profile-info-row">
                         <div class="profile-info-name"> Nom complet </div>
@@ -265,6 +289,32 @@
 
                         <div class="profile-info-value">
                           <span class="editable" id="mainOrganizationaUnitId"><?php $this->session->userdata('mainOrganizationaUnitId') . " " . $organizational_unit_name; ?></span>
+                        </div>
+                      </div>
+
+
+                        
+                      <div class="profile-info-row">
+                        <div class="profile-info-name"> Email corporatiu </div>
+
+                        <div class="profile-info-value">
+                          <span class="editable" id="age"> <?php $this->session->userdata('email');?> </span>
+                        </div>
+                      </div>
+
+                      <div class="profile-info-row">
+                        <div class="profile-info-name"> Email personal 1 </div>
+
+                        <div class="profile-info-value">
+                          <span class="editable" id="age"> <?php $this->session->userdata('secondary_email');?> </span>
+                        </div>
+                      </div>
+
+                      <div class="profile-info-row">
+                        <div class="profile-info-name"> Email personal 2 </div>
+
+                        <div class="profile-info-value">
+                          <span class="editable" id="age"> TODO </span>
                         </div>
                       </div>
 

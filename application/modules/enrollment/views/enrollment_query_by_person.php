@@ -553,8 +553,16 @@ jQuery(function($) {
     ajax: "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>/" + student_official_id,
     "aoColumns": [
       { "mData": "enrollment_periodid" },
-      { "mData": "enrollment_id" },
-      { "mData": "studies" },
+      { "mData": function ( source, type, val ) {
+            return "<a href='<?php echo base_url('index.php/enrollment/enrollment/index/read');?>/" + source.enrollment_id + "'>" + source.enrollment_id + "</a> | <a href='<?php echo base_url('index.php/enrollment/enrollment/index/edit');?>/" + source.enrollment_id + "'>modificar</a> ";
+          }
+      },
+      { "mData": function ( source, type, val ) {
+            return "<a href='<?php echo base_url('index.php/curriculum/studies/read');?>/" + source.studies_id + "'>" + source.studies + "</a> | <a href='<?php echo base_url('index.php/curriculum/studies/edit');?>/" + source.studies_id + "'> " + source.studies_id + "</a>";
+          }
+
+        
+      },
       { "mData": "course_shortname" },
       { "mData": "classroomgroup_shortname" }
     ],
@@ -651,7 +659,6 @@ study_submodules_table = $('#study_submodules_table').dataTable( {
     }
   } );
 
-  //Change period on click
   $('#previous_enrollments tbody').on( 'click', 'tr', function () {
       //console.debug("click on row!");
       //change period

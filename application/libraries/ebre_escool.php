@@ -5,7 +5,7 @@
  * Common functions
  *
  * @package    	ebre_escool library
- * @author     	Sergi Tur <sergitur@ebretic.com>
+ * @author     	Sergi Tur <sergiturbadenas@gmail.com>
  * @version    	1.0
  * @link		http://www.acacha.com/index.php/ebre-escool
  */

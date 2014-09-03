@@ -13,7 +13,7 @@
 								<i class="icon-angle-right arrow-icon"></i>
 							</span>
 						</li>
-						<li class="active">Dashboard</li>
+						<li class="active">Panell de control</li>
 					</ul><!-- .breadcrumb -->
 
 				</div>
@@ -41,13 +41,12 @@
 
 								<i class="icon-ok green"></i>
 
-								Welcome to
+								Benvinguts a la
 								<strong class="green">
-									Ace
-									<small>(v1.1.3)</small>
+									Intranet de l'Institut de l'Ebre
 								</strong>
-								,
- 								the lightweight, feature-rich and easy to use admin template.
+								. En aquest apartat podeu consultar dades generals i estadístiques del centre. Utilitzeu el menú de l'esquerre per tal de navegar per l'aplicació. 
+								Tingueu en compte que es tracta d'una versió beta i algunes dades no són correctes o no està encara implementada la funcionalitat corresponent.
 							</div>
 
 							<div class="space-6"></div>

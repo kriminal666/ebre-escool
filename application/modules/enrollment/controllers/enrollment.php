@@ -986,6 +986,26 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
 }
 
+public function get_simultaneous_studies( $person_official_id = false ) {
+
+    $simultaneous_studies = array();
+
+    if ( ! ($person_official_id == false) ) {
+        $simultaneous_studies = $this->enrollment_model->get_simultaneous_studies($person_official_id);    
+    }
+    
+
+    echo '{
+    "aaData": ';
+
+    print_r(json_encode($simultaneous_studies));
+
+    echo '}';
+
+}
+
+
+
 public function get_enrollment_study_modules( $enrollment_id = false, $period = false) {
 
     $study_modules = array();
@@ -1134,6 +1154,29 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $study_law = $this->enrollment_model->get_study_law($study_id);
         if($study_law){
             print_r(json_encode($study_law));
+        } else {
+            return false;
+        }
+
+    }
+
+    public function check_enrollment($selected_student=false,$academic_period=false){
+        
+        $selected_student=1;
+        $academic_period=1;
+
+        if(isset($_POST['selected_student'])) {
+            $selected_student = $_POST['selected_student'];
+        }
+
+        if(isset($_POST['academic_period'])) {
+            $academic_period = $_POST['academic_period'];
+        }
+
+        $check_enrollment = $this->enrollment_model->check_enrollment($selected_student,$academic_period);
+        
+        if($check_enrollment){
+            print_r(json_encode($check_enrollment));
         } else {
             return false;
         }
@@ -1469,12 +1512,25 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
             $study_id = $_POST['study_id'];
             $course_id = $_POST['course_id'];
             $classroom_group_id = $_POST['classroom_group_id'];
-            $study_module_ids = $_POST['study_module_ids'];
-            $study_submodules_ids = $_POST['study_submodules_ids'];
+            $study_module_ids = "";
+            if ( isset($_POST['study_module_ids']) ) {
+                $study_module_ids = $_POST['study_module_ids'];    
+            }
+            $study_submodules_ids = "";
+            if ( isset($_POST['study_submodules_ids']) ) {
+                $study_submodules_ids = $_POST['study_submodules_ids'];    
+            }
 
-            $study_submodules_ids = explode('-',$study_submodules_ids);
-            $study_module_ids = explode('-',$study_module_ids);
-
+            //print_r("prova:" . $_POST['study_submodules_ids']);
+            $study_module_ids_array = array();
+            if ( $study_module_ids != "") {
+                $study_module_ids = explode('-',$study_module_ids);
+            }
+            $study_submodules_ids_array = array();
+            if ( $study_submodules_ids != "") {
+                $study_submodules_ids_array = explode('-',$study_submodules_ids);
+            }
+                
             //CHECKS:
             //person_id: Integer > 0 . Check person exists?
 
@@ -1507,7 +1563,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
             }
 
             //echo "<script>alert(".print_r($study_module_ids).")</script>";die();
-            /*echo "<script>alert(".print_r($study_submodules_ids).")</script>";die();*/
+            /*echo "<script>alert(".print_r($study_submodules_ids_array).")</script>";die();*/
 
             $enrollment = $this->enrollment_model->insert_enrollment($period_id, $person_id, $study_id, $course_id, $classroom_group_id);
 
@@ -1516,14 +1572,27 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
                 $enrollment_id  = $this->db->insert_id();
                 //WHEN LOGSE SUBMODULES NOT EXISTS! --> 
                 //TODO LOGSE: study_module_ids is void. Create with study_module_ids and study_submodules_ids to NULL
-                if ( count($study_submodules_ids) == 0 )  {
+                print_r("1 : ".$study_submodules_ids);
+                print_r("2 : ". print_r($study_submodules_ids_array));
+                print_r("3 : ". $study_submodules_ids);
+                print_r("4 : ". print_r($study_submodules_ids_array));
+                //echo "Count study_submodules_ids: " . count($study_submodules_ids) . "\n";
+                if ( count($study_submodules_ids_array) == 0 )  {
                     //NOT INSERT ANY RECORD TO TABLE enrollment_submodules
+                    //LOGSE STUDIES HAVE MODULES BUT NO SUBMODULES
+                    /****************************************
+                    *****************************
+                    // TODO DESPRES ESTIU!!!!!!!!!!!!!!!
+                    *****************************************
+                    *///////////////
+                    //$enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_module_ids_array);
+                    $enrollment_submodules = array();
                     $resultat['result_code'] = 1;
                     $resultat['result_message'] = "Enrollment done without errors. LOGSE? Any record inserted to enrollment_submodules table";
                     $resultat['enrollment'] = $enrollment;
                     $resultat['enrollment_submodules'] = $enrollment_submodules; 
                 }   else {
-                    $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids);
+                    $enrollment_submodules = $this->enrollment_model->insert_enrollment_submodules($enrollment_id, $study_submodules_ids_array);
                     if ($enrollment_submodules != false) {
                         $resultat['result_code'] = 0;
                         $resultat['result_message'] = "Enrollment done without errors";

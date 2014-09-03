@@ -448,6 +448,7 @@ STEP 2 - ALL STUDIES
                       <table class="table table-striped table-bordered table-hover table-condensed" id="simultaneous_studies">
                        <thead style="background-color: #d9edf7;">
                         <tr> 
+                           <th>Període</th>
                            <th>Estudi</th>
                            <th>Curs</th>
                            <th>Grup de classe</th>
@@ -734,63 +735,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
           return student;
       }
 
-      function prepare_step2(student_id) {
-          //If user have previous enrollments propose this study as default selected
-          study_id = "";
 
-          //AJAX
-          $.ajax({
-            url:'<?php echo base_url("index.php/enrollment/get_last_study_id");?>',
-            type: 'post',
-            data: {
-                student_id : student_id
-            },
-            datatype: 'json',
-            statusCode: {
-              404: function() {
-                $.gritter.add({
-                  title: 'Error connectant amb el servidor!',
-                  text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_last_study_id ' ,
-                  class_name: 'gritter-error gritter-center'
-                });
-              },
-              500: function() {
-                $("#response").html('A server-side error has occurred.');
-                $.gritter.add({
-                  title: 'Error connectant amb el servidor!',
-                  text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_last_study_id ' ,
-                  class_name: 'gritter-error gritter-center'
-                });
-              }
-            },
-            error: function() {
-              $.gritter.add({
-                  title: 'Error!',
-                  text: 'Ha succeït un error!' ,
-                  class_name: 'gritter-error gritter-center'
-                });
-            },
-          }).done(function(data){
-            /* Student Exists */
-            if(data != false) {
-              
-                var all_data = $.parseJSON(data);
-                study_id = all_data.study_id;
-            } else {
-                console.debug("ERROR!");
-                return false;
-            }
-
-          });
-
-          if ( study_id != "" ) {
-              $("#enrollment_study option[value=" + study_id +"]").attr("selected","selected");
-              $("#enrollment_study").select2();
-          }
-
-          
-          
-      }
 
       function selectItemByValue(elmnt, value){
 
@@ -882,6 +827,98 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         }
         
         $("[name = 'step1_title' ]").addClass("green");
+      }
+
+      function prepare_step2(student_id) {
+          //If user have previous enrollments propose this study as default selected
+          study_id = "";
+
+          //AJAX
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/get_last_study_id");?>',
+            type: 'post',
+            data: {
+                student_id : student_id
+            },
+            datatype: 'json',
+            statusCode: {
+              404: function() {
+                $.gritter.add({
+                  title: 'Error connectant amb el servidor!',
+                  text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_last_study_id ' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+              },
+              500: function() {
+                $("#response").html('A server-side error has occurred.');
+                $.gritter.add({
+                  title: 'Error connectant amb el servidor!',
+                  text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_last_study_id ' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+              }
+            },
+            error: function() {
+              $.gritter.add({
+                  title: 'Error!',
+                  text: 'Ha succeït un error!' ,
+                  class_name: 'gritter-error gritter-center'
+                });
+            },
+          }).done(function(data){
+            /* Student Exists */
+            if(data != false) {
+              
+                var all_data = $.parseJSON(data);
+                study_id = all_data.study_id;
+            } else {
+                console.debug("ERROR!");
+                return false;
+            }
+
+          });
+
+          if ( study_id != "" ) {
+              $("#enrollment_study option[value=" + study_id +"]").attr("selected","selected");
+              $("#enrollment_study").select2();
+          }
+
+          //var ex = document.getElementById('simultaneous_studies');          
+          //if ( ! $.fn.DataTable.isDataTable( ex ) ) {
+            $('#simultaneous_studies').dataTable( {
+              "bDestroy": true,
+              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_simultaneous_studies');?>/" + student_id,
+              "aoColumns": [
+                { "mData": "periodid" },
+                { "mData": "study" },
+                { "mData": "course" },
+                { "mData": "classroomgroup_shortname" }
+              ],
+              "bPaginate": false,
+              "bFilter": false,
+              "bInfo": false,
+              "bSort": false,
+              "oLanguage": {
+                          "sProcessing":   "Processant...",
+                          "sLengthMenu":   "Mostra _MENU_ registres",
+                          "sZeroRecords":  "No s'han trobat registres.",
+                          "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                          "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                          "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                          "sInfoPostFix":  "",
+                          "sSearch":       "Filtrar:",
+                          "sUrl":          "",
+                          "oPaginate": {
+                                  "sFirst":    "Primer",
+                                  "sPrevious": "Anterior",
+                                  "sNext":     "Següent", 
+                                  "sLast":     "Últim"    
+                          }
+              }
+            } );
+            //END SHOW PREVIOUS ENROLLENTS
+          //}
+          
       }
 
       /******************
@@ -1196,7 +1233,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   404: function() {
                     $.gritter.add({
                       title: 'Error connectant amb el servidor!',
-                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/insert_update_user ' ,
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_student ' ,
                       class_name: 'gritter-error gritter-center'
                     });
                   },
@@ -1204,7 +1241,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     $("#response").html('A server-side error has occurred.');
                     $.gritter.add({
                       title: 'Error connectant amb el servidor!',
-                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/insert_update_user ' ,
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_student ' ,
                       class_name: 'gritter-error gritter-center'
                     });
                   }
@@ -1770,28 +1807,102 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step1"){
-
+         
+          //selected_student_fullname = $("#student option:selected").text();
+          selected_student = $("#student option:selected").val();
           academic_period = $("#academic_period option:selected").text();
-          
-          student_name = $("#student option:selected").text().trim();
-          student_id = $("#student option:selected").val();
-          var res = student_name.split("."); 
-          student_dni = res[0].trim();
-          
-          //console.debug("academic_period: " + academic_period);
-          //console.debug("student_dni: " + student_dni);
-          //console.debug("student_name: " + student_name);
-          //console.debug("student_id: " + student_id);
 
-          prepare_step2(student_id);
-          
+          //alert(selected_student);
+          //alert(academic_period);
 
-          $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
-          if($.trim($("[name = 'step2_title' ]").html())=='') {        
-              $("[name = 'step2_title' ]").html("<b><small><?php echo lang('enrollment_select_study_title');?></b></small>");   
-          }
-          $("[name = 'step2_title' ]").addClass("green");
+          //AJAX
+          skip_forward_step = true;
+          $.ajax({
+            url:'<?php echo base_url("index.php/enrollment/check_enrollment");?>',
+            type: 'post',
+            data: {
+                selected_student : selected_student,
+                academic_period : academic_period,
+            },
+            datatype: 'json',
+            statusCode: {
+                  404: function() {
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_enrollment ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  },
+                  500: function() {
+                    $("#response").html('A server-side error has occurred.');
+                    $.gritter.add({
+                      title: 'Error connectant amb el servidor!',
+                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_enrollment ' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                    skip_forward_step = true;
+                  }
+                },
+                error: function() {
+                  $.gritter.add({
+                      title: 'Error!',
+                      text: 'Ha succeït un error!' ,
+                      class_name: 'gritter-error gritter-center'
+                    });
+                },
+          }).done(function(data){
 
+            student_name = $("#student option:selected").text().trim();
+            student_id = $("#student option:selected").val();
+            var res = student_name.split("."); 
+            student_dni = res[0].trim();
+
+            //console.debug("academic_period: " + academic_period);
+            //console.debug("student_dni: " + student_dni);
+            //console.debug("student_name: " + student_name);
+            //console.debug("student_id: " + student_id);
+
+             if(data == false) {
+                //ENROLLMENT DOESN'T EXISTS FOR THIS SELECTED PERSON AND PERIOD. CONTINUE EXECUTION
+                skip_forward_step = false;
+                prepare_step2(student_id);  
+                //Active next step and force click to next button
+                $('ul.wizard-steps li:nth-child(2)').addClass('active');
+                $('#step-container div:nth-child(2)').addClass('active');
+                $(".btn-next").trigger("click");               
+
+                $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
+                if($.trim($("[name = 'step2_title' ]").html())=='') {        
+                    $("[name = 'step2_title' ]").html("<b><small><?php echo lang('enrollment_select_study_title');?></b></small>");   
+                }
+                $("[name = 'step2_title' ]").addClass("green");
+
+
+               } else {
+                  
+                  var r = confirm("Ja existeix una o més matrícules per al període indicat i l'alumne escollit. Esteu segurs voleu crear un altre matrícula?");
+                  if (r == true) {
+                      skip_forward_step = false;
+                      prepare_step2(student_id);
+                      //Active next step and force click to next button
+                      $('ul.wizard-steps li:nth-child(2)').addClass('active');
+                      $('#step-container div:nth-child(2)').addClass('active');
+                      $(".btn-next").trigger("click");                                   
+
+                      $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
+                      if($.trim($("[name = 'step2_title' ]").html())=='') {        
+                          $("[name = 'step2_title' ]").html("<b><small><?php echo lang('enrollment_select_study_title');?></b></small>");   
+                      }
+                      $("[name = 'step2_title' ]").addClass("green");
+
+                  } else {
+                      return false;
+                  }
+
+               }
+             
+          });
 // End step 1
         
 /***********
@@ -2411,7 +2522,6 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step6") {
-          console.debug("STEP6!!!!!!!!!!!!!!!!!!!");
           //$( "input[name^='news']" )
           var study_submodules_names = $("input[id^='step6_checkbox_studysudmodule_id_']:checked").map(function(){
             return this.name;
@@ -2506,18 +2616,22 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         var $validation = true;
 
         $('#fuelux-wizard').ace_wizard().on('change' , function(e, info){
-          //console.debug("Change on wizard!");
-          if(info.step == 1 && $validation) {
-            if(!$('#validation-form').valid()) {
-              //console.debug("Cancel step forward");
-              return false;
-            }
+          console.debug("Change on wizard!");
+          if ( info != null ) {
+            if(info.step == 1 && $validation) {
+              if(!$('#validation-form').valid()) {
+                console.debug("Cancel step forward");
+                return false;
+              }
+            }  
           }
+          
           //console.debug("skip_forward_step:" + skip_forward_step);
           if (skip_forward_step) {
-            //console.debug("SKIP FORWARD!");
+            console.debug("SKIP FORWARD!");
             return false;
           }
+          console.debug("End Change on wizard!");
         }).on('finished', function(e) {
 
           console.debug ("Form wizard finished!");             

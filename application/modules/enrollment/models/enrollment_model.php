@@ -167,12 +167,66 @@ class enrollment_model  extends CI_Model  {
    				$previous_enrollments[$i]['studies_shortname'] = $row['studies_shortname'];
    				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
    				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'] . " - " . $row['studies_law_shortname'] . " - " . $row['studies_organizational_unit_shortname'] ;
+   				$previous_enrollments[$i]['studies_id'] = $row['studies_id'];
    				$previous_enrollments[$i]['course_shortname'] = $row['course_shortname'] . ". " . $row['course_name'];
    				$previous_enrollments[$i]['classroomgroup_shortname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
    				$i++;
 			}
 		}			
 		return $previous_enrollments;
+	}
+
+	public function get_simultaneous_studies($person_id,$period,$orderby="desc") {
+
+		/*
+	    
+		SELECT `enrollment_periodid`,`enrollment_study_id`,studies.studies_shortname,studies.studies_name,`enrollment_course_id`,
+		       course.course_shortname,course.course_name,`enrollment_group_id`, classroom_group.classroom_group_code, 
+		       classroom_group.classroom_group_name
+			FROM `enrollment` 
+			LEFT JOIN studies ON studies.studies_id = enrollment.`enrollment_study_id`
+			LEFT JOIN course ON course.course_id = enrollment.`enrollment_course_id`
+			LEFT JOIN classroom_group ON classroom_group.classroom_group_id 	 = enrollment.`enrollment_group_id`
+			WHERE `enrollment_personid` = 5599 AND `enrollment_periodid` = "2014-15"
+	    */
+
+	    $this->db->select('enrollment.enrollment_id,enrollment.enrollment_periodid,enrollment.enrollment_study_id,studies.studies_shortname,studies.studies_name,
+	    	   studies.studies_law_shortname,studies.studies_organizational_unit_shortname,studies.esduies_id
+	    	   enrollment.enrollment_course_id,course.course_shortname,course.course_name,enrollment.enrollment_group_id,
+	    	   classroom_group.classroom_group_code,classroom_group.classroom_group_name');
+		$this->db->from('enrollment');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id', "left");
+		$this->db->join('course','course.course_id = enrollment.enrollment_course_id', "left");
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id', "left");
+
+		$this->db->where('enrollment_personid',$person_id);
+		$this->db->where('enrollment_periodid',$period);
+
+		$this->db->order_by('enrollment_periodid', $orderby);
+
+		       
+        $query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		$simultaneous_studies = array();
+		
+		if ($query->num_rows() > 0) {
+
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+				$simultaneous_studies[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
+				$simultaneous_studies[$i]['enrollment_id'] = $row['enrollment_id'];
+   				$simultaneous_studies[$i]['studies_shortname'] = $row['studies_shortname'];
+   				$simultaneous_studies[$i]['studies_name'] = $row['studies_name'];   				
+   				$simultaneous_studies[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'] . " - " . $row['studies_law_shortname'] . " - " . $row['studies_organizational_unit_shortname'] ;
+   				$simultaneous_studies[$i]['studies_id'] = $row['studies_id'];
+   				$simultaneous_studies[$i]['course'] = $row['course_shortname'] . ". " . $row['course_name'];
+   				$simultaneous_studies[$i]['classroomgroup_shortname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
+   				$i++;
+			}
+		}			
+		return $simultaneous_studies;
 	}
 
 	public function get_enrollment_study_submodules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
@@ -685,6 +739,26 @@ class enrollment_model  extends CI_Model  {
 			return false;
 	}	
 
+	/* STUDY TYPE */
+	public function check_enrollment($selected_student,$academic_period) {
+		//SQL EXAMPLE:
+		//SELECT * FROM `enrollment` WHERE `enrollment_periodid`="2014-15" AND `enrollment_personid` = 5599
+
+		$this->db->select('*');
+		$this->db->from('enrollment');
+		$this->db->where('enrollment.enrollment_periodid',$academic_period);
+		$this->db->where('enrollment.enrollment_personid',$selected_student);
+		$this->db->limit(1);		
+
+        $query = $this->db->get();
+
+		if ($query->num_rows() == 1) {
+			return $query->row();
+		}			
+		else
+			return false;
+	}	
+
 	/* Student Data */
 	public function get_student_data($official_id) {
 
@@ -915,31 +989,42 @@ class enrollment_model  extends CI_Model  {
 			$submodules_id = explode('#',$elements);
 
 			//print_r($elements);
-
-			if ($submodules_id[1]=="NULL") {
-				$data = array(
-		        	'enrollment_submodules_enrollment_id' => $enrollment_id,
-		        	'enrollment_submodules_moduleid' => $submodules_id[0],
-		        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
-		        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
-		        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
-		        	'enrollment_submodules_markedForDeletion' => 'n',
-		        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
-		        );	
+			if(!isset($submodules_id[1])){
+					$data = array(
+			        	'enrollment_submodules_enrollment_id' => $enrollment_id,
+			        	'enrollment_submodules_moduleid' => $submodules_id[0],
+			        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+			        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_markedForDeletion' => 'n',
+			        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
+			        );	
 			} else {
-				$data = array(
-		        	'enrollment_submodules_enrollment_id' => $enrollment_id,
-		        	'enrollment_submodules_moduleid' => $submodules_id[0],
-		        	'enrollment_submodules_submoduleid' => $submodules_id[1],
-		        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
-		        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
-		        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
-		        	'enrollment_submodules_markedForDeletion' => 'n',
-		        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
-		        );	
+				if ($submodules_id[1]=="NULL") {
+					$data = array(
+			        	'enrollment_submodules_enrollment_id' => $enrollment_id,
+			        	'enrollment_submodules_moduleid' => $submodules_id[0],
+			        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+			        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_markedForDeletion' => 'n',
+			        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
+			        );	
+				} else {
+				
+					$data = array(
+			        	'enrollment_submodules_enrollment_id' => $enrollment_id,
+			        	'enrollment_submodules_moduleid' => $submodules_id[0],
+			        	'enrollment_submodules_submoduleid' => $submodules_id[1],
+			        	'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+			        	'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id"),
+			        	'enrollment_submodules_markedForDeletion' => 'n',
+			        	'enrollment_submodules_markedForDeletionDate' => '0000-00-00 00:00:00'
+			        );	
+				}
 			}
-		    
-
+			
 	        $result = $this->db->insert('enrollment_submodules',$data);
 
 	        if ($result) {

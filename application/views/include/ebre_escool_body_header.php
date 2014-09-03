@@ -13,7 +13,9 @@
             </small>
           </a><!-- /.brand -->
 
+
           <ul class="nav ace-nav pull-right">
+            <?php if ($this->session->userdata('is_admin')): ?>
             <li class="grey" style="">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <i class="icon-tasks"></i>
@@ -224,7 +226,7 @@
             </li>
 
 
-            <?php if ($this->session->userdata('is_admin')): ?>
+            
 
               <li class="dark-blue">
                 <a data-toggle="dropdown" href="#" class="dropdown-toggle">
@@ -333,13 +335,21 @@
               <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/spanish"><?php echo lang('spanish');?></a></li>
               <li><a href="<?=base_url()?>index.php/skeleton_main/change_language/english"><?php echo lang('english');?></a></li>                           
             </ul>
-             
-            <a href="<?php echo base_url('index.php/skeleton/users');?>">    
-              <button class="btn btn-small btn-warning">
-                <i class="icon-group"></i>
-              </button>
-            </a>  
 
+            <?php if ($this->session->userdata('is_admin')): ?> 
+              <a href="<?php echo base_url('index.php/skeleton/users');?>">    
+                <button class="btn btn-small btn-warning">
+                  <i class="icon-group"></i>
+                </button>
+              </a>  
+            <?php else: ?>            
+              <a href="<?php echo base_url('index.php/persons/persons/profile');?>">    
+                <button class="btn btn-small btn-warning">
+                  <i class="icon-user"></i>
+                </button>
+              </a> 
+            <?php endif; ?>
+              
             <a href="<?php echo base_url('index.php/skeleton/preferences');?>">
               <button class="btn btn-small btn-danger">
                 <i class="icon-cogs"></i>
@@ -465,12 +475,15 @@
 
             <ul class="submenu">
               <!-- Enrollment wizard -->
+              <?php if ($this->session->userdata('is_admin')): ?>
               <li id="wizard">
                 <a href="<?php echo base_url('/index.php/enrollment/wizard'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('enrollment');?>
                 </a>
               </li>
+              <?php endif?>
+              
               <!-- Enrollment query by person -->
               <li id="enrollment_query_by_person">
                 <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person'); ?>">
@@ -769,14 +782,17 @@
             </ul>
           </li>
           <!-- INVENTARI -->
+          <?php if ($this->session->userdata('is_admin')): ?>
           <li id="inventory">
             <a href="<?=base_url()?>index.php/inventory/inventory">
               <i class="icon-check"></i>
               <span class="menu-text"><?php echo lang('inventory'); ?></span>
             </a>
           </li>
+          <?php endif?>
 
           <!-- MANTENIMENTS -->
+          <?php if ($this->session->userdata('is_admin')): ?>
           <li id="maintenances">
             <a href="#" class="dropdown-toggle">
               <i class="icon-briefcase"></i>
@@ -980,8 +996,10 @@
 
             </ul>
           </li>
+          <?php endif?>
 
           <!-- GESTIÓ -->
+          <?php if ($this->session->userdata('is_admin')): ?>
           <li id="managment">
             <a href="#" class="dropdown-toggle">
               <i class="icon-cog"></i>
@@ -1031,6 +1049,7 @@
                   <?php echo lang('user_profile'); ?>
                 </a>
               </li>
+              <?php endif?>
 
               <!--
               <li id="faq">
