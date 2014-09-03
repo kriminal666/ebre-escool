@@ -291,7 +291,10 @@ echo $cons->photo_url;
 		$y=15;//24
 
 		//Logo
-		$pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+		//$pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+		$pdf->Image(base_url('uploads/person_photos'). "/logo_iesebre_2010_11.jpg",$x+2,5,40,15);
+		$professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+
 		//Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
 		$pdf->SetFont('Arial','B',15);
 		//$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
