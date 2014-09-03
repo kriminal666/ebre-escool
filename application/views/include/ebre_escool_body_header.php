@@ -393,8 +393,8 @@
           <!-- PASSAR LLISTA -->
           
 
-          <?php if ( isset( $is_teacher ) ): ?>
-           <?php if ( $is_teacher ) : ?>
+          <?php $is_admin = $this->session->userdata('is_admin');if ( isset( $is_teacher ) || isset($is_admin) ): ?>
+           <?php if ( $is_teacher || $this->session->userdata('is_admin')) : ?>
             <li id="check_attendance">
               <a href="<?php echo base_url('/index.php/attendance/check_attendance'); ?>">
                 <i class="icon-bell"></i>
