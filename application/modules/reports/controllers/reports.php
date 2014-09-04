@@ -225,9 +225,9 @@ echo $cons->photo_url;
 		// Guardo les dades dels professors en un array
 		//echo "TEACHERS:<br/<";
 		foreach($all_teachers as $teacher) {
-			//echo "$teacher->givenName $teacher->sn1 $teacher->sn2 FOTO: $teacher->photo_url<br/>";
+			//echo "$teacher->givenName $teacher->sn1 $teacher->sn2 FOTO: $teacher->photo_url | teacher code: $teacher->teacher_code<br/>";
 			
-			$professor[$contador]['code']=$teacher->teacher_id;
+			$professor[$contador]['code']=$teacher->teacher_code;
 			$professor[$contador]['name']=$teacher->givenName;
 			$professor[$contador]['sn1']=$teacher->sn1;
 			$professor[$contador]['sn2']=$teacher->sn2;

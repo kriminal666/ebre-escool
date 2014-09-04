@@ -29,9 +29,10 @@ class reports_model  extends CI_Model  {
 
     function get_all_teachers() {
 
-		$this->db->select('teacher_id, person_givenName, person_sn1, person_sn2, person_photo');
+		$this->db->select('teacher_id,teacher_code, person_givenName, person_sn1, person_sn2, person_photo');
 		$this->db->from('teacher');
 		$this->db->join('person','teacher_person_id = person_id');
+		$this->db->order_by("teacher_code", "asc"); 
 		$query = $this->db->get();
 
 		//echo $this->db->last_query()."<br/>";
@@ -45,6 +46,7 @@ class reports_model  extends CI_Model  {
 				$teacher = new stdClass();
 				
 				$teacher->teacher_id = $row['teacher_id'];
+				$teacher->teacher_code = $row['teacher_code'];				
 				$teacher->givenName = $row['person_givenName'];
 				$teacher->sn1 = $row['person_sn1'];
 				$teacher->sn2 = $row['person_sn2'];
