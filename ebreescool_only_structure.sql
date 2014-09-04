@@ -778,6 +778,8 @@ CREATE TABLE IF NOT EXISTS `teacher` (
   `teacher_person_id` int(11) NOT NULL,
   `teacher_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `teacher_department_id` int(11) NOT NULL,
+  `teacher_charge_full` varchar(255) NOT NULL,
+  `teacher_charge_short` varchar(25) NOT NULL,
   `teacher_entryDate` datetime NOT NULL,
   `teacher_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `teacher_creationUserId` int(11) DEFAULT NULL,

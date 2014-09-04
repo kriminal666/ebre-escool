@@ -498,6 +498,8 @@ class teachers extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
         $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
         $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
+        $this->grocery_crud->display_as($this->current_table.'_charge_full',lang($this->current_table.'_charge_full'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_short',lang($this->current_table.'_charge_short'));
 
         $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));

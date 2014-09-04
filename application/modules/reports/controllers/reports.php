@@ -228,6 +228,8 @@ echo $cons->photo_url;
 			//echo "$teacher->givenName $teacher->sn1 $teacher->sn2 FOTO: $teacher->photo_url | teacher code: $teacher->teacher_code<br/>";
 			
 			$professor[$contador]['code']=$teacher->teacher_code;
+			$professor[$contador]['teacher_charge_short']=$teacher->teacher_charge_short;
+			$professor[$contador]['teacher_charge_full']=$teacher->teacher_charge_full;
 			$professor[$contador]['name']=$teacher->givenName;
 			$professor[$contador]['sn1']=$teacher->sn1;
 			$professor[$contador]['sn2']=$teacher->sn2;
@@ -246,7 +248,7 @@ echo $cons->photo_url;
 			}
 			
 
-			$professor[$contador]['carrec']="Càrrec ".$professor[$contador]['code'];
+			$professor[$contador]['carrec']=$professor[$contador]['teacher_charge_short'];
 			
 /*
 			$tipus = substr($professor[$contador]['photo'],0,10);
