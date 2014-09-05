@@ -500,6 +500,12 @@ class teachers extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
         $this->grocery_crud->display_as($this->current_table.'_charge_full',lang($this->current_table.'_charge_full'));
         $this->grocery_crud->display_as($this->current_table.'_charge_short',lang($this->current_table.'_charge_short'));
+        $this->grocery_crud->display_as($this->current_table.'_charge2_full',lang($this->current_table.'_charge2_full'));
+        $this->grocery_crud->display_as($this->current_table.'_charge2_short',lang($this->current_table.'_charge2_short'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line1',lang($this->current_table.'_charge_sheet_line1'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line2',lang($this->current_table.'_charge_sheet_line2'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line3',lang($this->current_table.'_charge_sheet_line3'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line4',lang($this->current_table.'_charge_sheet_line4'));
 
         $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));

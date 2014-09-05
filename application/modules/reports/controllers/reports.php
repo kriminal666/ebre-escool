@@ -233,6 +233,10 @@ echo $cons->photo_url;
 			$professor[$contador]['name']=$teacher->givenName;
 			$professor[$contador]['sn1']=$teacher->sn1;
 			$professor[$contador]['sn2']=$teacher->sn2;
+			$professor[$contador]['teacher_charge_sheet_line1']=$teacher->teacher_charge_sheet_line1;
+			$professor[$contador]['teacher_charge_sheet_line2']=$teacher->teacher_charge_sheet_line2;
+			$professor[$contador]['teacher_charge_sheet_line3']=$teacher->teacher_charge_sheet_line3;
+			$professor[$contador]['teacher_charge_sheet_line4']=$teacher->teacher_charge_sheet_line4;
 
 			$photo_url = trim($teacher->photo_url);
 
@@ -248,7 +252,10 @@ echo $cons->photo_url;
 			}
 			
 
-			$professor[$contador]['carrec']=$professor[$contador]['teacher_charge_short'];
+			$professor[$contador]['carrec_line1']=$professor[$contador]['teacher_charge_sheet_line1'];
+			$professor[$contador]['carrec_line2']=$professor[$contador]['teacher_charge_sheet_line2'];
+			$professor[$contador]['carrec_line3']=$professor[$contador]['teacher_charge_sheet_line3'];
+			$professor[$contador]['carrec_line4']=$professor[$contador]['teacher_charge_sheet_line4'];
 			
 /*
 			$tipus = substr($professor[$contador]['photo'],0,10);
@@ -448,10 +455,13 @@ echo $cons->photo_url;
 				
 				$pdf->SetFont('Arial','',4);
 				$pdf->SetTextColor(0,0,0);		
-				$pdf->Text($x+44,$y,utf8_decode($professor[$j]['carrec']));
+				$pdf->Text($x+44,$y,utf8_decode($professor[$j]['carrec_line1']));
+				$pdf->Text($x+44,$y1-1,utf8_decode($professor[$j]['carrec_line2']));
 				$pdf->Text($x+22,$y1-1,utf8_decode($professor[$j]['name']));
 				$pdf->Text($x+22,$y2-2,utf8_decode($professor[$j]['sn1']));
+				$pdf->Text($x+44,$y2-2,utf8_decode($professor[$j]['carrec_line3']));
 				$pdf->Text($x+22,$y+11,utf8_decode($professor[$j]['sn2']));
+				$pdf->Text($x+44,$y+11,utf8_decode($professor[$j]['carrec_line4']));
 				//$pdf->Image($jpeg_file[$j],$x1-2,$y-2,$xx);                
 				$pdf->Image($professor[$j]['photo'],$x1-2,$y-2,$xx);                
 			//incremento la fila
