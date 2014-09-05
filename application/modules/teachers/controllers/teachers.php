@@ -471,19 +471,15 @@ class teachers extends skeleton_main {
 
         $this->load->model('teachers_model');
 
-        $all_teachers = $this->teachers_model->get_all_teachers();
-        
-        $data['all_teachers']=$all_teachers;
-
-        /* Ace */
-        //$header_data= $this->load_ace_files($active_menu); 
-        //$header_data = $this->load_header_data();
-        //$header_data= $this->load_data_tables($header_data);
         $header_data = $this->_load_html_header($header_data);
 
         $this->_load_body_header();
 
+        $data['classgroup_table_title'] = "Tutors dels grups de classe";
 
+        $all_classgroups = $this->teachers_model->get_all_classgroups_report_info();
+
+        $data['all_classgroups'] = $all_classgroups;
 
         $this->load->view('llistat_grup_tutor.php',$data);     
 

@@ -26,3 +26,14 @@ $lang['teacher_charge_sheet_line2'] = "Càrrecs línia 2 llençol";
 $lang['teacher_charge_sheet_line3'] = "Càrrecs línia 3 llençol";
 $lang['teacher_charge_sheet_line4'] = "Càrrecs línia 4 llençol";
 $lang['teacher_code'] = 'Codi Professor';
+
+//Mentors report
+$lang['classroom_group_id']="Id";
+$lang['classroom_group_code']="Codi";
+$lang['classroom_group_shortname']="Nom curt";
+$lang['classroom_group_name']="Nom";
+$lang['classroom_group_mentor']="Tutor";
+$lang['classroom_group_course']="Curs";
+$lang['classroom_group_study']="Estudi";
+$lang['classroom_group_shift']="Torn";
+$lang['classroom_group_location']="Espai";

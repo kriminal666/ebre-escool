@@ -529,7 +529,7 @@ class managment extends skeleton_main {
 		$data['studies_by_department'] = $studies_by_department;
 		$data['teachers_by_department'] = $teachers_by_department;
 
-		$this->load->view('curriculum_reports_departments.php',$data);
+		$this->load->view('curriculum_reports_studysubmodules.php',$data);
 		
 		$this->_load_body_footer();	
 		
@@ -546,7 +546,7 @@ class managment extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#reports';
 		$active_menu['submenu1']='#curriculum_reports';
-		$active_menu['submenu2']='#curriculum_reports_departments';
+		$active_menu['submenu2']='#curriculum_reports_studymodules';
 
 		$header_data = $this->load_ace_files($active_menu);
 
@@ -581,42 +581,15 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['departments_table_title'] = "Departaments";
+		$data['studymodules_table_title'] = "Departaments";
 
-		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department(false);
-		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
+		$all_studymodules = $this->managment_model->get_all_studymodules_report_info();
 
-		/*
-		$all_departments = array();
 
-		$department1 = new stdClass;
+		$data['all_studymodules'] = $all_studymodules;
+	
 
-		$department1->shortname = "Elèctrics";
-		$department1->name = "Departament d'electrics";
-		$department1->head = "Richard Stallman";
-		$department1->location = "Aula 45";
-		$department1->numberOfTeachers = 7;
-		$department1->numberOfStudies = 2;
-
-		$department2 = new stdClass;
-
-		$department2->shortname = "Informàtica";
-		$department2->name = "Departament d'informàtica";
-		$department2->head = "Linus Torvalds";
-		$department2->location = "Espai";
-		$department2->numberOfTeachers = 6;
-		$department2->numberOfStudies = 3;
-
-		$all_departments[] = $department1;
-		$all_departments[] = $department2;
-		*/
-
-		$data['all_departments'] = $all_departments;
-		$data['studies_by_department'] = $studies_by_department;
-		$data['teachers_by_department'] = $teachers_by_department;
-
-		$this->load->view('curriculum_reports_departments.php',$data);
+		$this->load->view('curriculum_reports_studymodules.php',$data);
 		
 		$this->_load_body_footer();	
 		
@@ -633,7 +606,7 @@ class managment extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#reports';
 		$active_menu['submenu1']='#curriculum_reports';
-		$active_menu['submenu2']='#curriculum_reports_departments';
+		$active_menu['submenu2']='#curriculum_reports_classgroup';
 
 		$header_data = $this->load_ace_files($active_menu);
 
@@ -668,42 +641,13 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['departments_table_title'] = "Departaments";
+		$data['classgroup_table_title'] = "Grups de classe";
 
-		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department(false);
-		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
+		$all_classgroups = $this->managment_model->get_all_classgroups_report_info();
 
-		/*
-		$all_departments = array();
+		$data['all_classgroups'] = $all_classgroups;
 
-		$department1 = new stdClass;
-
-		$department1->shortname = "Elèctrics";
-		$department1->name = "Departament d'electrics";
-		$department1->head = "Richard Stallman";
-		$department1->location = "Aula 45";
-		$department1->numberOfTeachers = 7;
-		$department1->numberOfStudies = 2;
-
-		$department2 = new stdClass;
-
-		$department2->shortname = "Informàtica";
-		$department2->name = "Departament d'informàtica";
-		$department2->head = "Linus Torvalds";
-		$department2->location = "Espai";
-		$department2->numberOfTeachers = 6;
-		$department2->numberOfStudies = 3;
-
-		$all_departments[] = $department1;
-		$all_departments[] = $department2;
-		*/
-
-		$data['all_departments'] = $all_departments;
-		$data['studies_by_department'] = $studies_by_department;
-		$data['teachers_by_department'] = $teachers_by_department;
-
-		$this->load->view('curriculum_reports_departments.php',$data);
+		$this->load->view('curriculum_reports_classgroups.php',$data);
 		
 		$this->_load_body_footer();	
 		
@@ -720,7 +664,7 @@ class managment extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#reports';
 		$active_menu['submenu1']='#curriculum_reports';
-		$active_menu['submenu2']='#curriculum_reports_departments';
+		$active_menu['submenu2']='#curriculum_reports_course';
 
 		$header_data = $this->load_ace_files($active_menu);
 
@@ -755,42 +699,19 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['departments_table_title'] = "Departaments";
+		$data['courses_table_title'] = "Cursos";
 
-		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department(false);
-		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
+		$all_courses = $this->managment_model->get_all_courses_report_info();
+		
+		//$studies_by_studymodule = $this->managment_model->get_studies_by_department(false);
+		//$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
 
-		/*
-		$all_departments = array();
+		$data['all_courses'] = $all_courses;
+		
+		//$data['studies_by_department'] = $studies_by_department;
+		//$data['teachers_by_department'] = $teachers_by_department;
 
-		$department1 = new stdClass;
-
-		$department1->shortname = "Elèctrics";
-		$department1->name = "Departament d'electrics";
-		$department1->head = "Richard Stallman";
-		$department1->location = "Aula 45";
-		$department1->numberOfTeachers = 7;
-		$department1->numberOfStudies = 2;
-
-		$department2 = new stdClass;
-
-		$department2->shortname = "Informàtica";
-		$department2->name = "Departament d'informàtica";
-		$department2->head = "Linus Torvalds";
-		$department2->location = "Espai";
-		$department2->numberOfTeachers = 6;
-		$department2->numberOfStudies = 3;
-
-		$all_departments[] = $department1;
-		$all_departments[] = $department2;
-		*/
-
-		$data['all_departments'] = $all_departments;
-		$data['studies_by_department'] = $studies_by_department;
-		$data['teachers_by_department'] = $teachers_by_department;
-
-		$this->load->view('curriculum_reports_departments.php',$data);
+		$this->load->view('curriculum_reports_courses.php',$data);
 		
 		$this->_load_body_footer();	
 		

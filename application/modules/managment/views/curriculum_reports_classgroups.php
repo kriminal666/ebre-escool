@@ -20,21 +20,10 @@
                     <?php echo lang("curriculum");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Departaments
+                        Grups de classe
                     </small>
                 </h1>
 </div><!-- /.page-header -->
-
-	  <div class="alert alert-block alert-success">
-        <button type="button" class="close" data-dismiss="alert">
-          <i class="icon-remove"></i>
-        </button>
-
-        <i class="icon-ok green"></i>
-         També us pot interessar l'<strong class="green"><a href="<?php echo base_url('/index.php/managment/curriculum_reports_classgroup');?>">
-          informe de grups de classe
-        </strong></a> que mostra informació completa sobre tots els grups de classe del centre
-      </div>
 
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
@@ -105,22 +94,36 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="3" style="text-align: center;"> <h4>
+    <td colspan="13" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/classroom_groups') ;?>">
         <?php echo $classgroup_table_title?>
       </a>
       </h4></td>
   </tr>
-  <tr>      
-  	 <th><?php echo lang('classroom_group_code')?></th>
+  <tr> 
+     <th><?php echo lang('classroom_group_id')?></th>
+     <th><?php echo lang('classroom_group_code')?></th>
      <th><?php echo lang('classroom_group_name')?></th>
      <th><?php echo lang('classroom_group_mentor')?></th>
+     <th><?php echo lang('classroom_group_course')?></th>
+     <th><?php echo lang('classroom_group_study')?></th>
+     <th><?php echo lang('classroom_group_shift')?></th>
+     <th><?php echo lang('classroom_group_location')?></th>
+     <th><?php echo lang('classroom_group_num_students')?></th>
+     <th><?php echo lang('classroom_group_num_modules')?></th>
+     <th><?php echo lang('classroom_group_num_submodules')?></th>
+     <th><?php echo lang('classroom_group_description')?></th>
   </tr>
  </thead>
  <tbody>
   <!-- Iteration that shows classroom_groups-->
   <?php foreach ($all_classgroups as $classroom_group_key => $classroom_group) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/classroom_group/edit/' . $classroom_group->id ) ;?>">
+          <?php echo $classroom_group->id;?>
+      </a> 
+     </td>
      <td>
           <?php echo $classroom_group->code;?>
      </td>
@@ -140,6 +143,38 @@
           <?php echo $classroom_group->mentor_person_id ;?>
       </a> )    
       </a>
+     </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/course/edit/' . $classroom_group->course_id ) ;?>">
+          <?php echo "( " . $classroom_group->course_id . " ) " ;?><a href="<?php echo base_url('/index.php/curriculum/course/read/' . $classroom_group->course_id ) ;?>"><?php echo $classroom_group->course_shortname . ". " . $classroom_group->course_name ;?></a>
+      </a>
+     </td>
+     <td>
+      (<a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $classroom_group->study_id ) ;?>"><?php echo $classroom_group->study_id;?></a>)
+      <a href="<?php echo base_url('/index.php/curriculum/studies/read/' . $classroom_group->study_id ) ;?>">
+          <?php echo $classroom_group->study_shortname . ". " . $classroom_group->study_name . " - " . $classroom_group->study_law_shortname . " - " . $classroom_group->study_law_name;?>
+      </a>
+     </td>   
+
+     <td>
+          <?php echo $classroom_group->shift_name;?>
+     </td>  
+
+     <td>
+      <a href="<?php echo base_url('/index.php/location/location/index/read/' . $classroom_group->location_id ) ;?>">
+          <?php echo $classroom_group->location_shortname;?>
+      </a>
+     </td>
+
+     <td>TODO</td>
+     <td>
+      TODO      
+     </td>
+     <td>
+      TODO
+     </td>
+     <td>
+      <?php echo $classroom_group->description;?>
      </td>
    </tr>
   <?php endforeach; ?>

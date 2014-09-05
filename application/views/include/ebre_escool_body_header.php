@@ -597,12 +597,12 @@
                     </a>
                   </li>
 
-                  <li id="curriculum_reports_cicle">
-                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
+                  <!--<li id="curriculum_reports_cicle">
                     <a href="<?php echo base_url('/index.php/managment/curriculum_reports_cicle'); ?>">
                       Cicles
                     </a>
                   </li>
+                -->
 
                   <li id="curriculum_reports_course">
                     <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
@@ -632,9 +632,9 @@
                     </a>
                   </li>
 
+                  <!--
                   <li id="curriculum_reports_statistics_checkings_groups">
 
-                    <!--<a href="http://domini/ebre-escool/index.php/managment/statistics_checkings_groups">-->
                     <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups'); ?>">
                         <?php echo lang('classroom_groups'); ?>
 
@@ -642,20 +642,22 @@
                         Grups de classe 1
                     </a>
                   </li>
-
+                  -->
+                  <!--
                   <li id="curriculum_reports_users_in_group">
-                    <!--<a href="http://domini/ebre-escool/index.php/managment/users_in_group">-->
                     <a href="<?php echo base_url('/index.php/managment/users_in_group'); ?>">
                       <?php echo lang('users_in_classroom_group'); ?>
                     </a>
                   </li>
-
+                  -->
                   <!-- STUDENTS MAILING LIST-->    
+                  <!--
                   <li id="curriculum_reports_lessons">
                     <a href="<?php echo base_url('/index.php/managment/statistics_checkings_groups');?>">
-                      <?php echo "TODO"; ?>
+                      <?php echo "statistics_checkings_groups"; ?>
                     </a>
                   </li>
+                  -->
 
                   <!-- LESSONS -->    
                   <li id="curriculum_reports_lessons">

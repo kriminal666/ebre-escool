@@ -20,21 +20,10 @@
                     <?php echo lang("curriculum");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Departaments
+                        Cursos
                     </small>
                 </h1>
 </div><!-- /.page-header -->
-
-	  <div class="alert alert-block alert-success">
-        <button type="button" class="close" data-dismiss="alert">
-          <i class="icon-remove"></i>
-        </button>
-
-        <i class="icon-ok green"></i>
-         També us pot interessar l'<strong class="green"><a href="<?php echo base_url('/index.php/managment/curriculum_reports_classgroup');?>">
-          informe de grups de classe
-        </strong></a> que mostra informació completa sobre tots els grups de classe del centre
-      </div>
 
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
@@ -105,42 +94,67 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="3" style="text-align: center;"> <h4>
-      <a href="<?php echo base_url('/index.php/curriculum/classroom_groups') ;?>">
-        <?php echo $classgroup_table_title?>
+    <td colspan="10" style="text-align: center;"> <h4>
+      <a href="<?php echo base_url('/index.php/curriculum/courses') ;?>">
+        <?php echo $courses_table_title?>
       </a>
       </h4></td>
   </tr>
-  <tr>      
-  	 <th><?php echo lang('classroom_group_code')?></th>
-     <th><?php echo lang('classroom_group_name')?></th>
-     <th><?php echo lang('classroom_group_mentor')?></th>
+  <tr> 
+     <th><?php echo lang('course_id')?></th>
+     <th><?php echo lang('course_shortname')?></th>
+     <th><?php echo lang('course_name')?></th>
+     <th><?php echo lang('course_number')?></th>     
+     <th><?php echo lang('course_cycle')?></th>
+     <th><?php echo lang('course_study')?></th>
+     <th><?php echo lang('course_num_classroomgroups')?></th>
+     <th><?php echo lang('course_num_students')?></th>
+     <th><?php echo lang('course_num_modules')?></th>
+     <th><?php echo lang('course_num_submodules')?></th>
   </tr>
  </thead>
- <tbody>
-  <!-- Iteration that shows classroom_groups-->
-  <?php foreach ($all_classgroups as $classroom_group_key => $classroom_group) : ?>
+ <tbody> 
+  
+  <!-- Iteration that shows courses-->
+  <?php foreach ($all_courses as $course_key => $course) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
-          <?php echo $classroom_group->code;?>
-     </td>
-     <td>
-      <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read/' . $classroom_group->id ) ;?>">
-          <?php echo $classroom_group->name;?>
+      <a href="<?php echo base_url('/index.php/curriculum/course/edit/1' . $course->id ) ;?>">
+          <?php echo $course->id;?>
       </a> 
      </td>
-
-        <?php $mentor_fullname =  $classroom_group->mentor_givenname . " " . $classroom_group->mentor_sn1 . " " . $classroom_group->mentor_sn2; ?>
      <td>
-      ( <a href="<?php echo base_url('/index.php/teachers/teachers/index/edit/' . $classroom_group->mentor_id ) ;?>">
-          <?php echo $classroom_group->mentor_code ;?>
-      </a> ) <a href="<?php echo base_url('/index.php/persons/persons/index/read/' . $classroom_group->mentor_person_id ) ;?>">
-          <?php echo $mentor_fullname;?>
-      ( person id: <a href="<?php echo base_url('/index.php/persons/index/edit/' . $classroom_group->mentor_id ) ;?>">
-          <?php echo $classroom_group->mentor_person_id ;?>
-      </a> )    
-      </a>
+      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $course->id ) ;?>">
+          <?php echo $course->shortname;?>
+      </a> 
      </td>
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $course->id ) ;?>">
+          <?php echo $course->name;?>
+      </a> 
+     </td>
+     <td>
+          <?php echo $course->course_number;?>
+     </td>
+     <td>
+          <?php echo $course->course_cycle_id; ;?>
+     </td>     
+     <td>
+          <?php echo $course->studies_shortname . ". " . $course->studies_name . " ( " . $course->course_study_id . " ) - " . $course->studies_law_shortname  . " - " . $course->studies_law_name;?>
+     </td>
+     <td>
+          TODO
+     </td>  
+     <td>
+          TODO
+     </td>  
+     <td>
+          TODO
+     </td> 
+     <td>
+          TODO
+     </td> 
+     
    </tr>
   <?php endforeach; ?>
  </tbody>

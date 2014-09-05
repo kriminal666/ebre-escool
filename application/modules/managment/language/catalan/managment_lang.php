@@ -148,6 +148,36 @@ $lang['studies_studysubmodules']="Unitats formatives";
 $lang['studies_studysubmodules_short']="UFs";
 $lang['studies_enrolled']="# Matrículats";
 
+//Course report
+$lang['course_id']="Id";
+$lang['course_shortname']="Nom curt";
+$lang['course_name']="Nom";
+$lang['course_number']="Número de curs";
+$lang['course_cycle']="Cicle";
+$lang['course_study']="Estudi";
+$lang['course_num_classroomgroups']="# Grups de classe";
+$lang['course_num_modules']="# Mòduls Professionals";
+$lang['course_num_submodules']="# Unitats formatives";
+$lang['course_num_students']="# Estudiants";
+
+//Classroom groups report
+$lang['classroom_group_id']="Id";
+$lang['classroom_group_code']="Codi";
+$lang['classroom_group_shortname']="Nom curt";
+$lang['classroom_group_name']="Nom";
+$lang['classroom_group_mentor']="Tutor";
+$lang['classroom_group_course']="Curs";
+$lang['classroom_group_study']="Estudi";
+$lang['classroom_group_shift']="Torn";
+$lang['classroom_group_location']="Espai";
+$lang['classroom_group_num_students']="# Alumnes";
+$lang['classroom_group_num_modules']="# Mòduls Professionals";
+$lang['classroom_group_num_submodules']="# Unitats formatives";
+$lang['classroom_group_description']="Descripció";
+
+
+
+
 
 $lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";
 $lang['enrollment_reports_by_academic_period_total_number_of_enrolled_persons']="# Total de matriculats";
