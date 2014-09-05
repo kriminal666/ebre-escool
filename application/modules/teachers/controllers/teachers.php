@@ -261,19 +261,35 @@ class teachers extends skeleton_main {
       
         foreach($all_teachers as $teacher) {
 
-            $professor[$contador]['code']=$teacher->teacher_id;
+            $professor[$contador]['code']=$teacher->teacher_code;
+            $professor[$contador]['teacher_charge_short']=$teacher->teacher_charge_short;
+            $professor[$contador]['teacher_charge_full']=$teacher->teacher_charge_full;
             $professor[$contador]['name']=$teacher->givenName;
             $professor[$contador]['sn1']=$teacher->sn1;
             $professor[$contador]['sn2']=$teacher->sn2;
+            $professor[$contador]['teacher_charge_sheet_line1']=$teacher->teacher_charge_sheet_line1;
+            $professor[$contador]['teacher_charge_sheet_line2']=$teacher->teacher_charge_sheet_line2;
+            $professor[$contador]['teacher_charge_sheet_line3']=$teacher->teacher_charge_sheet_line3;
+            $professor[$contador]['teacher_charge_sheet_line4']=$teacher->teacher_charge_sheet_line4;
 
-            if( file_exists(getcwd().'/uploads/person_photos/'.$teacher->photo_url)) {
-            
-                $professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+            $photo_url = trim($teacher->photo_url);
+
+            if ($photo_url != "") {
+
+                if( file_exists(getcwd().'/uploads/person_photos/'. $photo_url)) {
+                
+                    $professor[$contador]['photo']=base_url('uploads/person_photos')."/".$teacher->photo_url;
+                } else {
+                    $professor[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
+                }
             } else {
                 $professor[$contador]['photo']=base_url('assets/img/alumnes/foto.png');
             }
 
-            $professor[$contador]['carrec']="Càrrec ".$professor[$contador]['code'];
+            $professor[$contador]['carrec_line1']=$professor[$contador]['teacher_charge_sheet_line1'];
+            $professor[$contador]['carrec_line2']=$professor[$contador]['teacher_charge_sheet_line2'];
+            $professor[$contador]['carrec_line3']=$professor[$contador]['teacher_charge_sheet_line3'];
+            $professor[$contador]['carrec_line4']=$professor[$contador]['teacher_charge_sheet_line4'];
 
             $contador++;
         }
@@ -371,10 +387,13 @@ class teachers extends skeleton_main {
                 
                 $pdf->SetFont('Arial','',4);
                 $pdf->SetTextColor(0,0,0);      
-                $pdf->Text($x+44,$y,utf8_decode($professor[$j]['carrec']));
+                $pdf->Text($x+44,$y,utf8_decode($professor[$j]['carrec_line1']));
+                $pdf->Text($x+44,$y1-1,utf8_decode($professor[$j]['carrec_line2']));
                 $pdf->Text($x+22,$y1-1,utf8_decode($professor[$j]['name']));
                 $pdf->Text($x+22,$y2-2,utf8_decode($professor[$j]['sn1']));
+                $pdf->Text($x+44,$y2-2,utf8_decode($professor[$j]['carrec_line3']));
                 $pdf->Text($x+22,$y+11,utf8_decode($professor[$j]['sn2']));
+                $pdf->Text($x+44,$y+11,utf8_decode($professor[$j]['carrec_line4']));
                 //$pdf->Image($jpeg_file[$j],$x1-2,$y-2,$xx);                
                 $pdf->Image($professor[$j]['photo'],$x1-2,$y-2,$xx);                
             //incremento la fila
