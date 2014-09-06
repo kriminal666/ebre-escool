@@ -477,7 +477,8 @@ class teachers extends skeleton_main {
 
         $data['classgroup_table_title'] = "Tutors dels grups de classe";
 
-        $all_classgroups = $this->teachers_model->get_all_classgroups_report_info();
+        $academic_period_id=5;
+        $all_classgroups = $this->teachers_model->get_all_classgroups_report_info($academic_period_id);
 
         $data['all_classgroups'] = $all_classgroups;
 

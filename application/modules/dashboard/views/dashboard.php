@@ -535,6 +535,11 @@
                     								<a href="<?php echo base_url('/index.php/curriculum/course')?>">
 												<?php endif; ?>
 													Cursos
+														<?php if ($curriculum_statistics['total_courses'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('/index.php/managment/curriculum_reports_course')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_courses'] > 0): ?>
 													</a>
 												<?php endif; ?>	
@@ -553,7 +558,12 @@
 												<?php if ($curriculum_statistics['total_classroom_group'] > 0): ?>
                     								<a href="<?php echo base_url('/index.php/curriculum/classroom_group')?>">
 												<?php endif; ?>
-													Grups de Classe
+													Grups classe
+														<?php if ($curriculum_statistics['total_courses'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('/index.php/managment/curriculum_reports_classgroup')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_classroom_group'] > 0): ?>
 													</a>
 												<?php endif; ?>	
@@ -572,7 +582,12 @@
 												<?php if ($curriculum_statistics['total_study_modules'] > 0): ?>
                     								<a href="<?php echo base_url('/index.php/curriculum/study_module')?>">
 												<?php endif; ?>
-													Mòduls professionals
+													MPs
+														<?php if ($curriculum_statistics['total_courses'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('/index.php/managment/curriculum_reports_studymodules')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_study_modules'] > 0): ?>
 													</a>
 												<?php endif; ?>	
@@ -592,7 +607,12 @@
 												<?php if ($curriculum_statistics['total_study_submodules'] > 0): ?>
                     								<a href="<?php echo base_url('/index.php/curriculum/study_submodules')?>">
 												<?php endif; ?>
-													Unitats formatives
+													UFs
+														<?php if ($curriculum_statistics['total_courses'] > 0): ?>
+															<small><i class="icon-file"></i> <a href="<?php echo base_url('/index.php/managment/curriculum_reports_studysubmodules')?>">
+																Informe
+															</a></small>
+														<?php endif; ?>
 												<?php if ($curriculum_statistics['total_study_submodules'] > 0): ?>
 													</a>
 												<?php endif; ?>	

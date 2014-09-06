@@ -167,17 +167,44 @@ $lang['classroom_group_shortname']="Nom curt";
 $lang['classroom_group_name']="Nom";
 $lang['classroom_group_mentor']="Tutor";
 $lang['classroom_group_course']="Curs";
+$lang['classroom_group_study_code']="Codi estudi";
 $lang['classroom_group_study']="Estudi";
 $lang['classroom_group_shift']="Torn";
 $lang['classroom_group_location']="Espai";
-$lang['classroom_group_num_students']="# Alumnes";
-$lang['classroom_group_num_modules']="# Mòduls Professionals";
-$lang['classroom_group_num_submodules']="# Unitats formatives";
+$lang['classroom_group_num_students']="#Alumnes";
+$lang['classroom_group_num_modules']="#MPs";
+$lang['classroom_group_num_submodules']="#UFs";
 $lang['classroom_group_description']="Descripció";
+$lang['classroom_group_academic_period']="Període acadèmic";
 
 
+//study_modules
+$lang['study_module_id']="Id";
+$lang['study_module_code']="Codi";
+$lang['study_module_shortname']="Nom curt";
+$lang['study_module_name']="Nom";
+$lang['study_module_course']="Curs";
+$lang['study_module_study']="Estudi";
+$lang['study_module_hoursPerWeek']="Hores setmanals";
+$lang['study_module_order']="Ordre";
+$lang['study_module_initialDate']="Data inicial";
+$lang['study_module_endDate']="Data final";
+$lang['study_module_type']="Tipus";
+$lang['study_module_subtype']="Subtipus";
+$lang['study_module_description']="Descripció";
 
-
+//study_submodules
+$lang['study_submodule_id']="Id";
+$lang['study_submodule_code']="Codi";
+$lang['study_submodule_shortname']="Nom curt";
+$lang['study_submodule_name']="Nom";
+$lang['study_submodule_course']="Curs";
+$lang['study_submodule_study']="Estudi";
+$lang['study_submodules_totalHours']="Hores totals";
+$lang['study_submodules_order']="Ordre";
+$lang['study_submodule_initialDate']="Data inicial";
+$lang['study_submodule_endDate']="Data final";
+$lang['study_submodule_description']="Descripció";
 
 $lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";
 $lang['enrollment_reports_by_academic_period_total_number_of_enrolled_persons']="# Total de matriculats";

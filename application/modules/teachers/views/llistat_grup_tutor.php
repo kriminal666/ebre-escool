@@ -25,7 +25,13 @@
                 </h1>
 </div><!-- /.page-header -->
 
-	  <div class="alert alert-block alert-success">
+	  
+
+<div style='height:10px;'></div>
+	<div style="margin:10px;">
+   		
+
+      <div class="alert alert-block alert-success">
         <button type="button" class="close" data-dismiss="alert">
           <i class="icon-remove"></i>
         </button>
@@ -35,12 +41,6 @@
           informe de grups de classe
         </strong></a> que mostra informació completa sobre tots els grups de classe del centre
       </div>
-
-<div style='height:10px;'></div>
-	<div style="margin:10px;">
-   		
-
-
 
       <script>
       $(function(){

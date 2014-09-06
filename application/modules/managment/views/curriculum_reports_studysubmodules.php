@@ -20,7 +20,7 @@
                     <?php echo lang("curriculum");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Departaments
+                        Mòduls professionals / Crèdits
                     </small>
                 </h1>
 </div><!-- /.page-header -->
@@ -94,76 +94,79 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="9" style="text-align: center;"> <h4>
-      <a href="<?php echo base_url('/index.php/curriculum/departments') ;?>">
-        <?php echo $departments_table_title?>
+    <td colspan="13" style="text-align: center;"> <h4>
+      <a href="<?php echo base_url('/index.php/curriculum/study_submodules') ;?>">
+        <?php echo $study_submodules_table_title?>
       </a>
       </h4></td>
   </tr>
   <tr> 
-     <th><?php echo lang('department_id')?></th>
-     <th><?php echo lang('department_shortname')?></th>
-     <th><?php echo lang('department_name')?></th>
-     <th><?php echo lang('department_head')?></th>
-     <th><?php echo lang('department_organizational_unit')?></th>
-     <th><?php echo lang('department_location')?></th>
-     <th><?php echo lang('department_parentDepartment')?></th>
-     <th><?php echo lang('department_numberOfTeachers')?></th>
-     <th><?php echo lang('department_numberOfStudies')?></th>
+     <th><?php echo lang('study_submodule_id')?></th>
+     <th><?php echo lang('study_submodule_shortname')?></th>
+     <th><?php echo lang('study_submodule_name')?></th>
+     <th><?php echo lang('study_submodule_course')?></th>
+     <th><?php echo lang('study_submodule_study')?></th>
+     <th><?php echo lang('study_submodules_totalHours')?></th>
+     <th><?php echo lang('study_submodules_order')?></th>
+     <th><?php echo lang('study_submodule_initialDate')?></th>
+     <th><?php echo lang('study_submodule_endDate')?></th>
   </tr>
  </thead>
  <tbody> 
-  <?php $this->session->set_flashdata('studies_by_department', $studies_by_department);?>
-  <?php $this->session->set_flashdata('teachers_by_department', $teachers_by_department);?>
 
-  <!-- Iteration that shows departments-->
-  <?php foreach ($all_departments as $department_key => $department) : ?>
+  <!-- Iteration that shows study_submodules-->
+  <?php foreach ($all_study_submodules as $study_submodule_key => $study_submodule) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/read/' . $department->id ) ;?>">
-          <?php echo $department->id;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study_submodule/edit/' . $study_submodule->id ) ;?>">
+          <?php echo $study_submodule->id;?>
+      </a> 
+     </td>
+
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/study_submodule/read/' . $study_submodule->id ) ;?>">
+          <?php echo $study_submodule->shortname;?>
       </a> 
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
-          <?php echo $department->shortname;?>
+      <a href="<?php echo base_url('/index.php/curriculum/study_submodule/read/' . $study_submodule->id ) ;?>">
+          <?php echo $study_submodule->name;?>
       </a> 
      </td>
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/departments/edit/' . $department->id ) ;?>">
-          <?php echo $department->name;?>
-      </a> 
-     </td>
-     <td>
-      ( <a href="<?php echo base_url('/index.php/teachers/teachers/index/edit/' . $department->head_id ) ;?>">
-          <?php echo $department->head_code ;?>
-      </a> ) <a href="<?php echo base_url('/index.php/persons/persons/index/edit/' . $department->head_personid ) ;?>">
-          <?php echo $department->head_fullname; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $study_submodule->course_id ) ;?>">
+          <?php echo $study_submodule->course_shortname . ". " . $study_submodule->course_name;?>
       </a>
+      ( <a href="<?php echo base_url('/index.php/curriculum/course/edit/' . $study_submodule->course_id ) ;?>">
+          <?php echo $study_submodule->course_id ;?>
+      </a> )
      </td>
+     
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/organizational_unit/edit/' . $department->organizational_unit_id ) ;?>">
-          <?php echo $department->organizational_unit; ;?>
+      <a href="<?php echo base_url('/index.php/curriculum/studies/read/' . $study_submodule->study_id ) ;?>">
+          <?php echo $study_submodule->study_shortname . ". " . $study_submodule->study_name . " - " . $study_submodule->study_law_name . " -" . $study_submodule->study_law_shortname;?>
       </a>
+      ( <a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $study_submodule->course_id ) ;?>">
+          <?php echo $study_submodule->course_id ;?>
+      </a> )
      </td>
+
      <td>
-      <a href="<?php echo base_url('/index.php/location/location/index/edit/' . $department->location_id ) ;?>">
-          <?php echo $department->location;?>
-      </a>
-     </td>
-     <td><?php echo $department->parentDepartment;?></td>
-     <td>
-      <a href="<?php echo base_url('/index.php/teachers/teachers/index/' . $department->id ) ;?>">
-          <?php echo $department->numberOfTeachers;?>
-      </a>
-      
-     </td>
-     <td>
-      <a href="<?php echo base_url('/index.php/curriculum/studies/' . $department->id ) ;?>">
-          <?php echo $department->numberOfStudies;?>
-      </a>
-      
-     </td>
+      <?php echo $study_submodule->study_submodules_totalHours;?>
+    </td>
+    
+    <td>
+      <?php echo $study_submodule->study_submodules_order;?>
+    </td>
+
+    <td>
+      <?php echo $study_submodule->study_submodule_initialDate;?>
+    </td>
+
+    <td>
+      <?php echo $study_submodule->study_submodule_endDate;?>
+    </td>
+
    </tr>
   <?php endforeach; ?>
  </tbody>

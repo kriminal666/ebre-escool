@@ -28,14 +28,37 @@
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
    		
+      <div class="alert alert-block alert-success">
+        <button type="button" class="close" data-dismiss="alert">
+          <i class="icon-remove"></i>
+        </button>
 
+        <i class="icon-ok green"></i>
+         També us pot interessar l'<strong class="green"><a href="<?php echo base_url('/index.php/teachers/tutors_report');?>">
+          informe de tutors
+        </strong></a> que mostra informació completa sobre tots els grups de classe del centre
+      </div>
 
 
       <script>
+
       $(function(){
 
-              $('#all_groups').dataTable( {
-                      "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],
+        //Jquery select plugin: http://ivaynberg.github.io/select2/
+        $("#select_classroom_group_academic_period_filter").select2();
+
+        $('#select_classroom_group_academic_period_filter').on("change", function(e) {  
+            var selectedValue = $("#select_classroom_group_academic_period_filter").select2("val");
+            var pathArray = window.location.pathname.split( '/' );
+            var secondLevelLocation = pathArray[1];
+            var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/curriculum_reports_classgroup";
+            //alert(baseURL + "/" + selectedValue);
+            window.location.href = baseURL + "/" + selectedValue;
+
+        });
+
+          var all_groups_table = $('#all_groups').DataTable( {
+                  "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],
                               "oTableTools": {
                   "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
@@ -86,10 +109,71 @@
              
         });  
 
+        $("#select_classroom_group_study_code_filter").on( 'change', function () {
+            var val = $(this).val();
+
+            all_groups_table.column(5).search( val ? '^'+$(this).val()+'$' : val, true, false ).draw();
+        } );
+
+        all_groups_table.column(5).data().unique().sort().each( function ( d, j ) {
+                $("#select_classroom_group_study_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
+        } );
+
+        $("#select_classroom_group_shift").on( 'change', function () {
+            var val = $(this).val();
+
+            all_groups_table.column(7).search( val ? '^'+$(this).val()+'$' : val, true, false ).draw();
+        } );
+
+        all_groups_table.column(7).data().unique().sort().each( function ( d, j ) {
+                $("#select_classroom_group_shift").append( '<option value="'+d+'">'+d+'</option>' )
+        } );
+
+
+
+   
+
 });
 </script>
 
 <div class="container">
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_groups_filter">
+  <thead style="background-color: #d9edf7;">
+    <tr>
+      <td colspan="13" style="text-align: center;"> <h4>Filtres per columnes
+        </h4></td>
+    </tr>
+    <tr> 
+       <td><?php echo lang('classroom_group_academic_period')?>: 
+          <select id="select_classroom_group_academic_period_filter">
+          <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+
+            selected_academic_period_id
+
+            <?php if ( $selected_academic_period_id) : ?>
+              <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+                <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php endif; ?>
+            <?php else: ?>   
+                <?php if ( $academic_period_value->current == 1) : ?>
+                  <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php endif; ?> 
+            <?php endif; ?> 
+
+
+          <?php endforeach; ?>
+          </select>
+       </td>
+       <td><?php echo lang('classroom_group_study_code')?>: <select id="select_classroom_group_study_code_filter"><option value=""></option></select></td>
+       <td><?php echo lang('classroom_group_shift')?>: <select id="select_classroom_group_shift"></select></td>
+    </tr>
+  </thead>  
+</table>  
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">
@@ -100,12 +184,14 @@
       </a>
       </h4></td>
   </tr>
+  
   <tr> 
      <th><?php echo lang('classroom_group_id')?></th>
      <th><?php echo lang('classroom_group_code')?></th>
      <th><?php echo lang('classroom_group_name')?></th>
      <th><?php echo lang('classroom_group_mentor')?></th>
      <th><?php echo lang('classroom_group_course')?></th>
+     <th><?php echo lang('classroom_group_study_code')?></th>
      <th><?php echo lang('classroom_group_study')?></th>
      <th><?php echo lang('classroom_group_shift')?></th>
      <th><?php echo lang('classroom_group_location')?></th>
@@ -115,6 +201,24 @@
      <th><?php echo lang('classroom_group_description')?></th>
   </tr>
  </thead>
+
+ <tfoot>
+    <tr> 
+     <th><?php echo lang('classroom_group_id')?></th>
+     <th><?php echo lang('classroom_group_code')?></th>
+     <th><?php echo lang('classroom_group_name')?></th>
+     <th><?php echo lang('classroom_group_mentor')?></th>
+     <th><?php echo lang('classroom_group_course')?></th>
+     <th><?php echo lang('classroom_group_study_code')?></th>
+     <th><?php echo lang('classroom_group_study')?></th>
+     <th><?php echo lang('classroom_group_shift')?></th>
+     <th><?php echo lang('classroom_group_location')?></th>
+     <th><?php echo lang('classroom_group_num_students')?></th>
+     <th><?php echo lang('classroom_group_num_modules')?></th>
+     <th><?php echo lang('classroom_group_num_submodules')?></th>
+     <th><?php echo lang('classroom_group_description')?></th>
+    </tr>
+ </tfoot> 
  <tbody>
   <!-- Iteration that shows classroom_groups-->
   <?php foreach ($all_classgroups as $classroom_group_key => $classroom_group) : ?>
@@ -149,6 +253,9 @@
           <?php echo "( " . $classroom_group->course_id . " ) " ;?><a href="<?php echo base_url('/index.php/curriculum/course/read/' . $classroom_group->course_id ) ;?>"><?php echo $classroom_group->course_shortname . ". " . $classroom_group->course_name ;?></a>
       </a>
      </td>
+
+     <td><?php echo $classroom_group->study_shortname;?></td> 
+
      <td>
       (<a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $classroom_group->study_id ) ;?>"><?php echo $classroom_group->study_id;?></a>)
       <a href="<?php echo base_url('/index.php/curriculum/studies/read/' . $classroom_group->study_id ) ;?>">

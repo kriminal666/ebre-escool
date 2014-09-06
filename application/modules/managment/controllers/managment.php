@@ -21,6 +21,7 @@ class managment extends skeleton_main {
         $this->load->model('managment_model');
         $this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
+        $this->config->load('ebre-escool',true);
         
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -459,7 +460,7 @@ class managment extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#reports';
 		$active_menu['submenu1']='#curriculum_reports';
-		$active_menu['submenu2']='#curriculum_reports_departments';
+		$active_menu['submenu2']='#curriculum_reports_studysubmodules';
 
 		$header_data = $this->load_ace_files($active_menu);
 
@@ -494,40 +495,11 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['departments_table_title'] = "Departaments";
+		$data['study_submodules_table_title'] = "Unitats formatives/ unitats didàctiques";
 
-		$all_departments = $this->managment_model->get_all_departments_report_info();
-		$studies_by_department = $this->managment_model->get_studies_by_department(false);
-		$teachers_by_department = $this->managment_model->get_teachers_by_department(false);
+		$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info();
 
-		/*
-		$all_departments = array();
-
-		$department1 = new stdClass;
-
-		$department1->shortname = "Elèctrics";
-		$department1->name = "Departament d'electrics";
-		$department1->head = "Richard Stallman";
-		$department1->location = "Aula 45";
-		$department1->numberOfTeachers = 7;
-		$department1->numberOfStudies = 2;
-
-		$department2 = new stdClass;
-
-		$department2->shortname = "Informàtica";
-		$department2->name = "Departament d'informàtica";
-		$department2->head = "Linus Torvalds";
-		$department2->location = "Espai";
-		$department2->numberOfTeachers = 6;
-		$department2->numberOfStudies = 3;
-
-		$all_departments[] = $department1;
-		$all_departments[] = $department2;
-		*/
-
-		$data['all_departments'] = $all_departments;
-		$data['studies_by_department'] = $studies_by_department;
-		$data['teachers_by_department'] = $teachers_by_department;
+		$data['all_study_submodules'] = $all_study_submodules;
 
 		$this->load->view('curriculum_reports_studysubmodules.php',$data);
 		
@@ -581,7 +553,7 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['studymodules_table_title'] = "Departaments";
+		$data['study_modules_table_title'] = "Mòduls professionals / Crèdits";
 
 		$all_studymodules = $this->managment_model->get_all_studymodules_report_info();
 
@@ -595,7 +567,7 @@ class managment extends skeleton_main {
 		
 	}
 
-	public function curriculum_reports_classgroup() {
+	public function curriculum_reports_classgroup($academic_period_id = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -615,13 +587,17 @@ class managment extends skeleton_main {
 			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			'http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css');		
+			'http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css');		
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
-			base_url('assets/css/tooltipster.css'));	
+			base_url('assets/css/tooltipster.css'));
+		$header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+                    		
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -629,12 +605,15 @@ class managment extends skeleton_main {
 			
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
-			"http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js");					
+			"http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js");					
 			
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
-			
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
@@ -642,10 +621,31 @@ class managment extends skeleton_main {
 		$data = array();
 
 		$data['classgroup_table_title'] = "Grups de classe";
+		$selected_academic_period_id = false;
+		
 
-		$all_classgroups = $this->managment_model->get_all_classgroups_report_info();
+		$current_academic_period_id = null;
+
+		if ($academic_period_id == null) {
+			$database_current_academic_period =  $this->managment_model->get_current_academic_period();
+			
+			if ($database_current_academic_period->id) {
+				$current_academic_period_id = $database_current_academic_period->id;
+			} else {
+				$current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');	
+			}
+			
+			$academic_period_id=$current_academic_period_id ;	
+		} else {
+			$selected_academic_period_id = $academic_period_id;
+		}
+
+		$academic_periods = $this->managment_model->get_all_academic_periods();		
+		$all_classgroups = $this->managment_model->get_all_classgroups_report_info($academic_period_id);
 
 		$data['all_classgroups'] = $all_classgroups;
+		$data['academic_periods'] = $academic_periods;
+		$data['selected_academic_period_id'] = $selected_academic_period_id;
 
 		$this->load->view('curriculum_reports_classgroups.php',$data);
 		

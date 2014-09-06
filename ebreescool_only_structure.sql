@@ -182,11 +182,6 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_course_id` int(11) NOT NULL,
-  `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
-  `classroom_group_educationalLevelId` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `classroom_group_mentorId` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `classroom_group_shift` smallint(6) NOT NULL,
-  `classroom_group_location_id` int(11) NOT NULL,
   `classroom_group_entryDate` datetime NOT NULL,
   `classroom_group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `classroom_group_creationUserId` int(11) DEFAULT NULL,
@@ -207,8 +202,19 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
 CREATE TABLE IF NOT EXISTS `classroom_group_academic_periods` (
   `classroom_group_academic_periods_id` int(11) NOT NULL AUTO_INCREMENT,
   `classroom_group_academic_periods_classroom_group_id` int(11) NOT NULL,
-  `classroom_group_academic_periods_academic_period_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `classroom_group_academic_periods_academic_period_id` int(11) NOT NULL,
+  `classroom_group_academic_periods_mentorId` int(11) NOT NULL,
+  `classroom_group_academic_periods_description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_academic_periods_shift` int(11) NOT NULL,
+  `classroom_group_academic_periods_location` int(11) NOT NULL,
+  `classroom_group_academic_periods_entryDate` datetime NOT NULL,
+  `classroom_group_academic_periods_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `classroom_group_academic_periods_creationUserId` int(11) NOT NULL,
+  `classroom_group_academic_periods_lastupdateUserId` int(11) NOT NULL,
+  `classroom_group_academic_periods_markedForDeletion` enum('n','y') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_academic_periods_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`classroom_group_academic_periods_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Restriccions per la taula `users_groups`

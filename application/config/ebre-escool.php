@@ -8,7 +8,9 @@
 | TODO
 |
 */
-$config['example']	= 'TODO';
+// 5 = 2014-15 in academic_periods table
+$config['current_academic_period_id'] = 5;
+$config['current_academic_period'] = 2014-15;
 
 
 /* End of file ebre-escool.php */
