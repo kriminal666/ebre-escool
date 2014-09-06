@@ -170,7 +170,7 @@
           </select>
        </td>
        <td><?php echo lang('classroom_group_study_code')?>: <select id="select_classroom_group_study_code_filter"><option value=""></option></select></td>
-       <td><?php echo lang('classroom_group_shift')?>: <select id="select_classroom_group_shift"></select></td>
+       <td><?php echo lang('classroom_group_shift')?>: <select id="select_classroom_group_shift"><option value=""></option></select></td>
     </tr>
   </thead>  
 </table>  
