@@ -451,7 +451,7 @@ class teachers extends skeleton_main {
 
     }
 
-    function tutors_report() { // Tutors de Grup
+    function tutors_report($academic_period_id = null) { // Tutors de Grup
 
         if (!$this->skeleton_auth->logged_in())
         {
@@ -477,10 +477,31 @@ class teachers extends skeleton_main {
 
         $data['classgroup_table_title'] = "Tutors dels grups de classe";
 
-        $academic_period_id=5;
+        $selected_academic_period_id = false;
+        
+
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->teachers_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->teachers_model->get_all_academic_periods();
         $all_classgroups = $this->teachers_model->get_all_classgroups_report_info($academic_period_id);
 
         $data['all_classgroups'] = $all_classgroups;
+        $data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
 
         $this->load->view('llistat_grup_tutor.php',$data);     
 

@@ -45,6 +45,19 @@
       <script>
       $(function(){
 
+              //Jquery select plugin: http://ivaynberg.github.io/select2/
+              $("#select_classroom_group_academic_period_filter").select2();
+
+              $('#select_classroom_group_academic_period_filter').on("change", function(e) {  
+                  var selectedValue = $("#select_classroom_group_academic_period_filter").select2("val");
+                  var pathArray = window.location.pathname.split( '/' );
+                  var secondLevelLocation = pathArray[1];
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/teachers/tutors_report";
+                  //alert(baseURL + "/" + selectedValue);
+                  window.location.href = baseURL + "/" + selectedValue;
+
+              });
+
               $('#all_groups').dataTable( {
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],
                               "oTableTools": {
@@ -101,6 +114,41 @@
 </script>
 
 <div class="container">
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_groups_filter">
+  <thead style="background-color: #d9edf7;">
+    <tr>
+      <td colspan="13" style="text-align: center;"> <h5>Filtres per columnes
+        </h5></td>
+    </tr>
+    <tr> 
+       <td><?php echo lang('classroom_group_academic_period')?>: 
+          <select id="select_classroom_group_academic_period_filter">
+          <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+
+            selected_academic_period_id
+
+            <?php if ( $selected_academic_period_id) : ?>
+              <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+                <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php endif; ?>
+            <?php else: ?>   
+                <?php if ( $academic_period_value->current == 1) : ?>
+                  <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php endif; ?> 
+            <?php endif; ?> 
+
+
+          <?php endforeach; ?>
+          </select>
+       </td>
+    </tr>
+  </thead>  
+</table>    
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
  <thead style="background-color: #d9edf7;">

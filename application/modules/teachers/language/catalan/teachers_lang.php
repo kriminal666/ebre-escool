@@ -37,3 +37,5 @@ $lang['classroom_group_course']="Curs";
 $lang['classroom_group_study']="Estudi";
 $lang['classroom_group_shift']="Torn";
 $lang['classroom_group_location']="Espai";
+$lang['classroom_group_academic_period']="Període acadèmic";
+
