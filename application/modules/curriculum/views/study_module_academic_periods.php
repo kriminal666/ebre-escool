@@ -22,7 +22,7 @@
                             <?php echo lang("curriculum");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo lang('study_module');?>
+                                <?php echo lang('study_module');?> per període acadèmic
                             </small>
                         </h1>
         </div><!-- /.page-header -->

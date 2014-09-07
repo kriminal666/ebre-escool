@@ -34,7 +34,20 @@
       <script>
       $(function(){
 
-              $('#all_groups').dataTable( {
+              //Jquery select plugin: http://ivaynberg.github.io/select2/
+              $("#select_study_module_academic_period_filter").select2();
+
+              $('#select_study_module_academic_period_filter').on("change", function(e) {  
+                  var selectedValue = $("#select_study_module_academic_period_filter").select2("val");
+                  var pathArray = window.location.pathname.split( '/' );
+                  var secondLevelLocation = pathArray[1];
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/curriculum_reports_studymodules";
+                  //alert(baseURL + "/" + selectedValue);
+                  window.location.href = baseURL + "/" + selectedValue;
+
+              });
+
+              var all_study_modules_table = $('#all_study_modules').DataTable( {
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],
                               "oTableTools": {
                   "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
@@ -54,7 +67,7 @@
                                       {
                                               "sExtends": "pdf",
                                               "sPdfOrientation": "landscape",
-                                              "sPdfMessage": "<?php echo lang("all_groups");?>",
+                                              "sPdfMessage": "<?php echo lang("all_study_modules");?>",
                                               "sTitle": "TODO",
                                               "sButtonText": "PDF"
                                       },
@@ -86,15 +99,74 @@
              
         });  
 
+        $("#select_study_module_study_code_filter").select2({ width: 'resolve',placeholder: "Seleccioneu un estudi", allowClear: true });
+        $("#select_study_module_study_code_filter").on( 'change', function () {
+            var val = $(this).val();
+
+            all_study_modules_table.column(4).search( val ? '^'+$(this).val()+'$' : val, true, false ).draw();
+        } );
+
+        all_study_modules_table.column(4).data().unique().sort().each( function ( d, j ) {
+                $("#select_study_module_study_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
+        } );
+        
+        $("#select_study_module_course_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un curs", allowClear: true });
+        $("#select_study_module_course_code_filter").on( 'change', function () {
+            var val = $(this).val();
+
+            all_study_modules_table.column(6).search( val ? '^'+$(this).val()+'$' : val, true, false ).draw();
+        } );
+
+        all_study_modules_table.column(6).data().unique().sort().each( function ( d, j ) {
+                $("#select_study_module_course_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
+        } );
+
 });
 </script>
 
 <div class="container">
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_groups">
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_modules_filter">
+  <thead style="background-color: #d9edf7;">
+    <tr>
+      <td colspan="13" style="text-align: center;"> <h4>Filtres per columnes
+        </h4></td>
+    </tr>
+    <tr> 
+       <td><?php echo lang('study_module_academic_period')?>: 
+          <select id="select_study_module_academic_period_filter">
+          <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+
+            selected_academic_period_id
+
+            <?php if ( $selected_academic_period_id) : ?>
+              <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+                <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+              <?php endif; ?>
+            <?php else: ?>   
+                <?php if ( $academic_period_value->current == 1) : ?>
+                  <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php else: ?>
+                  <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                <?php endif; ?> 
+            <?php endif; ?> 
+
+
+          <?php endforeach; ?>
+          </select>
+       </td>
+       <td><?php echo lang('study_module_study_code')?>: <select id="select_study_module_study_code_filter"><option value=""></option></select></td>
+       <td><?php echo lang('study_module_course_code')?>: <select id="select_study_module_course_code_filter"><option value=""></option></select></td>
+    </tr>
+  </thead>  
+</table> 
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_modules">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="13" style="text-align: center;"> <h4>
+    <td colspan="14" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/study_modules') ;?>">
         <?php echo $study_modules_table_title?>
       </a>
@@ -105,8 +177,10 @@
      <th><?php echo lang('study_module_code')?></th>
      <th><?php echo lang('study_module_shortname')?></th>
      <th><?php echo lang('study_module_name')?></th>
-     <th><?php echo lang('study_module_course')?></th>
+     <th><?php echo lang('study_module_study_code')?></th>
      <th><?php echo lang('study_module_study')?></th>
+     <th><?php echo lang('study_module_course_code')?></th>
+     <th><?php echo lang('study_module_course')?></th>
      <th><?php echo lang('study_module_hoursPerWeek')?></th>
      <th><?php echo lang('study_module_order')?></th>
      <th><?php echo lang('study_module_initialDate')?></th>
@@ -118,6 +192,7 @@
  <tbody> 
 
   <!-- Iteration that shows study_modules-->
+  <?php if (is_array($all_studymodules)): ?>
   <?php foreach ($all_studymodules as $study_module_key => $study_module) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
@@ -140,13 +215,9 @@
           <?php echo $study_module->name;?>
       </a> 
      </td>
+
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $study_module->course_id ) ;?>">
-          <?php echo $study_module->course_shortname . ". " . $study_module->course_name;?>
-      </a>
-      ( <a href="<?php echo base_url('/index.php/curriculum/course/edit/' . $study_module->course_id ) ;?>">
-          <?php echo $study_module->course_id ;?>
-      </a> )
+        <?php echo $study_module->study_shortname . ". " . $study_module->study_name . " - " . $study_module->study_law_name . " -" . $study_module->study_law_shortname;?>
      </td>
      
      <td>
@@ -154,6 +225,19 @@
           <?php echo $study_module->study_shortname . ". " . $study_module->study_name . " - " . $study_module->study_law_name . " -" . $study_module->study_law_shortname;?>
       </a>
       ( <a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $study_module->course_id ) ;?>">
+          <?php echo $study_module->course_id ;?>
+      </a> )
+     </td>
+     
+     <td>
+       <?php echo $study_module->course_shortname . ". " . $study_module->course_name;?>
+     </td>
+
+     <td>
+      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $study_module->course_id ) ;?>">
+          <?php echo $study_module->course_shortname . ". " . $study_module->course_name;?>
+      </a>
+      ( <a href="<?php echo base_url('/index.php/curriculum/course/edit/' . $study_module->course_id ) ;?>">
           <?php echo $study_module->course_id ;?>
       </a> )
      </td>
@@ -186,7 +270,8 @@
 
 
    </tr>
-  <?php endforeach; ?>
+   <?php endforeach; ?>
+  <?php endif; ?>
  </tbody>
 </table> 
 

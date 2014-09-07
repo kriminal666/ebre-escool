@@ -193,6 +193,13 @@ $lang['study_module_type']="Tipus";
 $lang['study_module_subtype']="Subtipus";
 $lang['study_module_description']="Descripció";
 
+$lang['study_module_academic_period']="Període acadèmic";
+$lang['study_module_study_code']="Codi estudi";
+$lang['study_module_course_code']="Codi curs";
+
+
+
+
 //study_submodules
 $lang['study_submodule_id']="Id";
 $lang['study_submodule_code']="Codi";

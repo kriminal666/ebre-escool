@@ -577,8 +577,6 @@ CREATE TABLE IF NOT EXISTS `study_module` (
   `study_module_teacher_id` int(11) NOT NULL,
   `study_module_order` int(11) NOT NULL,
   `study_module_description` text,
-  `study_module_initialDate` datetime NOT NULL,
-  `study_module_endDate` datetime NOT NULL,
   `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
   `study_module_subtype` enum('Trimestral','Quadrimestral') NOT NULL,
   `study_module_entryDate` datetime NOT NULL,
@@ -589,6 +587,27 @@ CREATE TABLE IF NOT EXISTS `study_module` (
   `study_module_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`study_module_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module_academic_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `study_module_academic_periods` (
+  `study_module_academic_periods_id` int(11) NOT NULL,
+  `study_module_academic_periods_study_module_id` int(11) NOT NULL,
+  `study_module_academic_periods_academic_period_id` int(11) NOT NULL,
+  `study_module_academic_periods_external_code` varchar(20) NOT NULL COMMENT 'TODO: Cal o nomes el possem a taula lesson?',
+  `study_module_academic_periods_initialDate` datetime NOT NULL,
+  `study_module_academic_periods_endDate` datetime NOT NULL,
+  `study_module_academic_periods_entryDate` datetime NOT NULL,
+  `study_module_academic_periods_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_academic_periods_creationUserId` int(11) DEFAULT NULL,
+  `study_module_academic_periods_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_academic_periods_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_academic_periods_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_academic_periods_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 -- --------------------------------------------------------
 
 --

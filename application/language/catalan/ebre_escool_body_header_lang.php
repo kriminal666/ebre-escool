@@ -108,6 +108,7 @@ $lang['classroom_group']="Grup de Classe";
 	$lang['group_code']="Codi Grup";
 	$lang['group_EducationalLevelId']="Nivell Educatiu";
 $lang['study_module']="Assignatura | Mòdul Professional";	
+$lang['study_module_academic_periods']="MPs per període"; 
 $lang['study_submodules']="Unitat Formativa";
 $lang['lessons']="Lliçons";
 $lang['studies']="Estudis";

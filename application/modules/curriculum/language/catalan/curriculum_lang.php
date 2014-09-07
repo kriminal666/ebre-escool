@@ -74,6 +74,15 @@ $lang['study_submodules_order']="Ordre";
 $lang['study_submodules_description']="Descripció";
 
 
+$lang['study_module_academic_periods_id']="Id";
+$lang['study_module_academic_periods_study_module_id']="MP/Crèdit";
+$lang['study_module_academic_periods_academic_period_id']="Període acadèmic";
+$lang['study_module_academic_periods_external_code']="Codi extern";
+$lang['study_module_academic_periods_initialDate']="Data inici";
+$lang['study_module_academic_periods_endDate']="Data fi";
+
+
+
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 $lang['study_module_teacher_id']="Codi Professor";
 $lang['study_module_initialDate']="Data inici";
