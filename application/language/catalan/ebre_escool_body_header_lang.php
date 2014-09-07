@@ -110,6 +110,7 @@ $lang['classroom_group']="Grup de Classe";
 $lang['study_module']="Assignatura | Mòdul Professional";	
 $lang['study_module_academic_periods']="MPs per període"; 
 $lang['study_submodules']="Unitat Formativa";
+$lang['study_submodules_academic_periods']="UFs per període";
 $lang['lessons']="Lliçons";
 $lang['studies']="Estudis";
 $lang['cycles']="Cicle";

@@ -634,6 +634,25 @@ CREATE TABLE IF NOT EXISTS `study_submodules` (
   PRIMARY KEY (`study_submodules_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+--
+-- Estructura de la taula `study_submodules_academic_periods`
+--
+CREATE TABLE IF NOT EXISTS `study_submodules_academic_periods` (
+  `study_submodules_academic_periods_id` int(11) NOT NULL,
+  `study_submodules_academic_periods_study_submodules_id` int(11) NOT NULL,
+  `study_submodules_academic_periods_academic_period_id` int(11) NOT NULL,
+  `study_submodules_academic_periods_initialDate` datetime NOT NULL,
+  `study_submodules_academic_periods_endDate` datetime NOT NULL,
+  `study_submodules_academic_periods_totalHours` int(11) NOT NULL,
+  `study_submodules_academic_periods_entryDate` datetime NOT NULL,
+  `study_submodules_academic_periods_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_submodules_academic_periods_creationUserId` int(11) DEFAULT NULL,
+  `study_submodules_academic_periods_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_submodules_academic_periods_markedForDeletion` enum('n','y') NOT NULL,
+  `study_submodules_academic_periods_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_submodules_academic_periods_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 -- Dump completed on 2013-09-13  7:33:11
 
 -- --------------------------------------------------------

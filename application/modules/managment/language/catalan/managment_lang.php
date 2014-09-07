@@ -201,11 +201,14 @@ $lang['study_module_course_code']="Codi curs";
 
 
 //study_submodules
+$lang['study_submodules_academic_period']="Període acadèmic";
 $lang['study_submodule_id']="Id";
 $lang['study_submodule_code']="Codi";
 $lang['study_submodule_shortname']="Nom curt";
 $lang['study_submodule_name']="Nom";
+$lang['study_submodule_course_code']="Codi Curs";
 $lang['study_submodule_course']="Curs";
+$lang['study_submodule_study_code']="Codi Estudi";
 $lang['study_submodule_study']="Estudi";
 $lang['study_submodules_totalHours']="Hores totals";
 $lang['study_submodules_order']="Ordre";

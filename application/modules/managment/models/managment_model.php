@@ -692,34 +692,40 @@ class managment_model  extends CI_Model  {
 
 	}
 
-	function get_all_study_submodules_report_info($orderby = "DESC") {
+	function get_all_study_submodules_report_info($academic_period,$orderby = "DESC") {
 
 		//classgroups
 		//Example SQL:
 		/*
 		SELECT study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_external_code, study_module_shortname, 
-		       study_module_name study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
-		       studies_law_shortname, studies_law_name, study_submodules_initialDate, study_submodules_endDate, study_submodules_totalHours,study_submodules_order,study_submodules_description
-		FROM study_submodules 
+		study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
+		studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,study_submodules_order,study_submodules_description
+		FROM study_submodules_academic_periods 
+		LEFT JOIN study_submodules ON study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id
 		LEFT JOIN study_module ON study_module.study_module_id = study_submodules.study_submodules_study_module_id
 		LEFT JOIN course ON  course.course_id = study_submodules.study_submodules_courseid
 		LEFT JOIN studies ON  studies.studies_id = course.course_study_id
 		LEFT JOIN studies_law ON  studies_law.studies_law_id = studies.studies_studies_law_id
-		WHERE 1
+		WHERE study_submodules_academic_periods_academic_period_id = 5
 		*/
 
 		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_external_code, study_module_shortname, 
-		       study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
-		       studies_law_shortname, studies_law_name, study_submodules_initialDate, study_submodules_endDate, study_submodules_totalHours,study_submodules_order,study_submodules_description');
-		$this->db->from('study_submodules');
+							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
+							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
+							study_submodules_order,study_submodules_description');
+		$this->db->from('study_submodules_academic_periods');
+		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
 		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid', 'left');
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period);
 		
 		$this->db->order_by('studies_shortname', $orderby);
 		
 		$query = $this->db->get();
+
+		//echo $this->db->last_query();
 
 		if ($query->num_rows() > 0){
 			$all_study_submodules = array();
@@ -742,10 +748,10 @@ class managment_model  extends CI_Model  {
 				$study_submodule->study_law_name = $row->studies_law_shortname;
 				$study_submodule->study_law_shortname = $row->studies_law_name;
 
-				$study_submodule->study_submodules_totalHours = $row->study_submodules_totalHours;
+				$study_submodule->study_submodules_totalHours = $row->study_submodules_academic_periods_totalHours;
 				$study_submodule->study_submodules_order = $row->study_submodules_order;
-				$study_submodule->study_submodule_initialDate = $row->study_submodules_initialDate;
-				$study_submodule->study_submodule_endDate = $row->study_submodules_initialDate;
+				$study_submodule->study_submodule_initialDate = $row->study_submodules_academic_periods_initialDate;
+				$study_submodule->study_submodule_endDate = $row->study_submodules_academic_periods_endDate;
 				
 				//get number of teacher Deparments
 				/*

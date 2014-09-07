@@ -1006,7 +1006,7 @@ class curriculum extends skeleton_main {
 
 /* FI ASSIGNATURA */
 
-/* UNITATS FORMATIVES */
+/* UNITATS FORMATIVES. study_submodules */
 
     public function study_submodules($study_id = false) {
 
@@ -1045,9 +1045,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_study_module_id',lang($this->current_table.'_study_module_id'));        
         $this->grocery_crud->display_as($this->current_table.'_courseid',lang($this->current_table.'_courseid'));
-        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
-        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));
-        $this->grocery_crud->display_as($this->current_table.'_totalHours',lang($this->current_table.'_totalHours'));
         $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
 
@@ -1055,6 +1052,86 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({nom_grup} - {study_module_name})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname})');
         //$this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_id} - {study_module_name})');
+
+        //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+        
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+   
+        $this->set_theme($this->grocery_crud);
+        $this->set_dialogforms($this->grocery_crud);
+        
+        //Default values:
+//      $this->grocery_crud->set_default_value($this->current_table,'parentLocation',1);
+        //markedForDeletion
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $studysubmodules_by_study = $this->session->flashdata('studysubmodules_by_study');
+        $this->session->keep_flashdata('studysubmodules_by_study');
+        
+        if ( is_array($studysubmodules_by_study) && $study_id != false ) {
+            $study_submodules = $studysubmodules_by_study[$study_id];
+            foreach ($study_submodules as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
+
+        $this->renderitzar($this->current_table,$header_data);
+                   
+    }
+
+/* FI UNITATS FORMATIVES */
+
+/* UNITATS FORMATIVES BY ACADEMIC PERIOD. study_submodules */
+
+    public function study_submodules_academic_periods($study_id = false) {
+
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#study_submodules_academic_periods';
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        /* Grocery Crud */
+        $this->current_table="study_submodules_academic_periods";
+        $this->grocery_crud->set_table($this->current_table);
+
+        $this->session->set_flashdata('table_name', $this->current_table);        
+        //ESTABLISH SUBJECT
+        $this->grocery_crud->set_subject(lang('study_submodules'));       
+
+        //Mandatory fields
+        $this->grocery_crud->required_fields($this->current_table.'_markedForDeletion');
+
+        $this->common_callbacks($this->current_table);
+
+        //Express fields
+        //$this->grocery_crud->express_fields($this->current_table.'_name',$this->current_table.'_shortname');
+        //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
+
+        //COMMON_COLUMNS               
+        $this->set_common_columns_name($this->current_table);
+
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));        
+        $this->grocery_crud->display_as($this->current_table.'_study_submodules_id',lang($this->current_table.'_study_submodules_id'));
+        $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table.'_academic_period_id'));
+        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
+        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));
+        $this->grocery_crud->display_as($this->current_table.'_totalHours',lang($this->current_table.'_totalHours'));
+
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_study_submodules_id','study_submodules','{study_submodules_shortname} - {study_submodules_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_shortname}');
 
         //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));

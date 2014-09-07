@@ -73,6 +73,13 @@ $lang['study_submodules_totalHours']="Hores totals";
 $lang['study_submodules_order']="Ordre";
 $lang['study_submodules_description']="Descripció";
 
+$lang['study_submodules_academic_periods_id']="Id";
+$lang['study_submodules_academic_periods_study_submodules_id']="Unitats Formativa/ Didàctica";
+$lang['study_submodules_academic_periods_academic_period_id']="Període acadèmic";
+$lang['study_submodules_academic_periods_initialDate']="Data inici";
+$lang['study_submodules_academic_periods_endDate']="Data fi";
+$lang['study_submodules_academic_periods_totalHours']="Hores totals";
+
 
 $lang['study_module_academic_periods_id']="Id";
 $lang['study_module_academic_periods_study_module_id']="MP/Crèdit";

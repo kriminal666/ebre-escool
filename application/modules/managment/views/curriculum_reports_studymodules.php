@@ -137,8 +137,6 @@
           <select id="select_study_module_academic_period_filter">
           <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
 
-            selected_academic_period_id
-
             <?php if ( $selected_academic_period_id) : ?>
               <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
                 <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>

@@ -911,6 +911,7 @@
               <li id="study_module"><a href='<?=base_url()?>index.php/curriculum/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->
               <li id="study_module_academic_periods"><a href='<?=base_url()?>index.php/curriculum/study_module_academic_periods'><?php echo lang('study_module_academic_periods');?></a></li><!-- Assignatura -->
               <li id="study_submodules"><a href='<?=base_url()?>index.php/curriculum/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
+              <li id="study_submodules_academic_periods"><a href='<?=base_url()?>index.php/curriculum/study_submodules_academic_periods'><?php echo lang('study_submodules_academic_periods');?></a></li><!-- Unitat Formativa -->
               <li id="lessons"><a href='<?=base_url()?>index.php/curriculum/lessons'><?php echo lang('lessons');?></a></li><!-- Lliçons -->              
             </ul>
          </li>  
