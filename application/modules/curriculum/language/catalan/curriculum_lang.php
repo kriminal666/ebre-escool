@@ -110,6 +110,25 @@ $lang['classroom_group_lastupdateUserId']   = "Usuari última modificació";
 $lang['classroom_group_markedForDeletion']   = "Baixa?";
 $lang['classroom_group_markedForDeletionDate']   = "Data de baixa";
 
+//Classroom_group by academic period
+
+$lang['classroom_group_academic_periods_classroom_group_id']="Grup";
+$lang['classroom_group_academic_periods_academic_period_id']="Període acadèmic";
+$lang['classroom_group_academic_periods_shortName']="Nom curt";
+$lang['classroom_group_academic_periods_course']="Curs"; 
+$lang['classroom_group_academic_periods_description']="Descripció"; 
+$lang['classroom_group_academic_periods_mentor_code']="Codi Tutor"; 
+$lang['classroom_group_academic_periods_shift']="Torn (matí/tarda)";
+$lang['classroom_group_academic_periods_location']="Espai";
+$lang['classroom_group_academic_periods_academic_periods'] = "Períodes acadèmics";
+#$lang['classroom_group_academic_periods_educationalLevelId']="Nivell Educatiu";
+$lang['classroom_group_academic_periods_entryDate']   = "Data de creació";
+$lang['classroom_group_academic_periods_lastupdate']   = "Data última modificació";
+$lang['classroom_group_academic_periods_creationUserId']   = "Usuari de creació";
+$lang['classroom_group_academic_periods_lastupdateUserId']   = "Usuari última modificació";
+$lang['classroom_group_academic_periods_markedForDeletion']   = "Baixa?";
+$lang['classroom_group_academic_periods_markedForDeletionDate']   = "Data de baixa";
+
 
 $lang['studies_studies_organizational_unit_id'] = "Tipus d'estudi";
 $lang['studies_studies_law_id'] = "Llei";

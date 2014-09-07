@@ -1401,7 +1401,7 @@ class managment extends skeleton_main {
         $this->grocery_crud->set_subject(lang('classroom_group'));       
 
 		//Mandatory fields
-        $this->grocery_crud->required_fields('group_name','group_shortsame','group_markedForDeletion');
+        $this->grocery_crud->required_fields('group_name','group_shortname','group_markedForDeletion');
 
         //CALLBACKS        
         $this->grocery_crud->callback_add_field('group_entryDate',array($this,'add_field_callback_course_entryDate'));
@@ -1427,12 +1427,9 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
         $this->grocery_crud->display_as($this->current_table.'_lastupdate',lang('last_update'));        
-		$this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
         $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));	
         $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId')); 
 		$this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));   
-		$this->grocery_crud->display_as($this->current_table.'_parentLocation',lang('parentLocation')); 		
-		$this->grocery_crud->display_as($this->current_table.'_mentorId',lang('mentor_code')); 
 		$this->grocery_crud->display_as($this->current_table.'_course_id',lang('course')); 
         $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate'));		

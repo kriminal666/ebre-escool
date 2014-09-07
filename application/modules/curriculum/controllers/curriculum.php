@@ -661,17 +661,14 @@ class curriculum extends skeleton_main {
         */
 
         //SPECIFIC COLUMNS        
-        /*
-        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
-        $this->grocery_crud->display_as($this->current_table.'_shortName',lang($this->current_table.'_shortName'));
-        $this->grocery_crud->display_as($this->current_table.'_name',lang($this->current_table.'_name'));
-        $this->grocery_crud->display_as($this->current_table.'_course_id',lang($this->current_table.'_course'));
+        
+        $this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));  
+        $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table.'_academic_period_id'));          
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
         $this->grocery_crud->display_as($this->current_table.'_mentorId',lang($this->current_table.'_mentor_code'));
         $this->grocery_crud->display_as($this->current_table.'_shift',lang($this->current_table.'_shift'));
-        $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location'));       
-        $this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));       
-        */
+        $this->grocery_crud->display_as($this->current_table.'_location',lang($this->current_table.'_location'));       
+        
         //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
         //The last one is the same as educationalLevelId
         //$this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang('group_EducationalLevelId')); 
@@ -744,18 +741,22 @@ class curriculum extends skeleton_main {
 
         //RELATIONS
         $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_name} ({course_shortname} - {course_id})');
-        $this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_code');
-        $this->grocery_crud->set_relation($this->current_table.'_location_id','location','location_name');
-        $this->grocery_crud->set_relation($this->current_table.'_shift','shift','shift_name');
+        
+        //NOW THIS DATA IS IN ACADEMIC_PERIOD classgroups table
+        //$this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_code');
+        //$this->grocery_crud->set_relation($this->current_table.'_location_id','location','location_name');
+        //$this->grocery_crud->set_relation($this->current_table.'_shift','shift','shift_name');
         $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'classroom_group_academic_periods', 'academic_periods', 'classroom_group_academic_periods_classroom_group_id', 'classroom_group_academic_periods_academic_period_id', 'academic_periods_name');
       
         //COMMON_COLUMNS               
         $this->set_common_columns_name($this->current_table); 
 
-        $this->grocery_crud->add_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods', $this->current_table.'_description', $this->current_table.'_mentorId' , $this->current_table.'_shift',$this->current_table.'_location_id' , $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
+        $this->grocery_crud->add_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods', 
+            $this->current_table.'_entryDate', $this->current_table.'_creationUserId', 
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
-        $this->grocery_crud->edit_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods' , $this->current_table.'_description', $this->current_table.'_mentorId', $this->current_table.'_shift' , $this->current_table.'_location_id', $this->current_table.'_entryDate',  $this->current_table.'_lastupdate', $this->current_table.'_creationUserId', 
+        $this->grocery_crud->edit_fields($this->current_table.'_code',$this->current_table.'_shortName', $this->current_table.'_name', $this->current_table.'_course_id',$this->current_table.'_academic_periods' , 
+            $this->current_table.'_entryDate', $this->current_table.'_lastupdate', $this->current_table.'_creationUserId', 
             $this->current_table.'_lastupdateUserId', $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
 
         //SPECIFIC COLUMNS        
@@ -763,12 +764,14 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_shortName',lang($this->current_table.'_shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang($this->current_table.'_name'));
         $this->grocery_crud->display_as($this->current_table.'_course_id',lang($this->current_table.'_course'));
-        $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
-        $this->grocery_crud->display_as($this->current_table.'_mentorId',lang($this->current_table.'_mentor_code'));
-        $this->grocery_crud->display_as($this->current_table.'_shift',lang($this->current_table.'_shift'));
-        $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location'));       
-        $this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));       
+        //NOW THIS DATA IS IN ACADEMIC_PERIOD classgroups table
+        //$this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
+        //$this->grocery_crud->display_as($this->current_table.'_mentorId',lang($this->current_table.'_mentor_code'));
+        //$this->grocery_crud->display_as($this->current_table.'_shift',lang($this->current_table.'_shift'));
+        //$this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location'));       
+        //$this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));       
         $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));       
+        $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));
         //Not necessary. Classroom_group have a course that have a cicle and that and study and Studies have Organizational Unit study.
         //The last one is the same as educationalLevelId
         //$this->grocery_crud->display_as($this->current_table.'_educationalLevelId',lang('group_EducationalLevelId')); 
@@ -778,7 +781,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
         $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
         
-        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+        $this->grocery_crud->unset_add_fields($this->current_table.'_lastupdate');
 
         $this->userCreation_userModification($this->current_table);         
 
