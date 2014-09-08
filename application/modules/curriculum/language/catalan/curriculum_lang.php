@@ -34,7 +34,8 @@ $lang['department_markedForDeletion']   = "Baixa?";
 $lang['department_markedForDeletionDate']   = "Data de baixa";
 
 //FIELD NAMES
-$lang['lesson_code']   = "Codi";
+$lang['lesson_academic_period_id']   = "Període acadèmic";
+$lang['lesson_code']   = "Codi extern";
 $lang['lesson_codi_assignatura']   = "Codi assignatura";
 $lang['lesson_codi_grup']   = "Codi grup";
 $lang['lesson_codi_professor']   = "Codi professor";

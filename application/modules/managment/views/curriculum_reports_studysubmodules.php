@@ -41,7 +41,7 @@
                   var selectedValue = $("#select_study_submodules_academic_period_filter").select2("val");
                   var pathArray = window.location.pathname.split( '/' );
                   var secondLevelLocation = pathArray[1];
-                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/curriculum_reports_studymodules";
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/curriculum_reports_studysubmodules";
                   //alert(baseURL + "/" + selectedValue);
                   window.location.href = baseURL + "/" + selectedValue;
 
@@ -188,6 +188,8 @@
  <tbody> 
 
   <!-- Iteration that shows study_submodules-->
+  <?php if (is_array($all_study_submodules) ) : ?>
+
   <?php foreach ($all_study_submodules as $study_submodule_key => $study_submodule) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
@@ -253,6 +255,7 @@
 
    </tr>
   <?php endforeach; ?>
+  <?php endif; ?>
  </tbody>
 </table> 
 

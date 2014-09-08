@@ -1813,6 +1813,7 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
 
 CREATE TABLE IF NOT EXISTS `lesson` (
   `lesson_id` int(11) NOT NULL AUTO_INCREMENT,
+  `lesson_academic_period_id` int(11) NOT NULL,
   `lesson_periodid` varchar(50) NOT NULL,
   `lesson_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `lesson_codi_assignatura` varchar(30) NOT NULL COMMENT 'ESBORRAR',

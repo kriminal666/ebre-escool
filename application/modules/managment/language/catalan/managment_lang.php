@@ -216,5 +216,26 @@ $lang['study_submodule_initialDate']="Data inicial";
 $lang['study_submodule_endDate']="Data final";
 $lang['study_submodule_description']="Descripció";
 
+//Lessons
+$lang['lessons_academic_period']="Període acadèmic";
+$lang['lesson_academic_period']="Període acadèmic";
+$lang['lesson_id']="Id";
+$lang['lesson_shortname']="Nom curt";
+$lang['lesson_name']="Nom";
+$lang['lesson_course_code']="Codi Curs";
+$lang['lesson_course']="Curs";
+$lang['lesson_study_code']="Codi Estudi";
+$lang['lesson_study']="Estudi";
+$lang['lesson_code']="Codi extern";
+$lang['lesson_classroom_group']="Grup de classe";
+$lang['lesson_teacher']="Professor";
+$lang['lesson_study_module']="Mòdul professional/Crèdit";
+$lang['lesson_location']="Espai";
+$lang['lessons_day']="Dia";
+$lang['lessons_time_slot']="Franja horària";
+$lang['lesson_lective']="Hora lectiva";
+$lang['lesson_order']="Ordre";
+
+
 $lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";
 $lang['enrollment_reports_by_academic_period_total_number_of_enrolled_persons']="# Total de matriculats";

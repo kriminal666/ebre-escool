@@ -692,6 +692,102 @@ class managment_model  extends CI_Model  {
 
 	}
 
+	function get_all_lessons_report_info($academic_period,$orderby = "DESC") {
+
+		//classgroups
+		//Example SQL:
+		/*
+		SELECT lesson_id,lesson_academic_period_id, academic_periods.academic_periods_shortname,lesson_code, course_id, course_shortname, course_name, course_study_id ,studies_shortname, studies_name ,lesson_classroom_group_id, classroom_group_code, classroom_group_shortName,classroom_group_name,lesson_teacher_id, teacher_code, teacher_person_id, person_givenName, person_sn1, person_sn2, lesson_study_module_id, study_module_shortname, 
+			   study_module_name, lesson_location_id, location_name, location_shortName, lesson_day, lesson_time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective , time_slot_order
+		FROM `lesson` 
+		LEFT JOIN academic_periods ON academic_periods.academic_periods_id = lesson.lesson_academic_period_id
+		LEFT JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_classroom_group_id
+        LEFT JOIN course ON course.course_id = classroom_group.classroom_group_course_id
+		LEFT JOIN studies ON studies.studies_id = course.course_study_id
+		LEFT JOIN teacher ON teacher.teacher_id = lesson.lesson_teacher_id
+		LEFT JOIN person ON person.person_id = lesson.lesson_teacher_id
+		LEFT JOIN study_module ON study_module.study_module_id = lesson.lesson_study_module_id
+		LEFT JOIN location ON location.location_id = lesson.lesson_location_id
+		LEFT JOIN time_slot ON time_slot.time_slot_id = lesson.lesson_time_slot_id
+		WHERE lesson_academic_period_id=4
+		*/
+
+		$this->db->select('lesson_id,lesson_academic_period_id,academic_periods.academic_periods_shortname,lesson_code, course_id, course_shortname, course_name, course_study_id ,studies_shortname, studies_name, lesson_classroom_group_id, classroom_group_code, classroom_group_shortName,
+			   classroom_group_name,lesson_teacher_id, teacher_code, teacher_person_id, person_givenName, person_sn1, person_sn2, lesson_study_module_id, study_module_shortname, 
+			   study_module_name, lesson_location_id, location_name, location_shortName, lesson_day, lesson_time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective , time_slot_order');
+		$this->db->from('lesson');
+		$this->db->join('academic_periods','academic_periods.academic_periods_id = lesson.lesson_academic_period_id', 'left');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = lesson.lesson_classroom_group_id', 'left');
+		$this->db->join('course','course.course_id = classroom_group.classroom_group_course_id', 'left');
+		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
+		$this->db->join('teacher','teacher.teacher_id = lesson.lesson_teacher_id', 'left');
+		$this->db->join('person','person.person_id = lesson.lesson_teacher_id', 'left');
+		$this->db->join('study_module','study_module.study_module_id = lesson.lesson_study_module_id', 'left');
+		$this->db->join('location','location.location_id = lesson.lesson_location_id', 'left');
+		$this->db->join('time_slot','time_slot.time_slot_id = lesson.lesson_time_slot_id', 'left');
+		$this->db->where('lesson_academic_period_id',$academic_period);
+		
+		//$this->db->order_by('studies_shortname', $orderby);
+		
+		$query = $this->db->get();
+
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0){
+			$all_lessons = array();
+			foreach($query->result() as $row){
+				$lesson = new stdClass;
+				
+				$lesson->id = $row->lesson_id;
+				$lesson->academic_period = $row->lesson_academic_period_id;
+				$lesson->academic_period_shortname = $row->academic_periods_shortname;				
+				$lesson->code = $row->lesson_code;
+
+				$lesson->course_id = $row->course_id;
+				$lesson->course_shortname = $row->course_shortname;
+				$lesson->course_name = $row->course_name;
+
+				$lesson->studies_id = $row->course_study_id;
+				$lesson->studies_shortname = $row->studies_shortname;
+				$lesson->studies_name = $row->studies_name;
+
+				$lesson->classroom_group_id = $row->lesson_classroom_group_id;
+				$lesson->classroom_group_code = $row->classroom_group_code;
+				$lesson->classroom_group_shortName = $row->classroom_group_shortName;
+				$lesson->classroom_group_name = $row->classroom_group_name;
+
+				$lesson->teacher_id = $row->lesson_teacher_id;
+				$lesson->teacher_code = $row->teacher_code;
+				$lesson->givenName = $row->person_givenName;
+				$lesson->sn1 = $row->person_sn1;
+				$lesson->sn2 = $row->person_sn2;
+
+				$lesson->study_module_id = $row->lesson_study_module_id;
+				$lesson->study_module_shortname = $row->study_module_shortname;
+				$lesson->study_module_name = $row->study_module_name;
+	
+
+				$lesson->location_id = $row->lesson_location_id;
+				$lesson->location_name = $row->location_name;
+				$lesson->location_shortName = $row->location_shortName;
+
+				$lesson->day = $row->lesson_day;
+				$lesson->time_slot_id = $row->lesson_time_slot_id;
+				$lesson->start_time = $row->time_slot_start_time;
+				$lesson->end_time = $row->time_slot_end_time;
+				$lesson->lective = $row->time_slot_lective;
+				$lesson->order = $row->time_slot_order;
+				
+				$all_lessons[$row->lesson_id] = $lesson;
+			}
+			return $all_lessons;
+		}	
+		else
+			return false;
+
+	}
+
+
 	function get_all_study_submodules_report_info($academic_period,$orderby = "DESC") {
 
 		//classgroups

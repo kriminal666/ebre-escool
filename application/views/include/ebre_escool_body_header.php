@@ -661,7 +661,7 @@
 
                   <!-- LESSONS -->    
                   <li id="curriculum_reports_lessons">
-                    <a href="<?php echo base_url('/index.php/managment/lessons');?>">
+                    <a href="<?php echo base_url('/index.php/managment/curriculum_reports_lessons');?>">
                       <?php echo lang('lessons'); ?>
                     </a>
                   </li>
@@ -941,7 +941,7 @@
           </a>
            
             <ul class="submenu">
-              <!-- Matrícules -->
+              <!-- Attendance -->
               <li id="attendance_incident"><a href='<?=base_url()?>index.php/attendance/incident'><?php echo lang('attendance_incidents');?></a></li>              
               <li id="attendance_incident_type"><a href='<?=base_url()?>index.php/attendance/incident_type'><?php echo lang('attendance_incident_types');?></a></li>
               <li id="classroom_groups"><a href="<?php echo base_url('/index.php/attendance/classroom_groups'); ?>"><?php echo lang('classroom_groups')?></a></li>
