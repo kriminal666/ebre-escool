@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `organizational_unit` (
 
 CREATE TABLE IF NOT EXISTS `location` (
   `location_id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_external_code` varchar(500) NOT NULL COMMENT 'Util per a migracions desde GPUNTIS',
   `location_name` varchar(150) NOT NULL,
   `location_shortName` varchar(150) NOT NULL,
   `location_description` text,
