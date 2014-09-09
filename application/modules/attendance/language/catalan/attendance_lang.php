@@ -77,6 +77,7 @@ $lang['MentorId']="Tutor";
 $lang['time_slot']="Franja horària";
 
 $lang['time_slot_id']="Id";
+$lang['time_slot_external_code']="Codi extern";
 $lang['time_slot_start_time']="Hora inici";
 $lang['time_slot_end_time']="Hora finalització";
 $lang['time_slot_entryDate']="Data de creació";
