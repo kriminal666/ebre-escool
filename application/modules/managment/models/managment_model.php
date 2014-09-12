@@ -27,6 +27,138 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
+	function get_all_ldap_users() {
+
+		//ldap_users
+		/*
+		SELECT id, users.person_id,username, password, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn
+		FROM users 
+		INNER JOIN person ON person.person_id = users.person_id
+		WHERE 1
+		*/
+		$this->db->select('id, users.person_id,username, password, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn');
+		$this->db->from('users');
+		$this->db->join('person','person.person_id = users.person_id');
+		
+		$query = $this->db->get();
+
+		$all_ldap_users = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$ldap_user = new stdClass;
+				
+				$ldap_user->id = $row->id;
+				$ldap_user->person_id = $row->person_id;
+				$ldap_user->username = $row->username;
+				$ldap_user->password = $row->password;
+				$ldap_user->mainOrganizationaUnitId = $row->mainOrganizationaUnitId;
+				$ldap_user->person_givenName = $row->person_givenName;
+				$ldap_user->person_sn1 = $row->person_sn1;
+				$ldap_user->person_sn2 = $row->person_sn2;
+				$ldap_user->ldap_dn = $row->ldap_dn;
+				
+				$all_ldap_users[$row->id] = $ldap_user;
+			}
+		}
+
+		return $all_ldap_users;
+	}
+
+	function get_user_type($person_id) {
+
+		//Check if user is teacher
+		//SELECT `teacher_id` FROM `teacher` WHERE `teacher_person_id`=2 
+		$this->db->select('teacher_id');
+		$this->db->from('teacher');
+		$this->db->where('teacher_person_id',$person_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		$user_data = new stdClass();
+		if ($query->num_rows() == 1){ 
+			//1 --> Person is teacher
+			return 1;
+		}
+
+		//Check if user is employee
+		//SELECT employees_id FROM employees WHERE employees_person_id=1
+		$this->db->select('employees_id');
+		$this->db->from('employees');
+		$this->db->where('employees_person_id',$person_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		$user_data = new stdClass();
+		if ($query->num_rows() == 1){ 
+			//2 --> Person is employee
+			return 2;
+		}
+
+		//Check if user is student
+		//SELECT student_id FROM `student` WHERE student_person_id=1
+		$this->db->select('student_id');
+		$this->db->from('student');
+		$this->db->where('student_person_id',$person_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		$user_data = new stdClass();
+		if ($query->num_rows() == 1){ 
+			//1 --> Person is student
+			return 3;
+		}
+
+		return 4;
+	}
+
+	function get_user_data($userid) {
+
+		/*
+		SELECT id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
+		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
+		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
+		       person_homePostalAddress, person_photo, person_locality_id, person_telephoneNumber, person_mobile
+		FROM users 
+		INNER JOIN person ON users.person_id = person.person_id
+		WHERE id = 1
+
+		*/
+		$this->db->select('id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
+		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
+		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
+		       person_homePostalAddress, person_photo, person_locality_id, person_telephoneNumber, person_mobile');
+		$this->db->from('users');
+		$this->db->join('person','users.person_id = person.person_id');
+		$this->db->where('id',$userid);
+		$this->db->limit(1);
+
+
+		$query = $this->db->get();
+
+		$user_data = new stdClass();
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+
+			$user_data->id = $row->id;
+			$user_data->person_id = $row->person_id;
+			$user_data->username = $row->username;
+			$user_data->password = $row->password;
+			$user_data->ldap_dn = $row->ldap_dn;
+
+			$user_data->user_type = $this->get_user_type($userid);
+			
+
+			return $user_data;
+		}	
+		else
+			return false;
+
+	
+	}
+
 	function get_all_enrollment_academic_periods() {
 
 		//enrollments

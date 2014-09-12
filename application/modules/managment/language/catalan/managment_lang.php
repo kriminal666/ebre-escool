@@ -239,3 +239,13 @@ $lang['lesson_order']="Ordre";
 
 $lang['enrollment_reports_by_academic_period_academic_period']="Període acadèmic";
 $lang['enrollment_reports_by_academic_period_total_number_of_enrolled_persons']="# Total de matriculats";
+
+
+// Users ldap
+$lang['user_ldap_id']="Id usuari";
+$lang['user_ldap_person_id']="Persona";
+$lang['user_ldap_username']="Usuari";
+$lang['user_ldap_password']="Paraula de pas";
+$lang['user_ldap_mainOrganizationaUnitId']="Unitat organitzativa";
+$lang['user_ldap_ldap_dn']="Ldap DN";
+$lang['user_ldap_active']="Activar usuari ldap";

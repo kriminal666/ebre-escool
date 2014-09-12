@@ -22,6 +22,7 @@ class managment extends skeleton_main {
         $this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
         $this->config->load('ebre-escool',true);
+        $this->config->load('auth_ldap',true);
         
         /* Set language */
         $current_language=$this->session->userdata("current_language");
@@ -200,7 +201,155 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 		
 	}
+
+	public function users_ldap_activate($userid = null) {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		if (!$this->session->userdata('is_admin')) {
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');	
+		}
+
+		//IF NOT EXISTS CREATE USER IN LDAP 
+
+		//Get user_id
+		if ($userid === null) {
+			//Try to get user from post data
+			if(isset($_POST['userid'])) {
+		        $userid = $_POST['userid'];
+		    } else {
+		    	echo "Error. Not user specified!";
+		    	return false;
+		    }
+		}
+
+		echo "USER ID: $userid<br/>";
+
+		$user_data = new stdClass();
+
+		$user_data = $this->managment_model->get_user_data($userid);
+
+		if ( $user_data->ldap_dn != "" ) {
+			//LDAP DN ALREADY EXISTS
+			echo "LDAP DN ALREADY EXISTS: $user_data->ldap_dn<br/>";
+		} else {
+			//Calculate new DN
+			$basedn = $this->config->item('basedn');		
+
+			$active_users_basedn = $this->config->item('active_users_basedn');
+
+			//GET USER TYPE
+			$user_type = $user_data->user_type;
+
+			$basedn_where_insert_new_ldap_user = "";
+
+			switch ($user_type) {
+			    case 1:
+			    	//TEACHER
+			        echo "IS TEACHER<br/>";
+			        //TODO: at this time teacher are not touched
+			        return;
+			        break;
+			    case 2:
+			    	//EMPLOYEE
+			        echo "IS EMPLOYEE<br/>";
+			        //TODO: at this time teacher are not touched
+			        return;
+			        break;
+			    case 3:
+			    	//STUDENT
+			        echo "IS STUDENT<br/>";
+			        $basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');
+			        break;    
+			    default:
+			        echo "NO USER TYPE KNOWN";
+			        return;
+			        break;
+			}
+
+			echo "BASEDN: $basedn<br/>";
+			echo "BASEDN WHERE INSERT NEW LDAP USER: $basedn_where_insert_new_ldap_user<br/>";
+
+			//Check DN NOT EXITS?
+			
+
+			//Add user tot ldap
+		}
+
+		echo "USER data:<br/>";		
+
+		var_export($user_data);
+
+
+	}
 	
+	public function users_ldap() {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#managment';
+		$active_menu['submenu1']='#managment_users_ldap';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['user_ldap_table_title'] = "Usuaris ldap";
+		$all_ldap_users = $this->managment_model->get_all_ldap_users();
+		$data['all_ldap_users'] = $all_ldap_users;
+
+		$this->load->view('users_ldap.php',$data);
+		
+		
+		$this->_load_body_footer();	
+		
+	}
 
 	/*
 		OBSOLET?

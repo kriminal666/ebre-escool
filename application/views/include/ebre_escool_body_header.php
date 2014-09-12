@@ -1025,6 +1025,13 @@
                 </a>
               </li>
 
+              <li id="managment_users_ldap">
+                <a href="<?php echo base_url('index.php/managment/users_ldap');?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('users_ldap'); ?>
+                </a>
+              </li>
+
               <li id="managment_groups">
                 <a href="<?php echo base_url('index.php/skeleton/groups');?>">
                   <i class="icon-double-angle-right"></i>
