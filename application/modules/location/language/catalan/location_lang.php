@@ -15,6 +15,7 @@
  $lang['location']   = "Espais";
 
 $lang['location_shortName']   = "Nom curt";
+$lang['location_external_code']   = "Codi extern";
 $lang['location_name']   = "Nom";
 $lang['location_description']   = "Descripció";
 $lang['location_department_id']   = "Departament";

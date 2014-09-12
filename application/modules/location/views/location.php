@@ -22,7 +22,7 @@
                             <?php echo lang("location");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo "TODO ".lang('location');?>
+                                <?php echo lang('location');?>
                             </small>
                         </h1>
         </div><!-- /.page-header -->

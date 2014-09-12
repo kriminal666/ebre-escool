@@ -339,7 +339,7 @@ class attendance extends skeleton_main {
 
 		$active_menu = array();
 		$active_menu['menu']='#maintenances';
-		$active_menu['submenu1']='#attendance_managment';
+		$active_menu['submenu1']='#attendance_maintainance';
 		$active_menu['submenu2']='#time_slots';
 
 	    $this->check_logged_user();
@@ -363,6 +363,7 @@ class attendance extends skeleton_main {
 
 	    //ESPECIFIC COLUMNS  
 	    $this->grocery_crud->display_as($this->current_table.'_id',lang('time_slot_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_external_code',lang('time_slot_external_code'));
 	    $this->grocery_crud->display_as($this->current_table.'_start_time',lang('time_slot_start_time'));       
 	    $this->grocery_crud->display_as($this->current_table.'_end_time',lang('time_slot_end_time'));       
 

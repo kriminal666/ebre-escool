@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `organizational_unit` (
 
 CREATE TABLE IF NOT EXISTS `location` (
   `location_id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_external_code` varchar(500) NOT NULL COMMENT 'Util per a migracions desde GPUNTIS',
   `location_name` varchar(150) NOT NULL,
   `location_shortName` varchar(150) NOT NULL,
   `location_description` text,
@@ -2125,6 +2126,26 @@ CREATE TABLE `employees_type` (
   PRIMARY KEY (`employees_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `time_slot`
+--
+
+CREATE TABLE IF NOT EXISTS `time_slot` (
+  `time_slot_id` int(11) NOT NULL AUTO_INCREMENT,
+  `time_slot_external_code` varchar(500) NOT NULL COMMENT 'Util per a migracions GPUNTIS',
+  `time_slot_start_time` varchar(5) CHARACTER SET utf8 NOT NULL,
+  `time_slot_end_time` varchar(5) CHARACTER SET utf8 NOT NULL,
+  `time_slot_lective` tinyint(1) NOT NULL,
+  `time_slot_order` int(5) NOT NULL,
+  `time_slot_entryDate` datetime NOT NULL,
+  `time_slot_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time_slot_creationUserId` int(11) DEFAULT NULL,
+  `time_slot_lastupdateUserId` int(11) DEFAULT NULL,
+  `time_slot_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
+  `time_slot_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`time_slot_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Table structure for table `incident`

@@ -59,6 +59,7 @@ class location extends skeleton_main {
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_Id',lang($this->current_table.'_id'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang($this->current_table.'_name'));
+        $this->grocery_crud->display_as($this->current_table.'_external_code',lang($this->current_table.'_external_code'));
         $this->grocery_crud->display_as($this->current_table.'_shortName',lang($this->current_table.'_shortName')); 
         $this->grocery_crud->display_as($this->current_table.'_parentLocation',lang($this->current_table.'_parentLocation'));
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
