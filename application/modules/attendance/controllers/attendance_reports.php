@@ -526,10 +526,10 @@ class attendance_reports extends skeleton_main {
                 if($photo){
                     $pdf->Cell(8,8,$pdf->Image($alumne[$t]['jpegPhoto'],$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);  
                     //$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - ". $alumne[$t]['person_official_id']),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['sn1']." ".$alumne[$t]['sn2']. ", " $alumne[$t]['givenName'] . " - ". $alumne[$t]['person_official_id']),1,0,'L',$fill);
                     $pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);        
                 } else {    
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - " . $alumne[$t]['person_official_id'] ),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['sn1']." ".$alumne[$t]['sn2']. ", " $alumne[$t]['givenName'] . " - " . $alumne[$t]['person_official_id'] ),1,0,'L',$fill);
                     $pdf->Cell(110,8,utf8_decode(""),1,0,'C',$fill);
                 }   
                 //$fill=!$fill;
