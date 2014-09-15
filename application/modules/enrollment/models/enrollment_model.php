@@ -331,7 +331,7 @@ class enrollment_model  extends CI_Model  {
 
 		if ($query->num_rows() == 1){
 			$row = $query->row(); 
-			return $row->academic_periods_shortname;
+			return $row->academic_periods_id;
 		}	
 		else
 			return false;
@@ -366,7 +366,7 @@ class enrollment_model  extends CI_Model  {
 
 		$this->db->where('enrollment_periodid',$period);
 		$this->db->where('enrollment_id',$enrollment_id);
-		$this->db->where('study_module_academic_periods_id',$period_id);
+		$this->db->where('study_module_academic_periods_academic_period_id',$period_id);
 
 		$this->db->order_by('study_module_order', $orderby);
 
@@ -583,6 +583,8 @@ class enrollment_model  extends CI_Model  {
 		
 		       
         $query = $this->db->get();
+
+   		//echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0) {
 
