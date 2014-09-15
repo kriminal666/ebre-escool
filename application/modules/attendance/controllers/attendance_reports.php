@@ -479,13 +479,13 @@ class attendance_reports extends skeleton_main {
             //Es la posicio exacta on comença a escriure
             $x=7;//10
             $y=15;//24
-            $pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+            $pdf->Image(base_url('/uploads/person_photos/logo_iesebre_2010_11.jpg'),$x+2,5,40,15);
             //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
             $pdf->SetFont('Arial','',10);
             //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
             $pdf->SetXY(10,10);
-            $any_comencament = 2013;
-            $any_finalitzacio = 2014;
+            $any_comencament = 2014;
+            $any_finalitzacio = 2015;
             $date = date('d-m-Y');
             $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
             $pdf->ln();
@@ -526,10 +526,10 @@ class attendance_reports extends skeleton_main {
                 if($photo){
                     $pdf->Cell(8,8,$pdf->Image($alumne[$t]['jpegPhoto'],$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);  
                     //$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - ". $alumne[$t]['person_official_id']),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['sn1']." ".$alumne[$t]['sn2']. ", " . $alumne[$t]['givenName'] . " - ". $alumne[$t]['person_official_id']),1,0,'L',$fill);
                     $pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);        
                 } else {    
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - " . $alumne[$t]['person_official_id'] ),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['sn1']." ".$alumne[$t]['sn2']. ", " . $alumne[$t]['givenName'] . " - " . $alumne[$t]['person_official_id'] ),1,0,'L',$fill);
                     $pdf->Cell(110,8,utf8_decode(""),1,0,'C',$fill);
                 }   
                 //$fill=!$fill;
@@ -690,13 +690,13 @@ class attendance_reports extends skeleton_main {
             //Es la posicio exacta on comença a escriure
             $x=7;//10
             $y=15;//24
-            $pdf->Image(base_url().APPPATH.'third_party/skeleton/assets/img/logo_iesebre_2010_11.jpg',$x+2,5,40,15);
+            $pdf->Image(base_url('/uploads/person_photos/logo_iesebre_2010_11.jpg'),$x+2,5,40,15);
             //Defineixo el tipus de lletra, si és negreta (B), si és cursiva (L), si és normal en blanc
             $pdf->SetFont('Arial','',10);
             //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
             $pdf->SetXY(10,10);
-            $any_comencament = 2013;
-            $any_finalitzacio = 2014;
+            $any_comencament = 2014;
+            $any_finalitzacio = 2015;
             $date = date('d-m-Y');
             $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
             $pdf->ln();
