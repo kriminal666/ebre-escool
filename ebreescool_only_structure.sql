@@ -187,7 +187,6 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
-  `classroom_group_description` 
   `classroom_group_course_id` int(11) NOT NULL,
   `classroom_group_entryDate` datetime NOT NULL,
   `classroom_group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
