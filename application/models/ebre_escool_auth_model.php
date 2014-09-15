@@ -18,6 +18,24 @@ class ebre_escool_auth_model  extends CI_Model  {
         $this->load->library('ebre_escool');
     }
 
+    function is_user_a_student ($person_id) {
+
+      //STUDENTS ARE ENROLLED USER IN ANY ACADEMIC PERIOD
+      //SELECT `enrollment_id` FROM `enrollment` WHERE `enrollment_personid` = 4270
+
+      $this->db->select('enrollment_id');
+      $this->db->from('enrollment');
+      $this->db->where('enrollment.enrollment_personid',$person_id);
+
+      $query = $this->db->get();
+
+      if ($query->num_rows() > 0) {
+        return true;
+      }     
+        return false;
+
+    } 
+
     function is_user_a_teacher ($person_id) {
 
       $this->db->select('teacher_id');
@@ -86,6 +104,7 @@ class ebre_escool_auth_model  extends CI_Model  {
                    'logged_in' => TRUE,
                    'is_admin' => $this->ebre_escool->user_is_admin(),
                    'is_teacher' => $this->is_user_a_teacher($row->person_id),
+                   'is_student' => $this->is_user_a_student($row->person_id),
                    'teacher_code' => $row->teacher_code,
                    'teacher_id' => $row->teacher_id,
                    'teacher_department_id' => $row->teacher_department_id,

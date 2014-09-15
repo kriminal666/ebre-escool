@@ -511,6 +511,8 @@
           
 
           <!-- INFORMES -->
+          <?php if ( ! $this->session->userdata('is_student')) : ?>
+
           <li id="reports">
             <a href="#" class="dropdown-toggle">
               <i class="icon-file-text"></i>
@@ -798,6 +800,10 @@
 
             </ul>
           </li>
+          
+          <?php endif?>
+          <!-- INFORMES END --> 
+          
           <!-- INVENTARI -->
           <?php if ($this->session->userdata('is_admin')): ?>
           <li id="inventory">

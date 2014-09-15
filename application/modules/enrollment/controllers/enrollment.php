@@ -1137,7 +1137,14 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
        
         // BODY       
         $this->_load_body_header();
-        $this->load->view('enrollment_query_by_person.php',$data);     
+
+        if ( $this->session->userdata('is_student')) {
+            $this->load->view('enrollment_query_by_person_for_students.php',$data);     
+        } else {
+            $this->load->view('enrollment_query_by_person.php',$data);     
+        }
+        
+
 
         // FOOTER     
         $this->_load_body_footer(); 
