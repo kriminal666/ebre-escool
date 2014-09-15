@@ -519,12 +519,20 @@ class managment_model  extends CI_Model  {
 			$this->db->where('username', $username);
 		}
 		$this->db->update('users', $data);
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> d38a041ea114862ae59d84516bca299f032b5861
 		//Force ldap user sync
 		$active_users_basedn = $this->config->item('active_users_basedn');
 
 		//echo "user name: " . $user_data->username;
 		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+<<<<<<< HEAD
+=======
+		
+>>>>>>> d38a041ea114862ae59d84516bca299f032b5861
 		if ($user_exists) {
 			if ($user_exists === $user_data->dn) {
 				$this->managment_model->deleteLdapUser($user_data->dn);
