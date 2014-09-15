@@ -484,8 +484,8 @@ class attendance_reports extends skeleton_main {
             $pdf->SetFont('Arial','',10);
             //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
             $pdf->SetXY(10,10);
-            $any_comencament = 2013;
-            $any_finalitzacio = 2014;
+            $any_comencament = 2014;
+            $any_finalitzacio = 2015;
             $date = date('d-m-Y');
             $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
             $pdf->ln();
@@ -695,8 +695,8 @@ class attendance_reports extends skeleton_main {
             $pdf->SetFont('Arial','',10);
             //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
             $pdf->SetXY(10,10);
-            $any_comencament = 2013;
-            $any_finalitzacio = 2014;
+            $any_comencament = 2014;
+            $any_finalitzacio = 2015;
             $date = date('d-m-Y');
             $pdf->Cell(190,6,"Curs: ".$any_comencament."-".$any_finalitzacio,0,0,'R');
             $pdf->ln();
