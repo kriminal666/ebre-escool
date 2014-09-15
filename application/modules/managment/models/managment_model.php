@@ -493,7 +493,6 @@ class managment_model  extends CI_Model  {
 	function change_password($username,$new_password,$old_pasword=null,$username_is_userid=false) {
 
 		//GET USER DATA FORM DATABASE
-		echo "Xivato change_password 1\n" ;
 		$user_data = new stdClass();
 		if ($username_is_userid) {
 			$userid = $username;
@@ -502,10 +501,9 @@ class managment_model  extends CI_Model  {
 			$user_data = $this->get_user_data_by_username($username);
 		}
 
-		echo "Xivato change_password 2\n" ;
-		echo "user_data:\n" ;
-		var_dump($user_data);
-		echo "user_data end:\n" ;
+		//echo "user_data:\n" ;
+		//var_dump($user_data);
+		//echo "user_data end:\n" ;
 
 		//Verify old password:
 		if ($old_pasword != null) {
@@ -528,7 +526,6 @@ class managment_model  extends CI_Model  {
 		*/
 
 		//Update MYSQL PASSWORD
-		echo "Xivato change_password 4\n" ;
 		$new_password_hashed = md5($new_password);
 		$data = array(
                'password' => $new_password_hashed 
@@ -540,21 +537,17 @@ class managment_model  extends CI_Model  {
 			$this->db->where('username', $username);
 		}
 		$this->db->update('users', $data);
-		echo "Xivato change_password 5\n" ;
-
+		
 		//Force ldap user sync
 		$active_users_basedn = $this->config->item('active_users_basedn');
 
 		//echo "user name: " . $user_data->username;
 		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
-		echo "Xivato change_password 6\n" ;
+		
 		if ($user_exists) {
-			echo "Xivato change_password 7\n" ;
 			if ($user_exists === $user_data->dn) {
-				echo "Xivato change_password 8\n" ;
 				$this->managment_model->deleteLdapUser($user_data->dn);
 			} else {
-				echo "Xivato change_password 9\n" ;
 				//Debug
 				//echo "ERROR! DNs not match!<br/>";
 				$this->managment_model->deleteLdapUser($user_exists);
@@ -563,15 +556,11 @@ class managment_model  extends CI_Model  {
 		} 
 		$user_data->password = $new_password;
 		//echo "user_data dn: " . $user_data->dn;
-		echo "Xivato change_password 10\n" ;
 		$result = $this->managment_model->addLdapUser($user_data->dn,$user_data);
-		echo "Xivato change_password 11\n" ;
 		if (!$result) {
 			return false;
 		}
-		echo "Xivato change_password 12\n" ;
 		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
-		echo "Xivato change_password 13\n" ;
 		return true;
 
 	}						
