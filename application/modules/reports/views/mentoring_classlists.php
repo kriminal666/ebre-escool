@@ -30,9 +30,7 @@
 
 <div style='height:10px;'></div>
   <div style="margin:10px;">
-
     <div class="container">
-
       <table class="table table-striped table-bordered table-hover table-condensed" id="TODO_filter">
           <thead style="background-color: #d9edf7;">
             <tr>
@@ -101,22 +99,24 @@
           </thead>  
         </table> 
 
+      </div>  
+
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
           <tr>
             <td colspan="12" style="text-align: center;"> <h4>
-              <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
-                <?php echo "Llista de classe"?>
+              <a href="#">
+                <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
               </a>
               </h4></td>
           </tr>
           <tr>
-            <td colspan="2" style="text-align: center;">Nom grup:</td>
-            <td colspan="2" style="text-align: center;"> <div id="selected_classgroup_name"></div> </td>
-            <td style="text-align: center;">Codi grup:</td>
-            <td style="text-align: center;"> <div id="selected_classgroup_code"></div> </td>
-            <td style="text-align: center;">Tutor:</td>
-            <td style="text-align: center;"> <div id="selected_classgroup_mentor"></div> </td>
+            <td colspan="2" style="text-align: right;">Nom grup:</td>
+            <td colspan="2" style="text-align: left;"> <div id="selected_classgroup_name"></div> </td>
+            <td style="text-align: right;">Codi grup:</td>
+            <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
+            <td style="text-align: right;">Tutor:</td>
+            <td style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
@@ -132,7 +132,7 @@
          
         </table> 
 
-    </div>
+    
 
     <div class="space-30"></div>
 
@@ -164,6 +164,8 @@ $(function() {
 
     $("#select_class_list_academic_period_filter").select2();
 
+    $("#academic_period_text").text( $("#select_class_list_academic_period_filter").select2("data").text);
+
     $('#select_class_list_academic_period_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
         var pathArray = window.location.pathname.split( '/' );
@@ -171,6 +173,11 @@ $(function() {
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/reports/mentoring_classlists";
         //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
+
+        var selectedValue = $("#select_class_list_classgroup_filter").select2("val");
+        $("#selected_classgroup_name").text(group_names[selectedValue]);
+        $("#selected_classgroup_code").text(group_codes[selectedValue]);
+        $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
 
     });
 
@@ -184,6 +191,11 @@ $(function() {
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/reports/mentoring_classlists/" + academic_period_id;
         //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
+
+        var selectedValue = $("#select_class_list_classgroup_filter").select2("val");
+        $("#selected_classgroup_name").text(group_names[selectedValue]);
+        $("#selected_classgroup_code").text(group_codes[selectedValue]);
+        $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
 
     });
     
@@ -236,7 +248,7 @@ $(function() {
                                               "sExtends": "pdf",
                                               "sPdfOrientation": "landscape",
                                               "sPdfMessage": "<?php echo lang("class_list");?>",
-                                              "sTitle": "TODO",
+                                              "sTitle": "llista_de_classe",
                                               "sButtonText": "PDF"
                                       },
                                       {
@@ -279,6 +291,11 @@ $(function() {
         
         class_list_table.ajax.reload();
     });
+
+    var selectedValue = $("#select_class_list_classgroup_filter").select2("val");
+    $("#selected_classgroup_name").text(group_names[selectedValue]);
+    $("#selected_classgroup_code").text(group_codes[selectedValue]);
+    $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
 
 });
 
