@@ -76,7 +76,7 @@ class managment_model  extends CI_Model  {
 		//echo "values: " . print_r($values). "\n";
 		foreach ($values as $value) {
 			if ($value != "") {
-				echo "value: " . $value. "\n";
+				//echo "value: " . $value. "\n";
 				/*Example SQL
 				UPDATE `users` 
 				SET `initial_password`= "new_random_password" 
@@ -318,17 +318,13 @@ class managment_model  extends CI_Model  {
 
 
 	public function addLdapUser($user_dn,$user_data) {
-		echo "Xivato addLdapUser 1\n";
 		$CI =& get_instance();
 
         $CI->load->config('samba');
 		
 		$this->_init_ldap();
-
-		echo "Xivato addLdapUser 2\n";
-		
+	
 		if ($this->_bind()) {
-			echo "Xivato addLdapUser 3\n";
 			// Preparar los datos
 			$user_data_array = array();
 
@@ -396,33 +392,24 @@ class managment_model  extends CI_Model  {
 
 		    //TODO: PHOTO
 		    //$user_data_array["gender"]=$user_data->gender;
-
-		    echo "Xivato addLdapUser 5\n";
-		    
+	    
 			if(class_exists('Imagick')){
-				echo "Xivato addLdapUser 5a\n";
 		   		$photo_path = "/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo;
-		   		echo "photo_path:" . $photo_path . " \n";
-		   		echo "Xivato addLdapUser 5b\n";
 		   		//echo $photo_path . "\n";
 		   		if ($user_data->photo != ""){
 		   			if (file_exists($photo_path)) {
-			   			echo "Xivato addLdapUser 5c\n";
 			   			$im = new Imagick("/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo);
 						$im->setImageOpacity(1.0);
 						//$im->resizeImage(147,200,Imagick::FILTER_UNDEFINED,0.5,TRUE);
 						//$im->setCompressionQuality(90);
 						$im->setImageFormat('jpeg');
 						$user_data_array['jpegphoto'] = $im->getImageBlob();
-						echo "Xivato addLdapUser 5d\n";
 			   		}	
 		   		}
 		   		
 			} else {
 				echo "Error: No Imagick class found<br/>";
 			}
-
-			echo "Xivato addLdapUser 6\n";
 		    		    
 		    $uidnumber = 1000 + (int )$user_data->id;
 		    $user_data_array["uidnumber"]= $uidnumber;
@@ -451,8 +438,6 @@ class managment_model  extends CI_Model  {
 		    
 		    $user_data_array["sambaNTPassword"]=strtoupper(bin2hex($cr->ntPasswordHash($user_data->password)));
 			$user_data_array["sambaLMPassword"]=strtoupper(bin2hex($cr->lmPasswordHash($user_data->password)));		    
-
-			echo "Xivato addLdapUser 7\n";
 		    
 			//echo "user dn: " . $user_dn . "<br/>";
 			//echo "user_data_array: " . var_dump($user_data_array) . "<br/>";
@@ -463,13 +448,11 @@ class managment_model  extends CI_Model  {
 				ldap_close($this->ldapconn);
 				return $errno;
 			} else {
-				echo "Xivato addLdapUser 98\n";
 				ldap_close($this->ldapconn);
 				return true;
 			}
 		}
 		ldap_close($this->ldapconn);
-		echo "Xivato addLdapUser 99\n";
 		return false;
 	}
 
@@ -507,7 +490,6 @@ class managment_model  extends CI_Model  {
 
 		//Verify old password:
 		if ($old_pasword != null) {
-			echo "Xivato change_password 3\n" ;
 			$old_password_hashed = md5($old_pasword);
 		
 			//echo "old_pasword: " . $old_pasword . "<br/>";
@@ -537,13 +519,20 @@ class managment_model  extends CI_Model  {
 			$this->db->where('username', $username);
 		}
 		$this->db->update('users', $data);
+<<<<<<< HEAD
+
+=======
 		
+>>>>>>> d38a041ea114862ae59d84516bca299f032b5861
 		//Force ldap user sync
 		$active_users_basedn = $this->config->item('active_users_basedn');
 
 		//echo "user name: " . $user_data->username;
 		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+<<<<<<< HEAD
+=======
 		
+>>>>>>> d38a041ea114862ae59d84516bca299f032b5861
 		if ($user_exists) {
 			if ($user_exists === $user_data->dn) {
 				$this->managment_model->deleteLdapUser($user_data->dn);
