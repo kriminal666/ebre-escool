@@ -315,11 +315,14 @@ class attendance_reports extends skeleton_main {
         $this->load_header($active_menu);    
 
         $data['title']=lang('reports_educational_center_reports_student_emails');
+
         if(isset($_POST['opcio'])){
             $data['opcio'] = $_POST['opcio'];
         } else {
             $data['opcio'] = false;
         }
+
+        $data['all_students_mail'] = $all_students_mail;
 
         $this->load->view('attendance_reports/mailing_list_report.php',$data);     
 
@@ -408,6 +411,7 @@ class attendance_reports extends skeleton_main {
             $studentObject->sn2 = $student->sn2;
             $studentObject->username = $student->username;
             $studentObject->email = $student->email;
+            $studentObject->person_official_id = $student->person_official_id;
             
             //TODO: get incident notes!
             $studentObject->notes = "nota";
@@ -460,6 +464,7 @@ class attendance_reports extends skeleton_main {
             $alumne[$contador]['givenName']=$student->givenName;
             $alumne[$contador]['sn1']=$student->sn1;
             $alumne[$contador]['sn2']=$student->sn2;
+            $alumne[$contador]['person_official_id']=$student->person_official_id;
 
             $contador++;
             }
@@ -521,10 +526,10 @@ class attendance_reports extends skeleton_main {
                 if($photo){
                     $pdf->Cell(8,8,$pdf->Image($alumne[$t]['jpegPhoto'],$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);  
                     //$pdf->Cell(8,8,$pdf->Image(base_url("/assets/img/alumnes")."/".$alumne[$t]['jpegPhoto']/*/tmp/".$alumne[$t]['jpegPhoto']*/,$pdf->GetX()+1,$pdf->GetY(),6),1,0,'C',$fill);
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - ". $alumne[$t]['person_official_id']),1,0,'L',$fill);
                     $pdf->Cell(100,8,utf8_decode(""),1,0,'C',$fill);        
                 } else {    
-                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2'].""),1,0,'L',$fill);
+                    $pdf->Cell(70,8,utf8_decode($alumne[$t]['givenName']." ".$alumne[$t]['sn1']." ".$alumne[$t]['sn2']." - " . $alumne[$t]['person_official_id'] ),1,0,'L',$fill);
                     $pdf->Cell(110,8,utf8_decode(""),1,0,'C',$fill);
                 }   
                 //$fill=!$fill;

@@ -273,10 +273,18 @@
               </a>
 
               <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
+                
                 <li>
                   <a href="#">
                     <i class="icon-cog"></i>
                     <?php echo lang('configuration'); ?>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="<?php echo base_url('/index.php/managment/change_password')?>">
+                    <i class="icon-key"></i>
+                    <?php echo lang('change_password'); ?>
                   </a>
                 </li>
 
@@ -415,6 +423,13 @@
             </a>
 
             <ul class="submenu">
+              <!-- Llistes de classe -->
+              <li id="mentoring_groups">
+                <a href="<?=base_url()?>index.php/reports/mentoring_classlists">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('mentoring_classlists');?>
+                </a>
+              </li>
               <!-- tutoritza els teus grups -->
               <li id="mentoring_groups">
                 <a href="<?=base_url()?>index.php/attendance/mentoring_groups">

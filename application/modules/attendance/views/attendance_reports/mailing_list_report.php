@@ -23,7 +23,7 @@
                             <?php echo lang("attendance").". ".lang("reports_educational_center_reports");?>
                             <small>
                                 <i class="icon-double-angle-right"></i>
-                                <?php echo lang('reports_educational_center_reports_student_emails');?>
+                                <?php echo lang('reports_educational_center_reports_student_emails');?> TODO. Pendent acacbar implementar
                             </small>
                         </h1>
         </div><!-- /.page-header -->
@@ -31,7 +31,7 @@
 <!-- TITLE -->
 <div style='height:10px;'></div>
 	<div style="margin:10px; text-align:center;">
-		<h2><?php echo $title; ?></h2>
+		<h2><?php echo $title; ?> TODO. Pendent acacbar implementar</h2>
 	</div>    
 
 
@@ -49,12 +49,13 @@
 						</td>
 					</tr>	
 				</div>
-<?php if($opcio){
-	print_r($output);
-} ?>
-
 				<tr><td colspan="2" style="text-align:center;"><input type="submit" value="Veure l'informe" class="btn btn-primary"/></td></tr>
 			</table>
 		</form>
+	</div>	
+	<div style="width:40%; margin:0px auto;">
+	<?php if($opcio){
+		print_r($all_students_mail);
+	} ?>
 	</div>	
 </div>	

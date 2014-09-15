@@ -27,6 +27,7 @@ $alumne[$contador]['jpegPhoto']=$student->photo_url;
 $alumne[$contador]['givenName']=$student->givenName;
 $alumne[$contador]['sn1']=$student->sn1;
 $alumne[$contador]['sn2']=$student->sn2;
+$alumne[$contador]['dni']=$student->sn2;
 
 $contador++;
 }

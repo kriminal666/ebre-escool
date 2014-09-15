@@ -1,4 +1,7 @@
 <?php
+
+require_once '/usr/share/php/Crypt/CHAP.php';
+
 /**
  * Attendance_model Model
  *
@@ -27,6 +30,74 @@ class managment_model  extends CI_Model  {
 		return false;
 	}
 
+	function simple_password_generator() {
+		$alpha = "abcdefghijklmnopqrstuvwxyz";
+		$alpha_upper = strtoupper($alpha);
+		$numeric = "0123456789";
+		$special = ".-+=_,!@$#*%<>[]{}";
+		$chars = "";
+		 
+		if (isset($_POST['length'])){
+		    // if you want a form like above
+		    if (isset($_POST['alpha']) && $_POST['alpha'] == 'on')
+		        $chars .= $alpha;
+		     
+		    if (isset($_POST['alpha_upper']) && $_POST['alpha_upper'] == 'on')
+		        $chars .= $alpha_upper;
+		     
+		    if (isset($_POST['numeric']) && $_POST['numeric'] == 'on')
+		        $chars .= $numeric;
+		     
+		    if (isset($_POST['special']) && $_POST['special'] == 'on')
+		        $chars .= $special;
+		     
+		    $length = $_POST['length'];
+		}else{
+		    // default [a-zA-Z0-9]{9}
+		    $chars = $alpha . $alpha_upper . $numeric;
+		    $length = 9;
+		}
+		 
+		$len = strlen($chars);
+		$pw = '';
+		 
+		for ($i=0;$i<$length;$i++)
+		        $pw .= substr($chars, rand(0, $len-1), 1);
+		 
+		// the finished password
+		$pw = str_shuffle($pw);
+
+		return $pw;
+	}
+		
+
+	function create_multiple_initial_passwords($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				echo "value: " . $value. "\n";
+				/*Example SQL
+				UPDATE `users` 
+				SET `initial_password`= "new_random_password" 
+				WHERE `id`="id_value"
+				*/
+				$new_password = $this->simple_password_generator();
+				$data = array(
+		               'initial_password' => $new_password,
+		               'force_change_password_next_login' => 'y',
+		            );
+
+				$this->db->where('id', $value);
+				$this->db->update('users', $data);    
+				//echo $this->db->last_query();
+
+				$this->change_password($value,$new_password,null,true);	
+			}
+		}		
+		return true;
+	}
+
 	function get_all_ldap_users() {
 
 		//ldap_users
@@ -36,28 +107,34 @@ class managment_model  extends CI_Model  {
 		INNER JOIN person ON person.person_id = users.person_id
 		WHERE 1
 		*/
-		$this->db->select('id, users.person_id,username, password, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn');
+		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn');
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id');
+		//TODO: Treure
+		//$this->db->limit(25);
 		
 		$query = $this->db->get();
 
+		//echo $this->db->last_query();
+
 		$all_ldap_users = array();
 		if ($query->num_rows() > 0){
-			foreach($query->result() as $row){
-				$ldap_user = new stdClass;
-				
-				$ldap_user->id = $row->id;
-				$ldap_user->person_id = $row->person_id;
-				$ldap_user->username = $row->username;
-				$ldap_user->password = $row->password;
-				$ldap_user->mainOrganizationaUnitId = $row->mainOrganizationaUnitId;
-				$ldap_user->person_givenName = $row->person_givenName;
-				$ldap_user->person_sn1 = $row->person_sn1;
-				$ldap_user->person_sn2 = $row->person_sn2;
-				$ldap_user->ldap_dn = $row->ldap_dn;
-				
-				$all_ldap_users[$row->id] = $ldap_user;
+			$i=0;
+			foreach($query->result() as $row){				
+				$all_ldap_users[$i]['id'] = $row->id;
+				$all_ldap_users[$i]['person_id'] = $row->person_id;
+				$all_ldap_users[$i]['username'] = $row->username;
+				$all_ldap_users[$i]['password'] = $row->password;
+				$all_ldap_users[$i]['initial_password'] = $row->initial_password;
+				$all_ldap_users[$i]['force_change_password_next_login'] = $row->force_change_password_next_login;				
+				$all_ldap_users[$i]['md5_initial_password'] = md5($row->initial_password);
+				$all_ldap_users[$i]['mainOrganizationaUnitId'] = $row->mainOrganizationaUnitId;
+				$all_ldap_users[$i]['person_givenName'] = $row->person_givenName;
+				$all_ldap_users[$i]['person_sn1'] = $row->person_sn1;
+				$all_ldap_users[$i]['person_sn2'] = $row->person_sn2;
+				$all_ldap_users[$i]['ldap_dn'] = $row->ldap_dn;
+				$all_ldap_users[$i]['user_type'] = $this->get_user_type($row->person_id);
+				$i++;
 			}
 		}
 
@@ -65,6 +142,12 @@ class managment_model  extends CI_Model  {
 	}
 
 	function get_user_type($person_id) {
+
+		// RETURN VALUE:
+		// 1-> Teacher
+		// 2-> Employee
+		// 3-> Student
+		// 4-> Unknown user type
 
 		//Check if user is teacher
 		//SELECT `teacher_id` FROM `teacher` WHERE `teacher_person_id`=2 
@@ -75,7 +158,6 @@ class managment_model  extends CI_Model  {
 
 		$query = $this->db->get();
 
-		$user_data = new stdClass();
 		if ($query->num_rows() == 1){ 
 			//1 --> Person is teacher
 			return 1;
@@ -89,34 +171,414 @@ class managment_model  extends CI_Model  {
 		$this->db->limit(1);
 
 		$query = $this->db->get();
-
-		$user_data = new stdClass();
 		if ($query->num_rows() == 1){ 
 			//2 --> Person is employee
 			return 2;
 		}
 
 		//Check if user is student
-		//SELECT student_id FROM `student` WHERE student_person_id=1
-		$this->db->select('student_id');
-		$this->db->from('student');
-		$this->db->where('student_person_id',$person_id);
+		//BE CAREFUL. NOT USE OBSOLET STUDENT TABLE: SELECT student_id FROM `student` WHERE student_person_id=1
+		
+		//$this->db->select('student_id');
+		//$this->db->from('student');
+		//$this->db->where('student_person_id',$person_id);
+		//$this->db->limit(1);
+		//SELECT enrollment_id, enrollment_periodid, enrollment_personid
+		//FROM enrollment 
+		//INNER JOIN person ON enrollment.enrollment_personid= person.person_id
+		//WHERE enrollment_periodid="2014-15"
+		$current_academic_shortname = $this->get_current_academic_period()->shortname;
+
+		$this->db->select('enrollment_personid');
+		$this->db->from('enrollment');
+		$this->db->join('person','enrollment.enrollment_personid = person.person_id');
+		$this->db->where('enrollment_periodid',$current_academic_shortname);
+		$this->db->where('enrollment_personid',$person_id);
 		$this->db->limit(1);
 
 		$query = $this->db->get();
-
-		$user_data = new stdClass();
+		
 		if ($query->num_rows() == 1){ 
-			//1 --> Person is student
+			//3 --> Person is student
 			return 3;
 		}
 
 		return 4;
 	}
 
-	function get_user_data($userid) {
+	private function _init_ldap() {
+		// Load the configuration
+        $CI =& get_instance();
+
+        $CI->load->config('auth_ldap');
+
+        // Verify that the LDAP extension has been loaded/built-in
+        // No sense continuing if we can't
+        if (! function_exists('ldap_connect')) {
+            show_error(lang('php_ldap_notpresent'));
+            log_message('error', lang('php_ldap_notpresent_log'));
+        }
+
+        $this->hosts = $CI->config->item('hosts');
+        $this->ports = $CI->config->item('ports');
+        $this->basedn = $CI->config->item('basedn');
+        $this->account_ou = $CI->config->item('account_ou');
+        $this->login_attribute  = $CI->config->item('login_attribute');
+        $this->use_ad = $CI->config->item('use_ad');
+        $this->ad_domain = $CI->config->item('ad_domain');
+        $this->proxy_user = $CI->config->item('proxy_user');
+        $this->proxy_pass = $CI->config->item('proxy_pass');
+        $this->roles = $CI->config->item('roles');
+        $this->auditlog = $CI->config->item('auditlog');
+        $this->member_attribute = $CI->config->item('member_attribute');
+        
+    }
+
+    protected function _bind() {        
+        //Connect
+        foreach($this->hosts as $host) {
+            $this->ldapconn = ldap_connect($host);
+            if($this->ldapconn) {
+               break;
+            }else {
+                log_message('info', lang('error_connecting_to'). ' ' .$uri);
+            }
+        }
+        
+        // At this point, $this->ldapconn should be set.  If not... DOOM!
+        if(! $this->ldapconn) {
+            log_message('error', lang('could_not_connect_to_ldap'));
+            show_error(lang('error_connecting_to_ldap'));
+        }
+
+       
+        // These to ldap_set_options are needed for binding to AD properly
+        // They should also work with any modern LDAP service.
+        ldap_set_option($this->ldapconn, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($this->ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+        
+        // Find the DN of the user we are binding as
+        // If proxy_user and proxy_pass are set, use those, else bind anonymously
+        if($this->proxy_user) {
+            $bind = @ldap_bind($this->ldapconn, $this->proxy_user, $this->proxy_pass);
+        }else {
+            $bind = @ldap_bind($this->ldapconn);
+        }
+
+        if(!$bind){
+            log_message('error', lang('unable_anonymous'));
+            show_error(lang('unable_bind'));
+            return false;
+        }   
+        return true;
+	}			
+
+	public function user_exists($uid,$basedn) {
+		$this->_init_ldap();
+		$filter = '(uid='.$uid.')';				
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		ldap_close($this->ldapconn);
+	     		return $dn;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	}
+
+			ldap_close($this->ldapconn);
+		}
+
+		return false;
+	}
+
+	public function deleteLdapUser($user_dn) {
+
+		$this->_init_ldap();
+
+		if ($this->_bind()) {
+			if (ldap_delete($this->ldapconn,$user_dn) === false){
+				$error = ldap_error($this->ldapconn);
+				$errno = ldap_errno($this->ldapconn);
+				show_error("Ldap error deleting user " . $user_dn  . " : " . $errno . " - " . $error);
+				ldap_close($this->ldapconn);
+				return $errno;
+			} else {
+				//echo "Used " . $user_dn . " deleted ok!<br/>" . $user_dn;
+			}
+
+			ldap_close($this->ldapconn);
+		}
+
+	}
+
+
+	public function addLdapUser($user_dn,$user_data) {
+		echo "Xivato addLdapUser 1\n";
+		$CI =& get_instance();
+
+        $CI->load->config('samba');
+		
+		$this->_init_ldap();
+
+		echo "Xivato addLdapUser 2\n";
+		
+		if ($this->_bind()) {
+			echo "Xivato addLdapUser 3\n";
+			// Preparar los datos
+			$user_data_array = array();
+
+			$user_data_array["objectClass"][7]="extensibleObject";
+			$user_data_array["objectClass"][6]="inetOrgPerson";
+			$user_data_array["objectClass"][5]="irisPerson";
+			$user_data_array["objectClass"][4]="sambaSAMAccount";
+			$user_data_array["objectClass"][3]="shadowAccount";
+		    $user_data_array["objectClass"][2]="posixAccount";
+		    $user_data_array["objectClass"][1]="person";
+		    $user_data_array["objectClass"][0]="top";
+		    
+		    $user_data_array["cn"]=$user_data->cn;
+		    
+		    if ($user_data->sn != "") {
+		    	$user_data_array["sn"]=$user_data->sn;
+		    }
+		    if ($user_data->person_sn1 != "") {
+		    	$user_data_array["sn1"]=$user_data->person_sn1;
+		    }
+
+		    if ($user_data->person_sn2 != "") {
+		    	$user_data_array["sn2"]=$user_data->person_sn2;
+		    }
+		    if ($user_data->person_givenName != "") {
+		    	$user_data_array["givenName"]=$user_data->person_givenName;
+		    }
+
+		    $user_data_array["uid"]=$user_data->username;
+
+		    if ($user_data->mobile != "") {
+		    	$user_data_array["mobile"]=$user_data->mobile;
+		    }
+		    if ($user_data->telephoneNumber != "") {
+		    	$user_data_array["homePhone"]=$user_data->telephoneNumber;
+		    }
+		    
+		    //$user_data_array["st"]=$user_data->st;
+		    if ($user_data->l != null && $user_data->l !="") {
+		    	$user_data_array["l"]=$user_data->l;	
+		    }
+		    if ($user_data->postalCode != null && $user_data->postalCode !="") {
+		    	$user_data_array["postalCode"]=$user_data->postalCode;	
+		    }		    
+		    
+		    if ($user_data->dateOfBirth != "") {
+		    	$user_data_array["dateOfBirth"]=$user_data->dateOfBirth;
+		    }
+		    if ($user_data->email != "") {
+		    	$user_data_array["email"]=$user_data->email;
+		    }
+		    if ($user_data->gender != "") {	
+		    	$user_data_array["gender"]=$user_data->gender;
+		    }
+		    
+		    if ($user_data->homePostalAddress != "") {
+		    	$user_data_array["homePostalAddress"]=$user_data->homePostalAddress;
+		    }
+		    
+		    $user_data_array["irisPersonalUniqueID"]=$user_data->irisPersonalUniqueID;
+		    
+		    if ($user_data->irisPersonalUniqueIDType != "") {
+		    	$user_data_array["irisPersonalUniqueIDType"]=$user_data->irisPersonalUniqueIDType;
+		    }
+
+		    //TODO: PHOTO
+		    //$user_data_array["gender"]=$user_data->gender;
+
+		    echo "Xivato addLdapUser 5\n";
+		    
+			if(class_exists('Imagick')){
+				echo "Xivato addLdapUser 5a\n";
+		   		$photo_path = "/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo;
+		   		echo "photo_path:" . $photo_path . " \n";
+		   		echo "Xivato addLdapUser 5b\n";
+		   		//echo $photo_path . "\n";
+		   		if ($user_data->photo != ""){
+		   			if (file_exists($photo_path)) {
+			   			echo "Xivato addLdapUser 5c\n";
+			   			$im = new Imagick("/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo);
+						$im->setImageOpacity(1.0);
+						//$im->resizeImage(147,200,Imagick::FILTER_UNDEFINED,0.5,TRUE);
+						//$im->setCompressionQuality(90);
+						$im->setImageFormat('jpeg');
+						$user_data_array['jpegphoto'] = $im->getImageBlob();
+						echo "Xivato addLdapUser 5d\n";
+			   		}	
+		   		}
+		   		
+			} else {
+				echo "Error: No Imagick class found<br/>";
+			}
+
+			echo "Xivato addLdapUser 6\n";
+		    		    
+		    $uidnumber = 1000 + (int )$user_data->id;
+		    $user_data_array["uidnumber"]= $uidnumber;
+		    $user_data_array["userpassword"]="{MD5}".base64_encode(pack("H*",md5($user_data->password)));
+		    $user_data_array["shadowLastChange"]= floor(time()/86400);
+
+		    //TODO: posix config file!
+		    $user_data_array["loginShell"]="/bin/bash";
+
+		    $user_data_array["gidnumber"]=$CI->config->item('samba_newusers_gidnumber');
+		    $user_data_array["homedirectory"]= $CI->config->item('samba_homes_basepath').$user_data->username;
+		    $user_data_array["sambaSID"]= $CI->config->item('samba_SID') . ($uidnumber*2);
+		    $user_data_array["sambaDomainName"] = $CI->config->item('samba_domainName');
+		    $user_data_array["sambaLogonScript"]=$CI->config->item('samba_logonScript');		    
+		    $user_data_array["sambaHomeDrive"]=$CI->config->item('samba_homeDrive');
+
+		    $user_data_array["sambaHomePath"]= $CI->config->item('samba_homePath') . $user_data->username;
+		    $user_data_array["sambaAcctFlags"]=$CI->config->item('samba_acctFlags');
+		    $user_data_array["sambaBadPasswordCount"]=$CI->config->item('samba_badPasswordCount');
+		    $user_data_array["sambaBadPasswordTime"]=$CI->config->item('samba_badPasswordTime');
+		    $user_data_array["sambaMungedDial"]=$CI->config->item('samba_mungedDial');
+		    $user_data_array["sambaPrimaryGroupSID"]=$CI->config->item('samba_primaryGroupSID');
+
+		    //TODO. Calculate Windows Passwords		    
+			$cr = new Crypt_CHAP_MSv1();			
+		    
+		    $user_data_array["sambaNTPassword"]=strtoupper(bin2hex($cr->ntPasswordHash($user_data->password)));
+			$user_data_array["sambaLMPassword"]=strtoupper(bin2hex($cr->lmPasswordHash($user_data->password)));		    
+
+			echo "Xivato addLdapUser 7\n";
+		    
+			//echo "user dn: " . $user_dn . "<br/>";
+			//echo "user_data_array: " . var_dump($user_data_array) . "<br/>";
+		    if (ldap_add($this->ldapconn,$user_dn,$user_data_array) === false){
+				$error = ldap_error($this->ldapconn);
+				$errno = ldap_errno($this->ldapconn);
+				show_error("Ldap error adding user: " . $errno . " - " . $error);
+				ldap_close($this->ldapconn);
+				return $errno;
+			} else {
+				echo "Xivato addLdapUser 98\n";
+				ldap_close($this->ldapconn);
+				return true;
+			}
+		}
+		ldap_close($this->ldapconn);
+		echo "Xivato addLdapUser 99\n";
+		return false;
+	}
+
+	function update_user_ldap_dn($username, $ldap_dn) {
+
+		/*Example SQL
+		UPDATE `users` 
+		SET `ldap_dn`= "new_ldap_dn" 
+		WHERE `username`="username"
+		*/
+
+		$data = array(
+               'ldap_dn' => $ldap_dn
+            );
+
+		$this->db->where('username', $username);
+		$this->db->update('users', $data);
+
+	}
+
+	function change_password($username,$new_password,$old_pasword=null,$username_is_userid=false) {
+
+		//GET USER DATA FORM DATABASE
+		echo "Xivato change_password 1\n" ;
+		$user_data = new stdClass();
+		if ($username_is_userid) {
+			$userid = $username;
+			$user_data = $this->get_user_data($userid);
+		} else {
+			$user_data = $this->get_user_data_by_username($username);
+		}
+
+		echo "Xivato change_password 2\n" ;
+		echo "user_data:\n" ;
+		var_dump($user_data);
+		echo "user_data end:\n" ;
+
+		//Verify old password:
+		if ($old_pasword != null) {
+			echo "Xivato change_password 3\n" ;
+			$old_password_hashed = md5($old_pasword);
+		
+			//echo "old_pasword: " . $old_pasword . "<br/>";
+			//echo "old_password_hashed: " . $old_password_hashed . "<br/>";
+			//echo "user_data->password: " . $user_data->password . "<br/>";
+
+			if (!($old_password_hashed === $user_data->password )) {
+				return -1;	
+			}	
+		}		
 
 		/*
+		UPDATE `users` 
+		SET `password` = md5('password')
+		WHERE `username`="username"
+		*/
+
+		//Update MYSQL PASSWORD
+		echo "Xivato change_password 4\n" ;
+		$new_password_hashed = md5($new_password);
+		$data = array(
+               'password' => $new_password_hashed 
+            );
+
+		if ($username_is_userid) {
+			$this->db->where('id', $username);
+		} else {
+			$this->db->where('username', $username);
+		}
+		$this->db->update('users', $data);
+		echo "Xivato change_password 5\n" ;
+
+		//Force ldap user sync
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+		//echo "user name: " . $user_data->username;
+		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+		echo "Xivato change_password 6\n" ;
+		if ($user_exists) {
+			echo "Xivato change_password 7\n" ;
+			if ($user_exists === $user_data->dn) {
+				echo "Xivato change_password 8\n" ;
+				$this->managment_model->deleteLdapUser($user_data->dn);
+			} else {
+				echo "Xivato change_password 9\n" ;
+				//Debug
+				//echo "ERROR! DNs not match!<br/>";
+				$this->managment_model->deleteLdapUser($user_exists);
+				$user_data->dn = $user_exists;
+			}
+		} 
+		$user_data->password = $new_password;
+		//echo "user_data dn: " . $user_data->dn;
+		echo "Xivato change_password 10\n" ;
+		$result = $this->managment_model->addLdapUser($user_data->dn,$user_data);
+		echo "Xivato change_password 11\n" ;
+		if (!$result) {
+			return false;
+		}
+		echo "Xivato change_password 12\n" ;
+		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+		echo "Xivato change_password 13\n" ;
+		return true;
+
+	}						
+
+	function get_user_data($userid,$user_id_is_username=false) {
+
+		/* Example
 		SELECT id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
 		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
 		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
@@ -124,19 +586,27 @@ class managment_model  extends CI_Model  {
 		FROM users 
 		INNER JOIN person ON users.person_id = person.person_id
 		WHERE id = 1
-
 		*/
+
 		$this->db->select('id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
 		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
 		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
-		       person_homePostalAddress, person_photo, person_locality_id, person_telephoneNumber, person_mobile');
+		       person_homePostalAddress, person_photo, person_locality_id,locality_name,postalcode_code, person_telephoneNumber, person_mobile');
 		$this->db->from('users');
 		$this->db->join('person','users.person_id = person.person_id');
-		$this->db->where('id',$userid);
+		$this->db->join('locality','locality.locality_id = person.person_locality_id',"left");
+		$this->db->join('postalcode','postalcode.postalcode_localityid = locality.locality_id',"left");
+		if ($user_id_is_username) {
+			$this->db->where('username',$userid);
+		} else {
+			$this->db->where('id',$userid);	
+		}
+		
 		$this->db->limit(1);
 
-
 		$query = $this->db->get();
+
+		//echo $this->db->last_query();
 
 		$user_data = new stdClass();
 		if ($query->num_rows() == 1){
@@ -147,16 +617,62 @@ class managment_model  extends CI_Model  {
 			$user_data->username = $row->username;
 			$user_data->password = $row->password;
 			$user_data->ldap_dn = $row->ldap_dn;
+			$user_data->person_givenName = $row->person_givenName;
+			$user_data->person_sn1 = $row->person_sn1;
+			$user_data->person_sn2 = $row->person_sn2;
 
-			$user_data->user_type = $this->get_user_type($userid);
-			
+			$user_data->photo = $row->person_photo;
+			$user_data->mobile = $row->person_mobile;
+			$user_data->telephoneNumber = $row->person_telephoneNumber;
+			//$user_data->st = $row->st;
+			$user_data->l = $row->locality_name;
+			$user_data->postalCode = $row->postalcode_code;
+			$user_data->dateOfBirth = $row->person_date_of_birth;
+			$user_data->email = $row->person_secondary_email;
+			$user_data->gender = $row->person_gender;
+			$user_data->homePostalAddress = $row->person_homePostalAddress;
+			$user_data->irisPersonalUniqueID = $row->person_official_id;
+			$user_data->irisPersonalUniqueIDType = $row->person_official_id_type;
 
+			$user_data->user_type = $this->get_user_type($user_data->person_id);
+
+			$user_data->basedn_where_insert_new_ldap_user = "";
+
+			//echo "User type: " . $user_data->user_type . "\n";
+
+			switch ($user_data->user_type) {
+			    case 1:
+			    	//TEACHER
+			        //TODO: at this time teacher are not touched
+			    	$user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_teachers_basedn');
+			        break;
+			    case 2:
+			    	//EMPLOYEE
+			        //TODO: at this time teacher are not touched
+			    	$user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_employees_basedn');
+			        break;
+			    case 3:
+			    	//STUDENT
+			        $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');			        
+			        break;    
+			    default:
+			        $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_others_basedn');
+			        break;
+			}
+
+			$user_data->cn = trim($user_data->person_givenName . " " . $user_data->person_sn1 . " " . $user_data->person_sn2);
+			$user_data->sn = trim($user_data->person_sn1 . " " . $user_data->person_sn2);
+			$user_data->dn = "cn=" . $user_data->cn . ",". $user_data->basedn_where_insert_new_ldap_user;
 			return $user_data;
 		}	
 		else
 			return false;
 
 	
+	}
+
+	function get_user_data_by_username($username) {
+		return $this->get_user_data($username,true);
 	}
 
 	function get_all_enrollment_academic_periods() {

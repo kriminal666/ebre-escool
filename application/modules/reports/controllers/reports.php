@@ -23,7 +23,331 @@ class reports extends skeleton_main {
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
         $params = array ('orientation' => 'P', 'unit' => 'mm', 'size' => 'A4', 'font_path' => 'font/');        
         $this->load->library('pdf',$params); // Load library
+
+        /* Set language */
+        $current_language=$this->session->userdata("current_language");
+        if ($current_language == "") {
+            $current_language= $this->config->item('default_language');
+        }
         
+        // Load the language file
+        $this->lang->load('reports',$current_language);
+        $this->load->helper('language');
+        
+	}
+
+	public function load_header_data($menu = false){
+
+		$active_menu = $menu;
+
+		//CSS URLS
+		$jquery_ui_css_url = "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
+		$jquery_ui_editable_css_url = "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css";
+		$select2_css_url = "http://cdn.jsdelivr.net/select2/3.4.5/select2.css";
+		//JS URLS
+		$jquery_url= "http://code.jquery.com/jquery-1.9.1.js";
+		$jquery_ui_url= "http://code.jquery.com/ui/1.10.3/jquery-ui.js";
+		$select2_url= "http://cdn.jsdelivr.net/select2/3.4.5/select2.js";
+		$jquery_ui_editable_url= "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js";
+
+		if (defined('ENVIRONMENT') && ENVIRONMENT=="development") {
+  			$jquery_ui_css_url = base_url('assets/css/jquery-ui.css');
+  			$jquery_ui_editable_css_url = base_url('assets/css/jqueryui-editable.css');
+  			$select2_css_url = base_url('assets/css/select2.css');
+
+  			//$jquery_url= base_url('assets/js/jquery-1.9.1.js');
+  			$jquery_url= base_url('assets/js/jquery-1.10.2.min.js');
+			$jquery_ui_url= base_url('assets/js/jquery-ui.js');
+			$select2_url= base_url('assets/js/select2.js');
+			$jquery_ui_editable_url= base_url('assets/js/jqueryui-editable.min.js');
+		}
+
+		$header_data= $this->add_css_to_html_header_data(
+			$this->_get_html_header_data(),
+			$jquery_ui_css_url);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			$jquery_ui_editable_css_url);
+
+		$header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/datepicker.css'));  
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			$select2_css_url);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+            base_url('assets/css/tribal-timetable.css')); 
+
+		
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/bootstrap-switch.min.css'));
+
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/bootstrap.min.extracolours.css')); 
+
+//ACE
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-fonts.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-responsive.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/ace-skins.min.css'));
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/css/jquery_plugins/fancybox/jquery.fancybox.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            'http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css');
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/ColReorder/media/css/ColReorder.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/css/ColVis.css'));
+
+/*        
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/no_padding_top.css'));        
+
+
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/chosen.min.css'));        
+*/
+		//JS Already load at skeleton main!!!
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			$jquery_url);
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			$jquery_ui_url);	
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			$select2_url);
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			$jquery_ui_editable_url);
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.js'));
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.ca.js'));
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url('assets/js/bootstrap-datepicker.es.js'));
+
+
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-tooltip.js'));
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/bootstrap-collapse.js'));                
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal.js'));
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-shared.js'));        
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/tribal-timetable.js'));
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js");
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/ColReorder/media/js/ColReorder.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/js/ColVis.min.js')); 
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            base_url('assets/js/jquery.dataTables.bootstrap.js'));
+
+
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/bootstrap-switch.min.js'));
+
+ //ACE        
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-extra.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace-elements.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ace.min.js'));
+                    
+/*
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/chosen.jquery.min.js'));
+*/
+
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/grocery_crud/js/jquery_plugins/jquery.fancybox-1.3.4.js'));
+
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));
+
+
+		$header_data['menu']= $active_menu;
+		return $header_data; 
+        
+    }
+
+	function check_logged_user() {
+	    if (!$this->skeleton_auth->logged_in())
+	    {
+	        //redirect them to the login page
+	        redirect($this->skeleton_auth->login_page, 'refresh');
+	    }
+
+	    //CHECK IF USER IS READONLY --> unset add, edit & delete actions
+	    $readonly_group = $this->config->item('readonly_group');
+	    if ($this->skeleton_auth->in_group($readonly_group)) {
+	        $this->grocery_crud->unset_add();
+	        $this->grocery_crud->unset_edit();
+	        $this->grocery_crud->unset_delete();
+	    }
+	}
+
+	function get_class_list($classroom_group_id=null,$academic_period=null) {
+
+		if ($classroom_group_id == null) {
+			if(isset($_POST['classroom_group_id'])) {
+				$classroom_group_id = $_POST['classroom_group_id'];
+			}
+		} 
+
+		if ($academic_period == null) {
+			if(isset($_POST['academic_period_id'])) {
+				$academic_period = $_POST['academic_period_id'];
+			}			
+		} 
+
+		$this->load->model('reports_model');
+
+		$class_list = array();
+	    $class_list = $this->reports_model->get_class_list($classroom_group_id,$academic_period);    
+
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($class_list));
+
+	    echo '}';
+	}
+
+	function mentoring_classlists($academic_period_id = null){
+		$active_menu = array();
+		$active_menu['menu']='#mentoring';
+		$active_menu['submenu1']='#mentoring_classlists';
+
+    	$this->check_logged_user();
+
+		$header_data = $this->load_header_data($active_menu);
+
+        $this->_load_html_header($header_data);
+		
+		$this->_load_body_header();
+
+		//Check if user is manager -> Show all groups
+
+		// IF USER IS NOT MANAGER -> IS MENTOR? -> SHOW GROUPS user is mentor
+
+		$data = array();
+
+		$this->load->model('reports_model');
+
+		$selected_academic_period_id = false;
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->reports_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->reports_model->get_all_academic_periods();
+
+        $mentors = $this->reports_model->get_mentors($academic_period_id);
+        $all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
+
+		$data['all_classgroups'] = $all_classgroups;
+        $data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
+        $data['academic_period_id'] = $academic_period_id;
+        $data['mentors'] = $mentors;
+		
+		$this->load->view('mentoring_classlists',$data);	
+
+		$this->_load_body_footer();		
 	}
 	
 	/*

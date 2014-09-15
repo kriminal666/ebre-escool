@@ -202,7 +202,113 @@ class managment extends skeleton_main {
 		
 	}
 
-	public function users_ldap_activate($userid = null) {
+	public function change_password() {
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$header_data = $this->load_ace_files();	
+
+		$header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$form_field_pass0 = "";
+		$form_field_pass1 = "";
+		$form_field_pass2 = "";
+
+		//var_dump($_POST)."<br/>";
+
+		if(isset($_POST['form-field-pass0'])) {
+			$form_field_pass0 = $_POST['form-field-pass0'];
+		}
+
+		if(isset($_POST['form-field-pass1'])) {
+			$form_field_pass1 = $_POST['form-field-pass1'];
+		}
+
+		if(isset($_POST['form-field-pass2'])) {
+			$form_field_pass2 = $_POST['form-field-pass2'];
+		}
+
+		//echo "form_field_pass0: " . $form_field_pass0."<br/>";
+		//echo "form_field_pass1: " . $form_field_pass1."<br/>";
+		//echo "form_field_pass2: " . $form_field_pass2."<br/>";
+
+		$data = array();
+		$data['result_message_exists']=false;
+
+		//VALIDATE FORM
+		if ( count($_POST) > 0) {
+			//Validate form
+			if ($form_field_pass0 === "") {
+				$data['result_message_exists']=true;
+				$data['result_message_ok'] = false;
+				$data['result_message'] = "Cal indicar la paraula de pas actual!";
+			} else {
+				if ($form_field_pass1 === "") {
+					$data['result_message_exists']=true;
+					$data['result_message_ok'] = false;
+					$data['result_message'] = "Cal indicar una nova paraula de pas!";
+				} else {
+					if ($form_field_pass2 === "") {
+						$data['result_message_exists']=true;
+						$data['result_message_ok'] = false;
+						$data['result_message'] = "Cal confirmar la nova paraula de pas!";
+					} else {
+						if ($form_field_pass1 != $form_field_pass2) {
+							$data['result_message_exists']=true;
+							$data['result_message_ok'] = false;
+							$data['result_message'] = "La paraula de pas nova i el camp de confirmació no coincideixen!";
+						} else {
+							//Form Ok. Change password
+							//Get user id from session
+
+							$new_password = $form_field_pass1;
+							$old_password = $form_field_pass0;
+							$result = $this->managment_model->change_password( $this->session->userdata('username') ,$new_password,$old_password);
+							if ($result) {
+								if ($result === -1) {
+									$data['result_message_exists']=true;
+									$data['result_message_ok'] = false;
+									$data['result_message'] = "La paraula de pas antiga és incorrecte!";	
+								} else {
+									$data['result_message_exists']=true;
+									$data['result_message_ok'] = true;
+									$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
+								}
+								
+							} else {
+								
+									$data['result_message_exists']=true;
+									$data['result_message_ok'] = false;
+									$data['result_message'] = "Hi hagut un error al modificar la paraula de pas!";
+							}							
+						}
+					}
+				}
+
+				
+			}
+		}
+
+		$this->load->view('change_password.php',$data);
+		$this->_load_body_footer();	
+
+	}
+
+	public function users_ldap_activate($userid = null, $force_sync = true,$password = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -227,65 +333,83 @@ class managment extends skeleton_main {
 		    	return false;
 		    }
 		}
+		//echo "USER ID: $userid<br/>";
 
-		echo "USER ID: $userid<br/>";
-
+		//GET USER DATA FORM DATABASE
 		$user_data = new stdClass();
-
 		$user_data = $this->managment_model->get_user_data($userid);
 
-		if ( $user_data->ldap_dn != "" ) {
+		if ( ($user_data->ldap_dn != "") && ($force_sync == false) ) {
 			//LDAP DN ALREADY EXISTS
-			echo "LDAP DN ALREADY EXISTS: $user_data->ldap_dn<br/>";
-		} else {
-			//Calculate new DN
-			$basedn = $this->config->item('basedn');		
+			echo "ERROR. LDAP DN ALREADY EXISTS ON DATABASE: $user_data->ldap_dn<br/>";
 
+			//TODO
+
+		} else {
+			
+			//Calculate new DN
+			//$basedn = $this->config->item('basedn');		
 			$active_users_basedn = $this->config->item('active_users_basedn');
 
-			//GET USER TYPE
-			$user_type = $user_data->user_type;
+			//echo "BASEDN: $basedn<br/>";
+			//echo "BASEDN WHERE INSERT NEW LDAP USER: " . $user_data->basedn_where_insert_new_ldap_user . "<br/>";
+			//echo "USER CN: " . $user_data->cn . "<br/>";
+			//echo "USER DN: " . $user_data->dn . "<br/>";
 
-			$basedn_where_insert_new_ldap_user = "";
-
-			switch ($user_type) {
-			    case 1:
-			    	//TEACHER
-			        echo "IS TEACHER<br/>";
-			        //TODO: at this time teacher are not touched
-			        return;
-			        break;
-			    case 2:
-			    	//EMPLOYEE
-			        echo "IS EMPLOYEE<br/>";
-			        //TODO: at this time teacher are not touched
-			        return;
-			        break;
-			    case 3:
-			    	//STUDENT
-			        echo "IS STUDENT<br/>";
-			        $basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');
-			        break;    
-			    default:
-			        echo "NO USER TYPE KNOWN";
-			        return;
-			        break;
+			//TODO
+			if ($password == null) {
+				//TODO: generate random password?
+				$user_data->password = "password";				
+			} else {
+				$user_data->password = $password;				
 			}
-
-			echo "BASEDN: $basedn<br/>";
-			echo "BASEDN WHERE INSERT NEW LDAP USER: $basedn_where_insert_new_ldap_user<br/>";
-
-			//Check DN NOT EXITS?
 			
 
-			//Add user tot ldap
+			//Debug
+			//echo "USER data:<br/>";		
+			//var_export($user_data);
+
+			//Check if user exists
+			//NOTE: uid=username is UNIQUE INDEX in users database. If ldap users are created only from mysql sync proces no repeated uids occurrs
+			//echo "Username: " . $user_data->username . "<br/>";
+			//echo "Active_users_basedn: " . $active_users_basedn. "<br/>";
+
+			$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+			if ($user_exists) {
+				if ($force_sync) {
+					//echo "DN ALREADY EXISTS. FORCE SYNC IS ACTIVE. THEN FIRST WE WILL DELETE LDAP USER<br/>";
+					//Delete existing user and substitute by new one?
+					if ($user_exists === $user_data->dn) {
+						$this->managment_model->deleteLdapUser($user_data->dn);
+					} else {
+						echo "ERROR! DNs not match!<br/>";
+						return false;
+					}
+					//INSERT NEW LDAP USER
+					$this->managment_model->addLdapUser($user_data->dn,$user_data);
+					$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+				} else {
+					echo "ERROR. USER ALREADY EXISTS<br/>";
+				}
+			} else {
+				//INSERT NEW LDAP USER
+				$this->managment_model->addLdapUser($user_data->dn,$user_data);
+				$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+			}
 		}
+	}
 
-		echo "USER data:<br/>";		
+	public function get_users_ldap() {
 
-		var_export($user_data);
+		$users_ldap = array();
+	    $users_ldap = $this->managment_model->get_all_ldap_users();    
 
+	    echo '{
+	    "aaData": ';
 
+	    print_r(json_encode($users_ldap));
+
+	    echo '}';
 	}
 	
 	public function users_ldap() {
@@ -302,9 +426,7 @@ class managment extends skeleton_main {
 
 		$header_data = $this->load_ace_files($active_menu);
 
-		$header_data= $this->add_css_to_html_header_data(
-			$header_data,
-			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			'http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css');		
@@ -317,22 +439,31 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		$header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));  
 
 		//JS
-		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+		
 			
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			"http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js");					
 			
 		$header_data= $this->add_javascript_to_html_header_data(
-			$header_data,
-			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js'));
+
 		$header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+            "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+	        $header_data,
+	        base_url('assets/js/jquery.gritter.min.js')); 
 			
 		$this->_load_html_header($header_data); 
 		
@@ -341,14 +472,30 @@ class managment extends skeleton_main {
 		$data = array();
 
 		$data['user_ldap_table_title'] = "Usuaris ldap";
-		$all_ldap_users = $this->managment_model->get_all_ldap_users();
-		$data['all_ldap_users'] = $all_ldap_users;
-
+		
 		$this->load->view('users_ldap.php',$data);
 		
 		
 		$this->_load_body_footer();	
 		
+	}
+
+	public function create_multiple_initial_passwords () {
+
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->create_multiple_initial_passwords($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
 	}
 
 	/*

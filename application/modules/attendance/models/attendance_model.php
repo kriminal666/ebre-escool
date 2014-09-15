@@ -61,31 +61,28 @@ class attendance_model  extends CI_Model  {
 	}
 
 	function getAllGroupStudentsInfo($class_group_id) {
+		
 		/*
-		SELECT `student_id` , person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
-		FROM `student`
-		INNER JOIN person ON student.`student_person_id` = person.person_id
+		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
+		FROM `person`
 		INNER JOIN users ON person.`person_id` = users.person_id
-		INNER JOIN enrollment_class_group ON users.person_id = enrollment_class_group.enrollment_class_group_personid
-		WHERE enrollment_class_group_group_id =26
-		LIMIT 0 , 30
+		INNER JOIN enrollment ON users.person_id = enrollment.enrollment_personid
+		WHERE enrollment.enrollment_group_id =26 AND `enrollment_periodid`="2014-15"
 		*/
 
-		$this->db->select('student.student_id,person.person_id, person.person_sn1, person.person_sn2, person.person_givenName,
-			users.username, person.person_secondary_email,person.person_photo');
-		$this->db->from('student');
-		$this->db->join('person','student.student_person_id = person.person_id');
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
+		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
-		$this->db->join('enrollment_class_group','users.person_id = enrollment_class_group.enrollment_class_group_personid');
-		
-		$this->db->where('enrollment_class_group.enrollment_class_group_group_id',$class_group_id);
+		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
+		$this->db->where('enrollment.enrollment_group_id',$class_group_id);
+		$this->db->where('enrollment.enrollment_periodid',"2014-15");
 		
 		$this->db->order_by('person.person_sn1');
 		$this->db->order_by('person.person_sn2');
 		$this->db->order_by('person.person_givenName');
 		$this->db->distinct();
 		$query = $this->db->get();
-		//echo $this->db->last_query();
+		//echo $this->db->last_query()."<br/>";
 
 		if ($query->num_rows() > 0) {
 			$student_info_array = array();
@@ -95,7 +92,6 @@ class attendance_model  extends CI_Model  {
 				//$student_info_array[] = $row;
    				$student = new stdClass();
 				
-				$student->student_id = $row['student_id'];
 				$student->person_id = $row['person_id'];
 				$student->sn1 = $row['person_sn1'];
 				$student->sn2 = $row['person_sn2'];
@@ -103,8 +99,11 @@ class attendance_model  extends CI_Model  {
 				$student->username = $row['username'];
 				$student->email = $row['person_secondary_email'];
 				$student->photo_url = $row['person_photo'];
+				$student->person_official_id = $row['person_official_id'];
 				
-				$student_info_array[$row['student_id']] = $student;
+				//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
+				
+				$student_info_array[$student->person_id] = $student;
 
 			}
 
@@ -223,22 +222,18 @@ class attendance_model  extends CI_Model  {
 
 	function getAllStudentsMail(){
 		/*
-		SELECT `student_id` , person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
-		FROM `student`
-		INNER JOIN person ON student.`student_person_id` = person.person_id
-		INNER JOIN users ON person.`person_id` = users.person_id
-		INNER JOIN enrollment_class_group ON users.person_id = enrollment_class_group.enrollment_class_group_personid
-		WHERE enrollment_class_group_group_id =26
-		LIMIT 0 , 30
+		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
+		FROM person
+		INNER JOIN users ON person.person_id = users.person_id
+		INNER JOIN enrollment ON users.person_id = enrollment.enrollment_personid
+		WHERE enrollment_periodid="2014-15"
 		*/
 
-		$this->db->select('student.student_id,person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, person.person_email, person.person_secondary_email,person.person_photo');
-		$this->db->from('student');
-		$this->db->join('person','student.student_person_id = person.person_id');
-	//	$this->db->join('users','person.person_id = users.person_id');
-	//	$this->db->join('enrollment_class_group','users.person_id = enrollment_class_group.enrollment_class_group_personid');
-		
-	//	$this->db->where('enrollment_class_group.enrollment_class_group_group_id',$class_group_id);
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_email, person.person_secondary_email');
+		$this->db->from('person');
+		$this->db->join('users','person.person_id = users.person_id');
+		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');
+		$this->db->where('enrollment_periodid',"2014-15");
 		
 		$this->db->order_by('person.person_sn1');
 		$this->db->order_by('person.person_sn2');
@@ -264,9 +259,7 @@ class attendance_model  extends CI_Model  {
 //				$student->username = $row['username'];
 				$student->email = $row['person_email'];
 				$student->secondary_email = $row['person_secondary_email'];
-				$student->photo_url = $row['person_photo'];
-				
-				$student_info_array[$row['student_id']] = $student;
+				$student_info_array[$student->person_id] = $student;
 
 			}
 
@@ -1290,8 +1283,11 @@ ORDER BY person.person_sn1
 
 	function get_all_classroom_groups($orderby='asc') {
 		//classroom_group
-		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_mentorId');
-		$this->db->from('classroom_group');
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name,classroom_group_description,classroom_group_academic_periods_mentorId');
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id', 'left');
+		//TODO
+		$this->db->where('classroom_group_academic_periods_academic_period_id',5);
 		$this->db->order_by('classroom_group_code', $orderby);
 		
 		$query = $this->db->get();

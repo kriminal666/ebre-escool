@@ -30,6 +30,7 @@ class enrollment_model  extends CI_Model  {
 	/* Enrollment Wizard */
 
 	/* Alumnes */
+	//NOTE: All users are potential students
 	public function get_students($orderby="asc") {
 
         $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id');
@@ -232,22 +233,25 @@ class enrollment_model  extends CI_Model  {
 	public function get_enrollment_study_submodules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
 
 		/*
-		SELECT DISTINCT enrollment_periodid,enrollment_id,study_submodules_id, study_module_shortname, study_module_name , study_submodules_shortname, study_submodules_name, study_submodules_courseid,course.course_shortName,course.course_name,study_submodules_initialDate, study_submodules_endDate,study_submodules_totalHours,study_submodules_order
-		FROM study_submodules
+		SELECT DISTINCT enrollment_periodid,enrollment_id,study_submodules_id, study_module_shortname, study_module_name , study_submodules_shortname, study_submodules_name, study_submodules_courseid,course.course_shortName,course.course_name, 
+		study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,study_submodules_order
+		FROM  study_submodules_academic_periods
+		INNER JOIN study_submodules ON study_submodules.study_submodules_id =  study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id
 		INNER JOIN study_module ON study_submodules.study_submodules_study_module_id = study_module.study_module_id
 		INNER JOIN enrollment_submodules ON enrollment_submodules.enrollment_submodules_submoduleid = study_submodules.study_submodules_id
 		INNER JOIN enrollment ON enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id
 		INNER JOIN course ON course.course_id = study_submodules.study_submodules_courseid
-		WHERE enrollment_periodid = "2014-15" AND enrollment_id=4326
+		WHERE enrollment_periodid = "2014-15" AND enrollment_id=4326 AND study_submodules_academic_periods.study_submodules_academic_periods_academic_period_id=5
 		ORDER BY study_module_order ASC,study_submodules_order ASC
 		*/
 
 	    $this->db->select('enrollment_periodid,enrollment_id,study_submodules_id, study_module_shortname, study_module_name , 
 	    				   study_submodules_shortname, study_submodules_name, study_submodules_courseid,course.course_shortName,
-	    				   course.course_name,study_submodules_initialDate, study_submodules_endDate,study_submodules_totalHours,
+	    				   course.course_name,study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
 	    				   study_module_order, study_submodules_order');
 	    $this->db->distinct();
-		$this->db->from('study_submodules');
+		$this->db->from('study_submodules_academic_periods');
+		$this->db->join('study_submodules','study_submodules.study_submodules_id =  study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id');
 		$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id');
 		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_submoduleid = study_submodules.study_submodules_id');
 		$this->db->join('enrollment','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id');
@@ -282,9 +286,9 @@ class enrollment_model  extends CI_Model  {
    				$enrollment_study_submodules[$i]['study_submodules_course_shortName'] = $row['course_shortName'];
    				$enrollment_study_submodules[$i]['study_submodules_course_name'] = $row['course_name'];
    				$enrollment_study_submodules[$i]['study_submodules_course'] = $row['course_shortName'] . " - " . $row['course_name'];
-   				$enrollment_study_submodules[$i]['study_submodules_initialDate'] = $row['study_submodules_initialDate'];
-   				$enrollment_study_submodules[$i]['study_submodules_endDate'] = $row['study_submodules_endDate'];
-   				$enrollment_study_submodules[$i]['study_submodules_totalHours'] = $row['study_submodules_totalHours'];   				
+   				$enrollment_study_submodules[$i]['study_submodules_initialDate'] = $row['study_submodules_academic_periods_initialDate'];
+   				$enrollment_study_submodules[$i]['study_submodules_endDate'] = $row['study_submodules_academic_periods_endDate'];
+   				$enrollment_study_submodules[$i]['study_submodules_totalHours'] = $row['study_submodules_academic_periods_totalHours'];   				
    				$enrollment_study_submodules[$i]['study_module_order'] = $row['study_module_order'];   				
    				$enrollment_study_submodules[$i]['study_submodules_order'] = $row['study_submodules_order'];   				
    				$i++;

@@ -56,6 +56,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `ip_address` varbinary(16) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(80) NOT NULL,
+  `initial_password` varchar(10) NOT NULL,
+  `force_change_password_next_login` enum('n','y') NOT NULL DEFAULT 'n',
   `mainOrganizationaUnitId` int(11) NOT NULL,
   `salt` varchar(40) DEFAULT NULL,
   `secondary_email` varchar(100) NOT NULL,
@@ -72,7 +74,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_name` varchar(50) DEFAULT NULL,
   `company` varchar(100) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  'ldap_dn' varchar(10000) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -182,6 +186,8 @@ CREATE TABLE IF NOT EXISTS `classroom_group` (
   `classroom_group_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_shortName` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `classroom_group_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_description` text COLLATE utf8_unicode_ci NOT NULL,
+  `classroom_group_description` 
   `classroom_group_course_id` int(11) NOT NULL,
   `classroom_group_entryDate` datetime NOT NULL,
   `classroom_group_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1775,6 +1781,8 @@ CREATE TABLE IF NOT EXISTS `bank_office` (
 -- Estructura de la taula `student`
 --
 
+/* DISCARD/OBSOLET. NOT USED. Students are enrolled persons then could be obtained JOINTNI tables enrollment and person */
+/*
 CREATE TABLE IF NOT EXISTS `student` (
   `student_id` int(11) NOT NULL AUTO_INCREMENT,
   `student_person_id` int(11) NOT NULL,
@@ -1787,6 +1795,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `student_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`student_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+*/
 
 --
 -- Estructura de la taula `non_lective_hours`

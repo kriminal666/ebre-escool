@@ -21,6 +21,7 @@
 //BODY HEADER MENUS & SUBMENUS
 $lang['Welcome']   = 'Benvingut/da,';
 $lang['configuration']   = 'Configuració';
+$lang['change_password']   = 'Canvi password';
 $lang['profile']   = 'Perfil';
 $lang['Exit']   = 'Sortir';
 
@@ -28,6 +29,7 @@ $lang['control_panel'] = 'Panell de Control';
 
 $lang['check_attendance']   = 'Passar llista';
 $lang['mentoring']   = 'Tutoria';
+ $lang['mentoring_classlists']   = 'Llistes de classe';
  $lang['mentoring_groups_mentoring']   = 'Tutoritza els teus grups';
  $lang['mentoring_attendance_by_student']   = 'Llistat de faltes per alumne';
 $lang['reports']   = 'Informes';
