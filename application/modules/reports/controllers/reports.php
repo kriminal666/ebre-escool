@@ -271,32 +271,58 @@ class reports extends skeleton_main {
 
 	function get_class_list($classroom_group_id=null,$academic_period=null) {
 
+		if (!$this->skeleton_auth->logged_in())
+	    {
+	        //redirect them to the login page
+	        redirect($this->skeleton_auth->login_page, 'refresh');
+	    }
+
 		if ($classroom_group_id == null) {
 			if(isset($_POST['classroom_group_id'])) {
 				$classroom_group_id = $_POST['classroom_group_id'];
+			} elseif (isset($_GET['classroom_group_id'])) {
+				$classroom_group_id = $_GET['classroom_group_id'];
 			}
 		} 
 
 		if ($academic_period == null) {
 			if(isset($_POST['academic_period_id'])) {
 				$academic_period = $_POST['academic_period_id'];
-			}			
+			} elseif (isset($_GET['academic_period_id'])) {
+				$classroom_group_id = $_GET['academic_period_id'];
+			}	
 		} 
 
 		$this->load->model('reports_model');
 
 		$class_list = array();
-	    $class_list = $this->reports_model->get_class_list($classroom_group_id,$academic_period);    
+		if ($classroom_group_id != null &&  $academic_period != null) {
+			$class_list = $this->reports_model->get_class_list($classroom_group_id,$academic_period);    	
+		}
+	    
+	    if (is_array($class_list)) {
+	    	echo '{
+		    "aaData": ';
 
-	    echo '{
-	    "aaData": ';
+		    print_r(json_encode($class_list));
 
-	    print_r(json_encode($class_list));
+		    echo '}';
+	    } else {
+	    	echo '{
+	    	"error_message": ';
+	    	echo json_encode($class_list);
+		    echo ',
+		    "aaData": ';
 
-	    echo '}';
+		    print_r(json_encode(array()));
+
+		    echo '}';
+	    }
+
+	    
 	}
 
-	function mentoring_classlists($academic_period_id = null){
+	function mentoring_classlists($academic_period_id = null,$mentor_id = false){
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
 		$active_menu['submenu1']='#mentoring_classlists';
@@ -337,13 +363,21 @@ class reports extends skeleton_main {
         $academic_periods = $this->reports_model->get_all_academic_periods();
 
         $mentors = $this->reports_model->get_mentors($academic_period_id);
-        $all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
+
+        $all_classgroups = array();
+        if ($mentor_id == false) {
+        	$all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
+        } else {
+        	$all_classgroups = $this->reports_model->get_all_classgroups_report_info_by_mentor_id($academic_period_id,$mentor_id);
+        }
+        
 
 		$data['all_classgroups'] = $all_classgroups;
         $data['academic_periods'] = $academic_periods;
         $data['selected_academic_period_id'] = $selected_academic_period_id;
         $data['academic_period_id'] = $academic_period_id;
         $data['mentors'] = $mentors;
+        $data['mentor_id'] = $mentor_id;
 		
 		$this->load->view('mentoring_classlists',$data);	
 

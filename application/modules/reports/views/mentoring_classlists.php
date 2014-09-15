@@ -68,7 +68,15 @@
                 <select id="select_class_list_mentor_filter">
                  <option value=""></option>
                 <?php foreach ($mentors as $mentor_key => $mentor_value) : ?>
-                  <option selected="selected" value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                 <?php if ( $mentor_id ) : ?>
+                  <?php if ( $mentor_key == $mentor_id) : ?>
+                     <option selected="selected" value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                  <?php else: ?>   
+                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                  <?php endif; ?>   
+                  <?php else: ?> 
+                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                 <?php endif; ?>
                 <?php endforeach; ?>
                 </select> 
 
@@ -77,9 +85,11 @@
                <td>
                 
                 <select id="select_class_list_classgroup_filter">
+                <?php if ( !$mentor_id ) : ?>  
                  <option value=""></option>
+                <?php endif; ?>   
                 <?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
-                  <option selected="selected" value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
+                  <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
                 <?php endforeach; ?>
                 </select> 
 
@@ -102,11 +112,11 @@
           </tr>
           <tr>
             <td colspan="2" style="text-align: center;">Nom grup:</td>
-            <td colspan="2" style="text-align: center;"> NOM </td>
-            <td style="text-align: center;">Codi:</td>
-            <td style="text-align: center;"> CODI </td>
+            <td colspan="2" style="text-align: center;"> <div id="selected_classgroup_name"></div> </td>
+            <td style="text-align: center;">Codi grup:</td>
+            <td style="text-align: center;"> <div id="selected_classgroup_code"></div> </td>
             <td style="text-align: center;">Tutor:</td>
-            <td style="text-align: center;"> TUTOR </td>
+            <td style="text-align: center;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
@@ -131,7 +141,24 @@
 
 <script>
 
-var selected_classroom_group_id=3;
+var mentor_names = [];
+var group_codes = [];
+var group_names = [];
+
+<?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
+mentor_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->mentor_code . ' - ' . $classgroup_value->mentor_sn1 . ' ' . $classgroup_value->mentor_sn2 . ', ' . $classgroup_value->mentor_givenname ;?>";
+group_codes[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->code;?>";
+group_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->course_name;?>";
+<?php endforeach; ?>
+
+
+
+
+function selected_classroom_group_id(){
+  selected_group = $("#select_class_list_classgroup_filter").val();
+  //console.debug(selected_group);
+  return selected_group;
+}
 
 $(function() {
 
@@ -151,18 +178,24 @@ $(function() {
 
     $('#select_class_list_mentor_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_mentor_filter").select2("val");
-        alert(selectedValue);
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var academic_period_id = $("#select_class_list_academic_period_filter").select2("val");
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/reports/mentoring_classlists/" + academic_period_id;
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
 
     });
     
     //classroom_group_id = 3;
-    console.debug("selected_classroom_group_id: " + selected_classroom_group_id);
+    //console.debug("selected_classroom_group_id: " + selected_classroom_group_id());
    
     var class_list_table = $('#class_list').DataTable( {
                       "bDestroy": true,
+                      "sServerMethod": "POST",
                       "sAjaxSource": "<?php echo base_url('index.php/reports/get_class_list');?>", 
                       "fnServerParams": function ( aoData ) {
-                          aoData.push( { "name": "classroom_group_id", "value": selected_classroom_group_id });
+                          aoData.push( { "name": "classroom_group_id", "value": selected_classroom_group_id() });
                           aoData.push( { "name": "academic_period_id", "value": <?php echo $academic_period_id;?> });
                       },
                       "aoColumns": [
@@ -237,8 +270,13 @@ $(function() {
 
     $('#select_class_list_classgroup_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_classgroup_filter").select2("val");
-        console.debug("selectedValue: " + selectedValue)
-        classroom_group_id = selectedValue;
+        //console.debug("selectedValue: " + selectedValue)
+        //json_all_classgroups = "<?php echo json_encode($all_classgroups);?>";
+
+        $("#selected_classgroup_name").text(group_names[selectedValue]);
+        $("#selected_classgroup_code").text(group_codes[selectedValue]);
+        $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
+        
         class_list_table.ajax.reload();
     });
 

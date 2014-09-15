@@ -47,9 +47,10 @@ class reports_model  extends CI_Model  {
 			return false;
 	}
 
-	function get_class_list($classroom_group_id,$academic_period_id) {
+	function get_class_list($classroom_group_id,$academic_period_id=null) {
 
 		$academic_period_shortname = "2014-15";
+
 		if ($academic_period_id == null) {
 			//SELECT academic_periods_shortname FROM academic_periods WHERE academic_periods_current=1
 			$this->db->select('academic_periods_shortname');
@@ -61,7 +62,7 @@ class reports_model  extends CI_Model  {
 				$row = $query->row();
 				$academic_period_shortname = $row->academic_periods_shortname;
 			} else {
-				echo "ERROR";
+				return "Error: Current academic period not found (academic_periods_current=1 in academic_periods table)";
 			}	
 		} else {
 			//SELECT academic_periods_shortname FROM academic_periods WHERE academic_periods_id=5
@@ -75,10 +76,11 @@ class reports_model  extends CI_Model  {
 				$row = $query->row();
 				$academic_period_shortname = $row->academic_periods_shortname;
 			} else {
-				echo "ERROR";
+				return "Error: Academic period ( " . $academic_period_id . " ) not found.";
 			}	
 		}
 		
+		//echo "academic_period_shortname: " . $academic_period_shortname . "<br/>";
 
 		/*
 		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
@@ -128,11 +130,15 @@ class reports_model  extends CI_Model  {
 			return $student_info_array;
 		}			
 		else {
-			return array();
+			return "No s'ha trobat cap registre amb les condicions indicades. " . $this->db->last_query();
 		}
 	}
 
-	function get_all_classgroups_report_info($academic_period,$orderby = "DESC") {
+	function get_all_classgroups_report_info_by_mentor_id($academic_period_id, $mentor_id) {
+		return $this->get_all_classgroups_report_info($academic_period_id,$mentor_id);
+	}
+
+	function get_all_classgroups_report_info($academic_period,$mentor_id=null,$orderby = "DESC") {
 
 		/* SQL SCRIPT FOR MIGRATION
 		UPDATE  classroom_group_academic_periods AS cgap 
@@ -172,8 +178,11 @@ class reports_model  extends CI_Model  {
 		$this->db->join('shift','shift.shift_id = classroom_group_academic_periods.classroom_group_academic_periods_shift', 'left');
 		$this->db->join('location','location.location_id = classroom_group_academic_periods.classroom_group_academic_periods_location', 'left');
 		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period);
+		if ($mentor_id != null) {
+			$this->db->where('classroom_group_academic_periods_mentorId',$mentor_id);	
+		}		
 
-		$this->db->order_by('studies_shortname', $orderby);
+		$this->db->order_by('classroom_group_code', $orderby);
 		
 		$query = $this->db->get();
 
@@ -250,7 +259,9 @@ class reports_model  extends CI_Model  {
 		$this->db->join('person','teacher.teacher_person_id = person.person_id');
 		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);	
 
-		$this->db->order_by('teacher_code', $orderby);
+		$this->db->order_by('person_sn1', $orderby);
+		$this->db->order_by('person_sn2', $orderby);
+		$this->db->order_by('person_givenName', $orderby);
 		
 		$query = $this->db->get();
 
