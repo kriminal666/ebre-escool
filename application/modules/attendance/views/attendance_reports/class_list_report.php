@@ -5,8 +5,6 @@ $(document).ready(function() {
 
 	$("#select_class_list_academic_period_filter").select2();
 
-    //$("#academic_period_text").text( $("#select_class_list_academic_period_filter").select2("data").text);
-
     $('#select_class_list_academic_period_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
         var pathArray = window.location.pathname.split( '/' );
@@ -14,11 +12,6 @@ $(document).ready(function() {
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/attendance_reports/class_list_report";
         //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
-
-        //var selectedValue = $("#select_class_list_classgroup_filter").select2("val");
-        //$("#selected_classgroup_name").text(group_names[selectedValue]);
-        //$("#selected_classgroup_code").text(group_codes[selectedValue]);
-        //$("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
 
     });
 });

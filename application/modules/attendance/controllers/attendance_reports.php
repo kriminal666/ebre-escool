@@ -332,7 +332,6 @@ class attendance_reports extends skeleton_main {
     /* ASSISTÈNCIA - INFORMES DE GRUP */
 
     function class_list_report($academic_period_id=null) {
-
         
         $selected_academic_period_id = false;
         $current_academic_period_id = null;
@@ -408,7 +407,7 @@ class attendance_reports extends skeleton_main {
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
 
-        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group'],$academic_period_id);
         $group_name = $this->attendance_model->getGroupCodeByGroupID($data['selected_group']);
 /*  
         $data['classroom_group_students'] = array ();
@@ -569,7 +568,31 @@ class attendance_reports extends skeleton_main {
         $this->load_footer();      
     }
 
-    function class_sheet_report() {
+    function class_sheet_report($academic_period_id=null) {
+
+        $selected_academic_period_id = false;
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->attendance_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->attendance_model->get_all_academic_periods();
+
+        $data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
+        $data['academic_period_id'] = $academic_period_id;
+
 
         $active_menu = array();
         $active_menu['menu']='#reports';
@@ -587,7 +610,7 @@ class attendance_reports extends skeleton_main {
         }
 
         // Get All groups
-        $grups = $this->attendance_model->get_all_groups();
+        $grups = $this->attendance_model->get_all_groups_by_academic_period($academic_period_id);
         //print_r($grups);
         $data['grups'] = $grups;
         
@@ -602,8 +625,10 @@ class attendance_reports extends skeleton_main {
 
         //Load CSS & JS
         //$this->set_header_data();
-        $all_groups = $this->attendance_model->get_all_classroom_groups();
-        $data['all_groups']=$all_groups->result();
+        //$all_groups = $this->attendance_model->get_all_classroom_groups();
+        $all_groups = $this->attendance_model->get_all_groups_by_academic_period($academic_period_id);
+
+        $data['all_groups']=$all_groups;
         //$data['photo'] = true;
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
@@ -631,7 +656,7 @@ class attendance_reports extends skeleton_main {
         //$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
         //$data['all_students_in_group']= $this->attendance_model->getAllGroupStudentsInfo(11);
          
-        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group'],$academic_period_id);
         $group_name = $this->attendance_model->getGroupCodeByGroupID($data['selected_group']);
         //print_r($all_students_in_group);
 
@@ -860,7 +885,7 @@ class attendance_reports extends skeleton_main {
         else
             $data['selected_group_names']= $this->attendance_model->getGroupNamesByGroupCode($data['selected_group']);
 
-        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group']);
+        $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($data['selected_group'],$academic_period_id);
 
         //$data['all_students_in_group']= $this->ebre_escool_ldap->getAllGroupStudentsInfo($default_group_dn);
         $data['all_students_in_group'] = $all_students_in_group;

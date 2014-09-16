@@ -1,6 +1,19 @@
 <script>
 $(function() { 
 	$("#grup").select2(); 
+
+	$("#select_class_list_academic_period_filter").select2();
+
+    $('#select_class_list_academic_period_filter').on("change", function(e) {  
+        var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
+        var pathArray = window.location.pathname.split( '/' );
+        var secondLevelLocation = pathArray[1];
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/attendance_reports/class_sheet_report";
+        //alert(baseURL + "/" + selectedValue);
+        window.location.href = baseURL + "/" + selectedValue;
+
+    });
+
 });
 </script>
 <div class="main-content" >
@@ -44,6 +57,28 @@ $(function() {
 		<form method="post" action="" class="form-horizontal" role="form">
 			<table class="table table-bordered" cellspacing="10" cellpadding="5">
 				<div class="form-group ui-widget">
+					<tr>
+						<td><label for="grup" style="width:150px;">Període acadèmic:</label></td>
+						<td>
+			                <select id="select_class_list_academic_period_filter">
+			                <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+			                  <?php if ( $selected_academic_period_id) : ?>
+			                    <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+			                      <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                    <?php else: ?>
+			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                    <?php endif; ?>
+			                  <?php else: ?>   
+			                      <?php if ( $academic_period_value->current == 1) : ?>
+			                        <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                      <?php else: ?>
+			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                      <?php endif; ?> 
+			                  <?php endif; ?> 
+			                <?php endforeach; ?>
+			                </select>    
+			              </td>
+   					</tr>	
 					<tr>
 						<td><label for="grup">Selecciona el grup:</label></td>
 						<td><select data-place_holder="TODO" style="width:580px;" id="grup" name="grup" data-size="5" data-live-search="true">

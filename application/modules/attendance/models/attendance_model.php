@@ -60,9 +60,56 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 
-	function getAllGroupStudentsInfo($class_group_id) {
-		
+	function get_academic_period_id_by_period($period_shortname) {
+
 		/*
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('academic_periods_id');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_shortname',$period_shortname);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row->academic_periods_id;
+		}	
+		else
+			return false;
+	}
+
+	function get_academic_period_name_by_period_id($academic_period_id) {
+
+		/*
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('academic_periods_shortname');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_id',$academic_period_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row->academic_periods_shortname;
+		}	
+		else
+			return false;
+	}
+
+	function getAllGroupStudentsInfo($class_group_id,$academic_period_id=null) {
+		
+		if ($academic_period_id==null) {
+			$academic_period = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period = $this->get_academic_period_name_by_period_id($academic_period_id);
+		}
+
+		/*
+		EXAMPLE
 		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
 		FROM `person`
 		INNER JOIN users ON person.`person_id` = users.person_id
@@ -70,12 +117,13 @@ class attendance_model  extends CI_Model  {
 		WHERE enrollment.enrollment_group_id =26 AND `enrollment_periodid`="2014-15"
 		*/
 
+
 		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
 		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
 		$this->db->where('enrollment.enrollment_group_id',$class_group_id);
-		$this->db->where('enrollment.enrollment_periodid',"2014-15");
+		$this->db->where('enrollment.enrollment_periodid',$academic_period);
 		
 		$this->db->order_by('person.person_sn1');
 		$this->db->order_by('person.person_sn2');
@@ -220,7 +268,13 @@ class attendance_model  extends CI_Model  {
 
 
 
-	function getAllStudentsMail(){
+	function getAllStudentsMail($academic_period_id=null){
+
+		if ($academic_period_id==null) {
+			$academic_period = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period = $this->get_academic_period_name_by_period_id;
+		}
 		/*
 		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
 		FROM person
@@ -233,7 +287,7 @@ class attendance_model  extends CI_Model  {
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
 		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');
-		$this->db->where('enrollment_periodid',"2014-15");
+		$this->db->where('enrollment_periodid',$academic_period);
 		
 		$this->db->order_by('person.person_sn1');
 		$this->db->order_by('person.person_sn2');
