@@ -533,7 +533,7 @@
           
 
           <!-- INFORMES -->
-          <?php if ( (! $this->session->userdata('is_student')) || $this->session->userdata('is_admin') ) : ?>
+          <?php if ( ( $this->session->userdata('is_teacher') ) || ($this->session->userdata('is_admin')) ) : ?>
 
           <li id="reports">
             <a href="#" class="dropdown-toggle">
