@@ -203,10 +203,16 @@ class managment extends skeleton_main {
 	}
 
 	public function change_password() {
-		if (!$this->skeleton_auth->logged_in())
-		{
-			//redirect them to the login page
-			redirect($this->skeleton_auth->login_page, 'refresh');
+		
+		$force_change_password_message = false;
+		if (!$this->session->userdata('logged_in_change_password')) {
+			if (!$this->skeleton_auth->logged_in())
+			{
+				//redirect them to the login page
+				redirect($this->skeleton_auth->login_page, 'refresh');
+			}
+		} else  {
+			$force_change_password_message = true;
 		}
 
 		$header_data = $this->load_ace_files();	
@@ -248,6 +254,7 @@ class managment extends skeleton_main {
 
 		$data = array();
 		$data['result_message_exists']=false;
+		$data['force_change_password_message']=$force_change_password_message;
 
 		//VALIDATE FORM
 		if ( count($_POST) > 0) {

@@ -49,7 +49,35 @@ class ebre_escool_auth_model  extends CI_Model  {
       }     
         return false;
     } 
+
+    public function is_set_force_change_password ($username) {
+      /*
+      SELECT `force_change_password_next_login`
+      FROM `users`
+      WHERE `username` = "sergitur"
+      */
+
+      $this->db->from('users');
+      $this->db->select('force_change_password_next_login');
+      $this->db->where('users.username',$username);
+      $this->db->limit(1);
+       
+      $query = $this->db->get();
+
+      $force_change_password_next_login = false;
     
+      if ($query->num_rows() == 1) {
+        $row = $query->row();
+        $force_change_password_next_login = $row->force_change_password_next_login;
+
+        if ( $force_change_password_next_login  === 'y') {
+          return true;
+        }
+      }
+
+      return $force_change_password_next_login;
+    }
+  
     public function getSessionData($username) {
 
     	$this->db->from('users');

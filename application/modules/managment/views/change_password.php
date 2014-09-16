@@ -38,6 +38,23 @@ $(function(){
 
 <div class="container">
 
+  <!-- WELL : CHANGE SHO PASSWORD-->
+
+<?php if ($force_change_password_message): ?>
+
+<div class="alert alert-block alert-error">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <i class="icon-oexclamation-sign red"></i>
+
+                Esteu utilitzant una paraula de pas autogenerada per tal de poder entrar per primer cop. Si us plau heu de canviar 
+                la paraula de pas per tal de poder continuar                
+              </div>
+
+<?php endif;?>
+
 <form class="form-horizontal" action="<?php echo base_url('/index.php/managment/change_password') ;?>" method="post">
     <div class="tabbable">
 
