@@ -447,12 +447,123 @@ class managment_model  extends CI_Model  {
 				show_error("Ldap error adding user: " . $errno . " - " . $error);
 				ldap_close($this->ldapconn);
 				return $errno;
-			} else {
-				ldap_close($this->ldapconn);
-				return true;
 			}
+
+			//Add user to groups depending on role:
+			// Roles defined at file third_party/skeleton/application/config/skeleton_auth.php:
+			/*
+				$config['roles'] = array(
+			    1 => 'intranet_readonly',
+			    3 => 'intranet_admin',
+			    5 => 'intranet_dataentry',
+			    7 => 'intranet_organizationalunit',
+			    9 => 'intranet_teacher',
+			    11 => 'intranet_student'
+			    );
+			*/
+			// teacher: rol intranet_teacher cn=intranet_teacher,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
+			// student: intranet_student --> cn=intranet_student,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
+			$group_to_search_dn = null;
+			switch ($user_data->user_type) {
+			    case 1:
+			    	//TEACHER
+			        //TODO: at this time teacher are not touched
+			    	$group_to_search_dn="intranet_teacher";
+			        break;
+			    case 2:
+			    	//EMPLOYEE
+			        break;
+			    case 3:
+			    	//STUDENT
+			    	$group_to_search_dn="intranet_student";
+			        break;    
+			    default:
+			        break;
+			}
+			if ($group_to_search_dn!=null) {
+				//Search group dn
+				$group = $this->get_group($group_to_search_dn);
+
+				if ($group->dn) {
+					if (!in_array($user_data->username, $group->users)) {
+						$this->add_uid_to_group($group->dn,$user_data->username);
+					}
+				}
+			}
+			ldap_close($this->ldapconn);
+			return true;
+
 		}
-		ldap_close($this->ldapconn);
+		
+		return false;
+	}
+
+	function add_uid_to_group($group_dn,$username) {
+
+		$this->_init_ldap();
+		if ($this->_bind()) {
+
+			// first check if username is already in group:
+			$entry["memberUid"]=$username;
+			$result = ldap_mod_add ( $this->ldapconn , $group_dn , $entry );
+			return $result;
+		}
+
+		return false;
+
+	}
+
+	function get_group ($group_name) {
+
+		$this->_init_ldap();
+		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
+		$basedn = $this->config->item('active_users_basedn');;
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		$group = new stdClass();
+	     		$group->dn = $dn;
+	     		$values = ldap_get_values($this->ldapconn, $entryid, "memberUid");
+	     		$group->users = $values;
+
+	     		return $group;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	}
+
+		}
+
+		return false;
+	}
+
+
+	function get_group_dn ($group_name) {
+
+		$this->_init_ldap();
+		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
+		$basedn = $this->config->item('active_users_basedn');;
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		ldap_close($this->ldapconn);
+	     		return $dn;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	}
+
+			ldap_close($this->ldapconn);
+		}
+
 		return false;
 	}
 
