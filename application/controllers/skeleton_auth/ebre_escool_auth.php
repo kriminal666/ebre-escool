@@ -24,10 +24,12 @@ class ebre_escool_auth extends Auth {
     //VOID: implement it on child classes
     public function on_exit_login_hook($username="") {
 
+        
+
         //TODO: define default session data?
         $default_sessiondata = array(
                    'username'  => 'sergitur',
-                   'email'     => 'sergitur@ebretic.com',
+                   'email'     => 'sergiturbadenas@gmail.com',
                    'logged_in' => TRUE
                );
 
