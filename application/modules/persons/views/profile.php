@@ -223,7 +223,7 @@
 
                     <div class="space-12"></div>
 
-                    <?php print_r($this->session->userdata);?>
+                    <?php //print_r($this->session->userdata);?>
 
                     <div class="profile-user-info profile-user-info-striped">
                       <div class="profile-info-row">

@@ -164,6 +164,9 @@ class dashboard extends skeleton_main {
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
+
+
+		
 		//$this->session->set_flashdata('categoria','dashboard');
 		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);

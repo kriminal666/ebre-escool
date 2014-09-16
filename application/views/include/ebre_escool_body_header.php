@@ -391,13 +391,18 @@
 ?>
 
         <ul class="nav nav-list">
-          <!-- PANELL DE CONTROL -->
-          <li id="dashboard" class="active">
-            <a href="<?php echo base_url('/index.php/dashboard'); ?>">
-              <i class="icon-dashboard"></i>
-              <span class="menu-text"> <?php echo lang('control_panel'); ?> </span>
-            </a>
-          </li>
+         <!-- PANELL DE CONTROL -->
+         <?php if ( ! $this->session->userdata('is_student')) : ?>
+
+            <li id="dashboard" class="active">
+              <a href="<?php echo base_url('/index.php/dashboard'); ?>">
+                <i class="icon-dashboard"></i>
+                <span class="menu-text"> <?php echo lang('control_panel'); ?> </span>
+              </a>
+            </li>
+          <?php endif; ?> 
+
+
           <!-- PASSAR LLISTA -->
           
 
@@ -423,28 +428,45 @@
             </a>
 
             <ul class="submenu">
-              <!-- Llistes de classe -->
-              <li id="mentoring_groups">
-                <a href="<?=base_url()?>index.php/reports/mentoring_classlists">
-                  <i class="icon-double-angle-right"></i>
-                  <?php echo lang('mentoring_classlists');?>
-                </a>
-              </li>
-              <!-- tutoritza els teus grups -->
-              <li id="mentoring_groups">
-                <a href="<?=base_url()?>index.php/attendance/mentoring_groups">
-                  <i class="icon-double-angle-right"></i>
-                  <?php echo lang('mentoring_groups_mentoring');?>
-                </a>
-              </li>
-              <!-- llistat de faltes per alumne -->
-              <li id="mentoring_attendance_by_student">
-                <a href="<?=base_url()?>index.php/attendance/mentoring_attendance_by_student">
-                  <i class="icon-double-angle-right"></i>
-                  <?php echo lang('mentoring_attendance_by_student');?>
-                </a>
-              </li>
-            </ul>
+              <?php if ( $this->session->userdata('is_student')) : ?>
+
+                <li id="mentoring_groups">
+                    <a href="#">
+                      <i class="icon-double-angle-right"></i>
+                      <?php echo "Consulta faltes. Pendent.";?>
+                    </a>
+                </li>
+
+              <?php else : ?>
+                  
+                  <!-- Llistes de classe -->
+                  <li id="mentoring_groups">
+                    <a href="<?=base_url()?>index.php/reports/mentoring_classlists">
+                      <i class="icon-double-angle-right"></i>
+                      <?php echo lang('mentoring_classlists');?>
+                    </a>
+                  </li>
+
+
+                  <!-- tutoritza els teus grups -->
+                  <li id="mentoring_groups">
+                    <a href="<?=base_url()?>index.php/attendance/mentoring_groups">
+                      <i class="icon-double-angle-right"></i>
+                      <?php echo lang('mentoring_groups_mentoring');?>
+                    </a>
+                  </li>
+                  <!-- llistat de faltes per alumne -->
+                  <li id="mentoring_attendance_by_student">
+                    <a href="<?=base_url()?>index.php/attendance/mentoring_attendance_by_student">
+                      <i class="icon-double-angle-right"></i>
+                      <?php echo lang('mentoring_attendance_by_student');?>
+                    </a>
+                  </li>
+              <?php endif ?>
+
+              </ul>
+
+              
               
           <!-- HORARIS -->
           <li id="timetables">
