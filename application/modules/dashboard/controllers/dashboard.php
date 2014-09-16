@@ -165,8 +165,6 @@ class dashboard extends skeleton_main {
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
 
-
-		
 		//$this->session->set_flashdata('categoria','dashboard');
 		$header_data = $this->load_header_data($active_menu);
         $this->_load_html_header($header_data);
@@ -204,7 +202,12 @@ class dashboard extends skeleton_main {
 
 		$data['current_academic_period'] = "2014/15";
 
-		$this->load->view('dashboard',$data); 
+		if ($this->session->userdata('is_student')) {
+			$this->load->view('dashboard_student',$data); 
+		} else {
+			$this->load->view('dashboard',$data); 
+		}
+		
                 
 		/*******************
 		/*      FOOTER     *
