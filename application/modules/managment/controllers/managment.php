@@ -205,7 +205,8 @@ class managment extends skeleton_main {
 	public function change_password() {
 		
 		$force_change_password_message = false;
-		if (!$this->session->userdata('logged_in_change_password')) {
+        //print_r($this->session->userdata);
+        if (!$this->session->userdata('logged_in_change_password')) {
 			if (!$this->skeleton_auth->logged_in())
 			{
 				//redirect them to the login page
@@ -294,6 +295,12 @@ class managment extends skeleton_main {
 									$data['result_message_exists']=true;
 									$data['result_message_ok'] = true;
 									$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
+
+									$sessiondata_change_password = array(
+						                   'logged_in' => true,
+						                   'logged_in_change_password' => false,
+						               );
+						            $this->session->set_userdata($sessiondata_change_password);
 								}
 								
 							} else {

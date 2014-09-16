@@ -57,25 +57,24 @@ class ebre_escool_auth_model  extends CI_Model  {
       WHERE `username` = "sergitur"
       */
 
-      $this->db->from('users');
       $this->db->select('force_change_password_next_login');
+      $this->db->from('users');      
       $this->db->where('users.username',$username);
       $this->db->limit(1);
        
       $query = $this->db->get();
 
-      $force_change_password_next_login = false;
+      //echo $this->db->last_query()."<br/>";
     
       if ($query->num_rows() == 1) {
         $row = $query->row();
         $force_change_password_next_login = $row->force_change_password_next_login;
-
-        if ( $force_change_password_next_login  === 'y') {
+        if ( $force_change_password_next_login  == 'y') {
           return true;
         }
       }
 
-      return $force_change_password_next_login;
+      return false;
     }
   
     public function getSessionData($username) {
@@ -95,6 +94,8 @@ class ebre_escool_auth_model  extends CI_Model  {
 		  $this->db->where('users.username',$username);
        
       $query = $this->db->get();
+
+      //echo $this->db->last_query()."<br/>";
 
       $sessiondata = array();
 		

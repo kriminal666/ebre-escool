@@ -510,7 +510,9 @@ class managment_model  extends CI_Model  {
 		//Update MYSQL PASSWORD
 		$new_password_hashed = md5($new_password);
 		$data = array(
-               'password' => $new_password_hashed 
+               'password' => $new_password_hashed,
+               'initial_password' => '',
+               'force_change_password_next_login' => 'n'
             );
 
 		if ($username_is_userid) {

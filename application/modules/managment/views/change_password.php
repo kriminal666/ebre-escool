@@ -47,7 +47,7 @@ $(function(){
                   <i class="icon-remove"></i>
                 </button>
 
-                <i class="icon-oexclamation-sign red"></i>
+                <i class="icon-exclamation-sign red"></i>
 
                 Esteu utilitzant una paraula de pas autogenerada per tal de poder entrar per primer cop. Si us plau heu de canviar 
                 la paraula de pas per tal de poder continuar                
@@ -96,7 +96,10 @@ $(function(){
           <label class="control-label" for="form-field-pass1">Nova paraula de pas</label>
 
           <div class="controls">
-            <input type="password" id="form-field-pass1" name="form-field-pass1" /> <i class="red icon-exclamation-sign"></i> Podeu posar la mateixa paraula de pas per tal de forçar la regeneració de la paraula de pas
+            <input type="password" id="form-field-pass1" name="form-field-pass1" /> 
+            <?php if (!$force_change_password_message): ?>
+            <i class="red icon-exclamation-sign"></i> Podeu posar la mateixa paraula de pas per tal de forçar la regeneració de la paraula de pas
+          <?php endif; ?>
           </div>
         </div>
 

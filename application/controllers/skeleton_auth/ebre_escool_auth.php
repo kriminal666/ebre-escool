@@ -49,6 +49,7 @@ class ebre_escool_auth extends Auth {
                );
             $this->session->set_userdata($sessiondata_change_password);
             redirect("/managment/change_password", 'refresh');
+            die;
         }
 
         
