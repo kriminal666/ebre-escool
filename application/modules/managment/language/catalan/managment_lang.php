@@ -252,4 +252,5 @@ $lang['user_ldap_initial_password']="Paraula de pas inicial";
 $lang['user_ldap_force_change_password_next_login']="Canviar paraula de pas al entrar?";
 $lang['user_ldap_changed_initial_password']="Paraula de pas inicial canviada?";
 $lang['user_ldap_ldap_dn']="Ldap DN";
+$lang['user_ldap_ldap_role']="Rol ldap";
 $lang['user_ldap_actions']="Accions";

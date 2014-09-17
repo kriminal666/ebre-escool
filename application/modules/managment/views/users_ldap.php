@@ -100,7 +100,10 @@
                                   }},
                         { "mData": function(data, type, full) {
                                     return data.ldap_dn;
-                                  }},          
+                                  }}, 
+                        { "mData": function(data, type, full) {
+                                    return data.role;
+                                  }},            
                         { "mData": function(data, type, full) {
                                     return '<label><input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox" /><span class="lbl"></span></label>';
                                   }}
@@ -263,7 +266,7 @@
 
 <div class="container">
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_all_ldap_userss_filter">
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users_filter">
   <thead style="background-color: #d9edf7;">
     <tr>
       <td colspan="6" style="text-align: center;"> <strong>Filtres per columnes
@@ -310,7 +313,7 @@
        <td>
         <button class="btn btn-mini btn-danger">
           <i class="icon-bolt"></i>
-          TODO
+          Assignar Rol ldap
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>
@@ -318,10 +321,12 @@
   </thead>  
 </table> 
 
+</div>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="12" style="text-align: center;"> <h4>
+    <td colspan="13" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
         <?php echo $user_ldap_table_title?>
       </a>
@@ -339,13 +344,14 @@
      <th><?php echo lang('user_ldap_force_change_password_next_login')?></th>     
      <th><?php echo lang('user_ldap_changed_initial_password')?></th>
      <th><?php echo lang('user_ldap_ldap_dn')?></th>     
+     <th><?php echo lang('user_ldap_ldap_role')?></th>     
      <th><?php echo lang('user_ldap_actions')?></th>
   </tr>
  </thead>
  
 </table> 
 
-</div>
+
 
 <div class="space-30"></div>
 

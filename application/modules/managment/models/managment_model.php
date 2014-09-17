@@ -134,7 +134,43 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['person_sn2'] = $row->person_sn2;
 				$all_ldap_users[$i]['ldap_dn'] = $row->ldap_dn;
 				$all_ldap_users[$i]['user_type'] = $this->get_user_type($row->person_id);
+				$group_to_search_dn=null;
+				$all_ldap_users[$i]['role']="";
+				switch ($all_ldap_users[$i]['user_type']) {
+				    case 1:
+				    	//TEACHER
+				        //TODO: at this time teacher are not touched
+				    	$group_to_search_dn="intranet_teacher";
+				        break;
+				    case 2:
+				    	//EMPLOYEE
+				        break;
+				    case 3:
+				    	//STUDENT
+				    	$group_to_search_dn="intranet_student";
+				        break;    
+				    default:
+				        break;
+				}
+
+				if ($group_to_search_dn!=null) {
+					//Search group dn
+					$group = $this->get_group($group_to_search_dn);
+
+					if ($group->dn) {
+						if (in_array($row->username, $group->users)) {
+							$all_ldap_users[$i]['role'] = $group_to_search_dn;
+						}
+					}
+				} else {
+					$all_ldap_users[$i]['role'] = "";
+				}
+
+				//echo "username: " . $row->username . " | " . "role: " . $all_ldap_users[$i]['role'] . "\n";
+				
 				$i++;
+
+				
 			}
 		}
 
@@ -534,10 +570,10 @@ class managment_model  extends CI_Model  {
 	     	} else if ($entries > 1) {
 	     		echo "Error. Multiple uids found in Ldap!";
 	     		die();
+	     	} else if ($entries == 0) {
+	     		return false;
 	     	}
-
 		}
-
 		return false;
 	}
 
