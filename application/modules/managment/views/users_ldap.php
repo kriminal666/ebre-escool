@@ -178,6 +178,62 @@
           
         });
 
+        
+        $("#assign_ldap_rol").click(function() {
+              var txt;
+              var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva d'assignació de rols?");
+              if (r == true) {
+
+                  var values = $('input:checkbox:checked.ace').map(function () {
+                    return this.id;
+                  }).get(); 
+                  
+                  //AJAX
+                  $.ajax({
+                  url:'<?php echo base_url("index.php/managment/assign_multiple_ldap_roles");?>',
+                  type: 'post',
+                  data: {
+                      values: values,
+                  },
+                  datatype: 'json',
+                  statusCode: {
+                    404: function() {
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/assign_multiple_ldap_roles' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    },
+                    500: function() {
+                      $("#response").html('A server-side error has occurred.');
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/assign_multiple_ldap_roles ' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    }
+                  },
+                  error: function() {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Ha succeït un error!' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                  },
+                  success: function(data) {
+                    //console.debug("data:" + JSON.stringify(data));
+                    //console.debug(JSON.stringify(all_ldap_users_table));
+                    all_ldap_users_table.ajax.reload();
+                  }
+                }).done(function(data){
+                    //TODO: Something to check?
+                
+                });
+              }
+
+        });
+
+
         $("#create_multiple_initial_passwords").click(function() {
 
                 var txt;
@@ -311,7 +367,7 @@
         </button>
        </td>
        <td>
-        <button class="btn btn-mini btn-danger">
+        <button class="btn btn-mini btn-danger" id="assign_ldap_rol">
           <i class="icon-bolt"></i>
           Assignar Rol ldap
           <i class="icon-arrow-right icon-on-right"></i>

@@ -98,6 +98,64 @@ class managment_model  extends CI_Model  {
 		return true;
 	}
 
+	function get_group_to_search_dn($user_data){
+		$group_to_search_dn=null;
+		switch ($user_data->user_type) {
+		    case 1:
+		    	//TEACHER
+		        //TODO: at this time teacher are not touched
+		    	$group_to_search_dn="intranet_teacher";
+		        break;
+		    case 2:
+		    	//EMPLOYEE
+		        break;
+		    case 3:
+		    	//STUDENT
+		    	$group_to_search_dn="intranet_student";
+		        break;    
+		    default:
+		        break;
+		}
+
+		return $group_to_search_dn;
+	}
+
+	function assign_multiple_ldap_roles($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				//Get user data:
+				//GET USER DATA FORM DATABASE
+				$user_data = new stdClass();
+				$user_data = $this->get_user_data($value);
+				$group_to_search_dn = $this->get_group_to_search_dn($user_data);
+				
+				if ($group_to_search_dn!=null) {
+					//Search group dn
+					$group = $this->get_group($group_to_search_dn);
+
+					//echo "group dn: " . $group->dn . "\n";
+					//echo "group users: " . print_r($group->users) . "\n";
+					//echo "username: " . $user_data->username . "\n";
+
+					if ($group->dn) {
+						$this->_init_ldap();
+						if ($this->_bind()) {
+							$result=false;
+							
+							if (!in_array($user_data->username, $group->users)) {
+								$result = $this->add_uid_to_group($group->dn,$user_data->username);
+							}
+				     		ldap_close($this->ldapconn);
+						}
+					}
+				}
+			}
+		}		
+		return true;
+	}
+
 	function get_all_ldap_users() {
 
 		//ldap_users
@@ -111,7 +169,7 @@ class managment_model  extends CI_Model  {
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id');
 		//TODO: Treure
-		//$this->db->limit(25);
+		$this->db->limit(80);
 		
 		$query = $this->db->get();
 
@@ -499,23 +557,7 @@ class managment_model  extends CI_Model  {
 			*/
 			// teacher: rol intranet_teacher cn=intranet_teacher,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
 			// student: intranet_student --> cn=intranet_student,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
-			$group_to_search_dn = null;
-			switch ($user_data->user_type) {
-			    case 1:
-			    	//TEACHER
-			        //TODO: at this time teacher are not touched
-			    	$group_to_search_dn="intranet_teacher";
-			        break;
-			    case 2:
-			    	//EMPLOYEE
-			        break;
-			    case 3:
-			    	//STUDENT
-			    	$group_to_search_dn="intranet_student";
-			        break;    
-			    default:
-			        break;
-			}
+			$group_to_search_dn = $this->get_group_to_search_dn($user_data);
 			if ($group_to_search_dn!=null) {
 				//Search group dn
 				$group = $this->get_group($group_to_search_dn);
