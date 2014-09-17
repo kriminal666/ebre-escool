@@ -169,7 +169,7 @@ class managment_model  extends CI_Model  {
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id');
 		//TODO: Treure
-		$this->db->limit(80);
+		//$this->db->limit(80);
 		
 		$query = $this->db->get();
 
