@@ -1145,6 +1145,41 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
     }
 
+    public function enrollment_delete() {
+
+        $active_menu = array();
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#enrollment_query_by_person';
+
+        $this->check_logged_user();
+
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        /* Ace */
+        $header_data= $this->load_wizard_files1($active_menu);
+        $this->_load_html_header($header_data); 
+
+
+        $data = array();
+
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        $localities = $this->enrollment_model->get_localities();
+
+        $data['all_person_official_ids'] = $all_person_official_ids;
+        $data['localities'] = $localities;
+       
+        // BODY       
+        $this->_load_body_header();
+
+        
+        $this->load->view('enrollment_delete.php',$data);     
+        // FOOTER     
+        $this->_load_body_footer();         
+        
+    }
+
     public function enrollment_query_by_person($only_person_data = false) {
 
         $active_menu = array();
@@ -1204,6 +1239,24 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         }
 
     }
+
+    public function delete_enrollments () {
+
+
+        $result = "No values especified!";
+        if(isset($_POST['values'])) {
+            $values = $_POST['values'];
+            $result = $this->enrollment_model->delete_enrollments($values);
+        }
+        echo '{
+        "aaData": ';
+
+        print_r(json_encode($result));
+
+        echo '}';
+
+
+    }   
 
     public function check_enrollment($selected_student=false,$academic_period=false){
         

@@ -906,6 +906,30 @@ class enrollment_model  extends CI_Model  {
 			
 	}	
 
+	function delete_enrollments($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				
+				//DELETE ON CASCADE
+				//1) enrollment table
+				// DELETE FROM `enrollment` WHERE `enrollment_id`=1
+				//2)  enrollment_submodules
+				// DELETE FROM `enrollment_submodules` WHERE enrollment_submodules_enrollment_id=1
+
+				$this->db->where('enrollment_id', $value);
+				$this->db->delete('enrollment');
+
+				if ($this->db->affected_rows() == 1) {
+					$this->db->where('enrollment_submodules_enrollment_id', $value);
+					$this->db->delete('enrollment_submodules');	
+				}
+			}
+		}		
+		return true;
+	}
+
 	public function change_enrollment_classroom_group($enrollment_id,$current_group,$new_group) {
 		/*
 		UPDATE `enrollment` 

@@ -539,6 +539,16 @@
               </li>
               <?php endif?>
 
+              <!-- Change classroom_group -->
+              <?php if ($this->session->userdata('is_admin')): ?>
+              <li id="enrollment_delete">
+                <a href="<?php echo base_url('/index.php/enrollment/enrollment_delete'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_delete');?>
+                </a>
+              </li>
+              <?php endif?>
+
 
             </ul>
           </li>

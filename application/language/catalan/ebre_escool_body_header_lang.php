@@ -123,6 +123,8 @@ $lang['organizational_unit']="Unitat Organitzativa";
 $lang['enrollment']="Matrícula";
 $lang['enrollment_query_by_person']="Consulta matrícula";
 $lang['enrollment_change_classroomgroup']="Canvi de grup";
+$lang['enrollment_delete']="Eliminar matrícula";
+
 #OBSOLET
 #$lang['enrollment_studies']="Estudis Matriculats";
 #$lang['enrollment_class_group']="Matrícules de Grups de Classe";
