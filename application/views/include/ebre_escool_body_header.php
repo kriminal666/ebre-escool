@@ -528,6 +528,18 @@
                   <?php echo lang('enrollment_query_by_person');?>
                 </a>
               </li>
+
+              <!-- Change classroom_group -->
+              <?php if ($this->session->userdata('is_admin')): ?>
+              <li id="enrollment_change_classroomgroup">
+                <a href="<?php echo base_url('/index.php/enrollment/change_classroom_group'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_change_classroomgroup');?>
+                </a>
+              </li>
+              <?php endif?>
+
+
             </ul>
           </li>
           

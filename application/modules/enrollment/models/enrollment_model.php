@@ -297,6 +297,26 @@ class enrollment_model  extends CI_Model  {
 		return $enrollment_study_submodules;
 	}
 
+	function get_current_academic_period() {
+
+		/*
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_current',1);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row;
+		}	
+		else
+			return false;
+	}
+
 	function get_current_academic_period_id() {
 
 		/*
@@ -807,6 +827,150 @@ class enrollment_model  extends CI_Model  {
         $query = $this->db->get();
 
 		if ($query->num_rows() == 1) {
+			return $query->row();
+		}			
+		else
+			return false;
+	}
+
+	public function get_course_id_from_classroom_group_id($classroom_group_id) {
+		//SELECT `classroom_group_course_id`
+		//FROM classroom_group
+		//INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.`classroom_group_academic_periods_classroom_group_id` = classroom_group.classroom_group_id
+		//WHERE `classroom_group_id`=45 AND `classroom_group_academic_periods_academic_period_id`=5
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		$this->db->select('classroom_group_course_id');
+		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->where('classroom_group_id',$classroom_group_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();	
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() == 1) {
+
+			$row = $query->row(); 
+			return $row->classroom_group_course_id;
+		}			
+		else
+			return false;
+
+
+	}
+
+	/* Student Data */
+	public function get_classroom_group_siblings($current_group) {
+
+		//GET COURSE
+		$course_id = $this->get_course_id_from_classroom_group_id($current_group);
+		/*
+		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id
+		FROM classroom_group
+		INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id
+		WHERE classroom_group_course_id=46 AND classroom_group_academic_periods_academic_period_id=5
+		*/
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+        $this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id');
+		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->where('classroom_group_course_id',$course_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id', $current_academic_period_id );
+		
+		$query = $this->db->get();
+	
+		//echo $this->db->last_query();
+
+		$groups_array = array();
+		if ($query->num_rows() > 0) {
+			$i=0;
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$i]['classroom_group_id'] = $row['classroom_group_id'];
+   				$groups_array[$i]['classroom_group_code'] = $row['classroom_group_code'];
+   				$groups_array[$i]['classroom_group_shortName'] = $row['classroom_group_shortName'];
+   				$groups_array[$i]['classroom_group_name'] = $row['classroom_group_name'];
+   				$groups_array[$i]['classroom_group_description'] = $row['classroom_group_description'];
+   				$groups_array[$i]['classroom_group_course_id'] = $row['classroom_group_course_id'];
+   				$i++;
+			}
+			return $groups_array;
+		}			
+		else {
+			return groups_array;
+		}
+			
+	}	
+
+	public function change_enrollment_classroom_group($enrollment_id,$current_group,$new_group) {
+		/*
+		UPDATE `enrollment` 
+		SET enrollment_group_id= 5
+		WHERE enrollment_group_id= 6
+		*/
+
+		$data = array(
+           'enrollment_group_id' => $new_group
+        );
+
+		$this->db->where('enrollment_group_id', $current_group);
+		$this->db->where('enrollment_id', $enrollment_id);
+		$this->db->update('enrollment', $data);
+
+		//echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+			return true;
+		}			
+		else {
+			return false;
+		}
+			
+	}
+
+	/* Student Data */
+	public function get_student_data_with_enrollment_info($official_id) {
+
+		$current_academic_period_shortname = $this->get_current_academic_period()->academic_periods_shortname;
+		/*
+		SELECT `enrollment_id`,`enrollment_study_id`,`studies_shortname`,`studies_name`,`enrollment_course_id`,`enrollment_group_id`,`classroom_group_code`,`classroom_group_shortName`,`classroom_group_name`,`person_official_id`, `person`.`person_id`, `person_photo`, `person_secondary_official_id`, `person_givenName`, `person_sn1`, `person_sn2`, `person_email`, `person_secondary_email`, `person_date_of_birth`, `person_gender`, `person_homePostalAddress`, `person_telephoneNumber`, `person_mobile`, `person_locality_id`, `locality_name`, `postalcode_code`, `users`.`username`
+		FROM (`person`)
+		LEFT JOIN `locality` ON `locality`.`locality_id` = `person`.`person_locality_id`
+		LEFT JOIN `postalcode` ON `postalcode`.`postalcode_localityid` = `locality`.`locality_id`
+		LEFT JOIN `users` ON `users`.`person_id` = `person`.`person_id`
+		INNER JOIN enrollment ON enrollment.`enrollment_personid`  = `person`.`person_id`
+		INNER JOIN studies ON studies.`studies_id`  = `enrollment`.`enrollment_study_id`
+		INNER JOIN classroom_group ON classroom_group.`classroom_group_id` = `enrollment`.`enrollment_group_id`
+		WHERE `person_official_id` =  '40922142J' AND `enrollment_periodid`="2014-15"
+		LIMIT 1
+		*/
+
+        $this->db->select('enrollment_id,enrollment_study_id,studies_shortname,studies_name,enrollment_course_id,enrollment_group_id,classroom_group_code,
+        	classroom_group_shortName,classroom_group_name,person_official_id, person.person_id, person_photo, person_secondary_official_id, person_givenName, 
+        	person_sn1, person_sn2, person_email, person_secondary_email, person_date_of_birth, person_gender, person_homePostalAddress, person_telephoneNumber, 
+        	person_mobile, person_locality_id, locality_name, postalcode_code, users.username');
+		$this->db->from('person');
+		$this->db->join('locality','locality.locality_id = person.person_locality_id',"left");
+		$this->db->join('postalcode',' postalcode.postalcode_localityid = locality.locality_id',"left");
+		$this->db->join('users','users.person_id = person.person_id',"left");
+		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id');
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+
+		$this->db->where('person_official_id',$official_id);
+		$this->db->where('enrollment_periodid',$current_academic_period_shortname);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+	
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() == 1) {
+
 			return $query->row();
 		}			
 		else

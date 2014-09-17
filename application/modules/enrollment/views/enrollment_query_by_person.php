@@ -89,7 +89,7 @@
                                     <div class="span11" >
                                       
                                         <div class="span4" >                                  
-                                          <label id="lbl_student_official_id" for="student_official_id" class="control-label no-padding-right"><?php echo "TODO DNI/NIF/Passaport";?>&nbsp;</label>
+                                          <label id="lbl_student_official_id" for="student_official_id" class="control-label no-padding-right"><?php echo "DNI/NIF/Passaport";?>&nbsp;</label>
                                           <div class="controls">
                                             <input type="hidden" id="person_id" name="person_id" />
                                             <input type="text" id="student_official_id" name="student_official_id" placeholder="Escriu el <?php echo lang('wizzard_official_DNI');?>" />

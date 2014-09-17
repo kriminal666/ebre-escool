@@ -1048,6 +1048,11 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
         $this->check_logged_user(); 
 
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+
         $active_menu = array();
         $active_menu['menu']='#enrollment_wizard';
         $active_menu['submenu1']='#wizard';
@@ -1104,6 +1109,39 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
        
        // FOOTER     
        $this->_load_body_footer(); 
+
+    }
+
+    public function change_classroom_group() {
+
+        $active_menu = array();
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#enrollment_change_classroomgroup';    
+      
+        $this->check_logged_user();
+
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        /* Ace */
+        $header_data= $this->load_wizard_files1($active_menu);
+        $this->_load_html_header($header_data); 
+
+
+        $data = array();
+
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        
+        $data['all_person_official_ids'] = $all_person_official_ids;
+       
+        // BODY       
+        $this->_load_body_header();
+
+        $this->load->view('change_classroom_group.php',$data);     
+
+        // FOOTER     
+        $this->_load_body_footer();         
 
     }
 
@@ -1275,6 +1313,102 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
                 }
             }
         }
+    }
+
+    public function change_classroom_group_action($enrollment_id=false, $current_group=false, $new_group=false) { 
+        if($enrollment_id==false) {
+            if(isset($_POST['enrollment_id'])){
+                $enrollment_id = $_POST['enrollment_id'];
+            }
+            if(isset($_POST['current_group'])){
+                $current_group = $_POST['current_group'];
+            } 
+            if(isset($_POST['new_group'])){
+                $new_group = $_POST['new_group'];
+            }
+            
+            //echo "enrollment_id: " . $enrollment_id ."\n";
+            //echo "current_group: " . $current_group ."\n";
+            //echo "new_group: " . $new_group ."\n";
+
+
+            if ( ($enrollment_id != false) && ($current_group != false) && ($new_group != false) ) {
+                $result = $this->enrollment_model->change_enrollment_classroom_group($enrollment_id,$current_group,$new_group);
+                if ($result) {
+                    echo json_encode("Ok");
+                } else {
+                    echo json_encode("Error updating database!");
+                }
+            } else {
+                echo json_encode("Not enough parameters specified");
+            }
+        } else {
+            if ( ($enrollment_id != false) && ($current_group != false) && ($new_group != false) ) {
+                $result = $this->enrollment_model->change_enrollment_classroom_group($enrollment_id,$current_group,$new_group);
+                if ($result) {
+                    echo json_encode("Ok");
+                } else {
+                    echo json_encode("Error updating database!");
+                }
+            } else {
+                echo json_encode("Not enough parameters specified");
+            }
+
+        }
+    }
+
+    public function check_student_change_classroomgroup($person_official_id=false) {
+
+        if($person_official_id==false){
+            if(isset($_POST['student_official_id'])){
+                $official_id = $_POST['student_official_id'];
+                $student_data = $this->enrollment_model->get_student_data_with_enrollment_info($official_id);
+                if($student_data){
+                    print_r(json_encode($student_data));
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            $official_id = $person_official_id;
+            $student_data = $this->enrollment_model->get_student_data_with_enrollment_info($official_id);
+            if($student_data){
+                print_r(json_encode($student_data));
+            } else {
+
+                return false;
+            }            
+        }
+        
+
+    }
+
+    public function get_classroom_group_siblings($current_group=false){
+
+        if($current_group==false){
+            if(isset($_POST['current_group'])){
+                $current_group = $_POST['current_group'];
+                $group_siblings = $this->enrollment_model->get_classroom_group_siblings($current_group);
+                if($group_siblings){
+                    print_r(json_encode($group_siblings));
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            $group_siblings = $this->enrollment_model->get_classroom_group_siblings($current_group);
+            if($group_siblings){
+                print_r(json_encode($group_siblings));
+            } else {
+
+                return false;
+            }            
+        }
+
     }
     
 

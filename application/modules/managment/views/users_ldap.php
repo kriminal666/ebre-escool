@@ -348,7 +348,7 @@
        <td>
         <button class="btn btn-mini btn-info" id="create_multiple_initial_passwords">
           <i class="icon-bolt"></i>
-          Çrear paraula de pas inicial
+          Crear paraula de pas inicial
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>
