@@ -35,7 +35,7 @@ class ebre_escool  {
         $current_username = $this->ci->session->userdata('username');
 
         if ($current_username == "sergi" || $current_username == "sergitur" || $current_username == "pdavila" || $current_username == "santifilgueira" 
-        	|| $current_username == "rmelich" || $current_username == "jrodriguez") {
+        	|| $current_username == "rmelich" || $current_username == "jrodriguez" || $current_username == "jordivega1") {
             return true;
         }
 
