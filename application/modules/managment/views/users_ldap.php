@@ -177,6 +177,61 @@
           }).get(); 
           
         });
+        
+
+        $("#sync_mysql_ldap").click(function() {
+              var txt;
+              var r = confirm("Esteu segurs que voleu fer aquesta sincronització massiva de MySQL a Ldap?");
+              if (r == true) {
+
+                  var values = $('input:checkbox:checked.ace').map(function () {
+                    return this.id;
+                  }).get(); 
+                  
+                  //AJAX
+                  $.ajax({
+                  url:'<?php echo base_url("index.php/managment/sync_mysql_ldap");?>',
+                  type: 'post',
+                  data: {
+                      values: values,
+                  },
+                  datatype: 'json',
+                  statusCode: {
+                    404: function() {
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/sync_mysql_ldap' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    },
+                    500: function() {
+                      $("#response").html('A server-side error has occurred.');
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/sync_mysql_ldap ' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    }
+                  },
+                  error: function() {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Ha succeït un error!' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                  },
+                  success: function(data) {
+                    //console.debug("data:" + JSON.stringify(data));
+                    //console.debug(JSON.stringify(all_ldap_users_table));
+                    all_ldap_users_table.ajax.reload();
+                  }
+                }).done(function(data){
+                    //TODO: Something to check?
+                
+                });
+              }
+
+        });
 
         
         $("#assign_ldap_rol").click(function() {
@@ -334,14 +389,14 @@
         <select id="select_all_ldap_users_main_organizational_unit_filter"><option value=""></option></select>
        </td>
        <td><?php echo "Tipus usuari"?>:</td>
-       <td>
+       <td colspan="2">
         <select id="select_all_ldap_users_user_type_filter"><option value=""></option><option value="1">1</option><option value="2">2</option></select>
       </td>
     </tr>
   </thead>  
   <thead style="background-color: #d9edf7;">
     <tr>
-      <td colspan="6" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
+      <td colspan="7" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
         </strong></td>
     </tr>
     <tr> 
@@ -363,6 +418,13 @@
         <button class="btn btn-mini btn-danger" id="unselect_all">
           <i class="icon-bolt"></i>
           Deselecionar tots
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td>
+        <button class="btn btn-mini btn-danger" id="sync_mysql_ldap">
+          <i class="icon-bolt"></i>
+          Sync MySQL -> Ldap
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>

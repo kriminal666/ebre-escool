@@ -69,7 +69,33 @@ class managment_model  extends CI_Model  {
 
 		return $pw;
 	}
+	
+	function create_multiple_initial_passwords($values) {
 		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				//echo "value: " . $value. "\n";
+				/*Example SQL
+				UPDATE `users` 
+				SET `initial_password`= "new_random_password" 
+				WHERE `id`="id_value"
+				*/
+				$new_password = $this->simple_password_generator();
+				$data = array(
+		               'initial_password' => $new_password,
+		               'force_change_password_next_login' => 'y',
+		            );
+
+				$this->db->where('id', $value);
+				$this->db->update('users', $data);    
+				//echo $this->db->last_query();
+
+				$this->change_password($value,$new_password,null,true);	
+			}
+		}		
+		return true;
+	}		
 
 	function create_multiple_initial_passwords($values) {
 		
