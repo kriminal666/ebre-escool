@@ -829,7 +829,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         $("[name = 'step1_title' ]").addClass("green");
       }
 
-      function prepare_step2(student_id) {
+      function prepare_step2(student_id,academic_period) {
           //If user have previous enrollments propose this study as default selected
           study_id = "";
 
@@ -882,12 +882,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
               $("#enrollment_study option[value=" + study_id +"]").attr("selected","selected");
               $("#enrollment_study").select2();
           }
-
+          //console.debug("academic_period: " + academic_period);
+          
           //var ex = document.getElementById('simultaneous_studies');          
           //if ( ! $.fn.DataTable.isDataTable( ex ) ) {
             $('#simultaneous_studies').dataTable( {
               "bDestroy": true,
-              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_simultaneous_studies');?>/" + student_id,
+              "sAjaxSource": "<?php echo base_url('index.php/enrollment/get_simultaneous_studies');?>/" + student_id + "/" + academic_period,
               "aoColumns": [
                 { "mData": "periodid" },
                 { "mData": "study" },
@@ -1306,7 +1307,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             }).on('change', function(){
               $(this).closest('form').validate().element($(this));
             }); 
-      
+            
+            
             var actual_step = $('ul.wizard-steps').children().hasClass('active');      
             if(actual_step == false){
               $('ul.wizard-steps li').first().addClass('active');
@@ -1674,8 +1676,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
       $(".btn-next").click(function(){
         console.debug("Click on next button");
-        step = $("#step-container div.active").attr("id");
-        console.debug("Step:" + step);
+        console.debug($("#step-container div.step-pane.active"));
+        step = $("#step-container div.step-pane.active").attr("id");        
+        console.debug("******************* Step:" + step);
 
         $('[name ^=step][name $=_title]').removeClass("green");
         $('[name ^="' + step + ' _title"]').addClass("green");
@@ -1697,6 +1700,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         if(step == "step0") {
+
+          //alert("PROVA: processant step0. Es a dir venim d'step 0");
 
           continue_processing = true;
           skip_forward_step = false;
@@ -1807,6 +1812,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step1"){
+
+          //alert("PROVA: processant step1. Es a dir venim del pas 1");
          
           //selected_student_fullname = $("#student option:selected").text();
           selected_student = $("#student option:selected").val();
@@ -1866,11 +1873,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
              if(data == false) {
                 //ENROLLMENT DOESN'T EXISTS FOR THIS SELECTED PERSON AND PERIOD. CONTINUE EXECUTION
                 skip_forward_step = false;
-                prepare_step2(student_id);  
-                //Active next step and force click to next button
-                $('ul.wizard-steps li:nth-child(2)').addClass('active');
-                $('#step-container div:nth-child(2)').addClass('active');
-                $(".btn-next").trigger("click");               
+                prepare_step2(student_id,academic_period);  
+                $('ul.wizard-steps li[data-target="#step1"]').removeClass('active').addClass('complete');
+                $('ul.wizard-steps li[data-target="#step2"]').addClass('active');
+                $('#step-container div.step-pane.active').removeClass('active');
+                $('#step-container div#step2.step-pane').addClass('active');
 
                 $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
                 if($.trim($("[name = 'step2_title' ]").html())=='') {        
@@ -1878,17 +1885,23 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 }
                 $("[name = 'step2_title' ]").addClass("green");
 
-
                } else {
                   
                   var r = confirm("Ja existeix una o més matrícules per al període indicat i l'alumne escollit. Esteu segurs voleu crear un altre matrícula?");
                   if (r == true) {
                       skip_forward_step = false;
-                      prepare_step2(student_id);
+                      prepare_step2(student_id,academic_period);
                       //Active next step and force click to next button
-                      $('ul.wizard-steps li:nth-child(2)').addClass('active');
-                      $('#step-container div:nth-child(2)').addClass('active');
-                      $(".btn-next").trigger("click");                                   
+                      $('ul.wizard-steps li.active').removeClass('active');
+                      $('ul.wizard-steps li[data-target="#step1"]').removeClass('active').addClass('complete');
+                      $('ul.wizard-steps li[data-target="#step2"]').addClass('active');
+                      $('#step-container div.step-pane.active').removeClass('active');
+                      $('#step-container div#step2.step-pane').addClass('active');
+
+                      /*
+                       step = $("#step-container div.active").attr("id");
+                       step_number = parseInt( step.substr(step.length - 1) , 10);
+                      */                                
 
                       $(".step2_selected_academic_period").html(academic_period+" <i class='icon-double-angle-right'></i>");  
                       if($.trim($("[name = 'step2_title' ]").html())=='') {        
@@ -1910,6 +1923,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step2"){
+
+          console.debug("PROVA: processant step3. Es a dir venim del pas 2");
         
           study_id = $("#enrollment_study").val();
           study_name = $("#enrollment_study option:selected").text();
@@ -2133,6 +2148,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
  ***********/
 
         } else if(step == "step3"){
+
+
 
           course_id = $("#enrollment_course").val();
           course_name = $("#enrollment_course option:selected").text();
@@ -2537,7 +2554,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
           //alert("Alumne: "+student_name.trim()+"\nPerson Id: "+student_id+"\nPeriod_id: "+academic_period+"\nEstudi: "+study_name+"\nEstudi id: "+study_id+"\nCourse: "+course_name+"\nCourse id: "+course_id+"\nGrup de Classe: "+classroom_group_name+"\nGrup de Classe Id: "+classroom_group_id+"\nMòduls: "+study_module_names+" ("+study_module_ids+") \nUnitats Formatives: "+study_submodules_names+" ("+study_submodules_ids+")");
 
-          //console.debug("Before ajax request enrollment_wizard");
+          console.debug("Before ajax request enrollment_wizard");
           // AJAX insert Enrollment data into database
           $.ajax({
             url:'<?php echo base_url("index.php/enrollment/enrollment_wizard");?>',
@@ -2580,6 +2597,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 },
           }).done(function(data){
               //Check errors!
+               console.debug ("******************************** TODO ****************************");
               var all_data = $.parseJSON(data);
               console.debug ("enrollment_wizard result code: " + all_data.result_code);
               console.debug ("enrollment_wizard result_message: " + all_data.result_message);
@@ -2594,6 +2612,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   class_name: 'gritter-error gritter-center'
                 });
               } else {
+                console.debug ("Enrollment OK!");
                 bootbox.dialog({
                     message: "La matrícula s'ha realitzat correctament!", 
                     buttons: {

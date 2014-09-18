@@ -191,12 +191,13 @@ class enrollment_model  extends CI_Model  {
 			WHERE `enrollment_personid` = 5599 AND `enrollment_periodid` = "2014-15"
 	    */
 
-	    $this->db->select('enrollment.enrollment_id,enrollment.enrollment_periodid,enrollment.enrollment_study_id,studies.studies_shortname,studies.studies_name,
-	    	   studies.studies_law_shortname,studies.studies_organizational_unit_shortname,studies.esduies_id
-	    	   enrollment.enrollment_course_id,course.course_shortname,course.course_name,enrollment.enrollment_group_id,
-	    	   classroom_group.classroom_group_code,classroom_group.classroom_group_name');
+	    $this->db->select('enrollment.enrollment_id, enrollment.enrollment_periodid, enrollment.enrollment_study_id, studies.studies_shortname, studies.studies_name,
+	    	   studies_law.studies_law_shortname,studies_law_name, studies.studies_studies_organizational_unit_id, studies.studies_id,
+	    	   enrollment.enrollment_course_id, course.course_shortname, course.course_name, enrollment.enrollment_group_id,
+	    	   classroom_group.classroom_group_code, classroom_group.classroom_group_name');
 		$this->db->from('enrollment');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id', "left");
+		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', "left");
 		$this->db->join('course','course.course_id = enrollment.enrollment_course_id', "left");
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id', "left");
 
@@ -206,7 +207,7 @@ class enrollment_model  extends CI_Model  {
 		$this->db->order_by('enrollment_periodid', $orderby);
 
 		       
-        $query = $this->db->get();
+        $query = @$this->db->get();
 
 		//echo $this->db->last_query();
 

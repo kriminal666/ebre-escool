@@ -986,12 +986,15 @@ public function get_previous_enrollments( $person_official_id = false ) {
 
 }
 
-public function get_simultaneous_studies( $person_official_id = false ) {
+public function get_simultaneous_studies( $person_official_id = false,$period = false) {
 
     $simultaneous_studies = array();
 
     if ( ! ($person_official_id == false) ) {
-        $simultaneous_studies = $this->enrollment_model->get_simultaneous_studies($person_official_id);    
+        if ( ! ($period == false) ) {  
+            $period_id = $this->enrollment_model->get_academic_period_id_by_period($period);
+            $simultaneous_studies = $this->enrollment_model->get_simultaneous_studies($person_official_id,$period_id);
+        }
     }
     
 
@@ -1766,10 +1769,10 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
                 $enrollment_id  = $this->db->insert_id();
                 //WHEN LOGSE SUBMODULES NOT EXISTS! --> 
                 //TODO LOGSE: study_module_ids is void. Create with study_module_ids and study_submodules_ids to NULL
-                print_r("1 : ".$study_submodules_ids);
-                print_r("2 : ". print_r($study_submodules_ids_array));
-                print_r("3 : ". $study_submodules_ids);
-                print_r("4 : ". print_r($study_submodules_ids_array));
+                //print_r("1 : ".$study_submodules_ids);
+                //print_r("2 : ". print_r($study_submodules_ids_array));
+                //print_r("3 : ". $study_submodules_ids);
+                //print_r("4 : ". print_r($study_submodules_ids_array));
                 //echo "Count study_submodules_ids: " . count($study_submodules_ids) . "\n";
                 if ( count($study_submodules_ids_array) == 0 )  {
                     //NOT INSERT ANY RECORD TO TABLE enrollment_submodules
