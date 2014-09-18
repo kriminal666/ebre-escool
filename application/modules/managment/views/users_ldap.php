@@ -57,12 +57,12 @@
                         { "mData": function(data, type, full) {
                                     url1 = "<?php echo base_url('/index.php/skeleton/users/read/'); ?>/" + data.id;
                                     url2 = "<?php echo base_url('/index.php/skeleton/users/edit/'); ?>/" + data.id;
-                                    return '<a href="' + url1 +'">' + data.id + '</a> (<a href="' + url2 + '">edit<a>)';
+                                    return '<a href="' + url1 +'">' + data.id + '</a> (<a href="' + url2 + '">edit</a>)';
                                   } },
                         { "mData": function(data, type, full) {
                                     url1 = "<?php echo base_url('/index.php/persons/index/read/'); ?>/" + data.id;
                                     url2 = "<?php echo base_url('/index.php/persons/index/edit/'); ?>/" + data.id;
-                                    return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">edit<a>)';
+                                    return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">edit</a>)';
                                   }},
                         { "mData": "username" },
                         { "mData": "password" },

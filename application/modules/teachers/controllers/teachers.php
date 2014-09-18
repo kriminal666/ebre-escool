@@ -229,6 +229,63 @@ class teachers extends skeleton_main {
         
     }
 
+    public function report_teachers_list($academic_period_id = null) {
+        if (!$this->skeleton_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $active_menu = array();
+        $active_menu['menu']='#reports';
+        $active_menu['submenu1']='#teachers_reports';
+        $active_menu['submenu2']='#report_teachers_list';
+
+        $header_data = $this->load_header_data($active_menu);
+
+        $data = array();
+
+        $this->load->model('teachers_model');
+
+        $header_data = $this->_load_html_header($header_data);
+
+        $this->_load_body_header();
+
+        $data['table_title'] = "Llista de professors";
+
+        $selected_academic_period_id = false;       
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->teachers_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->teachers_model->get_all_academic_periods();
+        //$all_classgroups = $this->teachers_model->get_all_classgroups_report_info($academic_period_id);
+        $all_teachers = $this->teachers_model->get_all_teachers_report_info($academic_period_id);
+
+        $data['all_teachers'] = $all_teachers;
+
+        $data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
+
+        $this->load->view('report_teachers_list.php',$data);     
+
+        $this->_load_body_footer(); 
+
+
+    }
+
 
     public function teacher_sheet() {
 

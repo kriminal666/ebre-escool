@@ -70,28 +70,16 @@ class managment_model  extends CI_Model  {
 		return $pw;
 	}
 	
-	function create_multiple_initial_passwords($values) {
+	function sync_mysql_ldap($values) {
 		
 		//echo "values: " . print_r($values). "\n";
 		foreach ($values as $value) {
 			if ($value != "") {
-				//echo "value: " . $value. "\n";
-				/*Example SQL
-				UPDATE `users` 
-				SET `initial_password`= "new_random_password" 
-				WHERE `id`="id_value"
-				*/
-				$new_password = $this->simple_password_generator();
-				$data = array(
-		               'initial_password' => $new_password,
-		               'force_change_password_next_login' => 'y',
-		            );
+				$user_data = new stdClass();
+				$user_data = $this->get_user_data($value);
 
-				$this->db->where('id', $value);
-				$this->db->update('users', $data);    
-				//echo $this->db->last_query();
+				$this->syncUserToLdap($user_data);
 
-				$this->change_password($value,$new_password,null,true);	
 			}
 		}		
 		return true;
@@ -437,7 +425,7 @@ class managment_model  extends CI_Model  {
 	}
 
 
-	public function addLdapUser($user_dn,$user_data) {
+	public function addLdapUser($user_data,$ldap_passwords=false) {
 		$CI =& get_instance();
 
         $CI->load->config('samba');
@@ -533,7 +521,13 @@ class managment_model  extends CI_Model  {
 		    		    
 		    $uidnumber = 1000 + (int )$user_data->id;
 		    $user_data_array["uidnumber"]= $uidnumber;
-		    $user_data_array["userpassword"]="{MD5}".base64_encode(pack("H*",md5($user_data->password)));
+
+		    if ( $ldap_passwords == false) {
+    			$user_data_array["userpassword"]="{MD5}".base64_encode(pack("H*",md5($user_data->password)));
+			} else {
+				$user_data_array["userpassword"]=$ldap_passwords->userPassword;
+			}
+
 		    $user_data_array["shadowLastChange"]= floor(time()/86400);
 
 		    //TODO: posix config file!
@@ -543,9 +537,30 @@ class managment_model  extends CI_Model  {
 		    $user_data_array["homedirectory"]= $CI->config->item('samba_homes_basepath').$user_data->username;
 		    $user_data_array["sambaSID"]= $CI->config->item('samba_SID') . ($uidnumber*2);
 		    $user_data_array["sambaDomainName"] = $CI->config->item('samba_domainName');
-		    $user_data_array["sambaLogonScript"]=$CI->config->item('samba_logonScript');		    
-		    $user_data_array["sambaHomeDrive"]=$CI->config->item('samba_homeDrive');
 
+		    if (isset($user_data->sambaLogonScript)) {
+		    	$user_data_array["sambaLogonScript"]=$user_data->sambaLogonScript;
+		    } else {
+		    	//Assign sambaLogonScript depending on user type
+				switch ($user_data->user_type) {
+				    case 1:											//TEACHER
+				        //TODO: at this time teacher are not touched
+				    	$user_data_array["sambaLogonScript"]=$CI->config->item('samba_teacher_logonScript');
+				        break;
+				    case 2:				    				    	//EMPLOYEE
+				    	$user_data_array["sambaLogonScript"]=$CI->config->item('samba_default_logonScript');
+				        break;
+				    case 3:											//STUDENT
+				    	$user_data_array["sambaLogonScript"]=$CI->config->item('samba_student_logonScript');
+				        break;    
+				    default:
+				    	$user_data_array["sambaLogonScript"]=$CI->config->item('samba_default_logonScript');
+				        break;
+				}
+		    	
+		    }
+
+		    $user_data_array["sambaHomeDrive"]=$CI->config->item('samba_homeDrive');
 		    $user_data_array["sambaHomePath"]= $CI->config->item('samba_homePath') . $user_data->username;
 		    $user_data_array["sambaAcctFlags"]=$CI->config->item('samba_acctFlags');
 		    $user_data_array["sambaBadPasswordCount"]=$CI->config->item('samba_badPasswordCount');
@@ -554,14 +569,26 @@ class managment_model  extends CI_Model  {
 		    $user_data_array["sambaPrimaryGroupSID"]=$CI->config->item('samba_primaryGroupSID');
 
 		    //TODO. Calculate Windows Passwords		    
-			$cr = new Crypt_CHAP_MSv1();			
+			$cr = new Crypt_CHAP_MSv1();		
+
+			if ( $ldap_passwords == false) {
+				$user_data_array["sambaNTPassword"]=strtoupper(bin2hex($cr->ntPasswordHash($user_data->password)));
+				$user_data_array["sambaLMPassword"]=strtoupper(bin2hex($cr->lmPasswordHash($user_data->password)));		    
+			} else {
+				$user_data_array["sambaNTPassword"]=$ldap_passwords->sambaNTPassword;
+				$user_data_array["sambaLMPassword"]=$ldap_passwords->sambaLMPassword;		
+			}
 		    
-		    $user_data_array["sambaNTPassword"]=strtoupper(bin2hex($cr->ntPasswordHash($user_data->password)));
-			$user_data_array["sambaLMPassword"]=strtoupper(bin2hex($cr->lmPasswordHash($user_data->password)));		    
 		    
-			//echo "user dn: " . $user_dn . "<br/>";
+		    
+			//echo "user dn: " . $user_data->dn . "<br/>";
 			//echo "user_data_array: " . var_dump($user_data_array) . "<br/>";
-		    if (ldap_add($this->ldapconn,$user_dn,$user_data_array) === false){
+
+			if ($user_data->dn == "") {
+				//Calculate user dn using user type
+				//$user_data->dn
+			}
+		    if (ldap_add($this->ldapconn, $user_data->dn,$user_data_array) === false){
 				$error = ldap_error($this->ldapconn);
 				$errno = ldap_errno($this->ldapconn);
 				show_error("Ldap error adding user: " . $errno . " - " . $error);
@@ -688,6 +715,101 @@ class managment_model  extends CI_Model  {
 
 	}
 
+	function get_ldap_passwords($username) {
+		$ldap_passwords = new stdClass();
+
+		$userPassword="";
+		$sambaNTPassword="";
+		$sambaLMPassword="";
+
+		$this->_init_ldap();
+		$filter = '(uid='.$username.')';	
+		//Get Ldap base DN for active users. It could be different from basedn
+		$active_users_basedn = $this->config->item('active_users_basedn');			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $active_users_basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$userPasswordValues = ldap_get_values($this->ldapconn, $entryid, "userPassword");
+	     		$sambaNTPasswordValues = ldap_get_values($this->ldapconn, $entryid, "sambaNTPassword");
+	     		$sambaLMPasswordValues = ldap_get_values($this->ldapconn, $entryid, "sambaLMPassword");
+	     		//$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		$userPassword=$userPasswordValues[0];
+				$sambaNTPassword=$sambaNTPasswordValues[0];
+				$sambaLMPassword=$sambaLMPasswordValues[0];
+	     		ldap_close($this->ldapconn);
+	     		return $dn;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	}
+			ldap_close($this->ldapconn);
+		}
+
+		$ldap_passwords->userPassword = $userPassword;
+		$ldap_passwords->sambaNTPassword = $sambaNTPassword;
+		$ldap_passwords->sambaLMPassword = $sambaLMPassword;
+
+
+		return $ldap_passwords;
+	}
+
+	/*
+	NOTE: I decided to modify Ldap users RECREATING THEM ldap object from zero every time. Please consider following notes about passwords:
+	IF $new_password=false then password is not changed on mysql then does not change passwords on Ldap. Be careful: Ldap passwords cannot be recalculated without unhashed password! 
+	The only possibility is to backup ldap passwords hashes before deleting object
+	*/
+	function syncUserToLdap($user_data,$new_password=false) {
+
+		$ldap_passwords=false;
+
+		//Get Ldap base DN for active users. It could be different from basedn
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+		//ALWAYS DELETE FIRST LDAP USER IF EXIST --> FORCE TO RESYNC ALL DATA
+		if ($user_exists) {
+			if ($new_password == false) {
+				// WE HAVE TO BACKUP current Ldap passwords to restore_it
+				$ldap_passwords=$this->managment_model->get_ldap_passwords($user_data->username);
+			} 
+			
+			//user_exists is false if user doesn't not exists or is user DN if user exists
+			if ($user_exists === $user_data->dn) {
+				$this->managment_model->deleteLdapUser($user_data->dn);
+			} else {
+				//Debug
+				//echo "ERROR! DNs not match!<br/>";
+				$this->managment_model->deleteLdapUser($user_exists);
+				//Force Mysql ldap DN to take value from LDAP
+				$user_data->dn = $user_exists;
+			}
+		} else {
+			//USER NOT EXISTS ON LDAP. 3 options:
+			//1) Recently create user in ebre-escool -> Create Ldap user using initial_password
+			//2) User change password on ebre-escool but not exists on Ldap -> Create Ldap user using password provided by user
+			//3) No initial password && No $new_password --> ERROR user ldap passwords could not be created
+			if ($new_password == false) {
+				echo "Error. Any password given to create Ldap user";
+				return -1;
+			}
+		}
+
+		//DEBUG:
+		//echo "user_data dn: " . $user_data->dn;
+		
+		//public function addLdapUser($user_data,$ldap_passwords=false) {
+		$result = $this->managment_model->addLdapUser($user_data,$ldap_passwords);
+
+		if (!$result) {
+			return false;
+		}
+		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+		return true;
+	}
+
 	function change_password($username,$new_password,$old_pasword=null,$username_is_userid=false) {
 
 		//GET USER DATA FORM DATABASE
@@ -754,7 +876,7 @@ class managment_model  extends CI_Model  {
 		} 
 		$user_data->password = $new_password;
 		//echo "user_data dn: " . $user_data->dn;
-		$result = $this->managment_model->addLdapUser($user_data->dn,$user_data);
+		$result = $this->managment_model->addLdapUser($user_data);
 		if (!$result) {
 			return false;
 		}
@@ -850,6 +972,7 @@ class managment_model  extends CI_Model  {
 			$user_data->cn = trim($user_data->person_givenName . " " . $user_data->person_sn1 . " " . $user_data->person_sn2);
 			$user_data->sn = trim($user_data->person_sn1 . " " . $user_data->person_sn2);
 			$user_data->dn = "cn=" . $user_data->cn . ",". $user_data->basedn_where_insert_new_ldap_user;
+
 			return $user_data;
 		}	
 		else

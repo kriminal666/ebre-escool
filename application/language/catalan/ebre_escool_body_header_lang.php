@@ -45,7 +45,7 @@ $lang['reports']   = 'Informes';
   $lang['reports_group_reports_incidents_by_date']   = "Resum d'incidències d'un grup entre una data inicial i una data final";
   $lang['reports_group_reports_monthly_report']   = "Informe mensual de faltes injustificades";
 
-  $lang['reports_guifi']   = "Informe Augute";  
+  $lang['reports_teachers_list'] = "Llista de professors";
 
 $lang['attendance']   = 'Assistència';  
 

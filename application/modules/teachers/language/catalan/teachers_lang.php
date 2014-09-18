@@ -39,3 +39,28 @@ $lang['classroom_group_shift']="Torn";
 $lang['classroom_group_location']="Espai";
 $lang['classroom_group_academic_period']="Període acadèmic";
 
+//Teachers list report
+$lang['teacher_id']="Id";
+$lang['teacher_code']="Codi";
+$lang['teacher_person_id']="Id persona";
+$lang['teacher_user_id']="Id usuari";
+$lang['teacher_person_full_name']="Nom complert";
+$lang['teacher_username']="Nom usuari";
+$lang['teacher_password']="Paraula de pas";
+$lang['teacher_initial_password']="Paraula de pas inicial";
+$lang['teacher_force_change_password_next_login']="Canvi password forçat?";
+$lang['teacher_email']="Correu electrònic 1";
+$lang['teacher_secondary_email']="Correu electrònic 2";
+$lang['teacher_official_id']="Identificador oficial";
+$lang['teacher_department']="Departament";
+$lang['teacher_charge_short']="Càrrec curt";
+$lang['teacher_charge_full']="Càrrec llarg";
+$lang['teacher_charge2_short']="Càrrec curt 2";
+$lang['teacher_charge2_full']="Càrrec llarg 2";
+$lang['teacher_charge_on_sheet']="Càrrec al llençol";
+$lang['teacher_academic_period']="Període acadèmic";
+$lang['teacher_ldap_dn']="Ldap DN";
+
+
+
+
