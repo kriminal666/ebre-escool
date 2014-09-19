@@ -3,7 +3,7 @@
 * Name:  Inventory Lang - Catalan
 *
 * Author: Sergi Tur Badenas
-* 		  sergitur@ebretic.com
+* 		  sergiturbadenas@gmail.com
 *         @sergitur
 *
 * Author: ...

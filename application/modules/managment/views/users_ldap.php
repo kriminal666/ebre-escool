@@ -60,9 +60,9 @@
                                     return '<a href="' + url1 +'">' + data.id + '</a> (<a href="' + url2 + '">edit</a>)';
                                   } },
                         { "mData": function(data, type, full) {
-                                    url1 = "<?php echo base_url('/index.php/persons/index/read/'); ?>/" + data.id;
-                                    url2 = "<?php echo base_url('/index.php/persons/index/edit/'); ?>/" + data.id;
-                                    return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">edit</a>)';
+                                    url1 = "<?php echo base_url('/index.php/persons/index/read/'); ?>/" + data.person_id;
+                                    url2 = "<?php echo base_url('/index.php/persons/index/edit/'); ?>/" + data.person_id;
+                                    return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">' + data.person_id + '</a>)';
                                   }},
                         { "mData": "username" },
                         { "mData": "password" },
@@ -99,14 +99,41 @@
                                           }  
                                   }},
                         { "mData": function(data, type, full) {
+                                    if ( data.real_ldap_dn && (data.ldap_dn!="")) {
+                                        if (data.real_ldap_dn != data.ldap_dn) {
+                                          return "Error";
+                                        } else {
+                                          return "Ok";
+                                        }
+                                    } else {
+                                        return "No es pot saber";
+                                    }
+                                  }},           
+                        { "mData": function(data, type, full) {
                                     return data.ldap_dn;
                                   }}, 
                         { "mData": function(data, type, full) {
+                                    if (data.real_ldap_dn) {
+                                      return data.real_ldap_dn;
+                                    } else {
+                                      return "No trobat";
+                                    }
+                                  }},           
+                        { "mData": function(data, type, full) {
                                     return data.role;
+                                  }},     
+                        { "mData": function(data, type, full) {
+                                    return data.creation_date;
                                   }},            
                         { "mData": function(data, type, full) {
-                                    return '<label><input name="switch-field-1" class="ace ace-switch ace-switch-4" type="checkbox" /><span class="lbl"></span></label>';
-                                  }}
+                                    return data.last_modification_date;
+                                  }},            
+                        { "mData": function(data, type, full) {
+                                    return data.creation_user;
+                                  }},  
+                        { "mData": function(data, type, full) {
+                                    return data.last_modification_user;
+                                  }},                      
                       ],
                       "columnDefs": [
                                       { "type": "html", "targets": 3 }
@@ -444,7 +471,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="13" style="text-align: center;"> <h4>
+    <td colspan="18" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
         <?php echo $user_ldap_table_title?>
       </a>
@@ -461,9 +488,14 @@
      <th><?php echo lang('user_ldap_initial_password')?></th>
      <th><?php echo lang('user_ldap_force_change_password_next_login')?></th>     
      <th><?php echo lang('user_ldap_changed_initial_password')?></th>
+     <th><?php echo lang('user_ldap_ldap_dn_error')?></th>     
      <th><?php echo lang('user_ldap_ldap_dn')?></th>     
+     <th><?php echo lang('user_ldap_real_ldap_dn')?></th>     
      <th><?php echo lang('user_ldap_ldap_role')?></th>     
-     <th><?php echo lang('user_ldap_actions')?></th>
+     <th><?php echo lang('user_ldap_creation_date')?></th> 
+     <th><?php echo lang('user_ldap_last_modification_date')?></th> 
+     <th><?php echo lang('user_ldap_creation_user')?></th>
+     <th><?php echo lang('user_ldap_last_modification_user')?></th>
   </tr>
  </thead>
  

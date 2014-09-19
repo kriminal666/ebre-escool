@@ -3,7 +3,7 @@
 * Name:  teachers_lang.php
 *
 * Author: Sergi Tur Badenas
-* 		  sergitur@ebretic.com
+* 		  sergiturbadenas@gmail.com
 *         @acacha
 *
 * Created:  17/08/2013

@@ -4,7 +4,7 @@
  *  Name:  location lang - Catalan
  *
  * Author: Sergi Tur Badenas
- * 		   sergitur@ebretic.com
+ * 		   sergiturbadenas@gmail.com
  *
  * Created:  24.12.2013
  *

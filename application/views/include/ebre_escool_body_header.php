@@ -1097,8 +1097,15 @@
 
             <ul class="submenu">
 
-              <li id="managment_users">
+              <!--<li id="managment_users">
                 <a href="<?php echo base_url('index.php/skeleton/users');?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('users'); ?>
+                </a>
+              </li>-->
+
+              <li id="managment_users">
+                <a href="<?php echo base_url('index.php/users');?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('users'); ?>
                 </a>

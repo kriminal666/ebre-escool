@@ -7,7 +7,7 @@ require_once '/usr/share/php/Crypt/CHAP.php';
  *
  *
  * @package    	Ebre-escool
- * @author     	Sergi Tur <sergitur@ebretic.com>
+ * @author     	Sergi Tur <sergiturbadenas@gmail.com>
  * @version    	1.0
  * @link		http://www.acacha.com/index.php/ebre-escool
  */
@@ -179,11 +179,12 @@ class managment_model  extends CI_Model  {
 		INNER JOIN person ON person.person_id = users.person_id
 		WHERE 1
 		*/
-		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn');
+		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn,created_on,last_modification_date,
+				creation_user, last_modification_user');
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id');
 		//TODO: Treure
-		//$this->db->limit(80);
+		$this->db->limit(150);
 		
 		$query = $this->db->get();
 
@@ -205,6 +206,16 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['person_sn1'] = $row->person_sn1;
 				$all_ldap_users[$i]['person_sn2'] = $row->person_sn2;
 				$all_ldap_users[$i]['ldap_dn'] = $row->ldap_dn;
+				$all_ldap_users[$i]['creation_date'] = $row->created_on;
+				$all_ldap_users[$i]['last_modification_date'] = $row->last_modification_date;
+				$all_ldap_users[$i]['creation_user'] = $row->creation_user;
+				$all_ldap_users[$i]['last_modification_user'] = $row->last_modification_user;
+				
+				$active_users_basedn = $this->config->item('active_users_basedn');
+				$real_ldap_dn = $this->user_exists($row->username,$active_users_basedn);	
+
+				$all_ldap_users[$i]['real_ldap_dn'] = $real_ldap_dn;
+
 				$all_ldap_users[$i]['user_type'] = $this->get_user_type($row->person_id);
 				$group_to_search_dn=null;
 				$all_ldap_users[$i]['role']="";
@@ -318,7 +329,7 @@ class managment_model  extends CI_Model  {
 		// Load the configuration
         $CI =& get_instance();
 
-        $CI->load->config('auth_ldap');
+        $CI->load->config('auth_ldap'); 
 
         // Verify that the LDAP extension has been loaded/built-in
         // No sense continuing if we can't

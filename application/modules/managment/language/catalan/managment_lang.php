@@ -4,7 +4,7 @@
  *  Name:  attendance lang - English
  *
  * Author: Sergi Tur Badenas
- * 		   sergitur@ebretic.com
+ * 		   sergiturbadenas@gmail.com
  *
  * Created:  15.09.2013
  *
@@ -251,6 +251,13 @@ $lang['user_ldap_user_type']="Tipus usuari";
 $lang['user_ldap_initial_password']="Paraula de pas inicial";
 $lang['user_ldap_force_change_password_next_login']="Canviar paraula de pas al entrar?";
 $lang['user_ldap_changed_initial_password']="Paraula de pas inicial canviada?";
-$lang['user_ldap_ldap_dn']="Ldap DN";
+$lang['user_ldap_ldap_dn_error']="Error LDAP DNs";
+$lang['user_ldap_ldap_dn']="Ldap DN mysql";
+$lang['user_ldap_real_ldap_dn']="Ldap DN real";
 $lang['user_ldap_ldap_role']="Rol ldap";
 $lang['user_ldap_actions']="Accions";
+$lang['user_ldap_creation_date']="Data de creació";
+$lang['user_ldap_last_modification_date']="Data última modificació";
+$lang['user_ldap_creation_user']="Usuari creació";
+$lang['user_ldap_last_modification_user']="Usuari última modificació";
+

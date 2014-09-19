@@ -4,7 +4,7 @@
  *  Name:  reports lang - Catalan
  *
  * Author: Sergi Tur Badenas
- * 		   sergitur@ebretic.com
+ * 		   sergiturbadenas@gmail.com
  *
  * Created:  05.04.2014
  *
