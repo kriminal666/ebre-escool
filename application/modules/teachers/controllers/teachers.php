@@ -689,20 +689,8 @@ class teachers extends skeleton_main {
             
         //SPECIFIC COLUMNS
         $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
-        $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table.'_academic_period_id'));
         $this->grocery_crud->display_as($this->current_table.'_user_id',lang($this->current_table.'_user_id'));
         $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));
-        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
-        $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
-        $this->grocery_crud->display_as($this->current_table.'_charge_full',lang($this->current_table.'_charge_full'));
-        $this->grocery_crud->display_as($this->current_table.'_charge_short',lang($this->current_table.'_charge_short'));
-        $this->grocery_crud->display_as($this->current_table.'_charge2_full',lang($this->current_table.'_charge2_full'));
-        $this->grocery_crud->display_as($this->current_table.'_charge2_short',lang($this->current_table.'_charge2_short'));
-        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line1',lang($this->current_table.'_charge_sheet_line1'));
-        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line2',lang($this->current_table.'_charge_sheet_line2'));
-        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line3',lang($this->current_table.'_charge_sheet_line3'));
-        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line4',lang($this->current_table.'_charge_sheet_line4'));
-
         $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
         $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
         $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
@@ -712,9 +700,7 @@ class teachers extends skeleton_main {
 
         //RELATIONS
         $this->grocery_crud->set_relation('teacher_person_id','person','{person_sn1} {person_sn2},{person_givenName} ({person_official_id}) - {person_id} '); 
-        $this->grocery_crud->set_relation('teacher_department_id','department','{department_shortname}');   
         $this->grocery_crud->set_relation('teacher_user_id','users','{username}');   
-        $this->grocery_crud->set_relation('teacher_academic_period_id','academic_periods','{academic_periods_shortname}');   
 
         //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
