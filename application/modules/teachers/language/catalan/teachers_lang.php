@@ -33,6 +33,9 @@ $lang['teacher_code'] = 'Codi Professor';
 
 // teacher_academic_periods
 $lang['teacher_academic_periods']= "Professors per període acadèmic";
+$lang['teacher_academic_periods_id']= "Id";
+$lang['teacher_academic_periods_teacher_id']= "Id professor";
+$lang['teacher_academic_periods_academic_period_id']= "Període acadèmic";
 $lang['teacher_academic_periods_department_id'] = 'Departament';
 $lang['teacher_academic_periods_charge_short'] = 'Càrrec curt';
 $lang['teacher_academic_periods_charge_full'] = 'Càrrec llarg';
