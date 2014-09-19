@@ -377,13 +377,15 @@ class teachers_model  extends CI_Model  {
 
 		$this->db->select('teacher_id, teacher_user_id,users.ldap_dn as ldap_dn,teacher_academic_periods_academic_period_id, teacher_person_id, teacher_academic_periods_code,person_photo, username,
 			password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
-			teacher_academic_periods_department_id, teacher_academic_periods_charge_full, teacher_academic_periods_charge_short, teacher_academic_periods_charge2_full, 
+			teacher_academic_periods_department_id, department_name, department_shortname, teacher_academic_periods_charge_full, teacher_academic_periods_charge_short, teacher_academic_periods_charge2_full, 
 			teacher_academic_periods_charge2_short, teacher_academic_periods_charge_sheet_line1, teacher_academic_periods_charge_sheet_line2, 
 			teacher_academic_periods_charge_sheet_line3, teacher_academic_periods_charge_sheet_line4');
 		$this->db->from('teacher');
 		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
 		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
 		$this->db->join('users','users.id = teacher.teacher_user_id', 'left');
+		$this->db->join('department','department.department_id = teacher_academic_periods.teacher_academic_periods_department_id', 'left');
+		 
 
 		$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
 
@@ -409,6 +411,17 @@ class teachers_model  extends CI_Model  {
 				$teacher->force_change_password_next_login = $row->force_change_password_next_login;
 				$teacher->ldap_dn = $row->ldap_dn;
 
+				$CI =& get_instance();	
+        		$CI->load->config('auth_ldap'); 
+
+        		$active_users_basedn = $CI->config->item('active_users_basedn');
+				
+				//echo "active_users_basedn: " . $active_users_basedn . "<br/>";
+
+				$teacher->real_ldap_dn = $this->user_exists($row->username,$active_users_basedn);	
+
+				//echo "real_ldap_dn ( ". $row->username  ."): " . $teacher->real_ldap_dn . "<br/>";			
+
 				$teacher->givenName = $row->person_givenName;
 				$teacher->person_sn1 = $row->person_sn1;
 				$teacher->person_sn2 = $row->person_sn2;
@@ -417,6 +430,9 @@ class teachers_model  extends CI_Model  {
 				$teacher->official_id = $row->person_official_id;
 
 				$teacher->department_id = $row->teacher_academic_periods_department_id;
+				$teacher->department_name = $row->department_name;
+				$teacher->department_shortname = $row->department_shortname;
+				
 				$teacher->charge_full = $row->teacher_academic_periods_charge_full;
 				$teacher->charge_short = $row->teacher_academic_periods_charge_short;
 				$teacher->charge2_full = $row->teacher_academic_periods_charge2_full;
@@ -433,6 +449,96 @@ class teachers_model  extends CI_Model  {
 		else
 			return false;
 
+	}
+
+	private function _init_ldap() {
+		// Load the configuration
+        $CI =& get_instance();
+
+        $CI->load->config('auth_ldap'); 
+
+        // Verify that the LDAP extension has been loaded/built-in
+        // No sense continuing if we can't
+        if (! function_exists('ldap_connect')) {
+            show_error(lang('php_ldap_notpresent'));
+            log_message('error', lang('php_ldap_notpresent_log'));
+        }
+
+        $this->hosts = $CI->config->item('hosts');
+        $this->ports = $CI->config->item('ports');
+        $this->basedn = $CI->config->item('basedn');
+        $this->account_ou = $CI->config->item('account_ou');
+        $this->login_attribute  = $CI->config->item('login_attribute');
+        $this->use_ad = $CI->config->item('use_ad');
+        $this->ad_domain = $CI->config->item('ad_domain');
+        $this->proxy_user = $CI->config->item('proxy_user');
+        $this->proxy_pass = $CI->config->item('proxy_pass');
+        $this->roles = $CI->config->item('roles');
+        $this->auditlog = $CI->config->item('auditlog');
+        $this->member_attribute = $CI->config->item('member_attribute');
+        
+    }
+
+    protected function _bind() {        
+        //Connect
+        foreach($this->hosts as $host) {
+            $this->ldapconn = ldap_connect($host);
+            if($this->ldapconn) {
+               break;
+            }else {
+                log_message('info', lang('error_connecting_to'). ' ' .$uri);
+            }
+        }
+        
+        // At this point, $this->ldapconn should be set.  If not... DOOM!
+        if(! $this->ldapconn) {
+            log_message('error', lang('could_not_connect_to_ldap'));
+            show_error(lang('error_connecting_to_ldap'));
+        }
+
+       
+        // These to ldap_set_options are needed for binding to AD properly
+        // They should also work with any modern LDAP service.
+        ldap_set_option($this->ldapconn, LDAP_OPT_REFERRALS, 0);
+        ldap_set_option($this->ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+        
+        // Find the DN of the user we are binding as
+        // If proxy_user and proxy_pass are set, use those, else bind anonymously
+        if($this->proxy_user) {
+            $bind = @ldap_bind($this->ldapconn, $this->proxy_user, $this->proxy_pass);
+        }else {
+            $bind = @ldap_bind($this->ldapconn);
+        }
+
+        if(!$bind){
+            log_message('error', lang('unable_anonymous'));
+            show_error(lang('unable_bind'));
+            return false;
+        }   
+        return true;
+	}			
+
+	public function user_exists($uid,$basedn) {
+		$this->_init_ldap();
+		$filter = '(uid='.$uid.')';				
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		ldap_close($this->ldapconn);
+	     		return $dn;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	}
+
+			ldap_close($this->ldapconn);
+		}
+
+		return false;
 	}
 
 }

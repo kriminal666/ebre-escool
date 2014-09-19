@@ -236,6 +236,10 @@ class teachers extends skeleton_main {
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
 
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
         $active_menu = array();
         $active_menu['menu']='#reports';
         $active_menu['submenu1']='#teachers_reports';

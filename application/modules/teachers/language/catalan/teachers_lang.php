@@ -80,6 +80,8 @@ $lang['teacher_charge2_full']="Càrrec llarg 2";
 $lang['teacher_charge_on_sheet']="Càrrec al llençol";
 $lang['teacher_academic_period']="Període acadèmic";
 $lang['teacher_ldap_dn']="Ldap DN";
+$lang['teacher_ldap_dn_mysql']="Ldap DN mysql";
+
 
 
 

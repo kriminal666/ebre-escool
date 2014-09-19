@@ -150,11 +150,13 @@
   </thead>  
 </table>    
 
+</div>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_teachers">
 
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="19" style="text-align: center;"> <h4>
+    <td colspan="21" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/teachers') ;?>">
         <?php echo $table_title?>
       </a>
@@ -172,6 +174,7 @@
      <th><?php echo lang('teacher_initial_password')?></th>
      <th><?php echo lang('teacher_force_change_password_next_login')?></th>
      <th><?php echo lang('teacher_ldap_dn')?></th>
+     <th><?php echo lang('teacher_ldap_dn_mysql')?></th>
      <th><?php echo lang('teacher_email')?></th>
      <th><?php echo lang('teacher_secondary_email')?></th>
      <th><?php echo lang('teacher_official_id')?></th>
@@ -239,8 +242,27 @@
      </td>
 
      <td>
-         <?php echo $teacher->ldap_dn;?>
+         <?php 
+         if ($teacher->real_ldap_dn) {
+            echo $teacher->real_ldap_dn;
+         } else {
+            echo "ERROR: No trobat!";
+         }
+         
+         ;?>
      </td>
+
+     <td>
+         <?php 
+         if ($teacher->ldap_dn == "") {
+            echo "&nbsp;";
+         } else {
+            echo $teacher->ldap_dn;
+         }
+         
+         ;?>
+     </td>
+
 
      <td>
          <?php echo $teacher->email;?>
@@ -255,7 +277,9 @@
      </td>
 
      <td>
-         <?php echo $teacher->department_id;?>
+          <a href="<?php echo base_url('/index.php/curriculum/departments/read/' . $teacher->department_id ) ;?>">
+           <?php echo $teacher->department_name;?>
+          </a> ( <a href="<?php echo base_url('/index.php/curriculum/departments/edit' . $teacher->department_id ) ;?>"><?php echo $teacher->department_id;?></a>)
      </td>
 
       <td>
@@ -285,7 +309,6 @@
 
 </table> 
 
-</div>
 
 <div class="space-30"></div>
 

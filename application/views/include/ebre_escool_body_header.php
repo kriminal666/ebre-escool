@@ -591,11 +591,13 @@
                     </a>
                   </li>
 
-                  <li id="report_teachers_list">
-                    <a href="<?php echo base_url('/index.php/teachers/report_teachers_list'); ?>">
-                      <?php echo lang('reports_teachers_list');?>
-                    </a>
-                  </li>
+                  <?php if ($this->session->userdata('is_admin')): ?>
+                    <li id="report_teachers_list">
+                      <a href="<?php echo base_url('/index.php/teachers/report_teachers_list'); ?>">
+                        <?php echo lang('reports_teachers_list');?>
+                      </a>
+                    </li>
+                  <?php endif;?>  
 
                   <li id="reports_mentor_list">
                     <a href="<?php echo base_url('/index.php/teachers/tutors_report'); ?>">
