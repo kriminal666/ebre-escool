@@ -28,6 +28,14 @@
         </div><!-- /.page-header -->
 <div style='height:10px;'></div>
 	<div style="margin:10px;">
+      <div class="alert alert-block alert-success">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <i class="icon-ok green"></i>
+                  Atenció: El codi de professor és el codi intern de base de dades (teacher_id) no confondre amb el codi de profe que s'assigna des de cap d'estudis
+              </div>
    		<?php echo $output; ?>		
 	</div>	
 </div>

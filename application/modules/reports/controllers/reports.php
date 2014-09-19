@@ -387,7 +387,7 @@ class reports extends skeleton_main {
 	/*
 	 * Include teachers sheet and other info like employees
 	 */
-	function general_sheet() {
+	function general_sheet($academic_period_id = null) {
 
 		if (!$this->skeleton_auth->logged_in())
         {
@@ -397,7 +397,16 @@ class reports extends skeleton_main {
 		
 		$this->load->model('reports_model');
 
-        $all_teachers = $this->reports_model->get_all_teachers();
+        $all_teachers = $this->reports_model->get_all_teachers($academic_period_id);
+
+        if ($academic_period_id != null ) {
+        	$academic_period = $this->reports_model->get_academic_period_by_id($academic_period_id);
+        } else {
+        	$academic_period = $this->reports_model->get_current_academic_period();
+        }
+
+        
+
         $all_conserges = $this->reports_model->get_all_conserges();
         $all_secretaria = $this->reports_model->get_all_secretaria();
         
@@ -666,9 +675,8 @@ echo $cons->photo_url;
 		$pdf->SetFont('Arial','B',15);
 		//$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
 		$pdf->SetXY(10,10);
-		$any_comencament = 2013;
-		$any_finalitzacio = 2014;
-		$pdf->Cell(190,6,"PROFESSORAT ".$any_comencament."-".$any_finalitzacio,0,0,'C');
+	
+		$pdf->Cell(190,6,"PROFESSORAT ". $academic_period->shortname ,0,0,'C');
 		$y=$y+6;
 
 		//Guardo les coordenades inicials de x i y
@@ -869,7 +877,7 @@ echo $cons->photo_url;
 		}
 
 		//enviem tot al pdf
-		$pdf->Output("Professorat_".$any_comencament."-".$any_finalitzacio."_(".date("d-m-Y").").pdf", "I");
+		$pdf->Output("Professorat_". $academic_period->shortname ."_(".date("d-m-Y").").pdf", "I");
 
 		
 	}

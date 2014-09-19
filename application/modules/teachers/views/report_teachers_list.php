@@ -231,7 +231,7 @@
      </td>
 
      <td>
-         <?php echo $teacher->initial_password;?>
+         <span title="<?php echo md5($teacher->initial_password);?>"><?php echo $teacher->initial_password;?></span>
      </td>
 
      <td>

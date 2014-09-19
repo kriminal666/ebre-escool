@@ -287,7 +287,7 @@ class teachers extends skeleton_main {
     }
 
 
-    public function teacher_sheet() {
+    public function teacher_sheet($academic_period_id=null) {
 
         if (!$this->skeleton_auth->logged_in())
         {
@@ -303,7 +303,13 @@ class teachers extends skeleton_main {
         
         $this->load->model('teachers_model');
 
-        $all_teachers = $this->teachers_model->get_all_teachers();
+        $all_teachers = $this->teachers_model->get_all_teachers($academic_period_id);
+
+        if ($academic_period_id != null ) {
+            $academic_period = $this->teachers_model->get_academic_period_by_id($academic_period_id);
+        } else {
+            $academic_period = $this->teachers_model->get_current_academic_period();
+        }
 
         $default_group_code = $this->config->item('default_group_code');
 
@@ -373,9 +379,8 @@ class teachers extends skeleton_main {
         $pdf->SetFont('Arial','B',15);
         //$pdf->Cell(Amplada, altura, text, marc, on es comença a escriure després, alineació)
         $pdf->SetXY(10,10);
-        $any_comencament = 2013;
-        $any_finalitzacio = 2014;
-        $pdf->Cell(190,6,"PROFESSORAT ".$any_comencament."-".$any_finalitzacio,0,0,'C');
+       
+        $pdf->Cell(190,6,"PROFESSORAT ".$academic_period->shortname,0,0,'C');
         $y=$y+6;
 
         //Guardo les coordenades inicials de x i y
@@ -501,7 +506,7 @@ class teachers extends skeleton_main {
         }
 
         //enviem tot al pdf
-        $pdf->Output("Professorat_".$any_comencament."-".$any_finalitzacio."_(".date("d-m-Y").").pdf", "I");
+        $pdf->Output("Professorat_".$academic_period->shortname."_(".date("d-m-Y").").pdf", "I");
 
         
 //    }
@@ -566,7 +571,100 @@ class teachers extends skeleton_main {
 
     }     
 
+    public function teachers_by_academic_period($department_id = "") {
+
+        /*
+        MIGRATION SCRIPT:
+        INSERT INTO teacher_academic_periods (`teacher_academic_periods_teacher_id`,`teacher_academic_periods_academic_period_id`,`teacher_academic_periods_code`,`teacher_academic_periods_department_id`,`teacher_academic_periods_charge_full`,`teacher_academic_periods_charge_short`,`teacher_academic_periods_charge2_full`,`teacher_academic_periods_charge2_short`,`teacher_academic_periods_charge_sheet_line1`,`teacher_academic_periods_charge_sheet_line2`,`teacher_academic_periods_charge_sheet_line3`,`teacher_academic_periods_charge_sheet_line4`,`teacher_academic_periods_entryDate`,`teacher_academic_periods_creationUserId`,`teacher_academic_periods_lastupdateUserId`)
+        SELECT `teacher_id`,5,`teacher_code`,`teacher_department_id`,`teacher_charge_full`,`teacher_charge_short`,`teacher_charge2_full`,`teacher_charge2_short`,`teacher_charge_sheet_line1`,`teacher_charge_sheet_line2`,`teacher_charge_sheet_line3`,`teacher_charge_sheet_line4`,"2011-09-19 00:00:00",2,2
+        FROM teacher; 
+        */
+    
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#persons';
+        $active_menu['submenu2']='#teachers_by_academic_period';
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data= $this->load_ace_files($active_menu);  
+
+        /* Grocery Crud */ 
+        $this->current_table="teacher_academic_periods";
+        $this->grocery_crud->set_table($this->current_table);
+            
+        $this->session->set_flashdata('table_name', $this->current_table); 
+        
+        //Establish subject:
+        $this->grocery_crud->set_subject(lang('teachers_by_academic_period'));
+
+        $this->common_callbacks($this->current_table);
+            
+        //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));          
+        $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table.'_academic_period_id'));
+        $this->grocery_crud->display_as($this->current_table.'_user_id',lang($this->current_table.'_user_id'));
+        $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table.'_person_id'));
+        $this->grocery_crud->display_as($this->current_table.'_code',lang($this->current_table.'_code'));  
+        $this->grocery_crud->display_as($this->current_table.'_department_id',lang($this->current_table.'_department_id'));   
+        $this->grocery_crud->display_as($this->current_table.'_charge_full',lang($this->current_table.'_charge_full'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_short',lang($this->current_table.'_charge_short'));
+        $this->grocery_crud->display_as($this->current_table.'_charge2_full',lang($this->current_table.'_charge2_full'));
+        $this->grocery_crud->display_as($this->current_table.'_charge2_short',lang($this->current_table.'_charge2_short'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line1',lang($this->current_table.'_charge_sheet_line1'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line2',lang($this->current_table.'_charge_sheet_line2'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line3',lang($this->current_table.'_charge_sheet_line3'));
+        $this->grocery_crud->display_as($this->current_table.'_charge_sheet_line4',lang($this->current_table.'_charge_sheet_line4'));
+
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang('entryDate'));        
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang('last_update'));
+        $this->grocery_crud->display_as($this->current_table.'_creationUserId',lang('creationUserId'));
+        $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang('lastupdateUserId'));          
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang('markedForDeletion'));   
+        $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang('markedForDeletionDate')); 
+
+        //RELATIONS
+        $this->grocery_crud->set_relation($this->current_table.'_department_id','department','{department_shortname}');   
+
+        //UPDATE AUTOMATIC FIELDS
+        $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+        $this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+            
+        $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+            
+        $this->userCreation_userModification($this->current_table);
+
+        $this->grocery_crud->unset_dropdowndetails($this->current_table.'_creationUserId',$this->current_table.'_lastupdateUserId');
+
+        $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+        $teachers_by_department = $this->session->flashdata('teachers_by_department');
+        $this->session->keep_flashdata('teachers_by_department');
+        
+        if ( is_array($teachers_by_department) && $department_id != "" ) {
+            $teachers = $teachers_by_department[$department_id];
+            foreach ($teachers as $condition) {
+                $this->grocery_crud->or_where($this->current_table.'_id',$condition);
+            }            
+        }
+
+        $this->renderitzar($this->current_table,$header_data); 
+
+
+            //$this->grocery_crud->set_rules('person_official_id',lang('person_official_id'),'callback_valida_nif_cif_nie['.$this->input->post('person_official_id_type').']');
+            //$this->grocery_crud->set_rules('person_email',lang('person_email'),'valid_email');
+
+    }
+
 	public function teacher($department_id = "") {
+
+        /*
+        MIGRATION SCRIPT:
+        INSERT INTO teacher_academic_periods (`teacher_academic_periods_teacher_id`,`teacher_academic_periods_academic_period_id`,`teacher_academic_periods_code`,`teacher_academic_periods_department_id`,`teacher_academic_periods_charge_full`,`teacher_academic_periods_charge_short`,`teacher_academic_periods_charge2_full`,`teacher_academic_periods_charge2_short`,`teacher_academic_periods_charge_sheet_line1`,`teacher_academic_periods_charge_sheet_line2`,`teacher_academic_periods_charge_sheet_line3`,`teacher_academic_periods_charge_sheet_line4`,`teacher_academic_periods_entryDate`,`teacher_academic_periods_creationUserId`,`teacher_academic_periods_lastupdateUserId`)
+        SELECT `teacher_id`,5,`teacher_code`,`teacher_department_id`,`teacher_charge_full`,`teacher_charge_short`,`teacher_charge2_full`,`teacher_charge2_short`,`teacher_charge_sheet_line1`,`teacher_charge_sheet_line2`,`teacher_charge_sheet_line3`,`teacher_charge_sheet_line4`,"2011-09-19 00:00:00",2,2
+        FROM teacher; 
+        */
     
         $active_menu = array();
         $active_menu['menu']='#maintenances';

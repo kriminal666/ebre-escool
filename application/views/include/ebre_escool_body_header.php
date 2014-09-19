@@ -902,6 +902,12 @@
                     <a href="<?php echo base_url('/index.php/teachers'); ?>">
                       <?php echo lang('teachers');?>
                     </a>
+                  </li>/
+
+                  <li id="teachers_by_academic_period">
+                    <a href="<?php echo base_url('/index.php/teachers/teachers_by_academic_period'); ?>">
+                      <?php echo lang('teachers_by_academic_period');?>
+                    </a>
                   </li>
 
                   <li id="employees">

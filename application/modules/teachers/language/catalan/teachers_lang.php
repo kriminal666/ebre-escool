@@ -30,6 +30,20 @@ $lang['teacher_charge_sheet_line3'] = "Càrrecs línia 3 llençol";
 $lang['teacher_charge_sheet_line4'] = "Càrrecs línia 4 llençol";
 $lang['teacher_code'] = 'Codi Professor';
 
+
+// teacher_academic_periods
+$lang['teacher_academic_periods']= "Professors per període acadèmic";
+$lang['teacher_academic_periods_department_id'] = 'Departament';
+$lang['teacher_academic_periods_charge_short'] = 'Càrrec curt';
+$lang['teacher_academic_periods_charge_full'] = 'Càrrec llarg';
+$lang['teacher_academic_periods_charge2_short'] = 'Càrrec 2 curt';
+$lang['teacher_academic_periods_charge2_full'] = 'Càrrec 2 llarg';
+$lang['teacher_academic_periods_charge_sheet_line1'] = "Càrrecs línia 1 llençol";
+$lang['teacher_academic_periods_charge_sheet_line2'] = "Càrrecs línia 2 llençol";
+$lang['teacher_academic_periods_charge_sheet_line3'] = "Càrrecs línia 3 llençol";
+$lang['teacher_academic_periods_charge_sheet_line4'] = "Càrrecs línia 4 llençol";
+$lang['teacher_academic_periods_code'] = 'Codi Professor';
+
 //Mentors report
 $lang['classroom_group_id']="Id";
 $lang['classroom_group_code']="Codi";

@@ -60,6 +60,7 @@ $lang['devices'] = 'Dispositius';
 
 $lang['maintenances'] = 'Manteniments';
  $lang['teachers'] = 'Professors';
+ $lang['teachers_by_academic_period'] = 'Professors per període acadèmic'; 
  $lang['employees'] = 'Personal Laboral';
  $lang['employees_type'] = 'Tipus Personal Laboral';
  $lang['students'] = 'Alumnes'; 

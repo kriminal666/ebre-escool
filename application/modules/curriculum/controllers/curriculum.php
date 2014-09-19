@@ -214,7 +214,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_location_id',lang($this->current_table.'_location_id'));        
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_code');
+        $this->grocery_crud->set_relation($this->current_table.'_head','teacher','teacher_id');
         $this->grocery_crud->set_relation($this->current_table.'_organizational_unit_id','organizational_unit','organizational_unit_name');
 
          //UPDATE AUTOMATIC FIELDS
@@ -644,7 +644,7 @@ class curriculum extends skeleton_main {
         //$this->grocery_crud->express_fields('course_name','course_shortname','parentLocation');
 
         //RELATIONS
-        $this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_code');
+        $this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_id');
         $this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName} - {classroom_group_name}');
         $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_name}');
 
@@ -743,7 +743,7 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->set_relation($this->current_table.'_course_id','course','{course_name} ({course_shortname} - {course_id})');
         
         //NOW THIS DATA IS IN ACADEMIC_PERIOD classgroups table
-        //$this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_code');
+        //$this->grocery_crud->set_relation($this->current_table.'_mentorId','teacher','teacher_id');
         //$this->grocery_crud->set_relation($this->current_table.'_location_id','location','location_name');
         //$this->grocery_crud->set_relation($this->current_table.'_shift','shift','shift_name');
         $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'classroom_group_academic_periods', 'academic_periods', 'classroom_group_academic_periods_classroom_group_id', 'classroom_group_academic_periods_academic_period_id', 'academic_periods_name');
@@ -959,7 +959,7 @@ class curriculum extends skeleton_main {
 
         //RELACIONS
         //$this->grocery_crud->set_relation($this->current_table.'_course_id','course','course_shortname'); 
-        //$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','({teacher_code} - {teacher_id})');
+        //$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','teacher_id)');
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COUL APPLY
         //$this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','({classroom_group_id} - {classroom_group_code} | {classroom_group_shortName})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname} - {course_name})');
@@ -1195,7 +1195,7 @@ class curriculum extends skeleton_main {
         //Relació de Taules
         $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_shortname}'); 
         $this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName} ({classroom_group_id})'); 
-		$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','{teacher_code} - ({teacher_id})');        
+		$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','teacher_id');        
         $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_external_code} - {study_module_shortname} - {study_module_name} - ({study_module_id})');
         
 		$this->grocery_crud->set_relation($this->current_table.'_location_id','location','{location_Id} ({location_name})');

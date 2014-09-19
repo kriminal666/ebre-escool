@@ -27,13 +27,20 @@ class teachers_model  extends CI_Model  {
 		return false;
 	}
 
-    function get_all_teachers() {
+    function get_all_teachers($academic_period_id=null) {
 
-		$this->db->select('teacher_id,teacher_code,teacher_charge_short, teacher_charge_full, person_givenName, person_sn1, person_sn2, person_photo,teacher_charge_sheet_line1,
-						teacher_charge_sheet_line2,teacher_charge_sheet_line3,teacher_charge_sheet_line4');
+    	if ($academic_period_id == null ) {
+    		$academic_period_id = $this->get_current_academic_period_id();
+    	}
+
+		$this->db->select('teacher_id,teacher_academic_periods_code,teacher_academic_periods_charge_short, teacher_academic_periods_charge_full, person_givenName, person_sn1, person_sn2, person_photo,teacher_academic_periods_charge_sheet_line1,
+						teacher_academic_periods_charge_sheet_line2,teacher_academic_periods_charge_sheet_line3,teacher_academic_periods_charge_sheet_line4');
 		$this->db->from('teacher');
+		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
 		$this->db->join('person','teacher_person_id = person_id');
-		$this->db->order_by("teacher_code", "asc"); 
+		$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->order_by("teacher_academic_periods_code", "asc"); 
+
 		$query = $this->db->get();
 
 		//echo $this->db->last_query()."<br/>";
@@ -47,13 +54,13 @@ class teachers_model  extends CI_Model  {
 				$teacher = new stdClass();
 				
 				$teacher->teacher_id = $row['teacher_id'];
-				$teacher->teacher_code = $row['teacher_code'];
-				$teacher->teacher_charge_short = $row['teacher_charge_short'];
-				$teacher->teacher_charge_full = $row['teacher_charge_full'];		
-				$teacher->teacher_charge_sheet_line1 = $row['teacher_charge_sheet_line1'];
-				$teacher->teacher_charge_sheet_line2 = $row['teacher_charge_sheet_line2'];
-				$teacher->teacher_charge_sheet_line3 = $row['teacher_charge_sheet_line3'];
-				$teacher->teacher_charge_sheet_line4 = $row['teacher_charge_sheet_line4'];
+				$teacher->teacher_code = $row['teacher_academic_periods_code'];
+				$teacher->teacher_charge_short = $row['teacher_academic_periods_charge_short'];
+				$teacher->teacher_charge_full = $row['teacher_academic_periods_charge_full'];		
+				$teacher->teacher_charge_sheet_line1 = $row['teacher_academic_periods_charge_sheet_line1'];
+				$teacher->teacher_charge_sheet_line2 = $row['teacher_academic_periods_charge_sheet_line2'];
+				$teacher->teacher_charge_sheet_line3 = $row['teacher_academic_periods_charge_sheet_line3'];
+				$teacher->teacher_charge_sheet_line4 = $row['teacher_academic_periods_charge_sheet_line4'];
 										
 				$teacher->givenName = $row['person_givenName'];
 				$teacher->sn1 = $row['person_sn1'];
@@ -73,6 +80,8 @@ class teachers_model  extends CI_Model  {
 	/*
     * OBSOLET
 	*/
+	
+	/*
 	function get_all_classgroups_report_info_obsolet($orderby = "DESC") {
 
 
@@ -82,7 +91,7 @@ class teachers_model  extends CI_Model  {
 		/*
 		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_course_id, classroom_group_description, classroom_group_mentorId, classroom_group_shift, 
 			   classroom_group_location_id, course_shortname, course_name, course_study_id, studies_shortname, studies_name, studies_studies_organizational_unit_id, studies_studies_law_id, studies_law_shortname, 
-			   studies_law_name, teacher_person_id, teacher_code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName
+			   studies_law_name, teacher_person_id, teacher1_code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName
 		FROM classroom_group
 		LEFT JOIN  course ON  course.course_id = classroom_group.classroom_group_course_id
 		LEFT JOIN  studies ON   studies.studies_id = course.course_study_id
@@ -92,11 +101,11 @@ class teachers_model  extends CI_Model  {
 		LEFT JOIN  shift ON shift.shift_id = classroom_group. classroom_group_shift
 		LEFT JOIN  location ON location.location_id = classroom_group. classroom_group_location_id
 		WHERE 1
-		*/
+		
 
 		$this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_course_id, classroom_group_description, classroom_group_mentorId, classroom_group_shift, 
 			   classroom_group_location_id, course_shortname, course_name, course_study_id, studies_shortname, studies_name, studies_studies_organizational_unit_id, studies_studies_law_id, studies_law_shortname, 
-			   studies_law_name, teacher_person_id, teacher_code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName');
+			   studies_law_name, teacher_person_id, teacher_1code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName');
 		$this->db->from('classroom_group');
 		$this->db->join('course','course.course_id = classroom_group.classroom_group_course_id', 'left');
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
@@ -135,7 +144,7 @@ class teachers_model  extends CI_Model  {
 				
 				$classroom_group->mentor_id = $row->classroom_group_mentorId;
 				$classroom_group->mentor_person_id = $row->teacher_person_id;
-				$classroom_group->mentor_code = $row->teacher_code;
+				$classroom_group->mentor_code = $row->teacher1_code;
 				$classroom_group->mentor_department_id = $row->teacher_department_id;
 				$classroom_group->mentor_givenname = $row->person_givenName;
 				$classroom_group->mentor_sn1 = $row->person_sn1;
@@ -148,16 +157,6 @@ class teachers_model  extends CI_Model  {
 				$classroom_group->location_name = $row->location_name;
 				$classroom_group->location_shortname = $row->location_shortName;
 
-				//get number of teacher Deparments
-				/*
-				if ( array_key_exists ( $row->course_id , $teachers_by_course )) {					
-					$course->numberOfTeachers = $teachers_by_course[$row->course_id]->total;
-					$course->teacher_ids = $teachers_by_course[$row->course_id]->teachers_ids;
-
-				}	else {
-					$course->numberOfTeachers = "";
-					$course->teacher_ids = "";
-				}	*/
 				
 				$all_classroom_groups[$row->classroom_group_id] = $classroom_group;
 			}
@@ -167,6 +166,7 @@ class teachers_model  extends CI_Model  {
 			return false;
 
 	}
+	*/
 
 	function get_current_academic_period_id() {
 
@@ -259,38 +259,46 @@ class teachers_model  extends CI_Model  {
 		//classgroups
 		//Example SQL:
 		/*
-		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_course_id, classroom_group_academic_periods_description, classroom_group_academic_periods_mentorId, classroom_group_academic_periods_shift, 
-		classroom_group_academic_periods_location, course_shortname, course_name, course_study_id, studies_shortname, studies_name, studies_studies_organizational_unit_id, studies_studies_law_id, studies_law_shortname, 
-		studies_law_name, teacher_person_id, teacher_code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName
-		FROM classroom_group_academic_periods
-		LEFT JOIN  classroom_group ON  classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id
-		LEFT JOIN  course ON  course.course_id = classroom_group.classroom_group_course_id
-		LEFT JOIN  studies ON   studies.studies_id = course.course_study_id
-		LEFT JOIN  studies_law ON   studies_law.studies_law_id = studies.studies_studies_law_id
-		LEFT JOIN  teacher ON teacher.teacher_id = classroom_group_academic_periods.classroom_group_academic_periods_mentorId
-		LEFT JOIN  person ON person.person_id = teacher. teacher_person_id
-		LEFT JOIN  shift ON shift.shift_id = classroom_group_academic_periods.classroom_group_academic_periods_shift
-		LEFT JOIN  location ON location.location_id = classroom_group_academic_periods.classroom_group_academic_periods_location
-		WHERE classroom_group_academic_periods_academic_period_id= 5
+		SELECT `classroom_group_id`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name`, `classroom_group_course_id`, 
+		`classroom_group_academic_periods_description`, `classroom_group_academic_periods_mentorId`, `classroom_group_academic_periods_shift`, 
+		`classroom_group_academic_periods_location`, `course_shortname`, `course_name`, `course_study_id`, `studies_shortname`, `studies_name`,
+		 `studies_studies_organizational_unit_id`, `studies_studies_law_id`, `studies_law_shortname`, `studies_law_name`, `teacher_person_id`, 
+		 `teacher_academic_periods_code`, `teacher_academic_periods_department_id`, `person_givenName`, `person_sn1`, `person_sn2`, `shift_name`, 
+		 `location_name`, `location_shortName` 
+		 FROM (`classroom_group_academic_periods`) 
+		 LEFT JOIN `classroom_group` ON `classroom_group`.`classroom_group_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_classroom_group_id` 
+		 LEFT JOIN `course` ON `course`.`course_id` = `classroom_group`.`classroom_group_course_id` LEFT JOIN `studies` ON `studies`.`studies_id` = `course`.`course_study_id` 
+		 LEFT JOIN `studies_law` ON `studies_law`.`studies_law_id` = `studies`.`studies_studies_law_id` 
+		 LEFT JOIN `teacher` ON `teacher`.`teacher_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_mentorId` 
+		 JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
+		 LEFT JOIN `person` ON `person`.`person_id` = `teacher`.`teacher_person_id` 
+		 LEFT JOIN `shift` ON `shift`.`shift_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_shift` 
+		 LEFT JOIN `location` ON `location`.`location_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_location` 
+		 WHERE `classroom_group_academic_periods_academic_period_id` = '5' AND `teacher_academic_periods_academic_period_id` = '5'
+		  ORDER BY `studies_name` DESC
 		*/
 
 		$this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_course_id, classroom_group_academic_periods_description, classroom_group_academic_periods_mentorId, classroom_group_academic_periods_shift, 
 		classroom_group_academic_periods_location, course_shortname, course_name, course_study_id, studies_shortname, studies_name, studies_studies_organizational_unit_id, studies_studies_law_id, studies_law_shortname, 
-		studies_law_name, teacher_person_id, teacher_code,teacher_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName');
+		studies_law_name, teacher_person_id, teacher_academic_periods_code,teacher_academic_periods_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName');
 		$this->db->from('classroom_group_academic_periods');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id', 'left');
 		$this->db->join('course','course.course_id = classroom_group.classroom_group_course_id', 'left');
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
 		$this->db->join('teacher','teacher.teacher_id = classroom_group_academic_periods.classroom_group_academic_periods_mentorId', 'left');
+		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
 		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
 		$this->db->join('shift','shift.shift_id = classroom_group_academic_periods.classroom_group_academic_periods_shift', 'left');
 		$this->db->join('location','location.location_id = classroom_group_academic_periods.classroom_group_academic_periods_location', 'left');
 		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
 
 		$this->db->order_by('studies_name', $orderby);
 		
 		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
 
 		if ($query->num_rows() > 0){
 			$all_classroom_groups = array();
@@ -317,8 +325,8 @@ class teachers_model  extends CI_Model  {
 				
 				$classroom_group->mentor_id = $row->classroom_group_academic_periods_mentorId;
 				$classroom_group->mentor_person_id = $row->teacher_person_id;
-				$classroom_group->mentor_code = $row->teacher_code;
-				$classroom_group->mentor_department_id = $row->teacher_department_id;
+				$classroom_group->mentor_code = $row->teacher_academic_periods_code;
+				$classroom_group->mentor_department_id = $row->teacher_academic_periods_department_id;
 				$classroom_group->mentor_givenname = $row->person_givenName;
 				$classroom_group->mentor_sn1 = $row->person_sn1;
 				$classroom_group->mentor_sn2 = $row->person_sn2;
@@ -354,26 +362,32 @@ class teachers_model  extends CI_Model  {
 	function get_all_teachers_report_info($academic_period_id,$orderby = "ASC") {
 
 		/* SQL EXAMPLE
-		SELECT `teacher_id`, `teacher_user_id`, `users`.`ldap_dn` as ldap_dn, `teacher_academic_period_id`, `teacher_person_id`, `teacher_code`, `person_photo`, 
-		`username`, `password`, `initial_password`, `force_change_password_next_login`, `person_givenName`, `person_sn1`, `person_sn2`, `person_email`, `person_secondary_email`, 
-		`person_official_id`, `teacher_department_id`, `teacher_charge_full`, `teacher_charge_short`, `teacher_charge2_full`, `teacher_charge2_short`, `teacher_charge_sheet_line1`, 
-		`teacher_charge_sheet_line2`, `teacher_charge_sheet_line3`, `teacher_charge_sheet_line4` 
-		FROM (`teacher`) 
-		LEFT JOIN `person` ON `person`.`person_id` = `teacher`.`teacher_person_id` 
-		LEFT JOIN `users` ON `users`.`id` = `teacher`.`teacher_user_id` 
-		WHERE `teacher_academic_period_id` = '5' 
-		ORDER BY `teacher_code` ASC
+		SELECT `teacher_id`, `teacher_user_id`, `users`.`ldap_dn` as ldap_dn, `teacher_academic_periods_academic_period_id`, `teacher_person_id`, `teacher_academic_periods_code`, 
+		`person_photo`, `username`, `password`, `initial_password`, `force_change_password_next_login`, `person_givenName`, `person_sn1`, `person_sn2`, `person_email`, 
+		`person_secondary_email`, `person_official_id`, `teacher_academic_periods_department_id`, `teacher_academic_periods_charge_full`, `teacher_academic_periods_charge_short`, 
+		`teacher_academic_periods_charge2_full`, `teacher_academic_periods_charge2_short`, `teacher_academic_periods_charge_sheet_line1`, `teacher_academic_periods_charge_sheet_line2`,
+		 `teacher_academic_periods_charge_sheet_line3`, `teacher_academic_periods_charge_sheet_line4` 
+		 FROM (`teacher`) 
+		 JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
+		 LEFT JOIN `person` ON `person`.`person_id` = `teacher`.`teacher_person_id` 
+		 LEFT JOIN `users` ON `users`.`id` = `teacher`.`teacher_user_id` 
+		 WHERE `teacher_academic_periods_academic_period_id` = '5'
+		 ORDER BY `teacher_academic_periods_code` ASC
 		*/
 
-		$this->db->select('teacher_id, teacher_user_id,users.ldap_dn as ldap_dn, teacher_academic_period_id, teacher_person_id, teacher_code,person_photo, username,password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
-		teacher_department_id, teacher_charge_full, teacher_charge_short, teacher_charge2_full, teacher_charge2_short, teacher_charge_sheet_line1, teacher_charge_sheet_line2, teacher_charge_sheet_line3, teacher_charge_sheet_line4');
+		$this->db->select('teacher_id, teacher_user_id,users.ldap_dn as ldap_dn,teacher_academic_periods_academic_period_id, teacher_person_id, teacher_academic_periods_code,person_photo, username,
+			password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
+			teacher_academic_periods_department_id, teacher_academic_periods_charge_full, teacher_academic_periods_charge_short, teacher_academic_periods_charge2_full, 
+			teacher_academic_periods_charge2_short, teacher_academic_periods_charge_sheet_line1, teacher_academic_periods_charge_sheet_line2, 
+			teacher_academic_periods_charge_sheet_line3, teacher_academic_periods_charge_sheet_line4');
 		$this->db->from('teacher');
+		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
 		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
 		$this->db->join('users','users.id = teacher.teacher_user_id', 'left');
 
-		$this->db->where('teacher_academic_period_id',$academic_period_id);
+		$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
 
-		$this->db->order_by('teacher_code', $orderby);
+		$this->db->order_by('teacher_academic_periods_code', $orderby);
 
 		$query = $this->db->get();
 
@@ -386,7 +400,7 @@ class teachers_model  extends CI_Model  {
 				
 				$teacher->id = $row->teacher_id;
 				$teacher->person_id = $row->teacher_person_id;
-				$teacher->code = $row->teacher_code;
+				$teacher->code = $row->teacher_academic_periods_code;
 				$teacher->photo = $row->person_photo;
 				$teacher->user_id = $row->teacher_user_id;
 				$teacher->username = $row->username;
@@ -402,15 +416,15 @@ class teachers_model  extends CI_Model  {
 				$teacher->secondary_email = $row->person_secondary_email;
 				$teacher->official_id = $row->person_official_id;
 
-				$teacher->department_id = $row->teacher_department_id;
-				$teacher->charge_full = $row->teacher_charge_full;
-				$teacher->charge_short = $row->teacher_charge_short;
-				$teacher->charge2_full = $row->teacher_charge2_full;
-				$teacher->charge2_short = $row->teacher_charge2_short;
-				$teacher->charge_sheet_line1 = $row->teacher_charge_sheet_line1;
-				$teacher->charge_sheet_line2 = $row->teacher_charge_sheet_line2;
-				$teacher->charge_sheet_line3 = $row->teacher_charge_sheet_line3;
-				$teacher->charge_sheet_line4 = $row->teacher_charge_sheet_line4;
+				$teacher->department_id = $row->teacher_academic_periods_department_id;
+				$teacher->charge_full = $row->teacher_academic_periods_charge_full;
+				$teacher->charge_short = $row->teacher_academic_periods_charge_short;
+				$teacher->charge2_full = $row->teacher_academic_periods_charge2_full;
+				$teacher->charge2_short = $row->teacher_academic_periods_charge2_short;
+				$teacher->charge_sheet_line1 = $row->teacher_academic_periods_charge_sheet_line1;
+				$teacher->charge_sheet_line2 = $row->teacher_academic_periods_charge_sheet_line2;
+				$teacher->charge_sheet_line3 = $row->teacher_academic_periods_charge_sheet_line3;
+				$teacher->charge_sheet_line4 = $row->teacher_academic_periods_charge_sheet_line4;
 				
 				$all_teachers[$row->teacher_id] = $teacher;
 			}
