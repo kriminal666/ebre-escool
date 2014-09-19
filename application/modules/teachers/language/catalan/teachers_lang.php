@@ -16,6 +16,7 @@
 
 $lang['teacher'] = 'Professor';
 $lang['teacher_person_id'] = 'ID Persona';
+$lang['teacher_photo'] = 'Foto';
 $lang['teacher_department_id'] = 'Departament';
 $lang['teacher_charge_short'] = 'Càrrec curt';
 $lang['teacher_charge_full'] = 'Càrrec llarg';

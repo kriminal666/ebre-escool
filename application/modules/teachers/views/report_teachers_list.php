@@ -162,6 +162,7 @@
   </tr>
   <tr>      
   	 <th><?php echo lang('teacher_id')?></th>
+     <th><?php echo lang('teacher_photo')?></th>
      <th><?php echo lang('teacher_code')?></th>
      <th><?php echo lang('teacher_person_id')?></th>
      <th><?php echo lang('teacher_user_id')?></th>
@@ -194,6 +195,9 @@
           <a href="<?php echo base_url('/index.php/curriculum/teacher/read/' . $teacher->id ) ;?>">
            <?php echo $teacher->id;?>
           </a> ( <a href="<?php echo base_url('/index.php/curriculum/teacher/edit/' . $teacher->id ) ;?>">edit</a>)
+     </td>
+     <td>
+         <img style="width:75px;" alt="foto alumne" src="<?php echo base_url('/uploads/person_photos/'. $teacher->photo);?>"/ >
      </td>
      <td>
            <?php echo $teacher->code;?>

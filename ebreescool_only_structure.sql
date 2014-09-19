@@ -827,6 +827,7 @@ CREATE TABLE IF NOT EXISTS `teacher` (
   `teacher_id` int(11) NOT NULL AUTO_INCREMENT,
   `teacher_academic_period_id` int(11) NOT NULL,
   `teacher_person_id` int(11) NOT NULL,
+  `teacher_user_id` int(11) NOT NULL,
   `teacher_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `teacher_department_id` int(11) NOT NULL,
   `teacher_charge_full` varchar(255) NOT NULL,

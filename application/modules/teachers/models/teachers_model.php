@@ -354,26 +354,30 @@ class teachers_model  extends CI_Model  {
 	function get_all_teachers_report_info($academic_period_id,$orderby = "ASC") {
 
 		/* SQL EXAMPLE
-		SELECT teacher_id, teacher_person_id, teacher_code,username,password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
-		teacher_department_id, teacher_charge_full, teacher_charge_short, teacher_charge2_full, teacher_charge2_short, teacher_charge_sheet_line1, teacher_charge_sheet_line2, teacher_charge_sheet_line3, teacher_charge_sheet_line4, teacher_entryDate, 
-		teacher_last_update, teacher_creationUserId, teacher_lastupdateUserId, teacher_markedForDeletion, teacher_markedForDeletionDate, person_officialid 
-		FROM teacher 
-		LEFT JOIN person ON person.person_id = teacher.teacher_person_id
-		LEFT JOIN users ON users.person_id = person.person_id
-		WHERE teacher_academic_period_id=5
+		SELECT `teacher_id`, `teacher_user_id`, `users`.`ldap_dn` as ldap_dn, `teacher_academic_period_id`, `teacher_person_id`, `teacher_code`, `person_photo`, 
+		`username`, `password`, `initial_password`, `force_change_password_next_login`, `person_givenName`, `person_sn1`, `person_sn2`, `person_email`, `person_secondary_email`, 
+		`person_official_id`, `teacher_department_id`, `teacher_charge_full`, `teacher_charge_short`, `teacher_charge2_full`, `teacher_charge2_short`, `teacher_charge_sheet_line1`, 
+		`teacher_charge_sheet_line2`, `teacher_charge_sheet_line3`, `teacher_charge_sheet_line4` 
+		FROM (`teacher`) 
+		LEFT JOIN `person` ON `person`.`person_id` = `teacher`.`teacher_person_id` 
+		LEFT JOIN `users` ON `users`.`id` = `teacher`.`teacher_user_id` 
+		WHERE `teacher_academic_period_id` = '5' 
+		ORDER BY `teacher_code` ASC
 		*/
 
-		$this->db->select('teacher_id,users.id as user_id,users.ldap_dn as ldap_dn, teacher_academic_period_id, teacher_person_id, teacher_code,username,password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
+		$this->db->select('teacher_id, teacher_user_id,users.ldap_dn as ldap_dn, teacher_academic_period_id, teacher_person_id, teacher_code,person_photo, username,password,initial_password,force_change_password_next_login,person_givenName,person_sn1,person_sn2,person_email,person_secondary_email,person_official_id, 
 		teacher_department_id, teacher_charge_full, teacher_charge_short, teacher_charge2_full, teacher_charge2_short, teacher_charge_sheet_line1, teacher_charge_sheet_line2, teacher_charge_sheet_line3, teacher_charge_sheet_line4');
 		$this->db->from('teacher');
 		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
-		$this->db->join('users','users.person_id = person.person_id', 'left');
+		$this->db->join('users','users.id = teacher.teacher_user_id', 'left');
 
 		$this->db->where('teacher_academic_period_id',$academic_period_id);
 
 		$this->db->order_by('teacher_code', $orderby);
-		
+
 		$query = $this->db->get();
+
+		//echo $this->db->last_query()."<br/>";
 
 		if ($query->num_rows() > 0){
 			$all_teachers = array();
@@ -383,7 +387,8 @@ class teachers_model  extends CI_Model  {
 				$teacher->id = $row->teacher_id;
 				$teacher->person_id = $row->teacher_person_id;
 				$teacher->code = $row->teacher_code;
-				$teacher->user_id = $row->user_id;
+				$teacher->photo = $row->person_photo;
+				$teacher->user_id = $row->teacher_user_id;
 				$teacher->username = $row->username;
 				$teacher->password = $row->password;
 				$teacher->initial_password = $row->initial_password;
