@@ -192,12 +192,12 @@
    
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
-          <a href="<?php echo base_url('/index.php/curriculum/teacher/read/' . $teacher->id ) ;?>">
+          <a href="<?php echo base_url('/index.php/teachers/index/read/' . $teacher->id ) ;?>">
            <?php echo $teacher->id;?>
-          </a> ( <a href="<?php echo base_url('/index.php/curriculum/teacher/edit/' . $teacher->id ) ;?>">edit</a>)
+          </a> ( <a href="<?php echo base_url('/index.php/teachers/index/read/' . $teacher->id ) ;?>">edit</a>)
      </td>
      <td>
-         <img style="width:75px;" alt="foto alumne" src="<?php echo base_url('/uploads/person_photos/'. $teacher->photo);?>"/ >
+         <img style="width:75px;" alt="<?php echo $teacher->photo;?>" src="<?php echo base_url('/uploads/person_photos/'. $teacher->photo);?>"/ >
      </td>
      <td>
            <?php echo $teacher->code;?>
