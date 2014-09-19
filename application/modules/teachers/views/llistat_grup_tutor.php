@@ -167,6 +167,7 @@
  </thead>
  <tbody>
   <!-- Iteration that shows classroom_groups-->
+  <?php if (is_array($all_classgroups)):?>
   <?php foreach ($all_classgroups as $classroom_group_key => $classroom_group) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td>
@@ -191,6 +192,7 @@
      </td>
    </tr>
   <?php endforeach; ?>
+<?php endif; ?>
  </tbody>
 </table> 
 
