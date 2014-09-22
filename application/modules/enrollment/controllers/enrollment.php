@@ -21,7 +21,8 @@ class enrollment extends skeleton_main {
         //$this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
         $this->config->load('wizard');
-
+        $this->config->load('auth_ldap',true);
+        
          // Load FPDF        
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
         $params = array ('orientation' => 'P', 'unit' => 'mm', 'size' => 'A4', 'font_path' => 'font/');        
@@ -2486,7 +2487,7 @@ function insert_update_user() {
 
         //SYNC DATA TO LDAP
         $active_users_basedn = $this->config->item('active_users_basedn');
-        //echo "active_users_basedn: " . $active_users_basedn;
+        echo "active_users_basedn: " . $active_users_basedn;
         //GET USER DATA FORM DATABASE
         $user_data = new stdClass();
         

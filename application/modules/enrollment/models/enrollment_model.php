@@ -93,6 +93,7 @@ class enrollment_model  extends CI_Model  {
         $this->hosts = $CI->config->item('hosts');
         $this->ports = $CI->config->item('ports');
         $this->basedn = $CI->config->item('basedn');
+        $this->active_users_basedn = $CI->config->item('active_users_basedn');
         $this->account_ou = $CI->config->item('account_ou');
         $this->login_attribute  = $CI->config->item('login_attribute');
         $this->use_ad = $CI->config->item('use_ad');
@@ -373,7 +374,7 @@ function get_group ($group_name) {
 
 		$this->_init_ldap();
 		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
-		$basedn = $this->config->item('active_users_basedn');;
+		$basedn = $this->active_users_basedn;
 		if ($this->_bind()) {
 	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
 	     	$entries = ldap_count_entries($this->ldapconn, $sr);
