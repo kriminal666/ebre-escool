@@ -39,8 +39,9 @@ class enrollment_model  extends CI_Model  {
         if ($basedn=="")     {
             $basedn= $this->active_users_basedn;      
         }
-        echo "base dn : " . $basedn . "\n";
-        echo "Filter : " . $filter . "\n";
+        
+        //echo "base dn : " . $basedn . "\echo";
+        //echo "Filter : " . $filter . "\n";
         if ($this->_bind()) {
             $sr = ldap_search($this->ldapconn, $basedn, $filter);
             $entries = ldap_count_entries($this->ldapconn, $sr);
@@ -83,7 +84,6 @@ class enrollment_model  extends CI_Model  {
 	}
 
 	function _init_ldap() {
-        echo "_init_ldap STARTED ************************************";
         // Load the configuration
         $CI =& get_instance();
 
@@ -111,8 +111,8 @@ class enrollment_model  extends CI_Model  {
         $this->auditlog = $CI->config->item('auditlog');
         $this->member_attribute = $CI->config->item('member_attribute');
 
-        echo "THIS:";
-        var_export($this);
+        //echo "THIS:";
+        //var_export($this);
         
     }
 
@@ -319,7 +319,7 @@ function addLdapUser($user_data,$ldap_passwords=false) {
                 //Calculate user dn using user type
                 //$user_data->dn
             }
-            echo "user_data->dn: " . $user_data->dn;
+            //echo "user_data->dn: " . $user_data->dn;
             if (ldap_add($this->ldapconn, $user_data->dn,$user_data_array) === false){
                 $error = ldap_error($this->ldapconn);
                 $errno = ldap_errno($this->ldapconn);
@@ -382,19 +382,18 @@ function get_group ($group_name) {
 		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
 		$basedn = $this->active_users_basedn;
 		if ($this->_bind()) {
-            echo "get_group 1";
-            echo "basedn: " . $basedn;
+            //echo "basedn: " . $basedn;
 	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
-            echo "get_group 2";
+            
 	     	$entries = ldap_count_entries($this->ldapconn, $sr);
-            echo "entries: " . $entries;
+            //echo "entries: " . $entries;
 	     	//echo "Count entries: " . $entries ."<br/>";
 	     	if ($entries == 1) {
-                echo "get_group 3";
+            
 	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
-                echo "get_group 4";
+            
 	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
-                echo "get_group 5";
+        
 	     		$group = new stdClass();
 	     		$group->dn = $dn;
 	     		$values = ldap_get_values($this->ldapconn, $entryid, "memberUid");

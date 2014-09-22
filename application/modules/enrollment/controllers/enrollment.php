@@ -2235,7 +2235,7 @@ function get_user_data($userid,$user_id_is_username=false) {
 
         $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');
 
-        echo "((((((((((((((((((((((( user_data->basedn_where_insert_new_ldap_user: " . $user_data->basedn_where_insert_new_ldap_user; 
+        //echo "user_data->basedn_where_insert_new_ldap_user: " . $user_data->basedn_where_insert_new_ldap_user; 
 
         $user_data->cn = trim($user_data->person_givenName . " " . $user_data->person_sn1 . " " . $user_data->person_sn2);
         $user_data->sn = trim($user_data->person_sn1 . " " . $user_data->person_sn2);
@@ -2488,15 +2488,8 @@ function insert_update_user() {
     if ($result) {
 
         //SYNC DATA TO LDAP
-        echo "SYNC DATA TO LDAP ********** ";
-        //echo "config:";
-        
-        //var_export($this->config);
-
-        //echo "------- END config:";
-
         $active_users_basedn = $this->config->item('active_users_basedn','auth_ldap');
-        echo "active_users_basedn: " . $active_users_basedn;
+        //echo "active_users_basedn: " . $active_users_basedn;
         //GET USER DATA FORM DATABASE
         $user_data = new stdClass();
         
@@ -2517,7 +2510,7 @@ function insert_update_user() {
         
         $user_data->password = $ldap_password;
         
-        echo "user_data->dn : " . $user_data->dn;
+        //echo "user_data->dn : " . $user_data->dn;
         //echo "user_data dn: " . $user_data->dn;
         $result = $this->enrollment_model->addLdapUser($user_data);
         if (!$result) {
