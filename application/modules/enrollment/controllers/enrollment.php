@@ -2486,7 +2486,8 @@ function insert_update_user() {
     if ($result) {
 
         //SYNC DATA TO LDAP
-        $active_users_basedn = $this->config->item('active_users_basedn');
+        echo "ESBORRAR! ********** ";
+        $active_users_basedn = $this->config->item('active_users_basedn','auth_ldap');
         echo "active_users_basedn: " . $active_users_basedn;
         //GET USER DATA FORM DATABASE
         $user_data = new stdClass();
