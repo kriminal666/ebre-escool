@@ -1426,8 +1426,12 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   existeix = true;
          
                   //hide generated_password
-                  $("input[name$='person_generated_password']").hide();
-                  $("#generated_password_label").hide();
+                  <?php  
+                    $force_new_password_on_every_new_enrollment = $this->config->item('force_new_password_on_every_new_enrollment');
+                    if (!$force_new_password_on_every_new_enrollment) :?>
+                      $("input[name$='person_generated_password']").hide();
+                      $("#generated_password_label").hide();
+                  <?php endif;?>    
 
 
                   $.gritter.add({
@@ -1480,9 +1484,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                     "person_gender":"","person_homePostalAddress":"","postalcode_code":"<?php echo $this->config->item('default_postalcode');?>","person_locality_id":"","username":"",
                     "person_telephoneNumber":"","person_mobile":""}
 
-                    value_to_select= $('#locality_postal_code_' + postalcode).val(); 
-                    $('#person_locality_id').val(value_to_select);
-                    $('#person_locality_id').select2();
+                    if (typeof postalcode !== 'undefined') {
+                        // variable is undefined
+                        value_to_select= $('#locality_postal_code_' + postalcode).val(); 
+                        $('#person_locality_id').val(value_to_select);
+                        $('#person_locality_id').select2();
+                    }
+                    
 
                     /*
                     student_photo = $('#student_photo');
@@ -1676,7 +1684,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
       $(".btn-next").click(function(){
         console.debug("Click on next button");
-        console.debug($("#step-container div.step-pane.active"));
+        //console.debug($("#step-container div.step-pane.active"));
         step = $("#step-container div.step-pane.active").attr("id");        
         console.debug("******************* Step:" + step);
 

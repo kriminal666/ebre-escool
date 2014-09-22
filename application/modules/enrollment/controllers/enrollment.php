@@ -2166,40 +2166,87 @@ for ($i = 1; $i <= $numPages; $i++) {
     
 $pdf->Output($documentName,"D");
 
+}
 
+function get_user_data_by_username($username) {
+    return $this->get_user_data($username,true);
+}
 
+function get_user_data($userid,$user_id_is_username=false) {
 
+    /* Example
+    SELECT id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
+           person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
+           person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
+           person_homePostalAddress, person_photo, person_locality_id, person_telephoneNumber, person_mobile
+    FROM users 
+    INNER JOIN person ON users.person_id = person.person_id
+    WHERE id = 1
+    */
 
+    $this->db->select('id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
+           person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
+           person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
+           person_homePostalAddress, person_photo, person_locality_id,locality_name,postalcode_code, person_telephoneNumber, person_mobile');
+    $this->db->from('users');
+    $this->db->join('person','users.person_id = person.person_id');
+    $this->db->join('locality','locality.locality_id = person.person_locality_id',"left");
+    $this->db->join('postalcode','postalcode.postalcode_localityid = locality.locality_id',"left");
+    if ($user_id_is_username) {
+        $this->db->where('username',$userid);
+    } else {
+        $this->db->where('id',$userid); 
+    }
+    
+    $this->db->limit(1);
 
+    $query = $this->db->get();
 
+    //echo $this->db->last_query();
 
+    $user_data = new stdClass();
+    if ($query->num_rows() == 1){
+        $row = $query->row(); 
 
+        $user_data->id = $row->id;
+        $user_data->person_id = $row->person_id;
+        $user_data->username = $row->username;
+        $user_data->password = $row->password;
+        $user_data->ldap_dn = $row->ldap_dn;
+        $user_data->person_givenName = $row->person_givenName;
+        $user_data->person_sn1 = $row->person_sn1;
+        $user_data->person_sn2 = $row->person_sn2;
 
+        $user_data->photo = $row->person_photo;
+        $user_data->mobile = $row->person_mobile;
+        $user_data->telephoneNumber = $row->person_telephoneNumber;
+        //$user_data->st = $row->st;
+        $user_data->l = $row->locality_name;
+        $user_data->postalCode = $row->postalcode_code;
+        $user_data->dateOfBirth = $row->person_date_of_birth;
+        $user_data->email = $row->person_secondary_email;
+        $user_data->gender = $row->person_gender;
+        $user_data->homePostalAddress = $row->person_homePostalAddress;
+        $user_data->irisPersonalUniqueID = $row->person_official_id;
+        $user_data->irisPersonalUniqueIDType = $row->person_official_id_type;
 
+        $user_data->user_type = 3;
 
+        $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');
 
+        $user_data->cn = trim($user_data->person_givenName . " " . $user_data->person_sn1 . " " . $user_data->person_sn2);
+        $user_data->sn = trim($user_data->person_sn1 . " " . $user_data->person_sn2);
+        $user_data->dn = "cn=" . $user_data->cn . ",". $user_data->basedn_where_insert_new_ldap_user;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return $user_data;
+    }   
+    else
+        return false;
 
 
 }
 
-function insert_update_user()   {
+function insert_update_user() {
 
     $current_userid = $this->session->userdata("user_id");
     $student = array();
@@ -2220,6 +2267,7 @@ function insert_update_user()   {
 
     $student_generated_password = $_POST['student_generated_password'];
     $student_password = $_POST['student_password'];
+    $student_verify_password = $_POST['student_verify_password'];    
     $student_verify_password = $_POST['student_verify_password'];    
     
     $student['person_official_id'] = $_POST['student_official_id'];
@@ -2289,11 +2337,13 @@ function insert_update_user()   {
         }
     }
 
+    $ldap_password="";
     
     if($action=='update'){
-
+        
+        // *********** UPDATE USER
         $updated_password="";
-        //ONLY UPDATE PASSWORD IF CHANGED
+        //ONLY UPDATE PASSWORD IF CHANGED OF IF CONFIGURATION FORCE NEW PASSWORD FOR NEW ENROLLMENTS
         if ($student_password != "") {
             if ($student_password  == $student_verify_password ) {
                 $updated_password=$student_password;
@@ -2301,38 +2351,62 @@ function insert_update_user()   {
                 echo "Passwords doesn't match\n";
                 return false;
             }
+        } else {
+            $force_new_password_on_every_new_enrollment = $this->config->item('force_new_password_on_every_new_enrollment');
+            if ($force_new_password_on_every_new_enrollment == true ) {
+                if ($student_generated_password  != "" ) {
+                    $updated_password=$student_generated_password;
+                } else {
+                    echo "Password no especified!\n";
+                    return false;
+                }    
+            }
         }
-        
 
         //Username not changes if action is update
         //FIRST UPDATE TABLE PERSON
         if ($person_id != -1 ) {
+            
             $result = $this->enrollment_model->update_student_data($person_id, $student);    
-            if ($result) { //UPDATE Person table is correct
+            if ($result) { //UPDATE user table is correct
                 //Check if password is set. Then update users table
-                if ($student_password != "") {
-                    $user['password'] = md5($updated_password);
-
-                    //Last user to modify
-                    $result = $this->enrollment_model->update_user_data($user['username'], $user);  
-
-                    if (!result) {
-                        echo "Error updating users table!";
-                        return false;
+                $new_calculated_md5_password="";
+                if ($student_password != "") {                    
+                    $new_calculated_md5_password = md5($student_password);
+                    $ldap_password = $student_password;
+                } else {
+                    if ($student_generated_password!=""){
+                        $new_calculated_md5_password = md5($student_generated_password);
+                        $ldap_password = $student_generated_password;
+                        $user['initial_password'] = $student_generated_password;
+                        $user['force_change_password_next_login'] = "y";    
                     } else {
-                        $rows_changed = $this->db->affected_rows();
+                        echo "Error. No password specified!";
+                        return false;
+                    }                    
+                }
 
-                        if ($rows_changed == 1) {
-                            echo "User " . $user['username'] . " updated correctly!";    
-                        }
-                        elseif ($rows_changed == 0) {
-                            echo "User " . $user['username'] . " updated correctly. Nothing to change";    
-                        } else {
-                            echo "ERROR in number of affected rows updating the user!";
-                            return false;
-                        }
-                        
-                        return $result;
+                $user['password'] = $new_calculated_md5_password;
+                
+                $user['last_modification_user'] = $this->session->userdata('user_id');
+
+                //Last user to modify
+                $result = $this->enrollment_model->update_user_data($user['username'], $user);  
+
+                if (!$result) {
+                    echo "Error updating users table!";
+                    return false;
+                } else {
+                    $rows_changed = $this->db->affected_rows();
+
+                    if ($rows_changed == 1) {
+                        echo "User " . $user['username'] . " updated correctly!";    
+                    }
+                    elseif ($rows_changed == 0) {
+                        echo "User " . $user['username'] . " updated correctly. Nothing to change";    
+                    } else {
+                        echo "ERROR in number of affected rows updating the user!";
+                        return false;
                     }
                 }
             }
@@ -2342,7 +2416,7 @@ function insert_update_user()   {
         }
         
     } else {
-
+        // *********** CREATE NEW USER
 
         $updated_password="";
 
@@ -2382,7 +2456,14 @@ function insert_update_user()   {
 
         $result = $this->enrollment_model->insert_student_data($student);
         if($result){
-            $user['password'] = md5($updated_password);
+            $calculated_md5_password = md5($updated_password);
+            $ldap_password = $updated_password;
+            $user['password'] = $calculated_md5_password;
+            //NEW USER: then set initial password and force to change
+            $user['initial_password'] = $updated_password;
+            $user['force_change_password_next_login'] = "y";           
+            $user['creation_user'] = $this->session->userdata('user_id');
+            $user['last_modification_user'] = $this->session->userdata('user_id');
             $user['person_id'] = $result;
             $user['created_on'] = $date;
             $user['active'] = 1;
@@ -2401,9 +2482,47 @@ function insert_update_user()   {
         }
     }
 
-    return $result;
+    if ($result) {
 
+        //SYNC DATA TO LDAP
+        $active_users_basedn = $this->config->item('active_users_basedn');
+        //echo "active_users_basedn: " . $active_users_basedn;
+        //GET USER DATA FORM DATABASE
+        $user_data = new stdClass();
+        
+        $user_data = $this->get_user_data_by_username($user['username']);
+        //echo "user name: " . $user_data->username;
+        $user_exists=$this->enrollment_model->user_exists($user_data->username,$active_users_basedn);
+
+        if ($user_exists) {
+            if ($user_exists === $user_data->dn) {
+                $this->enrollment_model->deleteLdapUser($user_data->dn);
+            } else {
+                //Debug
+                //echo "ERROR! DNs not match!<br/>";
+                $this->enrollment_model->deleteLdapUser($user_exists);
+                $user_data->dn = $user_exists;
+            }
+        } 
+        
+        $user_data->password = $ldap_password;
+        
+        //echo "user_data dn: " . $user_data->dn;
+        $result = $this->enrollment_model->addLdapUser($user_data);
+        if (!$result) {
+            return false;
+        }
+        $this->enrollment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+
+        echo "User synced Ok to Ldap\n";
+
+        return $result;
+    } else {
+        echo "Error creating or updating user data";
+        return false;
+    }
+    }
 }
 
 
-}
+

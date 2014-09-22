@@ -1,4 +1,7 @@
 <?php
+
+require_once '/usr/share/php/Crypt/CHAP.php';
+
 /**
  * Attendance_model Model
  *
@@ -26,6 +29,407 @@ class enrollment_model  extends CI_Model  {
 		} 	
 		return false;
 	}
+
+
+	function user_exists($uid,$basedn) {
+        $this->_init_ldap();
+        $filter = '(uid='.$uid.')';             
+        if ($this->_bind()) {
+            $sr = ldap_search($this->ldapconn, $basedn, $filter);
+            $entries = ldap_count_entries($this->ldapconn, $sr);
+            //echo "Count entries: " . $entries ."<br/>";
+            if ($entries == 1) {
+                $entryid=ldap_first_entry($this->ldapconn, $sr);
+                $dn = ldap_get_dn($this->ldapconn, $entryid);
+                ldap_close($this->ldapconn);
+                return $dn;
+            } else if ($entries > 1) {
+                echo "Error. Multiple uids found in Ldap!";
+                die();
+            }
+
+            ldap_close($this->ldapconn);
+        }
+
+        return false;
+    }
+
+
+	function deleteLdapUser($user_dn) {
+
+	    $this->_init_ldap();
+
+	    if ($this->_bind()) {
+	        if (ldap_delete($this->ldapconn,$user_dn) === false){
+	            $error = ldap_error($this->ldapconn);
+	            $errno = ldap_errno($this->ldapconn);
+	            show_error("Ldap error deleting user " . $user_dn  . " : " . $errno . " - " . $error);
+	            ldap_close($this->ldapconn);
+	            return $errno;
+	        } else {
+	            //echo "Used " . $user_dn . " deleted ok!<br/>" . $user_dn;
+	        }
+
+	        ldap_close($this->ldapconn);
+	    }
+
+	}
+
+	function _init_ldap() {
+        // Load the configuration
+        $CI =& get_instance();
+
+        $CI->load->config('auth_ldap'); 
+
+        // Verify that the LDAP extension has been loaded/built-in
+        // No sense continuing if we can't
+        if (! function_exists('ldap_connect')) {
+            show_error(lang('php_ldap_notpresent'));
+            log_message('error', lang('php_ldap_notpresent_log'));
+        }
+
+        $this->hosts = $CI->config->item('hosts');
+        $this->ports = $CI->config->item('ports');
+        $this->basedn = $CI->config->item('basedn');
+        $this->account_ou = $CI->config->item('account_ou');
+        $this->login_attribute  = $CI->config->item('login_attribute');
+        $this->use_ad = $CI->config->item('use_ad');
+        $this->ad_domain = $CI->config->item('ad_domain');
+        $this->proxy_user = $CI->config->item('proxy_user');
+        $this->proxy_pass = $CI->config->item('proxy_pass');
+        $this->roles = $CI->config->item('roles');
+        $this->auditlog = $CI->config->item('auditlog');
+        $this->member_attribute = $CI->config->item('member_attribute');
+        
+    }
+
+	function _bind() {        
+	    //Connect
+	    foreach($this->hosts as $host) {
+	        $this->ldapconn = ldap_connect($host);
+	        if($this->ldapconn) {
+	           break;
+	        }else {
+	            log_message('info', lang('error_connecting_to'). ' ' .$uri);
+	        }
+	    }
+	    
+	    // At this point, $this->ldapconn should be set.  If not... DOOM!
+	    if(! $this->ldapconn) {
+	        log_message('error', lang('could_not_connect_to_ldap'));
+	        show_error(lang('error_connecting_to_ldap'));
+	    }
+
+	   
+	    // These to ldap_set_options are needed for binding to AD properly
+	    // They should also work with any modern LDAP service.
+	    ldap_set_option($this->ldapconn, LDAP_OPT_REFERRALS, 0);
+	    ldap_set_option($this->ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	    
+	    // Find the DN of the user we are binding as
+	    // If proxy_user and proxy_pass are set, use those, else bind anonymously
+	    if($this->proxy_user) {
+	        $bind = @ldap_bind($this->ldapconn, $this->proxy_user, $this->proxy_pass);
+	    }else {
+	        $bind = @ldap_bind($this->ldapconn);
+	    }
+
+	    if(!$bind){
+	        log_message('error', lang('unable_anonymous'));
+	        show_error(lang('unable_bind'));
+	        return false;
+	    }   
+	    return true;
+	}
+
+
+
+
+
+
+
+function addLdapUser($user_data,$ldap_passwords=false) {
+        $CI =& get_instance();
+
+        $CI->load->config('samba');
+        
+        $this->_init_ldap();
+    
+        if ($this->_bind()) {
+            // Preparar los datos
+            $user_data_array = array();
+
+            $user_data_array["objectClass"][7]="extensibleObject";
+            $user_data_array["objectClass"][6]="inetOrgPerson";
+            $user_data_array["objectClass"][5]="irisPerson";
+            $user_data_array["objectClass"][4]="sambaSAMAccount";
+            $user_data_array["objectClass"][3]="shadowAccount";
+            $user_data_array["objectClass"][2]="posixAccount";
+            $user_data_array["objectClass"][1]="person";
+            $user_data_array["objectClass"][0]="top";
+            
+            $user_data_array["cn"]=$user_data->cn;
+            
+            if ($user_data->sn != "") {
+                $user_data_array["sn"]=$user_data->sn;
+            }
+            if ($user_data->person_sn1 != "") {
+                $user_data_array["sn1"]=$user_data->person_sn1;
+            }
+
+            if ($user_data->person_sn2 != "") {
+                $user_data_array["sn2"]=$user_data->person_sn2;
+            }
+            if ($user_data->person_givenName != "") {
+                $user_data_array["givenName"]=$user_data->person_givenName;
+            }
+
+            $user_data_array["uid"]=$user_data->username;
+
+            if ($user_data->mobile != "") {
+                $user_data_array["mobile"]=$user_data->mobile;
+            }
+            if ($user_data->telephoneNumber != "") {
+                $user_data_array["homePhone"]=$user_data->telephoneNumber;
+            }
+            
+            //$user_data_array["st"]=$user_data->st;
+            if ($user_data->l != null && $user_data->l !="") {
+                $user_data_array["l"]=$user_data->l;    
+            }
+            if ($user_data->postalCode != null && $user_data->postalCode !="") {
+                $user_data_array["postalCode"]=$user_data->postalCode;  
+            }           
+            
+            if ($user_data->dateOfBirth != "") {
+                $user_data_array["dateOfBirth"]=$user_data->dateOfBirth;
+            }
+            if ($user_data->email != "") {
+                $user_data_array["email"]=$user_data->email;
+            }
+            if ($user_data->gender != "") { 
+                $user_data_array["gender"]=$user_data->gender;
+            }
+            
+            if ($user_data->homePostalAddress != "") {
+                $user_data_array["homePostalAddress"]=$user_data->homePostalAddress;
+            }
+            
+            $user_data_array["irisPersonalUniqueID"]=$user_data->irisPersonalUniqueID;
+            
+            if ($user_data->irisPersonalUniqueIDType != "") {
+                $user_data_array["irisPersonalUniqueIDType"]=$user_data->irisPersonalUniqueIDType;
+            }
+
+            //TODO: PHOTO
+            //$user_data_array["gender"]=$user_data->gender;
+        
+            if(class_exists('Imagick')){
+                $photo_path = "/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo;
+                //echo $photo_path . "\n";
+                if ($user_data->photo != ""){
+                    if (file_exists($photo_path)) {
+                        $im = new Imagick("/usr/share/ebre-escool/uploads/person_photos/" . $user_data->photo);
+                        $im->setImageOpacity(1.0);
+                        //$im->resizeImage(147,200,Imagick::FILTER_UNDEFINED,0.5,TRUE);
+                        //$im->setCompressionQuality(90);
+                        $im->setImageFormat('jpeg');
+                        $user_data_array['jpegphoto'] = $im->getImageBlob();
+                    }   
+                }
+                
+            } else {
+                echo "Error: No Imagick class found<br/>";
+            }
+                        
+            $uidnumber = 1000 + (int )$user_data->id;
+            $user_data_array["uidnumber"]= $uidnumber;
+
+            if ( $ldap_passwords == false) {
+                $user_data_array["userpassword"]="{MD5}".base64_encode(pack("H*",md5($user_data->password)));
+            } else {
+                $user_data_array["userpassword"]=$ldap_passwords->userPassword;
+            }
+
+            $user_data_array["shadowLastChange"]= floor(time()/86400);
+
+            //TODO: posix config file!
+            $user_data_array["loginShell"]="/bin/bash";
+
+            $user_data_array["gidnumber"]=$CI->config->item('samba_newusers_gidnumber');
+            $user_data_array["homedirectory"]= $CI->config->item('samba_homes_basepath').$user_data->username;
+            $user_data_array["sambaSID"]= $CI->config->item('samba_SID') . ($uidnumber*2);
+            $user_data_array["sambaDomainName"] = $CI->config->item('samba_domainName');
+
+            if (isset($user_data->sambaLogonScript)) {
+                $user_data_array["sambaLogonScript"]=$user_data->sambaLogonScript;
+            } else {
+                //Assign sambaLogonScript depending on user type
+                switch ($user_data->user_type) {
+                    case 1:                                         //TEACHER
+                        //TODO: at this time teacher are not touched
+                        $user_data_array["sambaLogonScript"]=$CI->config->item('samba_teacher_logonScript');
+                        break;
+                    case 2:                                         //EMPLOYEE
+                        $user_data_array["sambaLogonScript"]=$CI->config->item('samba_default_logonScript');
+                        break;
+                    case 3:                                         //STUDENT
+                        $user_data_array["sambaLogonScript"]=$CI->config->item('samba_student_logonScript');
+                        break;    
+                    default:
+                        $user_data_array["sambaLogonScript"]=$CI->config->item('samba_default_logonScript');
+                        break;
+                }
+                
+            }
+
+            $user_data_array["sambaHomeDrive"]=$CI->config->item('samba_homeDrive');
+            $user_data_array["sambaHomePath"]= $CI->config->item('samba_homePath') . $user_data->username;
+            $user_data_array["sambaAcctFlags"]=$CI->config->item('samba_acctFlags');
+            $user_data_array["sambaBadPasswordCount"]=$CI->config->item('samba_badPasswordCount');
+            $user_data_array["sambaBadPasswordTime"]=$CI->config->item('samba_badPasswordTime');
+            $user_data_array["sambaMungedDial"]=$CI->config->item('samba_mungedDial');
+            $user_data_array["sambaPrimaryGroupSID"]=$CI->config->item('samba_primaryGroupSID');
+
+            //TODO. Calculate Windows Passwords         
+            $cr = new Crypt_CHAP_MSv1();        
+
+            if ( $ldap_passwords == false) {
+                $user_data_array["sambaNTPassword"]=strtoupper(bin2hex($cr->ntPasswordHash($user_data->password)));
+                $user_data_array["sambaLMPassword"]=strtoupper(bin2hex($cr->lmPasswordHash($user_data->password)));         
+            } else {
+                $user_data_array["sambaNTPassword"]=$ldap_passwords->sambaNTPassword;
+                $user_data_array["sambaLMPassword"]=$ldap_passwords->sambaLMPassword;       
+            }
+            
+            
+            
+            //echo "user dn: " . $user_data->dn . "<br/>";
+            //echo "user_data_array: " . var_dump($user_data_array) . "<br/>";
+
+            if ($user_data->dn == "") {
+                //Calculate user dn using user type
+                //$user_data->dn
+            }
+            if (ldap_add($this->ldapconn, $user_data->dn,$user_data_array) === false){
+                $error = ldap_error($this->ldapconn);
+                $errno = ldap_errno($this->ldapconn);
+                show_error("Ldap error adding user: " . $errno . " - " . $error);
+                ldap_close($this->ldapconn);
+                return $errno;
+            }
+
+            //Add user to groups depending on role:
+            // Roles defined at file third_party/skeleton/application/config/skeleton_auth.php:
+            /*
+                $config['roles'] = array(
+                1 => 'intranet_readonly',
+                3 => 'intranet_admin',
+                5 => 'intranet_dataentry',
+                7 => 'intranet_organizationalunit',
+                9 => 'intranet_teacher',
+                11 => 'intranet_student'
+                );
+            */
+            // teacher: rol intranet_teacher cn=intranet_teacher,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
+            // student: intranet_student --> cn=intranet_student,ou=groups,ou=maninfo,ou=Personal,ou=All,dc=iesebre,dc=com
+            $group_to_search_dn = 'intranet_student';
+            if ($group_to_search_dn!=null) {
+                //Search group dn
+                $group = $this->get_group($group_to_search_dn);
+
+                if ($group->dn) {
+                    if (!in_array($user_data->username, $group->users)) {
+                        $this->add_uid_to_group($group->dn,$user_data->username);
+                    }
+                }
+            }
+            ldap_close($this->ldapconn);
+            return true;
+
+        }
+        
+        return false;
+    }
+
+function add_uid_to_group($group_dn,$username) {
+
+		$this->_init_ldap();
+		if ($this->_bind()) {
+
+			// first check if username is already in group:
+			$entry["memberUid"]=$username;
+			$result = ldap_mod_add ( $this->ldapconn , $group_dn , $entry );
+			return $result;
+		}
+
+		return false;
+
+	}    
+
+function get_group ($group_name) {
+
+		$this->_init_ldap();
+		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
+		$basedn = $this->config->item('active_users_basedn');;
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Count entries: " . $entries ."<br/>";
+	     	if ($entries == 1) {
+	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+	     		$group = new stdClass();
+	     		$group->dn = $dn;
+	     		$values = ldap_get_values($this->ldapconn, $entryid, "memberUid");
+	     		$group->users = $values;
+
+	     		return $group;
+	     	} else if ($entries > 1) {
+	     		echo "Error. Multiple uids found in Ldap!";
+	     		die();
+	     	} else if ($entries == 0) {
+	     		return false;
+	     	}
+		}
+		return false;
+	}    
+
+function update_user_ldap_dn($username, $ldap_dn) {
+
+        /*Example SQL
+        UPDATE `users` 
+        SET `ldap_dn`= "new_ldap_dn" 
+        WHERE `username`="username"
+        */
+
+        $data = array(
+               'ldap_dn' => $ldap_dn
+            );
+
+        $this->db->where('username', $username);
+        $this->db->update('users', $data);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/* Enrollment Wizard */
 
