@@ -381,7 +381,7 @@ class teachers_model  extends CI_Model  {
 			teacher_academic_periods_charge2_short, teacher_academic_periods_charge_sheet_line1, teacher_academic_periods_charge_sheet_line2, 
 			teacher_academic_periods_charge_sheet_line3, teacher_academic_periods_charge_sheet_line4');
 		$this->db->from('teacher');
-		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
+		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id','left');
 		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
 		$this->db->join('users','users.id = teacher.teacher_user_id', 'left');
 		$this->db->join('department','department.department_id = teacher_academic_periods.teacher_academic_periods_department_id', 'left');
