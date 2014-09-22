@@ -2514,7 +2514,6 @@ function insert_update_user() {
         }
         $this->enrollment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
 
-        echo "User synced Ok to Ldap\n";
 
         return $result;
     } else {
