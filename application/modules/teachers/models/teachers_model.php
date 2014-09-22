@@ -292,12 +292,12 @@ class teachers_model  extends CI_Model  {
 		$this->db->join('shift','shift.shift_id = classroom_group_academic_periods.classroom_group_academic_periods_shift', 'left');
 		$this->db->join('location','location.location_id = classroom_group_academic_periods.classroom_group_academic_periods_location', 'left');
 		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
-		$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
+		//$this->db->where('teacher_academic_periods_academic_period_id',$academic_period_id);
 
 		$this->db->order_by('studies_name', $orderby);
 		
 		$query = $this->db->get();
-		//echo $this->db->last_query()."<br/>";
+		echo $this->db->last_query()."<br/>";
 
 
 		if ($query->num_rows() > 0){
