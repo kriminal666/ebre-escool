@@ -36,13 +36,22 @@ class ebre_escool_auth_model  extends CI_Model  {
 
     } 
 
-    function is_user_a_teacher ($person_id) {
+    function is_user_a_teacher ($person_id,$academic_period_id = null) {
+
+      if ($academic_period_id == null) {
+        $academic_period_id = $this->get_current_academic_period_id();
+      }
 
       $this->db->select('teacher_id');
       $this->db->from('teacher');
+      $this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');  
+      $this->db->where('teacher_academic_periods_academic_period_id', $academic_period_id );
+
+
       $this->db->where('teacher.teacher_person_id',$person_id);
 
       $query = $this->db->get();
+      //echo $this->db->last_query()."<br/>";
 
       if ($query->num_rows() > 0) {
         return true;
@@ -113,7 +122,11 @@ class ebre_escool_auth_model  extends CI_Model  {
         return false;
       }
 
+      //echo "person_id: " . $person_id;
+
       $is_user_a_teacher = $this->is_user_a_teacher($person_id);
+
+      //echo "is user a teacher: " . $is_user_a_teacher . "<br/>";
 
       $academic_period_id = $this->get_current_academic_period_id();
 

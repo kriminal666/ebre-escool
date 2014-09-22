@@ -38,6 +38,7 @@ class ebre_escool_auth extends Auth {
         }
         
         //Set session data:
+        //var_export($sessiondata);
         $this->session->set_userdata($sessiondata);
         //Check if user have to change password
         $force_change_password = $this->ebre_escool_auth_model->is_set_force_change_password($username); 
@@ -49,7 +50,6 @@ class ebre_escool_auth extends Auth {
                );
             $this->session->set_userdata($sessiondata_change_password);
             redirect("/managment/change_password", 'refresh');
-            die;
         }
 
         
