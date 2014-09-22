@@ -146,11 +146,6 @@ class enrollment_model  extends CI_Model  {
 	}
 
 
-
-
-
-
-
 function addLdapUser($user_data,$ldap_passwords=false) {
         $CI =& get_instance();
 
@@ -377,12 +372,19 @@ function get_group ($group_name) {
 		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
 		$basedn = $this->active_users_basedn;
 		if ($this->_bind()) {
+            echo "get_group 1";
+            echo "basedn: " . $basedn;
 	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+            echo "get_group 2";
 	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+            echo "entries: " . $entries;
 	     	//echo "Count entries: " . $entries ."<br/>";
 	     	if ($entries == 1) {
+                echo "get_group 3";
 	     		$entryid=ldap_first_entry($this->ldapconn, $sr);
+                echo "get_group 4";
 	     		$dn = ldap_get_dn($this->ldapconn, $entryid);
+                echo "get_group 5";
 	     		$group = new stdClass();
 	     		$group->dn = $dn;
 	     		$values = ldap_get_values($this->ldapconn, $entryid, "memberUid");
