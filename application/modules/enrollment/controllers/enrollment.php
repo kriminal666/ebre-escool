@@ -21,7 +21,7 @@ class enrollment extends skeleton_main {
         //$this->load->library('ebre_escool_ldap');
         //$this->config->load('managment');        
         $this->config->load('wizard');
-        $this->config->load('auth_ldap',true);
+        $this->config->load('auth_ldap');
         
          // Load FPDF        
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
@@ -2233,9 +2233,9 @@ function get_user_data($userid,$user_id_is_username=false) {
 
         $user_data->user_type = 3;
 
-        $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn','auth_ldap');
+        $user_data->basedn_where_insert_new_ldap_user = $this->config->item('active_students_basedn');
 
-        echo "user_data->basedn_where_insert_new_ldap_user: " . $user_data->basedn_where_insert_new_ldap_user; 
+        echo "((((((((((((((((((((((( user_data->basedn_where_insert_new_ldap_user: " . $user_data->basedn_where_insert_new_ldap_user; 
 
         $user_data->cn = trim($user_data->person_givenName . " " . $user_data->person_sn1 . " " . $user_data->person_sn2);
         $user_data->sn = trim($user_data->person_sn1 . " " . $user_data->person_sn2);
@@ -2488,7 +2488,13 @@ function insert_update_user() {
     if ($result) {
 
         //SYNC DATA TO LDAP
-        echo "ESBORRAR! ********** ";
+        echo "SYNC DATA TO LDAP ********** ";
+        //echo "config:";
+        
+        //var_export($this->config);
+
+        //echo "------- END config:";
+
         $active_users_basedn = $this->config->item('active_users_basedn','auth_ldap');
         echo "active_users_basedn: " . $active_users_basedn;
         //GET USER DATA FORM DATABASE
