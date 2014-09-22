@@ -34,6 +34,8 @@ class enrollment_model  extends CI_Model  {
 	function user_exists($uid,$basedn) {
         $this->_init_ldap();
         $filter = '(uid='.$uid.')';             
+        echo "base dn : " . $basedn . "\n";
+        echo "Filter : " . $filter . "\n";
         if ($this->_bind()) {
             $sr = ldap_search($this->ldapconn, $basedn, $filter);
             $entries = ldap_count_entries($this->ldapconn, $sr);
