@@ -314,6 +314,7 @@ function addLdapUser($user_data,$ldap_passwords=false) {
                 //Calculate user dn using user type
                 //$user_data->dn
             }
+            echo "user_data->dn: " . $user_data->dn;
             if (ldap_add($this->ldapconn, $user_data->dn,$user_data_array) === false){
                 $error = ldap_error($this->ldapconn);
                 $errno = ldap_errno($this->ldapconn);
