@@ -17,6 +17,8 @@ class enrollment_model  extends CI_Model  {
     {
         parent::__construct();
         $this->load->database();
+
+
     }
     
     function get_primary_key($table_name) {
@@ -78,10 +80,12 @@ class enrollment_model  extends CI_Model  {
 	}
 
 	function _init_ldap() {
+        echo "_init_ldap STARTED ************************************";
         // Load the configuration
         $CI =& get_instance();
 
         $CI->load->config('auth_ldap'); 
+
 
         // Verify that the LDAP extension has been loaded/built-in
         // No sense continuing if we can't
@@ -103,6 +107,9 @@ class enrollment_model  extends CI_Model  {
         $this->roles = $CI->config->item('roles');
         $this->auditlog = $CI->config->item('auditlog');
         $this->member_attribute = $CI->config->item('member_attribute');
+
+        echo "THIS:";
+        var_export($this);
         
     }
 
