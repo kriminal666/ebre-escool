@@ -1050,27 +1050,31 @@ class managment_model  extends CI_Model  {
 		}
 
 		/*
-		SELECT enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName, enrollment_study_id, studies.studies_shortname,
-		studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
-		classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
-		enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate 
-		FROM enrollment 
-		LEFT JOIN person ON person.person_id = enrollment.enrollment_personid
-		LEFT JOIN studies ON studies.studies_id = enrollment.enrollment_study_id
-		LEFT JOIN studies_law ON studies_law.studies_law_id = studies. studies_studies_law_id
-		LEFT JOIN course ON course.course_id = enrollment.enrollment_course_id
-		LEFT JOIN classroom_group ON classroom_group.classroom_group_id = enrollment.enrollment_group_id
-		WHERE enrollment_periodid="2014-15"
-		ORDER BY enrollment_entryDate DESC 
+		SELECT `enrollment_id`, `enrollment_periodid`, `enrollment_personid`, `person_sn1`, `person_sn2`, `person_givenName`, `person_official_id`, 
+		`users`.`id`, `users`.`username`, `users`.`password`, `users`.`initial_password`, `users`.`force_change_password_next_login`,users.ldap_dn, `enrollment_study_id`, 
+		`studies`.`studies_shortname`, `studies`.`studies_name`, `studies_studies_law_id`, `studies_law_shortname`, `studies_law_name`, `enrollment_course_id`, 
+		`course_shortname`, `course_name`, `enrollment_group_id`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name`, `enrollment_entryDate`, `
+		enrollment_last_update`, `enrollment_creationUserId`, `enrollment_lastupdateUserId`, `enrollment_markedForDeletion`, `enrollment_markedForDeletionDate` 
+		FROM (`enrollment`) 
+		LEFT JOIN `person` ON `person`.`person_id` = `enrollment`.`enrollment_personid` 
+		LEFT JOIN `users` ON `users`.`person_id` = `person`.`person_id` 
+		LEFT JOIN `studies` ON `studies`.`studies_id` = `enrollment`.`enrollment_study_id` 
+		LEFT JOIN `studies_law` ON `studies_law`.`studies_law_id` = `studies`.`studies_studies_law_id` 
+		LEFT JOIN `course` ON `course`.`course_id` = `enrollment`.`enrollment_course_id` 
+		LEFT JOIN `classroom_group` ON `classroom_group`.`classroom_group_id` = `enrollment`.`enrollment_group_id` 
+		WHERE `enrollment_periodid` = '2014-15' 
+		ORDER BY `enrollment_entryDate` DESC 
 		*/
 
 		//enrollments
-		$this->db->select('enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName,person_official_id, enrollment_study_id, studies.studies_shortname,
+		$this->db->select('enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName,person_official_id,
+		    users.id,users.username, users.password, users.initial_password, users.force_change_password_next_login, users.ldap_dn, enrollment_study_id, studies.studies_shortname,
 			studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
 			classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
 			enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate');
 		$this->db->from('enrollment');
 		$this->db->join('person','person.person_id = enrollment.enrollment_personid','left');	
+		$this->db->join('users','users.person_id = person.person_id','left');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id','left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id','left');
 		$this->db->join('course','course.course_id = enrollment.enrollment_course_id','left');
@@ -1081,6 +1085,7 @@ class managment_model  extends CI_Model  {
 
 
 		$query = $this->db->get();
+        //echo $this->db->last_query();
 
 		$all_enrollments = array();
 		if ($query->num_rows() > 0){
@@ -1095,6 +1100,16 @@ class managment_model  extends CI_Model  {
 				$enrollment->person_sn2 = $row->person_sn2;
 				$enrollment->person_givenName = $row->person_givenName;
 				$enrollment->person_official_id = $row->person_official_id;
+
+				$enrollment->user_id = $row->id;
+				$enrollment->username = $row->username;
+				$enrollment->password = $row->password;
+				$enrollment->initial_password = $row->initial_password;
+				$enrollment->md5_initial_password = md5($row->initial_password);
+				$enrollment->ldap_dn = $row->ldap_dn;
+				
+				$enrollment->force_change_password_next_login = $row->force_change_password_next_login;
+
 				$enrollment->study_id = $row->enrollment_study_id;
 				$enrollment->studies_shortname = $row->studies_shortname;
 				$enrollment->studies_name = $row->studies_name;

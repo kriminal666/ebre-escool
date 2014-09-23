@@ -273,4 +273,9 @@ $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_ent
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_last_update']="Última modificació";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_creationUserId']="Usuari creació";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_lastupdateUserId']="Usuari última modificació";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_user']="Usuari";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_password']="Paraula de pas";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_initial_password']="Paraula de pas inicial";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_force_change_password']="Ha de canviar password?";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_ldap_dn']="Ldap DN";
 

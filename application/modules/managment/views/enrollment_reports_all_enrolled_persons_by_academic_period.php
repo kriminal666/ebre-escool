@@ -140,7 +140,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_enrollments">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="10" style="text-align: center;"> <h4>
+    <td colspan="15" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/studies') ;?>">
         <?php echo $enrollment_reports_all_enrolled_persons_by_academic_period_title?> Període acadèmic: <span id="academic_period_text">
       </a>
@@ -151,6 +151,11 @@
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person_official_id')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_user')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_password')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_initial_password')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_force_change_password')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_ldap_dn')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_course')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_classroom_group')?></th>
@@ -166,9 +171,14 @@
   <!-- Iteration that shows study-->
   <?php foreach ($all_enrollments as $enrollment_key => $enrollment) : ?>
    <tr>
-    <td><?php echo $enrollment->id;?></td>
-    <td><?php echo $enrollment->person_id . " " . $enrollment->person_sn1 . " " . $enrollment->person_sn2 . ", " . $enrollment->person_givenName;?></td>
+    <td><a href="<?php echo base_url('/index.php/enrollment/enrollment/index/read/' . $enrollment->id);?>"><?php echo $enrollment->id;?></a> ( <a href="<?php echo base_url('/index.php/enrollment/enrollment/index/edit/' . $enrollment->id);?>">edit</a>)</td>
+    <td><a href="<?php echo base_url('/index.php/persons/index/read/' . $enrollment->person_id);?>"> <?php echo $enrollment->person_sn1 . " " . $enrollment->person_sn2 . ", " . $enrollment->person_givenName;?></a> ( <a href="<?php echo base_url('/index.php/persons/index/edit/' . $enrollment->person_id);?>"><?php echo $enrollment->person_id;?></a>) </td>
     <td><?php echo $enrollment->person_official_id;?></td>
+    <td><a href="<?php echo base_url('/index.php/users/index/read/' . $enrollment->user_id);?>"><?php echo $enrollment->username;?></a> ( <a href="<?php echo base_url('/index.php/users/index/edit/' . $enrollment->user_id);?>"><?php echo $enrollment->user_id;?></a>)</td>
+    <td><?php echo $enrollment->password;?></td>
+    <td><span title="<?php echo $enrollment->md5_initial_password;?>"><?php echo $enrollment->initial_password;?></span></td>
+    <td><?php echo $enrollment->force_change_password_next_login;?></td>
+    <td><?php echo $enrollment->ldap_dn;?></td>
     <td><?php echo $enrollment->study_id . " " . $enrollment->studies_shortname . " " . $enrollment->studies_name . " " .   $enrollment->studies_studies_law_id . " " .   
     $enrollment->studies_law_shortname . "" . $enrollment->studies_law_name  ?></td>
     <td><?php echo $enrollment->enrollment_course_id . " " . $enrollment->course_shortname  . " " .  $enrollment->course_name;?></td>
