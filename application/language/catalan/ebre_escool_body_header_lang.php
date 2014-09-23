@@ -22,6 +22,7 @@
 $lang['Welcome']   = 'Benvingut/da,';
 $lang['configuration']   = 'Configuració';
 $lang['change_password']   = 'Canvi password';
+$lang['create_initial_password']   = 'Crear password inicial';
 $lang['profile']   = 'Perfil';
 $lang['Exit']   = 'Sortir';
 

@@ -896,11 +896,76 @@ class managment_model  extends CI_Model  {
 
 	}
 
+	function create_initial_password($username,$new_password) {
+
+		//GET USER DATA FORM DATABASE
+		$user_data = new stdClass();
+
+		$user_data = $this->get_user_data_by_username($username);
+
+		if ($user_data == false) {
+			return -2;
+		}		
+		
+		//echo "user_data:\n" ;
+		//var_dump($user_data);
+		//echo "user_data end:\n" ;
+
+		/*
+		UPDATE `users` 
+		SET `password` = md5('password')
+		WHERE `username`="username"
+		*/
+
+		//Update MYSQL PASSWORD
+		$new_password_hashed = md5($new_password);
+		$data = array(
+               'password' => $new_password_hashed,
+               'initial_password' => $new_password,
+               'force_change_password_next_login' => 'y',
+			   'last_modification_user' => $this->session->userdata('user_id') ,
+			   'active' => 1              
+            );
+
+		$this->db->where('username', $username);		
+		$this->db->update('users', $data);
+
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+		//echo "user name: " . $user_data->username;
+		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+
+		if ($user_exists) {
+			if ($user_exists === $user_data->dn) {
+				$this->managment_model->deleteLdapUser($user_data->dn);
+			} else {
+				//Debug
+				//echo "ERROR! DNs not match!<br/>";
+				$this->managment_model->deleteLdapUser($user_exists);
+				$user_data->dn = $user_exists;
+			}
+		} 
+		$user_data->password = $new_password;
+		//echo "user_data dn: " . $user_data->dn;
+		$result = $this->managment_model->addLdapUser($user_data);
+		if (!$result) {
+			return false;
+		}
+		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+		return true;
+
+	}
+
 	function force_change_password($username,$new_password) {
 
 		//GET USER DATA FORM DATABASE
 		$user_data = new stdClass();
 		$user_data = $this->get_user_data_by_username($username);
+
+		if ($user_data == false) {
+			//Username not found
+			return -2;
+		}
 		
 		//echo "user_data:\n" ;
 		//var_dump($user_data);
@@ -917,7 +982,9 @@ class managment_model  extends CI_Model  {
 		$data = array(
                'password' => $new_password_hashed,
                'initial_password' => '',
-               'force_change_password_next_login' => 'n'
+               'force_change_password_next_login' => 'n',
+               'last_modification_user' => $this->session->userdata('user_id') ,
+			   'active' => 1              
             );
 
 		$this->db->where('username', $username);		

@@ -2389,8 +2389,7 @@ function insert_update_user() {
                     }                    
                 }
 
-                $user['password'] = $new_calculated_md5_password;
-                
+                $user['password'] = $new_calculated_md5_password;                
                 $user['last_modification_user'] = $this->session->userdata('user_id');
 
                 //Last user to modify

@@ -202,6 +202,92 @@ class managment extends skeleton_main {
 		
 	}
 
+	public function create_initial_password() {
+		if (!$this->session->userdata('is_admin')) {
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');	
+		}
+
+
+		$header_data = $this->load_ace_files();	
+
+		//CSS
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/jquery-ui.css'));		
+		
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));			
+		
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+		$data['result_message_exists']=false;
+
+
+		$new_password = "";
+		$username = "";
+
+		//var_dump($_POST)."<br/>";
+
+		if(isset($_POST['username'])) {
+			$username = $_POST['username'];
+		}
+
+		if(isset($_POST['new_password'])) {
+			$new_password = $_POST['new_password'];
+		}
+
+		//VALIDATE FORM
+		if ( count($_POST) > 0) {
+
+			if ($username === "") {
+				$data['result_message_exists']=true;
+				$data['result_message_ok'] = false;
+				$data['result_message'] = "Cal indicar un nom d'usuari";
+			} else {
+				if ($new_password === "") {
+					$data['result_message_exists']=true;
+					$data['result_message_ok'] = false;
+					$data['result_message'] = "Cal indicar una nova paraula de pas inicial!";
+				} else {
+					//Form Ok. Change password
+					//Get user id from session
+					$result = $this->managment_model->create_initial_password( $username ,$new_password);
+					if ($result) {
+
+						if ($result === -2) {
+							$data['result_message_exists']=true;
+							$data['result_message_ok'] = false;
+							$data['result_message'] = "No s'ha trobat l'usuari!";	
+						} else {
+							$data['result_message_exists']=true;
+							$data['result_message_ok'] = true;
+							$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
+						}
+					} else {
+						
+							$data['result_message_exists']=true;
+							$data['result_message_ok'] = false;
+							$data['result_message'] = "Hi hagut un error al modificar la paraula de pas!";
+					}							
+				}
+			}
+		}
+
+		$data['all_usernames'] = array();
+		$all_usernames = $this->managment_model->all_usernames();
+		$data['all_usernames'] = $all_usernames;	
+
+		$this->load->view('create_initial_password.php',$data);
+		$this->_load_body_footer();	
+
+	}
+
 	public function change_password($change_password_by_admin = 0) {
 
 		if ($change_password_by_admin != 0) {
@@ -357,10 +443,10 @@ class managment extends skeleton_main {
 								$new_password = $form_field_pass1;
 								$result = $this->managment_model->force_change_password( $username ,$new_password);
 								if ($result) {
-									if ($result === -1) {
+									if ($result === -2) {
 										$data['result_message_exists']=true;
 										$data['result_message_ok'] = false;
-										$data['result_message'] = "La paraula de pas antiga és incorrecte!";	
+										$data['result_message'] = "No s'ha trobat l'usuari!";	
 									} else {
 										$data['result_message_exists']=true;
 										$data['result_message_ok'] = true;
