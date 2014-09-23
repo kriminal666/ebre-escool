@@ -539,7 +539,7 @@
               </li>
               <?php endif?>
 
-              <!-- Change classroom_group -->
+              <!-- Enrollment delete -->
               <?php if ($this->session->userdata('is_admin')): ?>
               <li id="enrollment_delete">
                 <a href="<?php echo base_url('/index.php/enrollment/enrollment_delete'); ?>">
@@ -548,6 +548,17 @@
                 </a>
               </li>
               <?php endif?>
+
+              <!-- Enrollment delete -->
+              <?php if ($this->session->userdata('is_admin')): ?>
+              <li id="enrollment_delete">
+                <a href="<?php echo base_url('/index.php/persons/delete_person'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_delete_user');?>
+                </a>
+              </li>
+              <?php endif?>              
+
 
 
             </ul>

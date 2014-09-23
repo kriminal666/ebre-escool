@@ -1629,7 +1629,7 @@ class managment extends skeleton_main {
 
 	}
 
-	public function enrollment_reports_all_enrolled_persons_by_academic_period() {
+	public function enrollment_reports_all_enrolled_persons_by_academic_period($academic_period_id=null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -1656,6 +1656,9 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/css/tooltipster.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -1668,6 +1671,11 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+			
+
 			
 		$this->_load_html_header($header_data); 
 		
@@ -1675,9 +1683,31 @@ class managment extends skeleton_main {
 
 		$data = array();
 
+		$selected_academic_period_id = false;
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->managment_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->managment_model->get_all_academic_periods();
+
 		$data['enrollment_reports_all_enrolled_persons_by_academic_period_title'] = "Matrículats per període acadèmic";
 
-		$data['academic_periods'] = $this->managment_model->get_enrollment_reports_all_enrolled_persons_by_academic_period();;
+		$data['all_enrollments'] = $this->managment_model->get_enrollment_reports_all_enrolled_persons_by_academic_period($academic_period_id);
+		$data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
+        $data['academic_period_id'] = $academic_period_id;
 
 		$this->load->view('enrollment_reports_all_enrolled_persons_by_academic_period.php',$data);
 		

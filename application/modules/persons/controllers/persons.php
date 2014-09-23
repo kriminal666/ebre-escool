@@ -37,6 +37,27 @@ class persons extends skeleton_main {
     $this->load->model('persons_model');
 	}
 
+  public function delete_person() {
+    $active_menu = array();
+    $active_menu['menu']='#maintenances';
+    $active_menu['submenu1']='#persons';
+    $active_menu['submenu2']='#person';
+
+    $header_data= $this->load_ace_files($active_menu);  
+
+    //$this->grocery_crud->add_fields($table_name.'_sn1',$table_name.'_sn2',$table_name.'_givenName',$table_name.'_entryDate');
+
+    $this->_load_html_header($header_data); 
+    $this->_load_body_header();      
+  
+    $data = array();
+    
+    $this->load->view('delete_user',$data); 
+                
+    $this->_load_body_footer();  
+
+  }
+
   public function profile() {
 
     $active_menu = array();

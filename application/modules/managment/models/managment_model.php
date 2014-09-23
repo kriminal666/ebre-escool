@@ -1019,76 +1019,142 @@ class managment_model  extends CI_Model  {
 
 	}
 
-	
-	function get_enrollment_reports_all_enrolled_persons_by_academic_period () {
+	function get_academic_period_by_periodid($period_id) {
 
 		/*
-		SELECT person_id, person_sn1, person_sn2, person_givenName, person_official_id, enrollment_studies_id, enrollment_studies_periodid, enrollment_studies_personid, enrollment_studies_study_id, studies_shortname , studies_name
-		FROM enrollment_studies
-		JOIN studies ON studies.studies_id = enrollment_studies.enrollment_studies_study_id
-		JOIN person ON person.person_id = enrollment_studies.enrollment_studies_personid
-		ORDER BY person_sn1, person_sn2, person_givenName
-		LIMIT 0 , 30
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('*');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_id',$period_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row;
+		}	
+		else
+			return false;
+	}
+
+	
+	function get_enrollment_reports_all_enrolled_persons_by_academic_period ($academic_period_id=null,$orderby="DESC") {
+
+		if ($academic_period_id == null) {
+			$academic_period_shortname = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period = $this->get_academic_period_by_periodid($academic_period_id);
+			$academic_period_shortname = $academic_period->academic_periods_shortname;
+		}
+
+		/*
+		SELECT enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName, enrollment_study_id, studies.studies_shortname,
+		studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
+		classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
+		enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate 
+		FROM enrollment 
+		LEFT JOIN person ON person.person_id = enrollment.enrollment_personid
+		LEFT JOIN studies ON studies.studies_id = enrollment.enrollment_study_id
+		LEFT JOIN studies_law ON studies_law.studies_law_id = studies. studies_studies_law_id
+		LEFT JOIN course ON course.course_id = enrollment.enrollment_course_id
+		LEFT JOIN classroom_group ON classroom_group.classroom_group_id = enrollment.enrollment_group_id
+		WHERE enrollment_periodid="2014-15"
+		ORDER BY enrollment_entryDate DESC 
 		*/
 
 		//enrollments
-		$this->db->select('person_id, person_sn1, person_sn2, person_givenName, person_official_id, enrollment_studies_id, 
-				           enrollment_studies_periodid, enrollment_studies_personid, enrollment_studies_study_id, 
-				           studies_shortname , studies_name');
-		$this->db->from('enrollment_studies');
-		$this->db->join('studies','studies.studies_id = enrollment_studies.enrollment_studies_study_id');	
-		$this->db->join('person','person.person_id = enrollment_studies.enrollment_studies_personid');
-		//$this->db->order_by('studies_shortname', $orderby);
+		$this->db->select('enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName,person_official_id, enrollment_study_id, studies.studies_shortname,
+			studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
+			classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
+			enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate');
+		$this->db->from('enrollment');
+		$this->db->join('person','person.person_id = enrollment.enrollment_personid','left');	
+		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id','left');
+		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id','left');
+		$this->db->join('course','course.course_id = enrollment.enrollment_course_id','left');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id','left');
+
+		$this->db->order_by('enrollment_entryDate', $orderby);
+		$this->db->where('enrollment_periodid', $academic_period_shortname);
 
 
 		$query = $this->db->get();
 
-		$all_enrollment_academic_periods = array();
+		$all_enrollments = array();
 		if ($query->num_rows() > 0){
 			foreach($query->result() as $row){
 				$enrollment = new stdClass;
 				
-				$enrollment->person_id = $row->person_id;
+				$enrollment->id= $row->enrollment_id;
+				$enrollment->period_id = $row->enrollment_periodid;
+
+				$enrollment->person_id = $row->enrollment_personid;
 				$enrollment->person_sn1 = $row->person_sn1;
 				$enrollment->person_sn2 = $row->person_sn2;
 				$enrollment->person_givenName = $row->person_givenName;
 				$enrollment->person_official_id = $row->person_official_id;
-				$enrollment->enrollment_studies_id = $row->enrollment_studies_id;
-				$enrollment->enrollment_studies_periodid = $row->enrollment_studies_periodid;
-				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
-				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
-				$enrollment->enrollment_studies_personid = $row->enrollment_studies_personid;
+				$enrollment->study_id = $row->enrollment_study_id;
+				$enrollment->studies_shortname = $row->studies_shortname;
+				$enrollment->studies_name = $row->studies_name;
 
-				$all_enrollment_academic_periods[$row->enrollment_studies_id] = $enrollment;
+				$enrollment->studies_studies_law_id = $row->studies_studies_law_id;
+				$enrollment->studies_law_shortname = $row->studies_law_shortname;
+				$enrollment->studies_law_name = $row->studies_law_name;
+
+				$enrollment->enrollment_course_id = $row->enrollment_course_id;
+				$enrollment->course_shortname = $row->course_shortname;
+				$enrollment->course_name = $row->course_name;
+
+				$enrollment->enrollment_group_id = $row->enrollment_group_id;
+				$enrollment->classroom_group_code = $row->classroom_group_code;
+				$enrollment->classroom_group_shortName = $row->classroom_group_shortName;
+				$enrollment->classroom_group_name = $row->classroom_group_name;
+
+				$enrollment->enrollment_entryDate = $row->enrollment_entryDate;
+				$enrollment->enrollment_last_update = $row->enrollment_last_update;
+
+
+
+				$enrollment->enrollment_creationUserId = $row->enrollment_creationUserId;
+				$enrollment->enrollment_lastupdateUserId = $row->enrollment_lastupdateUserId;
+
+				$enrollment->enrollment_creationUserId_username = $this->getUserNameByUserId($row->enrollment_creationUserId);
+				$enrollment->enrollment_lastupdateUserId_username = $this->getUserNameByUserId($row->enrollment_lastupdateUserId);
+
+				
+				
+				$all_enrollments[$row->enrollment_id] = $enrollment;
 			}
 		}
 
-		return $all_enrollment_academic_periods;	
-		
-		/*
-		$academic_periods = array ();
-
-		$academic_period1 = new stdClass;
-		$academic_period1->academic_period = "2010-11";
-		$academic_period1->total_number_of_enrolled_persons = 58;
-		$academic_period2 = new stdClass;
-		$academic_period2->academic_period = "2011-12";
-		$academic_period2->total_number_of_enrolled_persons = 86;
-		$academic_period3 = new stdClass;
-		$academic_period3->academic_period = "2012-13";
-		$academic_period3->total_number_of_enrolled_persons = 91;
-		$academic_period4 = new stdClass;
-		$academic_period4->academic_period = "2013-14";
-		$academic_period4->total_number_of_enrolled_persons = 54;
-
-		$academic_periods[0] = $academic_period1;
-		$academic_periods[1] = $academic_period2;
-		$academic_periods[2] = $academic_period3;
-		$academic_periods[3] = $academic_period4;
-
-		return $academic_periods; */
+		return $all_enrollments;	
 
 	}
+
+	function getUserNameByUserId($user_id) {
+
+		/*
+		SELECT username FROM users WHERE id = userid
+		*/
+
+		//enrollments
+		$this->db->select('username');
+		$this->db->from('users');
+		$this->db->where('id', $user_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1)	{
+			$row = $query->row();
+			return $row->username;
+		} else {
+			return false;
+		}
+	}
+	
 
 	function get_studymodules_by_study($withtotal = true) {
 		/* studymodules by study

@@ -261,3 +261,16 @@ $lang['user_ldap_last_modification_date']="Data última modificació";
 $lang['user_ldap_creation_user']="Usuari creació";
 $lang['user_ldap_last_modification_user']="Usuari última modificació";
 
+//enrollment_reports_all_enrolled_persons_by_academic_period
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id']="Id matrícula";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person']="Persona";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person_official_id']="Id oficial";
+
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study']="Estudi";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_course']="Curs";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_classroom_group']="Grup de classe";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_entryDate']="Data matrícula";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_last_update']="Última modificació";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_creationUserId']="Usuari creació";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_lastupdateUserId']="Usuari última modificació";
+
