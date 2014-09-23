@@ -202,31 +202,41 @@ class managment extends skeleton_main {
 		
 	}
 
-	public function change_password() {
-		
-		$force_change_password_message = false;
-        //print_r($this->session->userdata);
-        if (!$this->session->userdata('logged_in_change_password')) {
-			if (!$this->skeleton_auth->logged_in())
-			{
+	public function change_password($change_password_by_admin = 0) {
+
+		if ($change_password_by_admin != 0) {
+			if (!$this->session->userdata('is_admin')) {
 				//redirect them to the login page
-				redirect($this->skeleton_auth->login_page, 'refresh');
+				redirect($this->skeleton_auth->login_page, 'refresh');	
 			}
-		} else  {
-			$force_change_password_message = true;
 		}
 
+		$force_change_password_message = false;
+		if ($change_password_by_admin == 0) {
+			//print_r($this->session->userdata);
+	        if (!$this->session->userdata('logged_in_change_password')) {
+				if (!$this->skeleton_auth->logged_in())
+				{
+					//redirect them to the login page
+					redirect($this->skeleton_auth->login_page, 'refresh');
+				}
+			} else  {
+				$force_change_password_message = true;
+			}
+		}
+		
 		$header_data = $this->load_ace_files();	
 
+		//CSS
 		$header_data= $this->add_css_to_html_header_data(
-                $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
-
+			$header_data,
+			base_url('assets/css/jquery-ui.css'));		
+		
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
-                    $header_data,
-                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
-			
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/ui/jquery-ui-1.10.3.custom.min.js"));			
+		
 		$this->_load_html_header($header_data); 
 		
 		$this->_load_body_header();
@@ -234,8 +244,13 @@ class managment extends skeleton_main {
 		$form_field_pass0 = "";
 		$form_field_pass1 = "";
 		$form_field_pass2 = "";
+		$username = "";
 
 		//var_dump($_POST)."<br/>";
+
+		if(isset($_POST['username'])) {
+			$username = $_POST['username'];
+		}
 
 		if(isset($_POST['form-field-pass0'])) {
 			$form_field_pass0 = $_POST['form-field-pass0'];
@@ -260,61 +275,130 @@ class managment extends skeleton_main {
 		//VALIDATE FORM
 		if ( count($_POST) > 0) {
 			//Validate form
-			if ($form_field_pass0 === "") {
-				$data['result_message_exists']=true;
-				$data['result_message_ok'] = false;
-				$data['result_message'] = "Cal indicar la paraula de pas actual!";
-			} else {
-				if ($form_field_pass1 === "") {
+			if ($change_password_by_admin == 0) {
+				if ($form_field_pass0 === "") {
 					$data['result_message_exists']=true;
 					$data['result_message_ok'] = false;
-					$data['result_message'] = "Cal indicar una nova paraula de pas!";
+					$data['result_message'] = "Cal indicar la paraula de pas actual!";
 				} else {
-					if ($form_field_pass2 === "") {
+					if ($form_field_pass1 === "") {
 						$data['result_message_exists']=true;
 						$data['result_message_ok'] = false;
-						$data['result_message'] = "Cal confirmar la nova paraula de pas!";
+						$data['result_message'] = "Cal indicar una nova paraula de pas!";
 					} else {
-						if ($form_field_pass1 != $form_field_pass2) {
+						if ($form_field_pass2 === "") {
 							$data['result_message_exists']=true;
 							$data['result_message_ok'] = false;
-							$data['result_message'] = "La paraula de pas nova i el camp de confirmació no coincideixen!";
+							$data['result_message'] = "Cal confirmar la nova paraula de pas!";
 						} else {
-							//Form Ok. Change password
-							//Get user id from session
-
-							$new_password = $form_field_pass1;
-							$old_password = $form_field_pass0;
-							$result = $this->managment_model->change_password( $this->session->userdata('username') ,$new_password,$old_password);
-							if ($result) {
-								if ($result === -1) {
-									$data['result_message_exists']=true;
-									$data['result_message_ok'] = false;
-									$data['result_message'] = "La paraula de pas antiga és incorrecte!";	
-								} else {
-									$data['result_message_exists']=true;
-									$data['result_message_ok'] = true;
-									$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
-
-									$sessiondata_change_password = array(
-						                   'logged_in' => true,
-						                   'logged_in_change_password' => false,
-						               );
-						            $this->session->set_userdata($sessiondata_change_password);
-								}
-								
+							if ($form_field_pass1 != $form_field_pass2) {
+								$data['result_message_exists']=true;
+								$data['result_message_ok'] = false;
+								$data['result_message'] = "La paraula de pas nova i el camp de confirmació no coincideixen!";
 							} else {
-								
-									$data['result_message_exists']=true;
-									$data['result_message_ok'] = false;
-									$data['result_message'] = "Hi hagut un error al modificar la paraula de pas!";
-							}							
+								//Form Ok. Change password
+								//Get user id from session
+
+								$new_password = $form_field_pass1;
+								$old_password = $form_field_pass0;
+								$result = $this->managment_model->change_password( $this->session->userdata('username') ,$new_password,$old_password);
+								if ($result) {
+									if ($result === -1) {
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = false;
+										$data['result_message'] = "La paraula de pas antiga és incorrecte!";	
+									} else {
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = true;
+										$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
+
+										$sessiondata_change_password = array(
+							                   'logged_in' => true,
+							                   'logged_in_change_password' => false,
+							               );
+							            $this->session->set_userdata($sessiondata_change_password);
+									}
+									
+								} else {
+									
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = false;
+										$data['result_message'] = "Hi hagut un error al modificar la paraula de pas!";
+								}							
+							}
+						}
+					}				
+				}
+			}
+			else {
+				if ($username === "") {
+					$data['result_message_exists']=true;
+					$data['result_message_ok'] = false;
+					$data['result_message'] = "Cal indicar un nom d'usuari";
+				} else {
+					if ($form_field_pass1 === "") {
+						$data['result_message_exists']=true;
+						$data['result_message_ok'] = false;
+						$data['result_message'] = "Cal indicar una nova paraula de pas!";
+					} else {
+						if ($form_field_pass2 === "") {
+							$data['result_message_exists']=true;
+							$data['result_message_ok'] = false;
+							$data['result_message'] = "Cal confirmar la nova paraula de pas!";
+						} else {
+							if ($form_field_pass1 != $form_field_pass2) {
+								$data['result_message_exists']=true;
+								$data['result_message_ok'] = false;
+								$data['result_message'] = "La paraula de pas nova i el camp de confirmació no coincideixen!";
+							} else {
+								//Form Ok. Change password
+								//Get user id from session
+
+								$new_password = $form_field_pass1;
+								$result = $this->managment_model->force_change_password( $username ,$new_password);
+								if ($result) {
+									if ($result === -1) {
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = false;
+										$data['result_message'] = "La paraula de pas antiga és incorrecte!";	
+									} else {
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = true;
+										$data['result_message'] = "La paraula de pas s'ha modificat correctament!";
+
+										$sessiondata_change_password = array(
+							                   'logged_in' => true,
+							                   'logged_in_change_password' => false,
+							               );
+							            $this->session->set_userdata($sessiondata_change_password);
+									}
+									
+								} else {
+									
+										$data['result_message_exists']=true;
+										$data['result_message_ok'] = false;
+										$data['result_message'] = "Hi hagut un error al modificar la paraula de pas!";
+								}							
+							}
 						}
 					}
 				}
+			}
 
 				
-			}
+
+
+
+		}
+
+		$data['change_password_by_admin'] = false;
+		$data['all_usernames'] = array();
+		if ($change_password_by_admin == 1) {
+
+			$all_usernames = $this->managment_model->all_usernames();
+			
+			$data['all_usernames'] = $all_usernames;	
+			$data['change_password_by_admin'] = true;			
 		}
 
 		$this->load->view('change_password.php',$data);

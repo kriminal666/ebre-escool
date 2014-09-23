@@ -1129,6 +1129,13 @@
                 </a>
               </li>
 
+              <li id="managment_users_ldap">
+                <a href="<?php echo base_url('index.php/managment/change_password/1');?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('change_password'); ?>
+                </a>
+              </li>
+
               <li id="managment_groups">
                 <a href="<?php echo base_url('index.php/skeleton/groups');?>">
                   <i class="icon-double-angle-right"></i>

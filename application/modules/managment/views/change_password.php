@@ -33,6 +33,12 @@
 <script>
 $(function(){
 
+  var availableTags = <?php echo json_encode($all_usernames);?>;
+
+     $("#username").autocomplete({
+      source: availableTags
+     });
+
 });   
 </script>
 
@@ -55,7 +61,11 @@ $(function(){
 
 <?php endif;?>
 
-<form class="form-horizontal" action="<?php echo base_url('/index.php/managment/change_password') ;?>" method="post">
+<?php if ($change_password_by_admin) : ?>
+  <form class="form-horizontal" action="<?php echo base_url('/index.php/managment/change_password/1') ;?>" method="post">
+<?php else:?>
+  <form class="form-horizontal" action="<?php echo base_url('/index.php/managment/change_password') ;?>" method="post">
+<?php endif;?>
     <div class="tabbable">
 
       <ul class="nav nav-tabs padding-16">
@@ -84,13 +94,25 @@ $(function(){
       <div id="edit-password" class="tab-pane">
         <div class="space-10"></div>
 
-        <div class="control-group">
-          <label class="control-label" for="form-field-pass1">Paraula de pas actual</label>
+        <?php if ($change_password_by_admin) : ?>
+          <div class="control-group">
+            <label class="control-label" for="username">Usuari:</label>
 
-          <div class="controls">
-            <input type="password" id="form-field-pass0" name="form-field-pass0" />
+            <div class="controls">
+              <input type="text" id="username" name="username" />
+            </div>
           </div>
-        </div>
+        <?php else: ?>
+          <div class="control-group">
+            <label class="control-label" for="form-field-pass0">Paraula de pas actual</label>
+
+            <div class="controls">
+              <input type="password" id="form-field-pass0" name="form-field-pass0" />
+            </div>
+          </div>
+        <?php endif;?>
+
+        
 
         <div class="control-group">
           <label class="control-label" for="form-field-pass1">Nova paraula de pas</label>

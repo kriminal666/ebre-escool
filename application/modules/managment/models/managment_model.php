@@ -894,6 +894,59 @@ class managment_model  extends CI_Model  {
 		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
 		return true;
 
+	}
+
+	function force_change_password($username,$new_password) {
+
+		//GET USER DATA FORM DATABASE
+		$user_data = new stdClass();
+		$user_data = $this->get_user_data_by_username($username);
+		
+		//echo "user_data:\n" ;
+		//var_dump($user_data);
+		//echo "user_data end:\n" ;
+
+		/*
+		UPDATE `users` 
+		SET `password` = md5('password')
+		WHERE `username`="username"
+		*/
+
+		//Update MYSQL PASSWORD
+		$new_password_hashed = md5($new_password);
+		$data = array(
+               'password' => $new_password_hashed,
+               'initial_password' => '',
+               'force_change_password_next_login' => 'n'
+            );
+
+		$this->db->where('username', $username);		
+		$this->db->update('users', $data);
+
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+		//echo "user name: " . $user_data->username;
+		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+
+		if ($user_exists) {
+			if ($user_exists === $user_data->dn) {
+				$this->managment_model->deleteLdapUser($user_data->dn);
+			} else {
+				//Debug
+				//echo "ERROR! DNs not match!<br/>";
+				$this->managment_model->deleteLdapUser($user_exists);
+				$user_data->dn = $user_exists;
+			}
+		} 
+		$user_data->password = $new_password;
+		//echo "user_data dn: " . $user_data->dn;
+		$result = $this->managment_model->addLdapUser($user_data);
+		if (!$result) {
+			return false;
+		}
+		$this->managment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
+		return true;
+
 	}						
 
 	function get_user_data($userid,$user_id_is_username=false) {
@@ -1017,6 +1070,26 @@ class managment_model  extends CI_Model  {
 
 		return $academic_periods;	
 
+	}
+
+	function all_usernames() {
+		/*
+		SELECT id,username FROM users
+		*/
+		$this->db->select('id,username');
+		$this->db->from('users');
+
+		$query = $this->db->get();
+
+		$all_usernames = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row)	{
+				$all_usernames[] = $row->username;
+			}			
+			return $all_usernames; 
+		}	
+		else
+			return false;		
 	}
 
 	function get_academic_period_by_periodid($period_id) {
