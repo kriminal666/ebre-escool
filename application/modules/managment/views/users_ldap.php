@@ -55,6 +55,9 @@
                                     return '<label><input class="ace" type="checkbox" name="form-field-checkbox" id="' + data.id + '"><span class="lbl">&nbsp;</span></label>';
                                   }},
                         { "mData": function(data, type, full) {
+                                    return data.id;
+                                  } },          
+                        { "mData": function(data, type, full) {
                                     url1 = "<?php echo base_url('/index.php/skeleton/users/read/'); ?>/" + data.id;
                                     url2 = "<?php echo base_url('/index.php/skeleton/users/edit/'); ?>/" + data.id;
                                     return '<a href="' + url1 +'">' + data.id + '</a> (<a href="' + url2 + '">edit</a>)';
@@ -63,9 +66,15 @@
                                     url1 = "<?php echo base_url('/index.php/persons/index/read/'); ?>/" + data.person_id;
                                     url2 = "<?php echo base_url('/index.php/persons/index/edit/'); ?>/" + data.person_id;
                                     return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">' + data.person_id + '</a>)';
-                                  }},
+                                  }},                                 
                         { "mData": "username" },
                         { "mData": "password" },
+                        { "mData": "enrollment_id" },   
+                        { "mData": "enrollment_periodid" },
+                        { "mData": "enrollment_entryDate" },
+                        { "mData": "enrollment_last_update" },
+                        { "mData": "enrollment_creationUserId" },
+                        { "mData": "enrollment_lastupdateUserId" },
                         { "mData": "mainOrganizationaUnitId" },
                         { "mData": function(data, type, full) {
                                       usertype = "";
@@ -471,7 +480,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="18" style="text-align: center;"> <h4>
+    <td colspan="25" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
         <?php echo $user_ldap_table_title?>
       </a>
@@ -480,9 +489,17 @@
   <tr>
      <th>&nbsp;</th> 
      <th><?php echo lang('user_ldap_id')?></th>
+     <th><?php echo lang('user_ldap_id')?></th>
      <th><?php echo lang('user_ldap_person_id')?></th>
      <th><?php echo lang('user_ldap_username')?></th>
      <th><?php echo lang('user_ldap_password')?></th>
+
+     <th><?php echo lang('user_ldap_enrollment_id')?></th>
+     <th><?php echo lang('user_ldap_enrollment_periodid')?></th>
+     <th><?php echo lang('user_ldap_enrollment_entryDate')?></th>
+     <th><?php echo lang('user_ldap_enrollment_last_update')?></th>
+     <th><?php echo lang('user_ldap_enrollment_creationUserId')?></th>
+     <th><?php echo lang('user_ldap_enrollment_lastupdateUserId')?></th>
      <th><?php echo lang('user_ldap_mainOrganizationaUnitId')?></th>
      <th><?php echo lang('user_ldap_user_type')?></th>
      <th><?php echo lang('user_ldap_initial_password')?></th>

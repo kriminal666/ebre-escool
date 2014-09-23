@@ -261,6 +261,13 @@ $lang['user_ldap_last_modification_date']="Data última modificació";
 $lang['user_ldap_creation_user']="Usuari creació";
 $lang['user_ldap_last_modification_user']="Usuari última modificació";
 
+$lang['user_ldap_enrollment_id']="Id matrícula";
+$lang['user_ldap_enrollment_periodid']="Període matrícula";
+$lang['user_ldap_enrollment_entryDate']="Data matrícula";
+$lang['user_ldap_enrollment_last_update']="Última modificació matrícula";
+$lang['user_ldap_enrollment_creationUserId']="Usuari creació matrícula";
+$lang['user_ldap_enrollment_lastupdateUserId']="Usuari modificació matrícula";
+
 //enrollment_reports_all_enrolled_persons_by_academic_period
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id']="Id matrícula";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person']="Persona";

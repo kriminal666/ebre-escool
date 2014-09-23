@@ -100,6 +100,8 @@ class managment_model  extends CI_Model  {
 				$data = array(
 		               'initial_password' => $new_password,
 		               'force_change_password_next_login' => 'y',
+		               'last_modification_user' => $this->session->userdata('user_id') ,
+			   		   'active' => 1 
 		            );
 
 				$this->db->where('id', $value);
@@ -180,11 +182,12 @@ class managment_model  extends CI_Model  {
 		WHERE 1
 		*/
 		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn,created_on,last_modification_date,
-				creation_user, last_modification_user');
+				creation_user, last_modification_user,enrollment_id,enrollment_periodid,enrollment_entryDate,enrollment_last_update,enrollment_creationUserId, enrollment_lastupdateUserId');
 		$this->db->from('users');
-		$this->db->join('person','person.person_id = users.person_id');
+		$this->db->join('person','person.person_id = users.person_id','left');
+		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id','left');
 		//TODO: Treure
-		$this->db->limit(150);
+		//$this->db->limit(150);
 		
 		$query = $this->db->get();
 
@@ -210,7 +213,13 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['last_modification_date'] = $row->last_modification_date;
 				$all_ldap_users[$i]['creation_user'] = $row->creation_user;
 				$all_ldap_users[$i]['last_modification_user'] = $row->last_modification_user;
-				
+				$all_ldap_users[$i]['enrollment_id'] = $row->enrollment_id;
+				$all_ldap_users[$i]['enrollment_periodid'] = $row->enrollment_periodid;
+				$all_ldap_users[$i]['enrollment_entryDate'] = $row->enrollment_entryDate;
+				$all_ldap_users[$i]['enrollment_last_update'] = $row->enrollment_last_update;
+				$all_ldap_users[$i]['enrollment_creationUserId'] = $row->enrollment_creationUserId;
+				$all_ldap_users[$i]['enrollment_lastupdateUserId'] = $row->enrollment_lastupdateUserId;
+
 				$active_users_basedn = $this->config->item('active_users_basedn');
 				$real_ldap_dn = $this->user_exists($row->username,$active_users_basedn);	
 
@@ -860,7 +869,9 @@ class managment_model  extends CI_Model  {
 		$data = array(
                'password' => $new_password_hashed,
                'initial_password' => '',
-               'force_change_password_next_login' => 'n'
+               'force_change_password_next_login' => 'n',
+               'last_modification_user' => $this->session->userdata('user_id') ,
+			   'active' => 1  
             );
 
 		if ($username_is_userid) {
