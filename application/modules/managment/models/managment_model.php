@@ -193,7 +193,9 @@ class managment_model  extends CI_Model  {
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id','left');
 		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id','left');
-		$this->db->where('enrollment_periodid',$academic_period_shortname,'left');
+		$this->db->where('enrollment_periodid',$academic_period_shortname);
+		$this->db->where('last_login',"0000-00-00 00:00:00");
+		$this->db->where('initial_password',"");
 		//TODO: Treure
 		//$this->db->limit(15);
 		
