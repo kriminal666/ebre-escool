@@ -1184,6 +1184,40 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         
     }
 
+    
+
+    public function enrollment_modify_person() {
+       
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#enrollment_modify_person';    
+
+        $this->check_logged_user();
+
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        /* Ace */
+        $header_data= $this->load_wizard_files($active_menu);
+        $this->_load_html_header($header_data); 
+
+        $data = array();
+
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        $localities = $this->enrollment_model->get_localities();
+
+        $data['all_person_official_ids'] = $all_person_official_ids;
+        $data['localities'] = $localities;
+       
+        // BODY       
+        $this->_load_body_header();
+
+        $this->load->view('enrollment_modify_person.php',$data);   
+
+        // FOOTER     
+        $this->_load_body_footer(); 
+    }
+
     public function enrollment_query_by_person($only_person_data = false) {
 
         $active_menu = array();
@@ -1215,14 +1249,13 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         // BODY       
         $this->_load_body_header();
 
-        if ( $this->session->userdata('is_student')) {
-            $this->load->view('enrollment_query_by_person_for_students.php',$data);     
-        } else {
+        if ( $this->session->userdata('is_admin')) {
             $this->load->view('enrollment_query_by_person.php',$data);     
-        }
-        
-
-
+        } elseif ( $this->session->userdata('is_teacher')) {
+            $this->load->view('enrollment_query_by_person.php',$data);
+        } elseif ( $this->session->userdata('is_student'))   {
+            $this->load->view('enrollment_query_by_person_for_students.php',$data);
+        } 
         // FOOTER     
         $this->_load_body_footer(); 
     }
@@ -2271,7 +2304,11 @@ function insert_update_user() {
     $student_generated_password = $_POST['student_generated_password'];
     $student_password = $_POST['student_password'];
     $student_verify_password = $_POST['student_verify_password'];    
-    $student_verify_password = $_POST['student_verify_password'];    
+
+    $student_not_change_user_data=false;    
+    if ( isset($_POST['student_not_change_user_data']) ) {
+        $student_not_change_user_data = $_POST['student_not_change_user_data'];    
+    }
     
     $student['person_official_id'] = $_POST['student_official_id'];
     $student['person_official_id_type'] = $_POST['student_official_id_type'];
@@ -2372,43 +2409,45 @@ function insert_update_user() {
             
             $result = $this->enrollment_model->update_student_data($person_id, $student);    
             if ($result) { //UPDATE user table is correct
-                //Check if password is set. Then update users table
-                $new_calculated_md5_password="";
-                if ($student_password != "") {                    
-                    $new_calculated_md5_password = md5($student_password);
-                    $ldap_password = $student_password;
-                } else {
-                    if ($student_generated_password!=""){
-                        $new_calculated_md5_password = md5($student_generated_password);
-                        $ldap_password = $student_generated_password;
-                        $user['initial_password'] = $student_generated_password;
-                        $user['force_change_password_next_login'] = "y";    
+                if (!$student_not_change_user_data) {
+                    //Check if password is set. Then update users table
+                    $new_calculated_md5_password="";
+                    if ($student_password != "") {                    
+                        $new_calculated_md5_password = md5($student_password);
+                        $ldap_password = $student_password;
                     } else {
-                        echo "Error. No password specified!";
-                        return false;
-                    }                    
-                }
-
-                $user['password'] = $new_calculated_md5_password;                
-                $user['last_modification_user'] = $this->session->userdata('user_id');
-
-                //Last user to modify
-                $result = $this->enrollment_model->update_user_data($user['username'], $user);  
-
-                if (!$result) {
-                    echo "Error updating users table!";
-                    return false;
-                } else {
-                    $rows_changed = $this->db->affected_rows();
-
-                    if ($rows_changed == 1) {
-                        echo "User " . $user['username'] . " updated correctly!";    
+                        if ($student_generated_password!=""){
+                            $new_calculated_md5_password = md5($student_generated_password);
+                            $ldap_password = $student_generated_password;
+                            $user['initial_password'] = $student_generated_password;
+                            $user['force_change_password_next_login'] = "y";    
+                        } else {
+                            echo "Error. No password specified!";
+                            return false;
+                        }                    
                     }
-                    elseif ($rows_changed == 0) {
-                        echo "User " . $user['username'] . " updated correctly. Nothing to change";    
-                    } else {
-                        echo "ERROR in number of affected rows updating the user!";
+
+                    $user['password'] = $new_calculated_md5_password;                
+                    $user['last_modification_user'] = $this->session->userdata('user_id');
+
+                    //Last user to modify
+                    $result = $this->enrollment_model->update_user_data($user['username'], $user);  
+
+                    if (!$result) {
+                        echo "Error updating users table!";
                         return false;
+                    } else {
+                        $rows_changed = $this->db->affected_rows();
+
+                        if ($rows_changed == 1) {
+                            echo "User " . $user['username'] . " updated correctly!";    
+                        }
+                        elseif ($rows_changed == 0) {
+                            echo "User " . $user['username'] . " updated correctly. Nothing to change";    
+                        } else {
+                            echo "ERROR in number of affected rows updating the user!";
+                            return false;
+                        }
                     }
                 }
             }
@@ -2458,29 +2497,32 @@ function insert_update_user() {
 
         $result = $this->enrollment_model->insert_student_data($student);
         if($result){
-            $calculated_md5_password = md5($updated_password);
-            $ldap_password = $updated_password;
-            $user['password'] = $calculated_md5_password;
-            //NEW USER: then set initial password and force to change
-            $user['initial_password'] = $updated_password;
-            $user['force_change_password_next_login'] = "y";           
-            $user['creation_user'] = $this->session->userdata('user_id');
-            $user['last_modification_user'] = $this->session->userdata('user_id');
-            $user['person_id'] = $result;
-            $user['created_on'] = $date;
-            $user['active'] = 1;
+            if (!$student_not_change_user_data) {
 
-            //echo "User:\n";            
-            //print_r($user);
-            $result = $this->enrollment_model->insert_user_data($user);  
+                $calculated_md5_password = md5($updated_password);
+                $ldap_password = $updated_password;
+                $user['password'] = $calculated_md5_password;
+                //NEW USER: then set initial password and force to change
+                $user['initial_password'] = $updated_password;
+                $user['force_change_password_next_login'] = "y";           
+                $user['creation_user'] = $this->session->userdata('user_id');
+                $user['last_modification_user'] = $this->session->userdata('user_id');
+                $user['person_id'] = $result;
+                $user['created_on'] = $date;
+                $user['active'] = 1;
 
-            if (!$result) {
-                echo "Error inserting user data to users table!";
-                return false;
-            }  
+                //echo "User:\n";            
+                //print_r($user);
+                $result = $this->enrollment_model->insert_user_data($user);  
 
-            $inserted_student = $this->check_student($student['person_official_id']);
-            print_r($inserted_student);
+                if (!$result) {
+                    echo "Error inserting user data to users table!";
+                    return false;
+                }  
+
+                $inserted_student = $this->check_student($student['person_official_id']);
+                print_r($inserted_student);
+            }
         }
     }
 

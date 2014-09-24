@@ -541,20 +541,31 @@
 
               <!-- Enrollment delete -->
               <?php if ($this->session->userdata('is_admin')): ?>
+              
               <li id="enrollment_delete">
                 <a href="<?php echo base_url('/index.php/enrollment/enrollment_delete'); ?>">
                   <i class="icon-double-angle-right"></i>
                   <?php echo lang('enrollment_delete');?>
                 </a>
               </li>
+              
+
+              <!-- enrollment_modify_person -->
+              <li id="enrollment_modify_person">
+                <a href="<?php echo base_url('/index.php/enrollment/enrollment_modify_person'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_modify_person');?>
+                </a>
+              </li>
+
               <?php endif?>
 
-              <!-- Enrollment delete -->
+              <!-- person delete -->
               <?php if ($this->session->userdata('is_admin')): ?>
               <li id="enrollment_delete">
                 <a href="<?php echo base_url('/index.php/persons/delete_person'); ?>">
                   <i class="icon-double-angle-right"></i>
-                  <?php echo lang('enrollment_delete_user');?>
+                  <?php echo "TODO" . lang('enrollment_delete_user');?>
                 </a>
               </li>
               <?php endif?>              
