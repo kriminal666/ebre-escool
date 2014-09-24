@@ -90,25 +90,10 @@ class managment_model  extends CI_Model  {
 		//echo "values: " . print_r($values). "\n";
 		foreach ($values as $value) {
 			if ($value != "") {
-				//echo "value: " . $value. "\n";
-				/*Example SQL
-				UPDATE `users` 
-				SET `initial_password`= "new_random_password" 
-				WHERE `id`="id_value"
-				*/
+
 				$new_password = $this->simple_password_generator();
-				$data = array(
-		               'initial_password' => $new_password,
-		               'force_change_password_next_login' => 'y',
-		               'last_modification_user' => $this->session->userdata('user_id') ,
-			   		   'active' => 1 
-		            );
+				$this->create_initial_password($value,$new_password,true);
 
-				$this->db->where('id', $value);
-				$this->db->update('users', $data);    
-				//echo $this->db->last_query();
-
-				$this->change_password($value,$new_password,null,true);	
 			}
 		}		
 		return true;
@@ -1028,12 +1013,19 @@ class managment_model  extends CI_Model  {
 
 	}
 
-	function create_initial_password($username,$new_password) {
+	function create_initial_password($username,$new_password,$username_is_userid=false) {
 
 		//GET USER DATA FORM DATABASE
 		$user_data = new stdClass();
+		$user_id=0;
 
-		$user_data = $this->get_user_data_by_username($username);
+		if ($username_is_userid) {
+			$user_id=$username;
+			$user_data = $this->get_user_data($user_id);
+		} else {
+			$user_data = $this->get_user_data_by_username($username);	
+		}
+		
 
 		if ($user_data == false) {
 			return -2;
@@ -1058,8 +1050,12 @@ class managment_model  extends CI_Model  {
 			   'last_modification_user' => $this->session->userdata('user_id') ,
 			   'active' => 1              
             );
-
-		$this->db->where('username', $username);		
+		if ($username_is_userid) {
+			$this->db->where('id', $user_id);
+		} else {
+			$this->db->where('username', $username);	
+		}
+				
 		$this->db->update('users', $data);
 
 		$active_users_basedn = $this->config->item('active_users_basedn');
