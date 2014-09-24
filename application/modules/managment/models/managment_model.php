@@ -172,7 +172,7 @@ class managment_model  extends CI_Model  {
 		return true;
 	}
 
-	function get_all_ldap_users() {
+	function get_all_ldap_users($academic_period_id = null) {
 
 		//ldap_users
 		/*
@@ -181,12 +181,19 @@ class managment_model  extends CI_Model  {
 		INNER JOIN person ON person.person_id = users.person_id
 		WHERE 1
 		*/
+		if ($academic_period_id == null) {
+			$academic_period_shortname = $this->get_current_academic_period()->academic_periods_shortname;
+		} else {
+			$academic_period_shortname = $this->get_academic_period_by_periodid($academic_period_id)->academic_periods_shortname;
+		}
+
 		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login,last_login, mainOrganizationaUnitId,person_givenName,person_sn1,
 			    person_sn2,ldap_dn,created_on,last_modification_date,creation_user, last_modification_user,enrollment_id,enrollment_periodid,enrollment_entryDate, 
 			    enrollment_last_update,enrollment_creationUserId, enrollment_lastupdateUserId');
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id','left');
 		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id','left');
+		$this->db->where('enrollment_periodid',$academic_period_shortname,'left');
 		//TODO: Treure
 		//$this->db->limit(15);
 		

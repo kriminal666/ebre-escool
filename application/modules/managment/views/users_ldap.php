@@ -20,7 +20,7 @@
                     <?php echo lang("users_ldap");?>
                     <small>
                         <i class="icon-double-angle-right"></i>
-                        Usuaris ldap
+                        Operacions massives amb usuaris
                     </small>
                 </h1>
 </div><!-- /.page-header -->
@@ -33,6 +33,19 @@
       var all_ldap_users_table;
 
       $(function(){
+
+              $("#select_class_list_academic_period_filter").select2();
+
+              $("#academic_period_text").text( $("#select_class_list_academic_period_filter").select2("data").text);
+
+              $('#select_class_list_academic_period_filter').on("change", function(e) {  
+                  var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
+                  var pathArray = window.location.pathname.split( '/' );
+                  var secondLevelLocation = pathArray[1];
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/users_ldap";
+                  //alert(baseURL + "/" + selectedValue);
+                  window.location.href = baseURL + "/" + selectedValue;
+              });
 
               //Jquery select plugin: http://ivaynberg.github.io/select2/
               $("#select_user_ldaps_academic_period_filter").select2();
@@ -47,9 +60,11 @@
 
               });
 
+              var selectedAP = $("#select_class_list_academic_period_filter").select2("val");
+
               var all_ldap_users_table = $('#all_ldap_users').DataTable( {
                       "bDestroy": true,
-                      "sAjaxSource": "<?php echo base_url('index.php/managment/get_users_ldap');?>",
+                      "sAjaxSource": "<?php echo base_url('index.php/managment/get_users_ldap/');?>/" + selectedAP,
                       "aoColumns": [
                         { "mData": function(data, type, full) {
                                     return '<label><input class="ace" type="checkbox" name="form-field-checkbox" id="' + data.id + '"><span class="lbl">&nbsp;</span></label>';
@@ -420,14 +435,38 @@
       <td colspan="6" style="text-align: center;"> <strong>Filtres per columnes
         </strong></td>
     </tr>
+    <tr>
+      <td style="text-align: center;"> <strong>Període acadèmic:
+        </strong>
+      </td>
+      <td colspan="4" style="text-align: center;"> 
+              <select id="select_class_list_academic_period_filter">
+                <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+                  <?php if ( $selected_academic_period_id) : ?>
+                    <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+                      <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                    <?php else: ?>
+                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                    <?php endif; ?>
+                  <?php else: ?>   
+                      <?php if ( $academic_period_value->current == 1) : ?>
+                        <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                      <?php else: ?>
+                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                      <?php endif; ?> 
+                  <?php endif; ?> 
+                <?php endforeach; ?>
+                </select>    
+      </td>
+    </tr>
     <tr> 
        <td><?php echo "Unitat organitzativa"?>:</td>
        <td>
-        <select id="select_all_ldap_users_main_organizational_unit_filter"><option value=""></option></select>
+        TODO<select id="select_all_ldap_users_main_organizational_unit_filter"><option value=""></option></select>
        </td>
        <td><?php echo "Tipus usuari"?>:</td>
        <td colspan="2">
-        <select id="select_all_ldap_users_user_type_filter"><option value=""></option><option value="1">1</option><option value="2">2</option></select>
+        TODO<select id="select_all_ldap_users_user_type_filter"><option value=""></option><option value="1">1</option><option value="2">2</option></select>
       </td>
     </tr>
   </thead>  
@@ -483,7 +522,7 @@
   <tr>
     <td colspan="25" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
-        <?php echo $user_ldap_table_title?>
+        <?php echo $user_ldap_table_title?>. Període acadèmic: <span id="academic_period_text">
       </a>
       </h4></td>
   </tr>

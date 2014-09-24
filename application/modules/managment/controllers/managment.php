@@ -583,10 +583,10 @@ class managment extends skeleton_main {
 		}
 	}
 
-	public function get_users_ldap() {
+	public function get_users_ldap($academic_period_id = null) {
 
 		$users_ldap = array();
-	    $users_ldap = $this->managment_model->get_all_ldap_users();    
+	    $users_ldap = $this->managment_model->get_all_ldap_users($academic_period_id);    
 
 	    echo '{
 	    "aaData": ';
@@ -596,7 +596,7 @@ class managment extends skeleton_main {
 	    echo '}';
 	}
 	
-	public function users_ldap() {
+	public function users_ldap($academic_period_id=null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -655,7 +655,29 @@ class managment extends skeleton_main {
 
 		$data = array();
 
+		$selected_academic_period_id = false;
+        $current_academic_period_id = null;
+
+        if ($academic_period_id == null) {
+            $database_current_academic_period =  $this->managment_model->get_current_academic_period();
+            
+            if ($database_current_academic_period->id) {
+                $current_academic_period_id = $database_current_academic_period->id;
+            } else {
+                $current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');  
+            }
+            
+            $academic_period_id=$current_academic_period_id ;   
+        } else {
+            $selected_academic_period_id = $academic_period_id;
+        }
+
+        $academic_periods = $this->managment_model->get_all_academic_periods();
+
 		$data['user_ldap_table_title'] = "Usuaris ldap";
+		$data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $selected_academic_period_id;
+        $data['academic_period_id'] = $academic_period_id;
 		
 		$this->load->view('users_ldap.php',$data);
 		
