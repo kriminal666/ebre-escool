@@ -110,7 +110,8 @@ class reports_model  extends CI_Model  {
 		WHERE enrollment.enrollment_group_id =26 AND `enrollment_periodid`="2014-15"
 		*/
 
-		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username,users.initial_password, person.person_email, person.person_secondary_email, person.person_photo, person.person_official_id');
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username,users.initial_password, users.last_login,
+			person.person_email, person.person_secondary_email, person.person_photo, person.person_official_id');
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
 		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
@@ -138,6 +139,7 @@ class reports_model  extends CI_Model  {
 				$student_info_array[$i]['givenName'] = $row['person_givenName'];
 				$student_info_array[$i]['username'] = $row['username'];
 				$student_info_array[$i]['initial_password'] = $row['initial_password'];
+				$student_info_array[$i]['last_login'] = $row['last_login'];				
 				$student_info_array[$i]['personal_email'] = $row['person_secondary_email'];
 				$student_info_array[$i]['corporative_email'] = $row['person_email'];
 				$student_info_array[$i]['photo_url'] = $row['person_photo'];

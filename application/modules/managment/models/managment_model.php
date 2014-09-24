@@ -181,28 +181,42 @@ class managment_model  extends CI_Model  {
 		INNER JOIN person ON person.person_id = users.person_id
 		WHERE 1
 		*/
-		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login, mainOrganizationaUnitId,person_givenName,person_sn1,person_sn2,ldap_dn,created_on,last_modification_date,
-				creation_user, last_modification_user,enrollment_id,enrollment_periodid,enrollment_entryDate,enrollment_last_update,enrollment_creationUserId, enrollment_lastupdateUserId');
+		$this->db->select('id, users.person_id,username, password,initial_password,force_change_password_next_login,last_login, mainOrganizationaUnitId,person_givenName,person_sn1,
+			    person_sn2,ldap_dn,created_on,last_modification_date,creation_user, last_modification_user,enrollment_id,enrollment_periodid,enrollment_entryDate, 
+			    enrollment_last_update,enrollment_creationUserId, enrollment_lastupdateUserId');
 		$this->db->from('users');
 		$this->db->join('person','person.person_id = users.person_id','left');
 		$this->db->join('enrollment','enrollment.enrollment_personid = person.person_id','left');
 		//TODO: Treure
-		//$this->db->limit(150);
+		//$this->db->limit(15);
 		
 		$query = $this->db->get();
 
 		//echo $this->db->last_query();
 
+		$teachers_person_ids = $this->get_persons_id_are_teachers_array();	
+		$employees_person_ids = $this->get_persons_id_are_employees_array();
+		$students_person_ids = $this->get_persons_id_are_students_array();
+
+		$teachers_group = $this->get_group("intranet_teacher");
+		$students_group = $this->get_group("intranet_student");
+
+		$basedn = $this->config->item('active_users_basedn');
+		$all_ldap_users_uid = $this->get_all_ldap_users_uid($basedn);
+
 		$all_ldap_users = array();
 		if ($query->num_rows() > 0){
 			$i=0;
 			foreach($query->result() as $row){				
+				//echo "i: " . $i . " | username: " . $row->username;
+				
 				$all_ldap_users[$i]['id'] = $row->id;
 				$all_ldap_users[$i]['person_id'] = $row->person_id;
 				$all_ldap_users[$i]['username'] = $row->username;
 				$all_ldap_users[$i]['password'] = $row->password;
 				$all_ldap_users[$i]['initial_password'] = $row->initial_password;
-				$all_ldap_users[$i]['force_change_password_next_login'] = $row->force_change_password_next_login;				
+				$all_ldap_users[$i]['force_change_password_next_login'] = $row->force_change_password_next_login;
+				$all_ldap_users[$i]['last_login'] = $row->last_login;				
 				$all_ldap_users[$i]['md5_initial_password'] = md5($row->initial_password);
 				$all_ldap_users[$i]['mainOrganizationaUnitId'] = $row->mainOrganizationaUnitId;
 				$all_ldap_users[$i]['person_givenName'] = $row->person_givenName;
@@ -219,54 +233,123 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['enrollment_last_update'] = $row->enrollment_last_update;
 				$all_ldap_users[$i]['enrollment_creationUserId'] = $row->enrollment_creationUserId;
 				$all_ldap_users[$i]['enrollment_lastupdateUserId'] = $row->enrollment_lastupdateUserId;
+				
+				//TOO SLOW
+				//$real_ldap_dn = $this->user_exists($row->username,$active_users_basedn);	
+				//FASTER
+				if ( array_key_exists ( $row->username , $all_ldap_users_uid ) ) {
+					$real_ldap_dn = $all_ldap_users_uid[$row->username];
+				} else {
+					$real_ldap_dn = "";
+				}
+				
 
-				$active_users_basedn = $this->config->item('active_users_basedn');
-				$real_ldap_dn = $this->user_exists($row->username,$active_users_basedn);	
 
 				$all_ldap_users[$i]['real_ldap_dn'] = $real_ldap_dn;
 
-				$all_ldap_users[$i]['user_type'] = $this->get_user_type($row->person_id);
+				//TOO SLOW
+				//$all_ldap_users[$i]['user_type'] = $this->get_user_type($row->person_id);
+				//FASTER:
+				if ( in_array ($row->person_id , $teachers_person_ids) ) {
+					$all_ldap_users[$i]['user_type'] = 1;
+				} elseif (in_array ($row->person_id , $employees_person_ids)) {
+					$all_ldap_users[$i]['user_type'] = 2;
+
+				} elseif (in_array ($row->person_id , $students_person_ids)) {
+					$all_ldap_users[$i]['user_type'] = 3;
+				} else {
+					$all_ldap_users[$i]['user_type'] = 4;
+				}
+
 				$group_to_search_dn=null;
 				$all_ldap_users[$i]['role']="";
+
 				switch ($all_ldap_users[$i]['user_type']) {
 				    case 1:
 				    	//TEACHER
-				        //TODO: at this time teacher are not touched
-				    	$group_to_search_dn="intranet_teacher";
+						if (in_array($row->username, $teachers_group->users)) {
+								$all_ldap_users[$i]['role'] = "intranet_teacher";
+						} else {
+							$all_ldap_users[$i]['role'] = "";
+						}
 				        break;
 				    case 2:
 				    	//EMPLOYEE
+				    	$all_ldap_users[$i]['role'] = "";
 				        break;
 				    case 3:
 				    	//STUDENT
-				    	$group_to_search_dn="intranet_student";
+				    	if (in_array($row->username, $students_group->users)) {
+								$all_ldap_users[$i]['role'] = "intranet_student";
+						} else {
+							$all_ldap_users[$i]['role'] = "";
+						}
 				        break;    
 				    default:
 				        break;
 				}
-
-				if ($group_to_search_dn!=null) {
-					//Search group dn
-					$group = $this->get_group($group_to_search_dn);
-
-					if ($group->dn) {
-						if (in_array($row->username, $group->users)) {
-							$all_ldap_users[$i]['role'] = $group_to_search_dn;
-						}
-					}
-				} else {
-					$all_ldap_users[$i]['role'] = "";
-				}
-
 				//echo "username: " . $row->username . " | " . "role: " . $all_ldap_users[$i]['role'] . "\n";
 				
 				$i++;
-
-				
 			}
 		}
 
 		return $all_ldap_users;
+	}
+
+	function get_persons_id_are_teachers_array() {
+		$this->db->select('teacher_person_id');
+		$this->db->from('teacher');
+
+		$query = $this->db->get();
+
+		$persons_id_are_teachers = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$persons_id_are_teachers[] = $row->teacher_person_id;
+			}
+		}
+
+		return $persons_id_are_teachers;	
+	}
+
+	function get_persons_id_are_employees_array() {
+		$this->db->select('employees_id');
+		$this->db->from('employees');
+
+		$query = $this->db->get();
+
+		$persons_id_are_employees = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$persons_id_are_employees[] = $row->employees_id;
+			}
+		}
+
+		return $persons_id_are_employees;	
+	}
+
+
+	function get_persons_id_are_students_array() {
+
+		$current_academic_shortname = $this->get_current_academic_period()->shortname;
+
+		$this->db->select('enrollment_personid');
+		$this->db->from('enrollment');
+		$this->db->join('person','enrollment.enrollment_personid = person.person_id');
+		$this->db->where('enrollment_periodid',$current_academic_shortname);
+
+		$query = $this->db->get();
+
+
+		$persons_id_are_students= array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$persons_id_are_students[] = $row->enrollment_personid;
+			}
+		}
+
+		return $persons_id_are_students;	
 	}
 
 	function get_user_type($person_id) {
@@ -423,6 +506,34 @@ class managment_model  extends CI_Model  {
 
 		return false;
 	}
+
+	public function get_all_ldap_users_uid($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_users_uid=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					$all_ldap_users_uid[$info[$i]["uid"][0]] = $info[$i]["dn"];
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_users_uid;
+			}
+		
+		}
+		return false;
+	}
+
+
 
 	public function deleteLdapUser($user_dn) {
 
@@ -668,7 +779,8 @@ class managment_model  extends CI_Model  {
 
 		$this->_init_ldap();
 		$filter = '(&(objectClass=posixGroup)(cn=' . $group_name . '))';
-		$basedn = $this->config->item('active_users_basedn');;
+		$basedn = $this->config->item('groups_basedn');
+
 		if ($this->_bind()) {
 	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
 	     	$entries = ldap_count_entries($this->ldapconn, $sr);

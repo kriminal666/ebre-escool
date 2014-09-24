@@ -260,6 +260,8 @@ $lang['user_ldap_creation_date']="Data de creació";
 $lang['user_ldap_last_modification_date']="Data última modificació";
 $lang['user_ldap_creation_user']="Usuari creació";
 $lang['user_ldap_last_modification_user']="Usuari última modificació";
+$lang['user_ldap_last_login']="Últim login";
+
 
 $lang['user_ldap_enrollment_id']="Id matrícula";
 $lang['user_ldap_enrollment_periodid']="Període matrícula";

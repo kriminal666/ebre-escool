@@ -24,7 +24,7 @@ $lang['mentoring_classlists_initial_password']   = 'Password inicial';
 $lang['mentoring_classlists_personal_email']   = 'Email personal';
 $lang['mentoring_classlists_corporative_email']   = 'Email centre';
 $lang['mentoring_classlists_username']   = 'Usuari';
-
+$lang['mentoring_classlists_last_login']   = 'Últim login';
 
 $lang['Copy']   = 'Copiar';
 $lang['Print']   = 'Imprimir';

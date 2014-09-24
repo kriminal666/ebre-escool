@@ -104,7 +104,7 @@
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
           <tr>
-            <td colspan="12" style="text-align: center;"> <h4>
+            <td colspan="13" style="text-align: center;"> <h4>
               <a href="#">
                 <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
               </a>
@@ -116,7 +116,7 @@
             <td style="text-align: right;">Codi grup:</td>
             <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
             <td style="text-align: right;">Tutor:</td>
-            <td style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
+            <td colspan="2" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
@@ -125,6 +125,7 @@
              <th><?php echo lang('mentoring_classlists_officialid')?></th>
              <th><?php echo lang('mentoring_classlists_username')?></th>
              <th><?php echo lang('mentoring_classlists_initial_password')?></th>
+             <th><?php echo lang('mentoring_classlists_last_login')?></th>
              <th><?php echo lang('mentoring_classlists_personal_email')?></th>
              <th><?php echo lang('mentoring_classlists_corporative_email')?></th>
           </tr>
@@ -224,6 +225,7 @@ $(function() {
                         { "mData": "person_official_id" },
                         { "mData": "username" },
                         { "mData": "initial_password" },
+                        { "mData": "last_login" },
                         { "mData": "personal_email" },
                         { "mData": "corporative_email" }
                       ],

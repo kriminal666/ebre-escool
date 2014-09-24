@@ -97,6 +97,7 @@
                         { "mData": function(data, type, full) {
                                     return '<span title="'+ data.md5_initial_password +'">' + data.initial_password + '</span>';
                                   }},
+                        { "mData": "last_login" },          
                         { "mData": function(data, type, full) {
                                     return data.force_change_password_next_login;
                                   }},          
@@ -503,6 +504,7 @@
      <th><?php echo lang('user_ldap_mainOrganizationaUnitId')?></th>
      <th><?php echo lang('user_ldap_user_type')?></th>
      <th><?php echo lang('user_ldap_initial_password')?></th>
+     <th><?php echo lang('user_ldap_last_login')?></th>
      <th><?php echo lang('user_ldap_force_change_password_next_login')?></th>     
      <th><?php echo lang('user_ldap_changed_initial_password')?></th>
      <th><?php echo lang('user_ldap_ldap_dn_error')?></th>     
