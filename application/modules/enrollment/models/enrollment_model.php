@@ -155,6 +155,46 @@ class enrollment_model  extends CI_Model  {
 	    return true;
 	}
 
+function get_ldap_passwords($username) {
+    $ldap_passwords = new stdClass();
+
+    $userPassword="";
+    $sambaNTPassword="";
+    $sambaLMPassword="";
+
+    $this->_init_ldap();
+    $filter = '(uid='.$username.')';    
+    //Get Ldap base DN for active users. It could be different from basedn
+    $active_users_basedn = $this->config->item('active_users_basedn');          
+    if ($this->_bind()) {
+        $sr = ldap_search($this->ldapconn, $active_users_basedn, $filter);
+        $entries = ldap_count_entries($this->ldapconn, $sr);
+        //echo "Count entries: " . $entries ."<br/>";
+        if ($entries == 1) {
+            $entryid=ldap_first_entry($this->ldapconn, $sr);
+            $userPasswordValues = ldap_get_values($this->ldapconn, $entryid, "userPassword");
+            $sambaNTPasswordValues = ldap_get_values($this->ldapconn, $entryid, "sambaNTPassword");
+            $sambaLMPasswordValues = ldap_get_values($this->ldapconn, $entryid, "sambaLMPassword");
+            //$dn = ldap_get_dn($this->ldapconn, $entryid);
+            $userPassword=$userPasswordValues[0];
+            $sambaNTPassword=$sambaNTPasswordValues[0];
+            $sambaLMPassword=$sambaLMPasswordValues[0];
+            ldap_close($this->ldapconn);
+            return $dn;
+        } else if ($entries > 1) {
+            echo "Error. Multiple uids found in Ldap!";
+            die();
+        }
+        ldap_close($this->ldapconn);
+    }
+
+    $ldap_passwords->userPassword = $userPassword;
+    $ldap_passwords->sambaNTPassword = $sambaNTPassword;
+    $ldap_passwords->sambaLMPassword = $sambaLMPassword;
+
+
+    return $ldap_passwords;
+}
 
 function addLdapUser($user_data,$ldap_passwords=false) {
         $CI =& get_instance();

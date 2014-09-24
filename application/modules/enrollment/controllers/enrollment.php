@@ -2344,7 +2344,9 @@ function insert_update_user() {
 
     $student['person_gender'] = $_POST['student_gender']; 
 
-    $student['person_photo'] = $_POST['student_photo']; 
+    if (isset($_POST['student_not_change_user_data']) ) {
+        $student['person_photo'] = $_POST['student_not_change_user_data']; 
+    }
 
     $student['person_lastupdateUserId'] = $current_userid;
     $date = date('Y-m-d H:i:s');
@@ -2378,10 +2380,12 @@ function insert_update_user() {
     }
 
     $ldap_password="";
-    
+    //echo "action:" . $action;
     if($action=='update'){
         
         // *********** UPDATE USER
+
+        /* TODO: Eliminar. Crec és un error?
         $updated_password="";
         //ONLY UPDATE PASSWORD IF CHANGED OF IF CONFIGURATION FORCE NEW PASSWORD FOR NEW ENROLLMENTS
         if ($student_password != "") {
@@ -2397,11 +2401,12 @@ function insert_update_user() {
                 if ($student_generated_password  != "" ) {
                     $updated_password=$student_generated_password;
                 } else {
-                    echo "Password no especified!\n";
+                    echo "Password not especified!\n";
                     return false;
                 }    
             }
         }
+        */
 
         //Username not changes if action is update
         //FIRST UPDATE TABLE PERSON
@@ -2473,7 +2478,7 @@ function insert_update_user() {
             if ($student_generated_password  != "" ) {
                 $updated_password=$student_generated_password;
             } else {
-                echo "Password no especified!\n";
+                echo "Password not especified!\n";
                 return false;
             }    
         }
@@ -2548,12 +2553,22 @@ function insert_update_user() {
                 $user_data->dn = $user_exists;
             }
         } 
-        
-        $user_data->password = $ldap_password;
+
+        //Check if we have to change user data:
+        //Username nevers changes: never changes on original MySQL.Nothing to do. ONLY PASSWORD IS IMPORTANT
+        $ldap_passwords=false;
+        if (!$student_not_change_user_data) {
+            $user_data->password = $ldap_password;
+            $ldap_passwords=false;
+        } else {
+            //NOT CHANGE LDAP PASSWORD: Recover first the passwords    
+            $ldap_passwords= $this->enrollment_model->get_ldap_passwords($user_data->username);
+        }
+
         
         //echo "user_data->dn : " . $user_data->dn;
         //echo "user_data dn: " . $user_data->dn;
-        $result = $this->enrollment_model->addLdapUser($user_data);
+        $result = $this->enrollment_model->addLdapUser($user_data,$ldap_passwords);
         if (!$result) {
             return false;
         }
