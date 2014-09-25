@@ -1465,7 +1465,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	/* Student Data */
 	public function get_student_data($official_id) {
 
-        $this->db->select('person_official_id,person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email,person_secondary_email, person_date_of_birth, person_gender, 
+        $this->db->select('person_official_id,person_official_id_type,person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email,person_secondary_email, person_date_of_birth, person_gender, 
             				   person_homePostalAddress, person_telephoneNumber, person_mobile, person_locality_id , locality_name, postalcode_code,users.username ');
 		$this->db->from('person');
 		$this->db->join('locality','locality.locality_id = person.person_locality_id',"left");

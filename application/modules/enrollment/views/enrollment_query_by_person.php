@@ -84,6 +84,18 @@
                                   <!-- AVATAR END -->
 
                                   <div class="span9">
+
+                                    <div class="span7">
+                                        <div class="span2">
+                                          <input type="radio" name="official_id_type" id="rb_is_dni" value="1"><span><?php echo lang('wizzard_official_DNI');?>&nbsp;</span>
+                                        </div>
+                                        <div class="span2">
+                                          <input type="radio" name="official_id_type" id="rb_is_nie" value="2"><span><?php echo lang('wizzard_official_NIE');?>&nbsp;</span>
+                                        </div>
+                                        <div class="span4">
+                                          <input type="radio" name="official_id_type" id="rb_is_passport" value="3"><span><?php echo lang('wizzard_official_passport');?>&nbsp;</span>
+                                        </div>
+                                      </div>
                                       
                                     <!-- DNI  -->
                                     <div class="span11" >
@@ -534,6 +546,8 @@ function refresh_enrollment_info(person_id, periode, enrollment_id) {
 
 jQuery(function($) {
 
+  $('input:radio[name=official_id_type]').val(['1']);
+
   var availableTags = <?php echo json_encode($all_person_official_ids);?>;
   student_official_id = $('#student_official_id');
   student_official_id.autocomplete({
@@ -767,7 +781,19 @@ study_submodules_table = $('#study_submodules_table').dataTable( {
                 }
                 
               }
-                student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
+
+              if(idx=='person_official_id_type'){
+                if(obj == 1){
+                   $('input:radio[name=official_id_type]').val(['1']);
+                } else if(obj == 2){
+                   $('input:radio[name=official_id_type]').val(['2']);
+                } else if(obj == 3){
+                  $('input:radio[name=official_id_type]').val(['3']);
+                }
+              }
+              
+              student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
+
             });
             
             //RELOAD PREVIOUS ENROLLMENTS:
@@ -799,10 +825,13 @@ study_submodules_table = $('#study_submodules_table').dataTable( {
               $('#person_locality_id').val(value_to_select);
               $('#person_locality_id').select2();*/
 
-              /*
+              
               student_photo = $('#student_photo');
               student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
-              student_full_name.text('Alumne');*/
+              student_full_name = $('#student_full_name').find("span.white");
+              student_full_name.text('Alumne');
+
+              $('input:radio[name=official_id_type]').val(['1']);
 
               $.each(empty_student, function(idx,obj) {
                 $("input[name$="+idx+"]").val(obj);
