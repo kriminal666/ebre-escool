@@ -70,6 +70,7 @@
                                       <div id="student_photo">
                                         <span class="profile-picture">
                                           <img id="avatar" style="height: 100px;" class="editable img-responsive editable-click" src="<?php echo base_url('assets/img/alumnes').'/foto.png';?>" alt="photo" />
+                                          <input id="person_photo" name="person_photo" type="hidden" />  
                                         </span>
                                       </div>                                        
 
@@ -314,6 +315,8 @@ function get_student_object_from_form_data() {
 
         };
 
+
+
       return student;
 }
 
@@ -322,7 +325,7 @@ function insert_update_user(student,action) {
       url:'<?php echo base_url("index.php/enrollment/insert_update_user");?>',
       type: 'post',
       data: {
-          student_person_id: student.person_id,
+          student_person_id: student.student_person_id,
           student_official_id : student.student_official_id,
           student_official_id_type : student.student_official_id_type,   
           student_secondary_official_id : student.student_secondary_official_id,
@@ -371,17 +374,33 @@ function insert_update_user(student,action) {
             class_name: 'gritter-error gritter-center'
           });
       },
-      success: function(data) {
+      /*success: function(data) {
         //console.debug("data:" + JSON.stringify(data));
         $.gritter.add({
           title: 'Correcte!',
           text: 'S\'han modificat correctament les dades de l\'usuari'  ,
         });
         
-      }
+      }*/
     }).done(function(data){
-        //TODO: Something to check?
-    
+        //Check if change is correct.
+        var all_data = $.parseJSON(data);
+        //console.debug(all_data);
+        
+        if (all_data.error) {
+          $.gritter.add({
+            title: 'Error!',
+            text: all_data.message,
+            class_name: 'gritter-error gritter-center'
+          });
+
+        } else {
+          $.gritter.add({
+            title: 'Canvi realitzat correctament!',
+            text: all_data.message,
+          });
+        }
+        
     });
   }
 
@@ -832,16 +851,13 @@ jQuery(function($) {
 
     //FIRST VALIDATE FORM. IS NOT VALID DONT FORWARD STEP
     if (! $('#validation-form').valid() ) {
-      //console.debug("Form still NOT VALID!!!!");
       console.debug("Form not valid!");
     } else {
-      console.debug("Form valid!");
+      //console.debug("Form valid!");
+      //AJAX SAVE
+      var student = get_student_object_from_form_data();
+      insert_update_user(student,"update");
     }
-
-    //AJAX SAVE
-    var student = get_student_object_from_form_data();
-    //console.debug(JSON.stringify(student));
-    insert_update_user(student,"update");
   });
 
 
@@ -951,9 +967,8 @@ jQuery(function($) {
               student_photo = $('#student_photo');
               student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
               student_full_name.text('Alumne');*/
-
               $.each(empty_student, function(idx,obj) {
-                $("#input[name$="+idx+"]").val(obj);
+                $("input[name$='"+idx+"']").val(obj);
               });
           }
 

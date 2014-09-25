@@ -805,7 +805,7 @@ study_submodules_table = $('#study_submodules_table').dataTable( {
               student_full_name.text('Alumne');*/
 
               $.each(empty_student, function(idx,obj) {
-                $("#input[name$="+idx+"]").val(obj);
+                $("input[name$="+idx+"]").val(obj);
               });
           }
 

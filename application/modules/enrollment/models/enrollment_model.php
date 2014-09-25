@@ -33,7 +33,7 @@ class enrollment_model  extends CI_Model  {
 	}
 
 
-	function user_exists($uid,$basedn) {
+	function user_exists($uid,$basedn="") {
         $this->_init_ldap();
         $filter = '(uid='.$uid.')';        
         if ($basedn=="")     {
@@ -126,14 +126,13 @@ class enrollment_model  extends CI_Model  {
 	            log_message('info', lang('error_connecting_to'). ' ' .$uri);
 	        }
 	    }
-	    
+    
 	    // At this point, $this->ldapconn should be set.  If not... DOOM!
 	    if(! $this->ldapconn) {
 	        log_message('error', lang('could_not_connect_to_ldap'));
 	        show_error(lang('error_connecting_to_ldap'));
 	    }
 
-	   
 	    // These to ldap_set_options are needed for binding to AD properly
 	    // They should also work with any modern LDAP service.
 	    ldap_set_option($this->ldapconn, LDAP_OPT_REFERRALS, 0);
@@ -142,9 +141,9 @@ class enrollment_model  extends CI_Model  {
 	    // Find the DN of the user we are binding as
 	    // If proxy_user and proxy_pass are set, use those, else bind anonymously
 	    if($this->proxy_user) {
-	        $bind = @ldap_bind($this->ldapconn, $this->proxy_user, $this->proxy_pass);
+	        $bind = ldap_bind($this->ldapconn, $this->proxy_user, $this->proxy_pass);
 	    }else {
-	        $bind = @ldap_bind($this->ldapconn);
+	        $bind = ldap_bind($this->ldapconn);
 	    }
 
 	    if(!$bind){
@@ -152,6 +151,7 @@ class enrollment_model  extends CI_Model  {
 	        show_error(lang('unable_bind'));
 	        return false;
 	    }   
+
 	    return true;
 	}
 
@@ -163,13 +163,13 @@ function get_ldap_passwords($username) {
     $sambaLMPassword="";
 
     $this->_init_ldap();
-    $filter = '(uid='.$username.')';    
+    $filter = "(uid=" . trim($username) . ")";    
     //Get Ldap base DN for active users. It could be different from basedn
-    $active_users_basedn = $this->config->item('active_users_basedn');          
+    $active_users_basedn = $this->config->item('active_users_basedn');    
     if ($this->_bind()) {
         $sr = ldap_search($this->ldapconn, $active_users_basedn, $filter);
         $entries = ldap_count_entries($this->ldapconn, $sr);
-        //echo "Count entries: " . $entries ."<br/>";
+        
         if ($entries == 1) {
             $entryid=ldap_first_entry($this->ldapconn, $sr);
             $userPasswordValues = ldap_get_values($this->ldapconn, $entryid, "userPassword");
@@ -179,10 +179,11 @@ function get_ldap_passwords($username) {
             $userPassword=$userPasswordValues[0];
             $sambaNTPassword=$sambaNTPasswordValues[0];
             $sambaLMPassword=$sambaLMPasswordValues[0];
-            ldap_close($this->ldapconn);
-            return $dn;
+
+
         } else if ($entries > 1) {
             echo "Error. Multiple uids found in Ldap!";
+            ldap_close($this->ldapconn);
             die();
         }
         ldap_close($this->ldapconn);

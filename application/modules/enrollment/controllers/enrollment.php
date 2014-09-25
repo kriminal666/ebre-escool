@@ -2284,6 +2284,11 @@ function get_user_data($userid,$user_id_is_username=false) {
 
 function insert_update_user() {
 
+    //var_export($_POST);
+
+    $result = false;
+    $partial_message ="";
+
     $current_userid = $this->session->userdata("user_id");
     $student = array();
     $user = array();
@@ -2291,6 +2296,8 @@ function insert_update_user() {
     $person_id = -1;
 
     $action = $_POST['action'];
+
+    //var_export($_POST);
 
     if(isset($_POST['student_person_id'])){
         $person_id = $_POST['student_person_id'];    
@@ -2344,8 +2351,8 @@ function insert_update_user() {
 
     $student['person_gender'] = $_POST['student_gender']; 
 
-    if (isset($_POST['student_not_change_user_data']) ) {
-        $student['person_photo'] = $_POST['student_not_change_user_data']; 
+    if (isset($_POST['student_photo']) ) {
+        $student['person_photo'] = $_POST['student_photo']; 
     }
 
     $student['person_lastupdateUserId'] = $current_userid;
@@ -2367,14 +2374,20 @@ function insert_update_user() {
     //Data validation for update and insert
     //Email: correct format
     if (!filter_var($student['person_email'], FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid person_email format\n";
+        $result_json_object = new stdClass();
+        $result_json_object->error = true;
+        $result_json_object->message = "Invalid person_email format";
+        echo json_encode($result_json_object);
         return false;
     }
     //person_secondary_email is not mandatory! Check if exists!
     if ($student['person_secondary_email'] != "") {
 
         if (!filter_var($student['person_secondary_email'], FILTER_VALIDATE_EMAIL)) {
-            echo "Invalid person_personal_email format\n";
+            $result_json_object = new stdClass();
+            $result_json_object->error = true;
+            $result_json_object->message = "Invalid person_personal_email format";
+            echo json_encode($result_json_object);
             return false;
         }
     }
@@ -2411,9 +2424,9 @@ function insert_update_user() {
         //Username not changes if action is update
         //FIRST UPDATE TABLE PERSON
         if ($person_id != -1 ) {
-            
             $result = $this->enrollment_model->update_student_data($person_id, $student);    
             if ($result) { //UPDATE user table is correct
+                $partial_message = "Dades personals canviades correctament!";
                 if (!$student_not_change_user_data) {
                     //Check if password is set. Then update users table
                     $new_calculated_md5_password="";
@@ -2427,7 +2440,10 @@ function insert_update_user() {
                             $user['initial_password'] = $student_generated_password;
                             $user['force_change_password_next_login'] = "y";    
                         } else {
-                            echo "Error. No password specified!";
+                            $result_json_object = new stdClass();
+                            $result_json_object->error = true;
+                            $result_json_object->message = "Error. No password specified!";
+                            echo json_encode($result_json_object);
                             return false;
                         }                    
                     }
@@ -2439,25 +2455,34 @@ function insert_update_user() {
                     $result = $this->enrollment_model->update_user_data($user['username'], $user);  
 
                     if (!$result) {
-                        echo "Error updating users table!";
+                        $result_json_object = new stdClass();
+                        $result_json_object->error = true;
+                        $result_json_object->message = "Error updating users table!";
+                        echo json_encode($result_json_object);
                         return false;
                     } else {
                         $rows_changed = $this->db->affected_rows();
 
                         if ($rows_changed == 1) {
-                            echo "User " . $user['username'] . " updated correctly!";    
+                            $partial_message = "User " . $user['username'] . " updated correctly!";    
                         }
                         elseif ($rows_changed == 0) {
-                            echo "User " . $user['username'] . " updated correctly. Nothing to change";    
+                            $partial_message = "User " . $user['username'] . " updated correctly. Nothing to change";    
                         } else {
-                            echo "ERROR in number of affected rows updating the user!";
+                            $result_json_object = new stdClass();
+                            $result_json_object->error = true;
+                            $result_json_object->message = "ERROR in number of affected rows updating the user!";
+                            echo json_encode($result_json_object);
                             return false;
                         }
                     }
                 }
             }
         } else {
-            echo "Person id not specified!";
+            $result_json_object = new stdClass();
+            $result_json_object->error = true;
+            $result_json_object->message = "Person id not specified!";
+            echo json_encode($result_json_object);
             return false;
         }
         
@@ -2470,7 +2495,10 @@ function insert_update_user() {
             if ($student_password  == $student_verify_password ) {
             $updated_password=$student_password;
             } else {
-                echo "Passwords doesn't match\n";
+                $result_json_object = new stdClass();
+                $result_json_object->error = true;
+                $result_json_object->message = "Passwords doesn't match!";
+                echo json_encode($result_json_object);
                 return false;
             }
         }
@@ -2478,7 +2506,10 @@ function insert_update_user() {
             if ($student_generated_password  != "" ) {
                 $updated_password=$student_generated_password;
             } else {
-                echo "Password not especified!\n";
+                $result_json_object = new stdClass();
+                $result_json_object->error = true;
+                $result_json_object->message = "Passwords not especified!";
+                echo json_encode($result_json_object);
                 return false;
             }    
         }
@@ -2487,7 +2518,10 @@ function insert_update_user() {
         //Data validation for insert
         //Mandatory fields: person_givenName, person_sn1, person_official_id, person_official_id_type
         if ( $student['person_givenName'] == "" || $student['person_sn1'] == "" | $student['person_official_id'] == "" || $student['person_official_id_type'] == "") {
-            echo "Some of the mandatory files are not specified!";
+            $result_json_object = new stdClass();
+            $result_json_object->error = true;
+            $result_json_object->message = "Some of the mandatory files are not specified!";
+            echo json_encode($result_json_object);
             return false;
         }
              
@@ -2521,12 +2555,15 @@ function insert_update_user() {
                 $result = $this->enrollment_model->insert_user_data($user);  
 
                 if (!$result) {
-                    echo "Error inserting user data to users table!";
+                    $result_json_object = new stdClass();
+                    $result_json_object->error = true;
+                    $result_json_object->message = "Error inserting user data to users table!";
+                    echo json_encode($result_json_object);
                     return false;
                 }  
 
                 $inserted_student = $this->check_student($student['person_official_id']);
-                print_r($inserted_student);
+                $partial_message = "User " . $user['username'] . " inserted correctly!";
             }
         }
     }
@@ -2543,7 +2580,19 @@ function insert_update_user() {
         //echo "user name: " . $user_data->username;
         $user_exists=$this->enrollment_model->user_exists($user_data->username,$active_users_basedn);
 
+        $ldap_passwords=false;
         if ($user_exists) {
+            //Check if we have to change user data:
+            //Username nevers changes: never changes on original MySQL.Nothing to do. ONLY PASSWORD IS IMPORTANT
+            if (!$student_not_change_user_data) {
+                $user_data->password = $ldap_password;
+                $ldap_passwords=false;
+            } else {
+                //NOT CHANGE LDAP PASSWORD: Recover first the passwords    
+                $ldap_passwords = $this->enrollment_model->get_ldap_passwords($user_data->username);
+            }
+
+            //echo "ldap_passwords: " . var_export($ldap_passwords);
             if ($user_exists === $user_data->dn) {
                 $this->enrollment_model->deleteLdapUser($user_data->dn);
             } else {
@@ -2554,30 +2603,31 @@ function insert_update_user() {
             }
         } 
 
-        //Check if we have to change user data:
-        //Username nevers changes: never changes on original MySQL.Nothing to do. ONLY PASSWORD IS IMPORTANT
-        $ldap_passwords=false;
-        if (!$student_not_change_user_data) {
-            $user_data->password = $ldap_password;
-            $ldap_passwords=false;
-        } else {
-            //NOT CHANGE LDAP PASSWORD: Recover first the passwords    
-            $ldap_passwords= $this->enrollment_model->get_ldap_passwords($user_data->username);
-        }
+        
 
         
         //echo "user_data->dn : " . $user_data->dn;
         //echo "user_data dn: " . $user_data->dn;
         $result = $this->enrollment_model->addLdapUser($user_data,$ldap_passwords);
         if (!$result) {
+            $result_json_object = new stdClass();
+            $result_json_object->error = true;
+            $result_json_object->message = "Error afegint l'usuari a ldap!";
+            echo json_encode($result_json_object);
             return false;
         }
         $this->enrollment_model->update_user_ldap_dn($user_data->username, $user_data->dn);
 
-
-        return $result;
+        $result_json_object = new stdClass();
+        $result_json_object->error = false;
+        $result_json_object->message = $partial_message . " | " . " Usuari ldap sincronitzat correctament!";
+        echo json_encode($result_json_object);
+        return true;
     } else {
-        echo "Error creating or updating user data";
+        $result_json_object = new stdClass();
+        $result_json_object->error = true;
+        $result_json_object->message = "Error creant o actualitzant les dades d'usuari";
+        echo json_encode($result_json_object);
         return false;
     }
     }
