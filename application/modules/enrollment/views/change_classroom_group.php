@@ -35,7 +35,7 @@
         <table class="table table-striped table-bordered table-hover table-condensed" id="TODO_filter">
           <thead style="background-color: #d9edf7;">
             <tr>
-              <td colspan="6" style="text-align: center;"> <strong>Modificació de grup de classe per alumne</strong><br/> <font size="-3">NOTA: Només es possible canviar entre grups de classe del mateix estudi i curs. Per fer un altre tipus de canvi de grup s'ha de fer una modificació sencera de matrícula)</font>
+              <td colspan="6" style="text-align: center;"> <strong>Modificació de grup de classe per alumne</strong><br/> <font size="-3">NOTA: Només es possible canviar entre grups de classe del mateix estudi. Per fer un altre tipus de canvi de grup s'ha de fer una modificació sencera de matrícula).</font>
                 </td>
             </tr>
             <tr> 

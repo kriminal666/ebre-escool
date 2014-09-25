@@ -1294,6 +1294,71 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			return false;
 	}
 
+    public function get_study_id_from_classroom_group_id($classroom_group_id) {
+        /*
+        SELECT `course_study_id`
+        FROM `classroom_group_academic_periods` 
+        INNER JOIN classroom_group ON classroom_group.`classroom_group_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_classroom_group_id`
+        INNER JOIN course ON course.`course_id` = classroom_group.`classroom_group_course_id`
+        WHERE `classroom_group_academic_periods_academic_period_id`=5 AND `classroom_group_academic_periods_classroom_group_id`=3
+        */
+
+        $current_academic_period_id = $this->get_current_academic_period_id();
+
+        $this->db->select('course_study_id');
+        $this->db->from('classroom_group_academic_periods');
+        $this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
+        $this->db->join('course','course.course_id = classroom_group.classroom_group_course_id');
+        $this->db->where('classroom_group_academic_periods_classroom_group_id',$classroom_group_id);
+        $this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+        $this->db->limit(1);
+
+        $query = $this->db->get();  
+        //echo $this->db->last_query();
+
+        if ($query->num_rows() == 1) {
+
+            $row = $query->row(); 
+            return $row->course_study_id;
+        }           
+        else
+            return false;
+    }
+
+    public function get_courses_id_from_classroom_group_id($classroom_group_id) {
+
+        $study_id = $this->get_study_id_from_classroom_group_id($classroom_group_id);
+        $current_academic_period_id = $this->get_current_academic_period_id();
+        
+        /*
+        SELECT `course_id`
+        FROM `course` 
+        INNER JOIN courses_academic_periods ON courses_academic_periods.`courses_academic_periods_course_id`= course.course_id
+        WHERE `course_study_id`=2 AND `courses_academic_periods_academic_period_id`=5
+        */
+
+        $this->db->select('course_id');
+        $this->db->from('course');
+        $this->db->join('courses_academic_periods','courses_academic_periods.courses_academic_periods_course_id= course.course_id');
+        $this->db->where('course_study_id',$study_id);
+        $this->db->where('courses_academic_periods_academic_period_id',$current_academic_period_id);
+
+        $query = $this->db->get();  
+        //echo $this->db->last_query();
+
+        $sibling_courses = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)    {
+                $sibling_courses[]= $row->course_id;
+            }
+            return $sibling_courses;
+        }           
+        else {
+            return $sibling_courses;
+        }
+
+    }
+
 	public function get_course_id_from_classroom_group_id($classroom_group_id) {
 		//SELECT `classroom_group_course_id`
 		//FROM classroom_group
@@ -1327,7 +1392,8 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	public function get_classroom_group_siblings($current_group) {
 
 		//GET COURSE
-		$course_id = $this->get_course_id_from_classroom_group_id($current_group);
+		//$course_id = $this->get_course_id_from_classroom_group_id($current_group); <-- PERMIT GROUP CHANGE IN SAME STUDY NOT ONLY SAME COURSE        
+        $sibling_courses_array = $this->get_courses_id_from_classroom_group_id($current_group);
 		/*
 		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id
 		FROM classroom_group
@@ -1340,8 +1406,10 @@ function update_user_ldap_dn($username, $ldap_dn) {
         $this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id');
 		$this->db->from('classroom_group');
 		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
-		$this->db->where('classroom_group_course_id',$course_id);
 		$this->db->where('classroom_group_academic_periods_academic_period_id', $current_academic_period_id );
+
+        $this->db->where_in('classroom_group_course_id',$sibling_courses_array);
+ 
 		
 		$query = $this->db->get();
 	
