@@ -941,6 +941,7 @@ class curriculum extends skeleton_main {
         $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_hoursPerWeek',lang($this->current_table.'_hoursPerWeek'));
@@ -957,8 +958,7 @@ class curriculum extends skeleton_main {
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COULD APPLY
         //$this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));
         
-        /*
-        $this->grocery_crud->columns($this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
+        /*$this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
                                      $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
                                      $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
                                      $this->current_table.'_academic_periods');
@@ -968,7 +968,7 @@ class curriculum extends skeleton_main {
                                      $this->current_table.'_academic_periods');
         $this->grocery_crud->edit_fields($this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
                                      $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
-                                     $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
+                                      $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
                                      $this->current_table.'_academic_periods');
         */
 
