@@ -941,21 +941,36 @@ class curriculum extends skeleton_main {
         $this->set_common_columns_name($this->current_table);
 
         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table.'_id'));
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
-        $this->grocery_crud->display_as($this->current_table.'_external_code',lang($this->current_table.'_external_code'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_hoursPerWeek',lang($this->current_table.'_hoursPerWeek'));
         $this->grocery_crud->display_as($this->current_table.'_courseid',lang($this->current_table.'_courseid'));        
+        $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
         $this->grocery_crud->display_as($this->current_table.'_teacher_id',lang($this->current_table.'_teacher_id'));
-        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
-        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));          
+        $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
         $this->grocery_crud->display_as($this->current_table.'_type',lang($this->current_table.'_type'));   
         $this->grocery_crud->display_as($this->current_table.'_subtype',lang($this->current_table.'_subtype'));        
+        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
+        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));          
+        $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));
+        
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COULD APPLY
         //$this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));
-        $this->grocery_crud->unset_columns($this->current_table.'_classroom_group_id','nom_grup','codi_professor','study_module_teacher_id');
-        $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
-        $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
+        
+        $this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
+                                     $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
+                                     $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
+                                     $this->current_table.'_academic_periods');
+        $this->grocery_crud->add_fields($this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
+                                     $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
+                                     $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
+                                     $this->current_table.'_academic_periods');
+        $this->grocery_crud->edit_fields($this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
+                                     $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
+                                     $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
+                                     $this->current_table.'_academic_periods');
+        
 
         //RELACIONS
         //$this->grocery_crud->set_relation($this->current_table.'_course_id','course','course_shortname'); 
@@ -963,6 +978,10 @@ class curriculum extends skeleton_main {
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COUL APPLY
         //$this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','({classroom_group_id} - {classroom_group_code} | {classroom_group_shortName})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname} - {course_name})');
+        $this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','{teacher_id}');
+        $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'study_module_academic_periods', 'academic_periods', 
+            'study_module_academic_periods_study_module_id', 'study_module_academic_periods_academic_period_id', 'academic_periods_name');
+
         
         /*
         Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)

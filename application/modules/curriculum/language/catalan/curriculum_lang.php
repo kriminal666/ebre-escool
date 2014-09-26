@@ -57,15 +57,19 @@ $lang['studies_departments']   = "Departaments";
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 //Sergi Tur 15 juny 2014: Els estudis no estan associats a grups de classse! Associats a cursos. Els grups de classe si estan associats a cursos
 //$lang['study_module_classroom_group_id']="Id Grup";
+$lang['study_module_id']="Id";
 $lang['study_module_courseid']="Curs";
 $lang['study_module_order']="Ordre";
 $lang['study_module_description']="Descripció";
-$lang['study_module_teacher_id']="Codi Professor";
+$lang['study_module_teacher_id']="Id professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          
 $lang['study_module_external_code']="Codi extern";          
 $lang['study_module_type']="Tipus";   
 $lang['study_module_subtype']="Subtipus";   
+$lang['study_module_academic_periods']="Períodes acadèmics";   
+
+
 $lang['study_submodules_study_module_id']="Mòdul Professional";   
 $lang['study_submodules_courseid']="Curs";   
 $lang['study_submodules_initialDate']="Data inici";
@@ -89,12 +93,6 @@ $lang['study_module_academic_periods_external_code']="Codi extern";
 $lang['study_module_academic_periods_initialDate']="Data inici";
 $lang['study_module_academic_periods_endDate']="Data fi";
 
-
-
-$lang['study_module_hoursPerWeek']="Hores Setmanals";
-$lang['study_module_teacher_id']="Codi Professor";
-$lang['study_module_initialDate']="Data inici";
-$lang['study_module_endDate']="Data fí";          
 $lang['type']="Tipus";   
 $lang['subtype']="Subtipus"; 
 
