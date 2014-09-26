@@ -145,6 +145,9 @@ class managment extends skeleton_main {
 		$header_data= $this->add_css_to_html_header_data(
                 $header_data,
                     "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		$header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));  
 
 		//JS
 		$header_data= $this->add_javascript_to_html_header_data(
@@ -161,6 +164,10 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+		$header_data= $this->add_javascript_to_html_header_data(
+	        $header_data,
+	        base_url('assets/js/jquery.gritter.min.js')); 
+
 			
 		$this->_load_html_header($header_data); 
 		
@@ -201,6 +208,7 @@ class managment extends skeleton_main {
 		$this->_load_body_footer();	
 		
 	}
+
 
 	public function create_initial_password() {
 		if (!$this->session->userdata('is_admin')) {
@@ -720,7 +728,27 @@ class managment extends skeleton_main {
 	    echo '}';
 
 
-	}	
+	}
+
+		
+
+	public function calculate_study_module () {
+
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->calculate_study_module($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
 
 	public function create_multiple_initial_passwords () {
 

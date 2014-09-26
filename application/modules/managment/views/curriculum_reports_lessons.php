@@ -34,6 +34,22 @@
       <script>
       $(function(){
 
+              $("#select_all").click(function() {
+
+                $('input:checkbox').map(function () {
+                  this.checked = true;
+                }).get(); 
+                
+              });
+
+              $("#unselect_all").click(function() {
+
+                $('input:checkbox').map(function () {
+                  this.checked = false;
+                }).get(); 
+                
+              });
+
               //Jquery select plugin: http://ivaynberg.github.io/select2/
               $("#select_lessons_academic_period_filter").select2();
 
@@ -101,6 +117,62 @@
             }
              
         }); 
+
+        $("#calculate_study_module").click(function() {
+              var txt;
+              var r = confirm("Esteu segurs que voleu fer aquest càlcul per a tots els mòduls seleccionats?");
+              if (r == true) {
+
+                  var values = $('input:checkbox:checked.ace').map(function () {
+                    return this.id;
+                  }).get(); 
+                  
+                  //AJAX
+                  $.ajax({
+                  url:'<?php echo base_url("index.php/managment/calculate_study_module");?>',
+                  type: 'post',
+                  data: {
+                      values: values,
+                  },
+                  datatype: 'json',
+                  statusCode: {
+                    404: function() {
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/calculate_study_module' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    },
+                    500: function() {
+                      $("#response").html('A server-side error has occurred.');
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/calculate_study_module ' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    }
+                  },
+                  error: function() {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Ha succeït un error!' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                  },
+                  success: function(data) {
+                    //console.debug("data:" + JSON.stringify(data));
+                    //console.debug(JSON.stringify(all_ldap_users_table));
+                    //all_lessons_table.ajax.reload();
+                    location.reload();
+                  }
+                }).done(function(data){
+                    //TODO: Something to check?
+                
+
+                });
+              }
+
+        });
 
         $("#select_all_lessons_study_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un estudi", allowClear: true });
 
@@ -290,19 +362,47 @@
         </select>
       </td>
     </tr>
+    <tr>
+      <td colspan="7" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
+        </strong></td>
+    </tr>
+    <tr> 
+       <td>
+        <button class="btn btn-mini btn-danger" id="select_all">
+          <i class="icon-bolt"></i>
+          Selecionar tots
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td>
+        <button class="btn btn-mini btn-danger" id="unselect_all">
+          <i class="icon-bolt"></i>
+          Deselecionar tots
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td colspan="4">
+        <button class="btn btn-mini btn-info" id="calculate_study_module">
+          <i class="icon-bolt"></i>
+          Calcular Mòdul professional/Crèdit
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+    </tr>
   </thead>  
 </table> 
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_lessons">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="13" style="text-align: center;"> <h4>
+    <td colspan="15" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/lessons') ;?>">
         <?php echo $lessons_table_title?>
       </a>
       </h4></td>
   </tr>
-  <tr> 
+  <tr>
+     <th>&nbsp;</th>
      <th><?php echo lang('lesson_id')?></th>
      <th><?php echo lang('lesson_academic_period')?></th>
      <th><?php echo lang('lesson_code')?></th>
@@ -310,6 +410,7 @@
      <th><?php echo lang('lesson_course')?></th>
      <th><?php echo lang('lesson_classroom_group')?></th>
      <th><?php echo lang('lesson_teacher')?></th>
+     <th><?php echo lang('lesson_study_module_name_from_external_app')?></th>
      <th><?php echo lang('lesson_study_module')?></th>
      <th><?php echo lang('lesson_location')?></th>
      <th><?php echo lang('lessons_day')?></th>
@@ -325,6 +426,7 @@
   <?php if (is_array($all_lessons) ) : ?>
   <?php foreach ($all_lessons as $lesson_key => $lesson) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
+     <td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $lesson->id;?>"><span class="lbl">&nbsp;</span></label></td>
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/lessons/read/' . $lesson->id ) ;?>">
           <?php echo $lesson->id;?>
@@ -383,6 +485,10 @@
           </a> )
      </td>
      
+     <td>
+        <?php echo $lesson->codi_assignatura;?>
+     </td>
+
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/study_module/read/' . $lesson->study_module_id ) ;?>">
           <?php echo $lesson->study_module_shortname . ". " . $lesson->study_module_name;?>

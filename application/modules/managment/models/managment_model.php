@@ -83,7 +83,166 @@ class managment_model  extends CI_Model  {
 			}
 		}		
 		return true;
-	}		
+	}	
+
+	function get_lesson($lesson_id) {
+
+		/*
+		SELECT lesson_id, lesson_academic_period_id, lesson_import_id, lesson_code, lesson_codi_assignatura, lesson_classroom_group_id, lesson_codi_grup, 
+		lesson_teacher_id, lesson_codi_professor, lesson_study_module_id, lesson_location_id, codi_espai, lesson_day, lesson_time_slot_id, codi_hora, 
+		lesson_entryDate, lesson_last_update, lesson_creationUserId, lesson_lastupdateUserId, lesson_markedForDeletion, lesson_markedForDeletionDate 
+		FROM lesson 
+		WHERE lesson_id=1
+		*/
+
+		$this->db->select('lesson_id, lesson_academic_period_id, lesson_import_id, lesson_code, lesson_codi_assignatura, lesson_classroom_group_id, lesson_codi_grup, 
+		lesson_teacher_id, lesson_codi_professor, lesson_study_module_id, lesson_location_id, codi_espai, lesson_day, lesson_time_slot_id, codi_hora, 
+		lesson_entryDate, lesson_last_update, lesson_creationUserId, lesson_lastupdateUserId, lesson_markedForDeletion, lesson_markedForDeletionDate');
+		$this->db->from('lesson');
+		$this->db->where('lesson_id',$lesson_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		$lesson = new stdClass();
+		if ($query->num_rows() == 1){ 			
+			$row = $query->row();
+			$lesson->id = $row->lesson_id;
+			$lesson->academic_period_id = $row->lesson_academic_period_id;
+			$lesson->import_id = $row->lesson_import_id;
+			$lesson->code = $row->lesson_code;
+			$lesson->codi_assignatura = $row->lesson_codi_assignatura;
+			$lesson->classroom_group_id = $row->lesson_classroom_group_id;
+			$lesson->codi_grup = $row->lesson_codi_grup;
+			$lesson->teacher_id = $row->lesson_teacher_id;
+			$lesson->codi_professor = $row->lesson_codi_professor;
+			$lesson->study_module_id = $row->lesson_study_module_id;
+			$lesson->location_id = $row->lesson_location_id;
+			$lesson->codi_espai = $row->codi_espai;
+			$lesson->day = $row->lesson_day;
+			$lesson->time_slot_id = $row->lesson_time_slot_id;
+			$lesson->codi_hora = $row->codi_hora;
+			$lesson->entryDate = $row->lesson_entryDate;
+			$lesson->last_update = $row->lesson_last_update;
+			$lesson->creationUserId = $row->lesson_creationUserId;
+			$lesson->lastupdateUserId = $row->lesson_lastupdateUserId;
+			$lesson->markedForDeletion = $row->lesson_markedForDeletion;
+			$lesson->markedForDeletionDate = $row->lesson_markedForDeletionDate;
+
+
+			return $lesson;
+		} else {
+			return false;
+		}
+
+	}	
+
+	function get_study_module_id_by_shortname_and_course_id ($study_module_shortname,$course_id) {
+		/*
+		SELECT `study_module_id` , `study_module_shortname` , `study_module_name` , `study_module_hoursPerWeek` , `study_module_courseid`
+		FROM study_module
+		WHERE `study_module_shortname` = "MP07" AND study_module_courseid=2
+		*/
+
+		//FIRST SEARCH A PERFECT MATCH
+		$this->db->select('study_module_id');
+		$this->db->from('study_module');
+		$this->db->where('study_module_shortname',$study_module_shortname);
+		$this->db->where('study_module_courseid',$course_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+
+		if ($query->num_rows() == 1){ 
+			return $query->row()->study_module_id;
+		}
+
+		//THEN SEARCH AND APROXIMATE MATCH
+
+		$study_module_shortname_number = preg_replace("/[^0-9]/","",$study_module_shortname);
+
+		$this->db->select('study_module_id');
+		$this->db->from('study_module');
+		$this->db->like('study_module_shortname',$study_module_shortname_number);
+		$this->db->where('study_module_courseid',$course_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+		echo $this->db->last_query();
+
+
+		if ($query->num_rows() == 1){ 
+			return $query->row()->study_module_id;
+		}
+
+		return false;
+		
+	}
+
+	function get_course_id_by_classroom_group_id($classroom_group_id) {
+		/*
+		SELECT course_id
+		FROM course
+		INNER JOIN classroom_group ON classroom_group.classroom_group_course_id = course.course_id
+		WHERE `classroom_group_id`=3
+		*/
+
+		$this->db->select('course_id');
+		$this->db->from('course');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = course.course_id');
+		$this->db->where('classroom_group_id',$classroom_group_id);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){ 
+			return $query->row()->course_id;
+		}
+		return false;
+	}
+
+	function update_study_module_id($lesson_id,$study_module_id) {
+		/*Example SQL
+		UPDATE `lesson` 
+		SET `lesson_study_module_id`= 4
+		WHERE `lesson_id`= 1
+		*/
+
+		$data = array(
+               'lesson_study_module_id' => $study_module_id
+            );
+
+		$this->db->where('lesson_id', $lesson_id);
+		$this->db->update('lesson', $data);
+
+	}
+
+	
+
+	function calculate_study_module($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				$lesson_id= $value;
+				//value --> lesson_id
+				//Obtain lesson
+				$lesson = $this->get_lesson($lesson_id);
+				//var_export($lesson);
+				$course_id = $this->get_course_id_by_classroom_group_id($lesson->classroom_group_id);
+				if (!$course_id) {
+					return false;
+				}
+				$study_module_id = $this->get_study_module_id_by_shortname_and_course_id($lesson->codi_assignatura,$course_id);
+				if ($study_module_id) {
+					$this->update_study_module_id($lesson_id,$study_module_id);
+				}
+			}
+		}		
+		return true;
+	}
 
 	function create_multiple_initial_passwords($values) {
 		
@@ -1345,7 +1504,7 @@ class managment_model  extends CI_Model  {
 		$this->db->join('users','users.person_id = person.person_id','left');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id','left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id','left');
-		$this->db->join('course','course.course_id = enrollment.enrollment_course_id','left');
+		$this->db->join('course','study_module_id.course_id = enrollment.enrollment_course_id','left');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id','left');
 
 		$this->db->order_by('enrollment_entryDate', $orderby);
@@ -1366,7 +1525,7 @@ class managment_model  extends CI_Model  {
 				$enrollment->person_id = $row->enrollment_personid;
 				$enrollment->person_sn1 = $row->person_sn1;
 				$enrollment->person_sn2 = $row->person_sn2;
-				$enrollment->person_givenName = $row->person_givenName;
+				$enrollment->person_givstudy_module_idstudy_module_idstudy_module_idstudy_module_idenName = $row->person_givenName;
 				$enrollment->person_official_id = $row->person_official_id;
 
 				$enrollment->user_id = $row->id;
@@ -1955,7 +2114,7 @@ class managment_model  extends CI_Model  {
 		WHERE study_module_academic_periods_academic_period_id = 5
 		*/
 
-		$this->db->select('study_module_id, study_module_external_code, study_module_shortname, study_module_name, study_module_courseid, course_shortname, course_name, course_study_id, 
+		$this->db->select('study_module_id, study_module_academic_periods_external_code, study_module_shortname, study_module_name, study_module_courseid, course_shortname, course_name, course_study_id, 
 			               studies_shortname , studies_name, studies_studies_law_id, studies_law_shortname , studies_law_name ,study_module_hoursPerWeek, study_module_order, 
 			               study_module_academic_periods_initialDate, study_module_academic_periods_endDate, study_module_type, study_module_subtype, study_module_description');
 		$this->db->from('study_module_academic_periods');
@@ -1975,7 +2134,7 @@ class managment_model  extends CI_Model  {
 				$study_module = new stdClass;
 				
 				$study_module->id = $row->study_module_id;
-				$study_module->code = $row->study_module_external_code;
+				$study_module->code = $row->study_module_academic_periods_external_code;
 				$study_module->shortname = $row->study_module_shortname;
 				$study_module->name = $row->study_module_name;
 				$study_module->description = $row->study_module_description;
@@ -2035,7 +2194,7 @@ class managment_model  extends CI_Model  {
 		LEFT JOIN studies ON studies.studies_id = course.course_study_id
 		LEFT JOIN teacher ON teacher.teacher_id = lesson.lesson_teacher_id
 		TODO 
-		LEFT JOIN person ON person.person_id = lesson.lesson_teacher_id
+		LEFT JOIN person ON person.person_id = teacher.teacher_person_id
 		LEFT JOIN study_module ON study_module.study_module_id = lesson.lesson_study_module_id
 		LEFT JOIN location ON location.location_id = lesson.lesson_location_id
 		LEFT JOIN time_slot ON time_slot.time_slot_id = lesson.lesson_time_slot_id
@@ -2043,7 +2202,7 @@ class managment_model  extends CI_Model  {
 		*/
 
 		$this->db->select('lesson_id,lesson_academic_period_id,academic_periods.academic_periods_shortname,lesson_code, course_id, course_shortname, course_name, course_study_id ,studies_shortname, studies_name, lesson_classroom_group_id, classroom_group_code, classroom_group_shortName,
-			   classroom_group_name,lesson_teacher_id, teacher_academic_periods_code, teacher_person_id, person_givenName, person_sn1, person_sn2, lesson_study_module_id, study_module_shortname, 
+			   classroom_group_name,lesson_teacher_id, teacher_academic_periods_code, teacher_person_id, person_givenName, person_sn1, person_sn2, lesson_codi_assignatura, lesson_study_module_id, study_module_shortname, 
 			   study_module_name, lesson_location_id, location_name, location_shortName, lesson_day, lesson_time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective , time_slot_order');
 		$this->db->from('lesson');
 		$this->db->join('academic_periods','academic_periods.academic_periods_id = lesson.lesson_academic_period_id', 'left');
@@ -2052,7 +2211,7 @@ class managment_model  extends CI_Model  {
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
 		$this->db->join('teacher','teacher.teacher_id = lesson.lesson_teacher_id', 'left');
 		$this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id', 'left');
-		$this->db->join('person','person.person_id = lesson.lesson_teacher_id', 'left');
+		$this->db->join('person','person.person_id = teacher.teacher_person_id', 'left');
 		$this->db->join('study_module','study_module.study_module_id = lesson.lesson_study_module_id', 'left');
 		$this->db->join('location','location.location_id = lesson.lesson_location_id', 'left');
 		$this->db->join('time_slot','time_slot.time_slot_id = lesson.lesson_time_slot_id', 'left');
@@ -2094,6 +2253,7 @@ class managment_model  extends CI_Model  {
 				$lesson->sn1 = $row->person_sn1;
 				$lesson->sn2 = $row->person_sn2;
 
+				$lesson->codi_assignatura = $row->lesson_codi_assignatura;
 				$lesson->study_module_id = $row->lesson_study_module_id;
 				$lesson->study_module_shortname = $row->study_module_shortname;
 				$lesson->study_module_name = $row->study_module_name;

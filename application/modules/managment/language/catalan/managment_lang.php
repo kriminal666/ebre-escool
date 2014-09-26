@@ -229,6 +229,7 @@ $lang['lesson_study']="Estudi";
 $lang['lesson_code']="Codi extern";
 $lang['lesson_classroom_group']="Grup de classe";
 $lang['lesson_teacher']="Professor";
+$lang['lesson_study_module_name_from_external_app']="Codi materia";
 $lang['lesson_study_module']="Mòdul professional/Crèdit";
 $lang['lesson_location']="Espai";
 $lang['lessons_day']="Dia";
