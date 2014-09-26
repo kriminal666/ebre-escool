@@ -337,6 +337,7 @@ function addLdapUser($user_data,$ldap_passwords=false) {
             $user_data_array["sambaAcctFlags"]=$CI->config->item('samba_acctFlags');
             $user_data_array["sambaBadPasswordCount"]=$CI->config->item('samba_badPasswordCount');
             $user_data_array["sambaBadPasswordTime"]=$CI->config->item('samba_badPasswordTime');
+            $user_data_array["sambaLogonTime"]=$CI->config->item('samba_logonTime');
             $user_data_array["sambaMungedDial"]=$CI->config->item('samba_mungedDial');
             $user_data_array["sambaPrimaryGroupSID"]=$CI->config->item('samba_primaryGroupSID');
 
