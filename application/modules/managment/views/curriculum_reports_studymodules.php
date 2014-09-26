@@ -222,8 +222,8 @@
       <a href="<?php echo base_url('/index.php/curriculum/studies/read/' . $study_module->study_id ) ;?>">
           <?php echo $study_module->study_shortname . ". " . $study_module->study_name . " - " . $study_module->study_law_name . " -" . $study_module->study_law_shortname;?>
       </a>
-      ( <a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $study_module->course_id ) ;?>">
-          <?php echo $study_module->course_id ;?>
+      ( <a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $study_module->study_id ) ;?>">
+          <?php echo $study_module->study_id ;?>
       </a> )
      </td>
      
