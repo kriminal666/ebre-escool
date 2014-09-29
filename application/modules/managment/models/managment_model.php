@@ -69,6 +69,89 @@ class managment_model  extends CI_Model  {
 
 		return $pw;
 	}
+
+
+	//IMPORTANT: password not hashed is necessary for Windows NT passwords!
+	function replace_ldap_password($user_data,$password = null) {
+
+		if ($password==null) {
+			if ($user_data->initial_password!="") {
+				$password = $user_data->initial_password;
+			} else {
+				//Not hashed password provided. Skip!
+				return;
+			}
+			
+		} 
+		$md5_password= md5($password);
+
+		$ldap_password = "{MD5}".base64_encode(pack("H*",$md5_password));
+		$cr = new Crypt_CHAP_MSv1();
+		$sambaNTPassword = strtoupper(bin2hex($cr->ntPasswordHash($password)));
+		$sambaLMPassword = strtoupper(bin2hex($cr->lmPasswordHash($password)));	
+		
+		//Get Ldap base DN for active users. It could be different from basedn
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+
+		$user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+		//ALWAYS DELETE FIRST LDAP USER IF EXIST --> FORCE TO RESYNC ALL DATA
+		$user_dn="";
+		if (!$user_exists) {
+			//Anything TODO: skip this cases
+			return;
+		} else {
+			$user_dn = $user_exists;
+		}
+
+		//IMPORTANT: Replace unix password and Windows passwords!
+		$this->_init_ldap();
+		if ($this->_bind()) {
+
+			// first check if username is already in group:
+			$entry["userPassword"]=$ldap_password;
+			$entry["sambaLMPassword"]=$sambaNTPassword;
+			$entry["sambaNTPassword"]=$sambaLMPassword;
+
+			$result = ldap_mod_replace ( $this->ldapconn , $user_dn , $entry );
+			return $result;
+		}
+
+		return false;
+	}
+		
+
+	function sync_mysql_password_to_ldap($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				$user_data = new stdClass();
+				$user_data = $this->get_user_data($value);
+
+				//var_export($user_data);
+				$this->replace_ldap_password($user_data);
+			}
+		}		
+		return true;
+	}	
+
+	function avoid_change_of_password_on_windows($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				$user_data = new stdClass();
+				$user_data = $this->get_user_data($value);
+
+				//$this->syncUserToLdap($user_data);
+
+			}
+		}		
+		return true;
+	}	
+
+
 	
 	function sync_mysql_ldap($values) {
 		
@@ -368,7 +451,8 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['person_id'] = $row->person_id;
 				$all_ldap_users[$i]['username'] = $row->username;
 				$all_ldap_users[$i]['password'] = $row->password;
-				$all_ldap_users[$i]['password_in_ldap_format'] = "{MD5}" . base64_encode(pack('H*',md5($row->password)));
+
+				$all_ldap_users[$i]['password_in_ldap_format'] = "{MD5}" . base64_encode(pack('H*',$row->password));
 
 				$ldap_password="";
 				if ( array_key_exists ( $row->username , $all_ldap_users_passwords ) ) {
@@ -894,10 +978,11 @@ class managment_model  extends CI_Model  {
 		    $user_data_array["sambaBadPasswordCount"]=$CI->config->item('samba_badPasswordCount');
 		    $user_data_array["sambaBadPasswordTime"]=$CI->config->item('samba_badPasswordTime');
             $user_data_array["sambaLogonTime"]=$CI->config->item('samba_logonTime');
+            $user_data_array["sambaPwdLastSet"]=$CI->config->item('samba_pwdLastSet');
 		    $user_data_array["sambaMungedDial"]=$CI->config->item('samba_mungedDial');
 		    $user_data_array["sambaPrimaryGroupSID"]=$CI->config->item('samba_primaryGroupSID');
 
-		    //TODO. Calculate Windows Passwords		    
+		    //Calculate Windows Passwords		    
 			$cr = new Crypt_CHAP_MSv1();		
 
 			if ( $ldap_passwords == false) {
@@ -1351,16 +1436,19 @@ class managment_model  extends CI_Model  {
 	function get_user_data($userid,$user_id_is_username=false) {
 
 		/* Example
-		SELECT id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
-		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
-		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
-		       person_homePostalAddress, person_photo, person_locality_id, person_telephoneNumber, person_mobile
-		FROM users 
-		INNER JOIN person ON users.person_id = person.person_id
-		WHERE id = 1
+		SELECT `id`, `users`.`person_id`, `username`, `password`, `users`.`initial_password`, `mainOrganizationaUnitId`, `ldap_dn`, `person_givenName`, 
+		`person_sn1`, `person_sn2`, `person_email`, `person_secondary_email`, `person_terciary_email`, `person_official_id`, `person_official_id_type`, 
+		`person_date_of_birth`, `person_gender`, `person_secondary_official_id`, `person_secondary_official_id_type`, `person_homePostalAddress`,
+		 `person_photo`, `person_locality_id`, `locality_name`, `postalcode_code`, `person_telephoneNumber`, `person_mobile`
+		FROM (`users`)
+		JOIN `person` ON `users`.`person_id` = `person`.`person_id`
+		LEFT JOIN `locality` ON `locality`.`locality_id` = `person`.`person_locality_id`
+		LEFT JOIN `postalcode` ON `postalcode`.`postalcode_localityid` = `locality`.`locality_id`
+		WHERE `id` =  '55'
+		LIMIT 1
 		*/
 
-		$this->db->select('id, users.person_id, username, password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
+		$this->db->select('id, users.person_id, username, password,users.initial_password, mainOrganizationaUnitId,ldap_dn, person_givenName,person_sn1,
 		       person_sn2,person_email,person_secondary_email,person_terciary_email,person_official_id,person_official_id_type,
 		       person_date_of_birth,person_gender,person_secondary_official_id,person_secondary_official_id_type, 
 		       person_homePostalAddress, person_photo, person_locality_id,locality_name,postalcode_code, person_telephoneNumber, person_mobile');
@@ -1388,6 +1476,8 @@ class managment_model  extends CI_Model  {
 			$user_data->person_id = $row->person_id;
 			$user_data->username = $row->username;
 			$user_data->password = $row->password;
+			$user_data->initial_password = $row->initial_password;
+			
 			$user_data->ldap_dn = $row->ldap_dn;
 			$user_data->person_givenName = $row->person_givenName;
 			$user_data->person_sn1 = $row->person_sn1;

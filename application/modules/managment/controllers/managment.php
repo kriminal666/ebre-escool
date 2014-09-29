@@ -694,6 +694,48 @@ class managment extends skeleton_main {
 		
 	}
 
+	
+
+	
+
+	public function sync_mysql_password_to_ldap () {
+
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->sync_mysql_password_to_ldap($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
+
+	public function avoid_change_of_password_on_windows () {
+
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->avoid_change_of_password_on_windows($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
+
+
+
 	public function sync_mysql_ldap () {
 
 
