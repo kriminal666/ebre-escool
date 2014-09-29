@@ -95,6 +95,8 @@
                         { "mData": "password" },
                         { "mData": "password_in_ldap_format" },
                         { "mData": "ldap_password" },
+                        { "mData": "ldap_pwdLastSet" },
+                        { "mData": "ldap_LogonTime" },
                         { "mData": "enrollment_id" },   
                         { "mData": "enrollment_periodid" },
                         { "mData": "enrollment_entryDate" },
@@ -298,7 +300,7 @@
 
       $("#avoid_change_of_password_on_windows").click(function() {
               var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta sincronització massiva de MySQL a Ldap?");
+              var r = confirm("Esteu segurs que voleu fer aquesta operació de forma massiva?");
               if (r == true) {
 
                   var values = $('input:checkbox:checked.ace').map(function () {
@@ -656,7 +658,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="29" style="text-align: center;"> <h4>
+    <td colspan="31" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
         <?php echo $user_ldap_table_title?>. Període acadèmic: <span id="academic_period_text">
       </a>
@@ -672,7 +674,8 @@
      <th><?php echo lang('user_ldap_password')?></th>
      <th><?php echo lang('user_ldap_password_calculated_in_ldap_Format')?></th>
      <th><?php echo lang('user_ldap_password_ldap_password')?></th>
-
+     <th><?php echo lang('user_ldap_password_last_set')?></th>
+     <th><?php echo lang('user_ldap_logonTime')?></th>
      <th><?php echo lang('user_ldap_enrollment_id')?></th>
      <th><?php echo lang('user_ldap_enrollment_periodid')?></th>
      <th><?php echo lang('user_ldap_enrollment_entryDate')?></th>

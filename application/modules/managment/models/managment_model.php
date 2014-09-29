@@ -71,6 +71,41 @@ class managment_model  extends CI_Model  {
 	}
 
 
+	function replace_ldap_info_to_avoid_change_of_password_on_windows($user_data) {
+		$CI =& get_instance();
+        $CI->load->config('samba');
+
+        //Get Ldap base DN for active users. It could be different from basedn
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+        $user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+		//ALWAYS DELETE FIRST LDAP USER IF EXIST --> FORCE TO RESYNC ALL DATA
+		$user_dn="";
+		if (!$user_exists) {
+			//Anything TODO: skip this cases
+			return;
+		} else {
+			$user_dn = $user_exists;
+		}
+
+        //IMPORTANT: Replace unix password and Windows passwords!
+		$this->_init_ldap();
+		if ($this->_bind()) {
+
+			// first check if username is already in group:
+			$entry["sambaLogonTime"]=$CI->config->item('samba_logonTime');
+            $entry["sambaPwdLastSet"]=$CI->config->item('samba_pwdLastSet');
+
+			$result = ldap_mod_replace ( $this->ldapconn , $user_dn , $entry );
+			return $result;
+		}
+
+		return false;
+
+	}
+
+
+
 	//IMPORTANT: password not hashed is necessary for Windows NT passwords!
 	function replace_ldap_password($user_data,$password = null) {
 
@@ -150,6 +185,7 @@ class managment_model  extends CI_Model  {
 				$user_data = $this->get_user_data($value);
 
 				//$this->syncUserToLdap($user_data);
+				$this->replace_ldap_info_to_avoid_change_of_password_on_windows($user_data);
 
 			}
 		}		
@@ -445,6 +481,8 @@ class managment_model  extends CI_Model  {
 		$basedn = $this->config->item('active_users_basedn');
 		$all_ldap_users_uid = $this->get_all_ldap_users_uid($basedn);
 		$all_ldap_users_passwords = $this->get_all_ldap_passwords($basedn);
+		$all_ldap_users_pwdLastSet = $this->get_all_ldap_pwdLastSet($basedn);
+		$all_ldap_users_logonTime = $this->get_all_ldap_LogonTime($basedn);
 
 		$all_ldap_users = array();
 		if ($query->num_rows() > 0){
@@ -465,8 +503,26 @@ class managment_model  extends CI_Model  {
 				} else {
 					$ldap_password = "";
 				}
-				
 				$all_ldap_users[$i]['ldap_password'] = $ldap_password;
+
+				$pwdLastSet="";
+				if ( array_key_exists ( $row->username , $all_ldap_users_pwdLastSet ) ) {
+					$pwdLastSet = $all_ldap_users_pwdLastSet[$row->username];
+				} else {
+					$pwdLastSet = "";
+				}
+				$all_ldap_users[$i]['ldap_pwdLastSet'] = $pwdLastSet;
+
+				$ldap_LogonTime="";
+				if ( array_key_exists ( $row->username , $all_ldap_users_logonTime ) ) {
+					$ldap_LogonTime = $all_ldap_users_logonTime[$row->username];
+				} else {
+					$ldap_LogonTime = "";
+				}
+				$all_ldap_users[$i]['ldap_LogonTime'] = $ldap_LogonTime;
+
+				
+				
 				
 				
 				$all_ldap_users[$i]['initial_password'] = $row->initial_password;
@@ -760,6 +816,68 @@ class managment_model  extends CI_Model  {
 		}
 
 		return false;
+	}
+
+	public function get_all_ldap_pwdLastSet($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_pwdLastSet=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					if (in_array("sambapwdlastset", $info[$i])) {
+						$all_ldap_pwdLastSet[$info[$i]["uid"][0]] = $info[$i]["sambapwdlastset"][0];
+					}
+					else {
+						$all_ldap_pwdLastSet[$info[$i]["uid"][0]] = "No té sambapwdlastset";
+					}
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_pwdLastSet;
+			}
+		
+		}
+		return false;	
+	}
+
+	public function get_all_ldap_LogonTime($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_logonTime=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					if (in_array("sambalogontime", $info[$i])) {
+						$all_ldap_logonTime[$info[$i]["uid"][0]] = $info[$i]["sambalogontime"][0];
+					}
+					else {
+						$all_ldap_logonTime[$info[$i]["uid"][0]] = "No té sambalogontime";
+					}
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_logonTime;
+			}
+		
+		}
+		return false;	
 	}
 
 	public function get_all_ldap_passwords($basedn) {

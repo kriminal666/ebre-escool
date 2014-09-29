@@ -250,7 +250,9 @@ $lang['user_ldap_password_synced']="Paraula de pas sincronitzada";
 $lang['user_ldap_password']="Paraula de pas";
 $lang['user_ldap_password_calculated_in_ldap_Format']="Paraula de pas format Ldap";
 $lang['user_ldap_password_ldap_password']="Paraula de pas Ldap";
-
+$lang['user_ldap_password_last_set']="SambaPwdLastSet";
+$lang['user_ldap_logonTime']="SambaLogonTime";
+     
 $lang['user_ldap_mainOrganizationaUnitId']="Unitat organitzativa";
 $lang['user_ldap_user_type']="Tipus usuari";
 $lang['user_ldap_initial_password']="Paraula de pas inicial";
