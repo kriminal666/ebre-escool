@@ -104,6 +104,9 @@ class managment_model  extends CI_Model  {
 			$user_dn = $user_exists;
 		}
 
+		$CI =& get_instance();
+        $CI->load->config('samba');
+
 		//IMPORTANT: Replace unix password and Windows passwords!
 		$this->_init_ldap();
 		if ($this->_bind()) {
@@ -112,6 +115,8 @@ class managment_model  extends CI_Model  {
 			$entry["userPassword"]=$ldap_password;
 			$entry["sambaLMPassword"]=$sambaNTPassword;
 			$entry["sambaNTPassword"]=$sambaLMPassword;
+			$entry["sambaLogonTime"]=$CI->config->item('samba_logonTime');
+            $entry["sambaPwdLastSet"]=$CI->config->item('samba_pwdLastSet');
 
 			$result = ldap_mod_replace ( $this->ldapconn , $user_dn , $entry );
 			return $result;
@@ -1639,7 +1644,7 @@ class managment_model  extends CI_Model  {
 		$this->db->join('users','users.person_id = person.person_id','left');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id','left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id','left');
-		$this->db->join('course','study_module_id.course_id = enrollment.enrollment_course_id','left');
+		$this->db->join('course','course.course_id = enrollment.enrollment_course_id','left');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id','left');
 
 		$this->db->order_by('enrollment_entryDate', $orderby);
@@ -1660,7 +1665,7 @@ class managment_model  extends CI_Model  {
 				$enrollment->person_id = $row->enrollment_personid;
 				$enrollment->person_sn1 = $row->person_sn1;
 				$enrollment->person_sn2 = $row->person_sn2;
-				$enrollment->person_givstudy_module_idstudy_module_idstudy_module_idstudy_module_idenName = $row->person_givenName;
+				$enrollment->person_givenName = $row->person_givenName;
 				$enrollment->person_official_id = $row->person_official_id;
 
 				$enrollment->user_id = $row->id;
