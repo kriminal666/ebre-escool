@@ -83,7 +83,18 @@
                                     return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">' + data.person_id + '</a>)';
                                   }},                                 
                         { "mData": "username" },
+                        { "mData": function(data, type, full) {
+                                    if (data.password_in_ldap_format == data.ldap_password) {
+                                        return "Synced";
+                                    }
+                                    else {
+                                        return "Not Synced";
+                                    }
+                                    return '<a href="' + url1 +'">' + data.person_sn1 + ' ' + data.person_sn2  + ', ' + data.person_givenName + '</a> (<a href="' + url2 + '">' + data.person_id + '</a>)';
+                                  }}, 
                         { "mData": "password" },
+                        { "mData": "password_in_ldap_format" },
+                        { "mData": "ldap_password" },
                         { "mData": "enrollment_id" },   
                         { "mData": "enrollment_periodid" },
                         { "mData": "enrollment_entryDate" },
@@ -532,7 +543,10 @@
      <th><?php echo lang('user_ldap_id')?></th>
      <th><?php echo lang('user_ldap_person_id')?></th>
      <th><?php echo lang('user_ldap_username')?></th>
+     <th><?php echo lang('user_ldap_password_synced')?></th>
      <th><?php echo lang('user_ldap_password')?></th>
+     <th><?php echo lang('user_ldap_password_calculated_in_ldap_Format')?></th>
+     <th><?php echo lang('user_ldap_password_ldap_password')?></th>
 
      <th><?php echo lang('user_ldap_enrollment_id')?></th>
      <th><?php echo lang('user_ldap_enrollment_periodid')?></th>

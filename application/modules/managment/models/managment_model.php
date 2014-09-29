@@ -356,6 +356,7 @@ class managment_model  extends CI_Model  {
 
 		$basedn = $this->config->item('active_users_basedn');
 		$all_ldap_users_uid = $this->get_all_ldap_users_uid($basedn);
+		$all_ldap_users_passwords = $this->get_all_ldap_passwords($basedn);
 
 		$all_ldap_users = array();
 		if ($query->num_rows() > 0){
@@ -367,6 +368,18 @@ class managment_model  extends CI_Model  {
 				$all_ldap_users[$i]['person_id'] = $row->person_id;
 				$all_ldap_users[$i]['username'] = $row->username;
 				$all_ldap_users[$i]['password'] = $row->password;
+				$all_ldap_users[$i]['password_in_ldap_format'] = "{MD5}" . base64_encode(pack('H*',md5($row->password)));
+
+				$ldap_password="";
+				if ( array_key_exists ( $row->username , $all_ldap_users_passwords ) ) {
+					$ldap_password = $all_ldap_users_passwords[$row->username];
+				} else {
+					$ldap_password = "";
+				}
+				
+				$all_ldap_users[$i]['ldap_password'] = $ldap_password;
+				
+				
 				$all_ldap_users[$i]['initial_password'] = $row->initial_password;
 				$all_ldap_users[$i]['force_change_password_next_login'] = $row->force_change_password_next_login;
 				$all_ldap_users[$i]['last_login'] = $row->last_login;				
@@ -658,6 +671,37 @@ class managment_model  extends CI_Model  {
 		}
 
 		return false;
+	}
+
+	public function get_all_ldap_passwords($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_user_passwords=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					if (in_array("userpassword", $info[$i])) {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = $info[$i]["userpassword"][0];
+					}
+					else {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = "No té paraula de pas a Ldap";
+					}
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_user_passwords;
+			}
+		
+		}
+		return false;	
 	}
 
 	public function get_all_ldap_users_uid($basedn) {
