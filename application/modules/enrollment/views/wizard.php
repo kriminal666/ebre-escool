@@ -684,7 +684,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
             //console.debug("data:" + JSON.stringify(data));
             if (action == "insert") {
               var all_data = $.parseJSON(data);
-              person_id = all_data.person_id;
+              person_id = all_data.inserted_person_id;
               prepare_step1(student,"student",person_id);
             } else { //update. ot necessary to add new created user/student to student select2
               prepare_step1(student,"student",-1);

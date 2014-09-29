@@ -2288,6 +2288,7 @@ function insert_update_user() {
 
     $result = false;
     $partial_message ="";
+    $inserted_student = "";
 
     $current_userid = $this->session->userdata("user_id");
     $student = array();
@@ -2536,8 +2537,8 @@ function insert_update_user() {
 
         $result = $this->enrollment_model->insert_student_data($student);
         if($result){
+            $inserted_student = $result;
             if (!$student_not_change_user_data) {
-
                 $calculated_md5_password = md5($updated_password);
                 $ldap_password = $updated_password;
                 $user['password'] = $calculated_md5_password;
@@ -2554,17 +2555,21 @@ function insert_update_user() {
                 //print_r($user);
                 $result = $this->enrollment_model->insert_user_data($user);  
 
-                if (!$result) {
+                if ($result == false) {
                     $result_json_object = new stdClass();
                     $result_json_object->error = true;
                     $result_json_object->message = "Error inserting user data to users table!";
                     echo json_encode($result_json_object);
                     return false;
                 }  
-
-                $inserted_student = $this->check_student($student['person_official_id']);
                 $partial_message = "User " . $user['username'] . " inserted correctly!";
             }
+        } else {
+            $result_json_object = new stdClass();
+            $result_json_object->error = true;
+            $result_json_object->message = "Error inserting person data to persons table!";
+            echo json_encode($result_json_object);
+            return false;
         }
     }
 
@@ -2601,10 +2606,10 @@ function insert_update_user() {
                 $this->enrollment_model->deleteLdapUser($user_exists);
                 $user_data->dn = $user_exists;
             }
-        } 
-
-        
-
+        } else {
+            $user_data->password = $ldap_password;
+            $ldap_passwords=false;
+        }
         
         //echo "user_data->dn : " . $user_data->dn;
         //echo "user_data dn: " . $user_data->dn;
@@ -2621,6 +2626,7 @@ function insert_update_user() {
         $result_json_object = new stdClass();
         $result_json_object->error = false;
         $result_json_object->message = $partial_message . " | " . " Usuari ldap sincronitzat correctament!";
+        $result_json_object->inserted_person_id = $inserted_student; 
         echo json_encode($result_json_object);
         return true;
     } else {

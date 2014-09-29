@@ -1690,7 +1690,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		//echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
-			return true;
+            return $this->db->insert_id();
 		}			
 		else
 			return false;
