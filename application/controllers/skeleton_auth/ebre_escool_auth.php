@@ -9,6 +9,7 @@ class ebre_escool_auth extends Auth {
 
     public $reset_form_submit_url = 'skeleton_auth/ebre_escool_auth/reset_password/';
     public $forgotten_password_email_template = "skeleton_auth/ebre_escool_auth/reset_password";
+    public $forgot_password_submit_url='index.php/skeleton_auth/ebre_escool_auth/forgot_password_';
 
 
     function __construct()
