@@ -1064,7 +1064,7 @@ class managment_model  extends CI_Model  {
 			}
 
 		    $user_data_array["shadowLastChange"]= floor(time()/86400);
-
+		    
 		    //TODO: posix config file!
 		    $user_data_array["loginShell"]="/bin/bash";
 
