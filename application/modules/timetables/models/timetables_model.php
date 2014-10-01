@@ -158,7 +158,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		$this->db->from('lesson');
-        $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
+        $this->db->select('lesson_id,lesson_teacher_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
         	classroom_group_code,classroom_group_shortName,classroom_group_name');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
@@ -182,11 +182,15 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 			$previous_lesson_code = null;
 
+			$counter_i = 1;
 			foreach ($query->result_array() as $row)	{
+
+				//echo "<br/>counter i: " . $counter_i . "<br/>";
 				
 				$day=$row['lesson_day'];
 				$time_slot_start_time = $row['time_slot_start_time'];
 				$lesson_id = $row['lesson_id'];
+				$lesson_teacher_id = $row['lesson_teacher_id'];
 				$lesson_code = $row['lesson_code'];
 				$time_slot_order = $row['time_slot_order'];
 				$study_module_id = $row['study_module_id'];
@@ -203,40 +207,68 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					$not_new_day=false;
 				}
 
-				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day) {
+				//echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+				//. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+
+				//DETECT LESSONS DONE BY MULTIPLE TEACHERS
+
+				$not_doubled_lesson=true;
+				if ( ($day == $previous_day) && ($time_slot_start_time == $previous_time_slot_start_time) ) {
+					if ($lesson_teacher_id ==$previous_lesson_teacher_id) {
+						echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
+						echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+						. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+						$not_doubled_lesson=false;
+					} else {
+						//DOUBLED LESSON:
+						$not_doubled_lesson=false;
+					}
+					
+				}
+
+				//detect consecutive lessons and aggrupate in on event with more duration 
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day && $not_doubled_lesson) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
 				} else {
-					$lesson_data = new stdClass;
+					if ($not_doubled_lesson) {
+						$lesson_data = new stdClass;
 
-					$lesson_data->lesson_id= $lesson_id;
-					$lesson_data->lesson_code= $lesson_code;
-					$lesson_data->time_slot_order= $time_slot_order;
-					$lesson_data->study_module_id= $study_module_id;
-					$lesson_data->study_module_shortname= $study_module_shortname;
-					$lesson_data->study_module_shortname= $study_module_shortname;
-					$lesson_data->study_module_name= $study_module_name;
-					$lesson_data->group_code= $group_code;
-					$lesson_data->group_shortName= $group_shortName;
-					$lesson_data->group_name= $group_name;
-					$lesson_data->time_slot_lective=false;
-					$lesson_data->location_code="20.2";
-					
-					$lesson_data->duration= 1;
+						$lesson_data->lesson_id= $lesson_id;
+						$lesson_data->lesson_code= $lesson_code;
+						$lesson_data->time_slot_order= $time_slot_order;
+						$lesson_data->study_module_id= $study_module_id;
+						$lesson_data->study_module_shortname= $study_module_shortname;
+						$lesson_data->study_module_shortname= $study_module_shortname;
+						$lesson_data->study_module_name= $study_module_name;
+						$lesson_data->group_code= $group_code;
+						$lesson_data->group_shortName= $group_shortName;
+						$lesson_data->group_name= $group_name;
+						$lesson_data->time_slot_lective=false;
 
-					$lesson_by_day[$time_slot_start_time] = $lesson_data;
+						$lesson_data->teachers[]=$lesson_teacher_id;
 
-								
-					$day_lessons->lesson_by_day = $lesson_by_day;
+						//TODO: Multiple locations
+						$lesson_data->location_code="20.2";
+						
+						$lesson_data->duration= 1;
 
-   					$all_lessonsfortimetablebygroupid[$day] = $day_lessons;
-   					$previous_time_slot_start_time = $time_slot_start_time;
+						$lesson_by_day[$time_slot_start_time] = $lesson_data;
+
+									
+						$day_lessons->lesson_by_day = $lesson_by_day;
+
+	   					$all_lessonsfortimetablebygroupid[$day] = $day_lessons;	
+					} else {
+						$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers[]=$lesson_teacher_id;
+					}
    				}
-
+   				$previous_time_slot_start_time = $time_slot_start_time;
    				$previous_day=$day;
+   				$previous_lesson_teacher_id = $lesson_teacher_id;
    				$previous_lesson_code = $lesson_code;
+   				$counter_i++;
    			}
 
    			return $all_lessonsfortimetablebygroupid;
