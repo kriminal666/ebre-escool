@@ -126,17 +126,14 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	function get_all_teacher_study_modules($teacher_id) {
-/*
-select 
-`classroom_group`.`classroom_group_code`,
-`study_module`.`study_module_shortname`,
-`study_module`.`study_module_name`,
-`study_module`.`study_module_hoursPerWeek` from lesson 
-join classroom_group on lesson.lesson_classroom_group_id = classroom_group.classroom_group_id
-join study_module on lesson.lesson_study_module_id = study_module.study_module_id
-where lesson_teacher_id=7
+		/*
+		SELECT DISTINCT `classroom_group_code`, `study_module_id`, `study_module_shortname`, `study_module_name`, `study_module_hoursPerWeek` 
+		FROM (`lesson`) 
+		LEFT JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
+		LEFT JOIN `classroom_group` ON `lesson`.`lesson_classroom_group_id` = `classroom_group`.`classroom_group_id` 
+		WHERE `lesson_teacher_id`=127
 
-*/
+		*/
 		//$this->db->from('study_module');
         //$this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
 		//$this->db->where('study_module_teacher_id',$teacher_id);
@@ -145,7 +142,7 @@ where lesson_teacher_id=7
 		$this->db->distinct();
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
-		$this->db->where('study_module_teacher_id',$teacher_id);
+		$this->db->where('lesson_teacher_id',$teacher_id);
 
         $query = $this->db->get();
 		//echo $this->db->last_query();
@@ -535,7 +532,10 @@ where lesson_teacher_id=7
 	}
 
 	function get_teacher_fullname_from_teacher_id($teacher_id) {
-		$this->db->select('teacher_code,person_givenName,person_sn1,person_sn2');
+		/*
+
+		*/
+		$this->db->select('person_givenName,person_sn1,person_sn2');
 		$this->db->from('teacher');
 
 		$this->db->join('person','teacher.teacher_person_id = person.person_id');
@@ -545,6 +545,8 @@ where lesson_teacher_id=7
 
 
 		$query = $this->db->get();
+		//echo $this->db->last_query()."<br />";		
+
 
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
@@ -554,17 +556,46 @@ where lesson_teacher_id=7
 			return "";
 	}
 
+	function get_current_academic_period_id() {
+
+		/*
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_current',1);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row->academic_periods_id;
+		}	
+		else
+			return false;
+	}
+
 
 	function get_teacher_code_from_teacher_id($teacher_id) {
-		$this->db->select('teacher_code');
-		$this->db->from('teacher');
-		$this->db->where('teacher.teacher_id',$teacher_id);
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT `teacher_academic_periods_code` 
+		FROM `teacher_academic_periods` 
+		WHERE `teacher_academic_periods_academic_period_id`=5 AND `teacher_academic_periods_teacher_id`=5
+		*/
+		$this->db->select('teacher_academic_periods_code');
+		$this->db->from('teacher_academic_periods');
+		$this->db->where('teacher_academic_periods.teacher_academic_periods_teacher_id',$teacher_id);
+		$this->db->where('teacher_academic_periods.teacher_academic_periods_academic_period_id',$current_academic_period_id);
 
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			return $row->teacher_code;
+			return $row->teacher_academic_periods_code;
 		}
 		else
 			return false;
@@ -573,15 +604,24 @@ where lesson_teacher_id=7
 
 	function get_teacher_id_from_teacher_code($teacher_code) {
 
-		$this->db->select('teacher_id');
-		$this->db->from('teacher');
-		$this->db->where('teacher.teacher_code',$teacher_code);
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT `teacher_academic_periods_teacher_id` 
+		FROM `teacher_academic_periods` 
+		WHERE `teacher_academic_periods_academic_period_id`=5 AND `teacher_academic_periods_code`="02"
+		*/
+
+		$this->db->select('teacher_academic_periods_teacher_id');
+		$this->db->from('teacher_academic_periods');
+		$this->db->where('teacher_academic_periods.teacher_academic_periods_code',$teacher_code);
+		$this->db->where('teacher_academic_periods.teacher_academic_periods_academic_period_id',$current_academic_period_id);
 
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			return $row->teacher_id;
+			return $row->teacher_academic_periods_teacher_id;
 		}
 		else
 			return false;
@@ -605,16 +645,17 @@ where lesson_teacher_id=7
 
 	function get_group_shift($classroom_group_id) {
 
-		$this->db->select('classroom_group_shift');
+		$this->db->select('classroom_group_academic_periods_shift');
 		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
 		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
 
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			if ($row->classroom_group_shift!=0)
-				return $row->classroom_group_shift;
+			if ($row->classroom_group_academic_periods_shift!=0)
+				return $row->classroom_group_academic_periods_shift;
 			else {
 				$mintimeslotorder = $this->getMinTimeSlotOrderForGroup($classroom_group_id);
 				if ($mintimeslotorder > 6)
@@ -692,21 +733,37 @@ where lesson_teacher_id=7
 
 	function get_all_teachers_ids_and_names($orderby="asc") {
 
-		$this->db->from('teacher');
-        $this->db->select('teacher_code,person_sn1,person_sn2,person_givenName,person_id,person_official_id');
+		$current_academic_period_id = $this->get_current_academic_period_id();
 
-		$this->db->order_by('teacher_code', $orderby);
+		/*
+		SELECT `teacher_academic_periods_code`, `person_sn1`, `person_sn2`, `person_givenName`, `person_id`, `person_official_id` 
+		FROM (`teacher`) 
+		JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
+		JOIN `person` ON `person`.`person_id` = `teacher`.`teacher_person_id` 
+		WHERE `teacher_academic_periods_academic_period_id` = '5' 
+		ORDER BY `teacher_academic_periods_code` asc
+		*/
+
+		$this->db->from('teacher');
+        $this->db->select('teacher_academic_periods_code,person_sn1,person_sn2,person_givenName,person_id,person_official_id');
+
+		$this->db->order_by('teacher_academic_periods_code', $orderby);
 		
+		$this->db->join('teacher_academic_periods', 'teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
 		$this->db->join('person', 'person.person_id = teacher.teacher_person_id');
+
+		$this->db->where('teacher_academic_periods_academic_period_id', $current_academic_period_id);		
         
         $query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
 		
 		if ($query->num_rows() > 0) {
 
 			$teachers_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$teachers_array[$row['teacher_code']] = $row['teacher_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
+   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
 			}
 			return $teachers_array;
 		}			

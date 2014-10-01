@@ -367,7 +367,7 @@ $(function() {
         
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytimetables";
 
         selectedValue = "";
         console.log(value);
