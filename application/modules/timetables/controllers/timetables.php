@@ -222,6 +222,7 @@ class timetables extends skeleton_main {
                 $shift_last_time_slot_order = $time_slot_order['last'];
 
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
+
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
                 $first_time_slot_orderbygroupid[$classroom_group_id] = $shift_first_time_slot_order;
             }
@@ -407,6 +408,7 @@ class timetables extends skeleton_main {
                 $shift_last_time_slot_order = $time_slot_order['last'];
 
                 $temp = $this->timetables_model->get_all_lessonsfortimetablebygroupid($classroom_group_id);
+
                 $lessonsfortimetablebygroupid[$classroom_group_id] = $this->add_breaks($temp,$shift_first_time_slot_order,$shift_last_time_slot_order);
                 $first_time_slot_orderbygroupid[$classroom_group_id] = $shift_first_time_slot_order;
             }

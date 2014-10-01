@@ -289,9 +289,11 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 			$previous_lesson_code = null;
 
+			$counter_i=1;
 			foreach ($query->result_array() as $row)	{
-				
+
 				$day=$row['lesson_day'];
+
 				$lesson_time_slot_id = $row['lesson_time_slot_id'];
 				$time_slot_start_time = $row['time_slot_start_time'];
 				$lesson_id = $row['lesson_id'];
@@ -304,15 +306,18 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
 			
+				$is_not_new_day=true;
 				if ($previous_day == null || $day != $previous_day) {
+					//NEW DAY
+					$is_not_new_day=false;
 					$day_lessons = new stdClass;	
 					$lesson_by_day = array();
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1)) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day) {
 					//Change previous lesson duration (++) and skip this one
-					@$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
+					$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
 				} else {
 					$lesson_data = new stdClass;
@@ -344,6 +349,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
    				$previous_day=$day;
    				$previous_lesson_code = $lesson_code;
+   				$counter_i++;
    			}
 			return $all_lessonsfortimetablebyteacherid;
 		}			
@@ -513,7 +519,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 		$query = $this->db->get();
 
-		//echo $this->db->last_query();
+		//echo $this->db->last_query() . "<br/>";
 
 		if ($query->num_rows() > 0)	{
 			$row = $query->row();
@@ -708,8 +714,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);
 		//}
 
-		//echo "MIN: " . $min_time_slot_order;
-		//echo "MAX: " . $max_time_slot_order;
+		//echo "MIN: " . $min_time_slot_order ."<br/>";
+		//echo "MAX: " . $max_time_slot_order."<br/>";
 
 		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,time_slot_order');
 		$this->db->from('time_slot');
