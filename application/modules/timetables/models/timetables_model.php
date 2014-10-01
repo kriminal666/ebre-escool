@@ -365,14 +365,26 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	function get_all_classroom_groups_ids_and_names($orderby= "asc") {
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT `classroom_group_id`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name` 
+		ROM (`classroom_group`) 
+		JOIN `classroom_group_academic_periods` ON `classroom_group_academic_periods`.`classroom_group_academic_periods_classroom_group_id` = `classroom_group`.`classroom_group_id` 
+		WHERE `classroom_group_academic_periods_academic_period_id` = '5' ORDER BY `classroom_group_code` asc
+		*/
 		$this->db->from('classroom_group');
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+        $this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+        $this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
 
 		$this->db->order_by('classroom_group_code', $orderby);
 		
 		//$this->db->join('person', 'person.person_id = teacher.teacher_person_id');
         
         $query = $this->db->get();
+     	//echo $this->db->last_query();
+
 		
 		if ($query->num_rows() > 0) {
 
