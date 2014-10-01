@@ -21,10 +21,10 @@
 
         <div class="page-header position-relative">
             <h1>
-                <?php echo lang("mytimetables_teacher_timetable_title");?>
+                <?php echo "Horaris del grup";?>
                 <small>
                     <i class="icon-double-angle-right"></i>
-                    <?php echo "TODO Nom Professor";?>
+                    <?php echo "TODO Nom Grup";?>
                 </small>
             </h1>
         </div><!-- /.page-header -->

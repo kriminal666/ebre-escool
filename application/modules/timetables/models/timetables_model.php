@@ -155,6 +155,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	function get_all_lessonsfortimetablebygroupid($classroom_group_id)	{
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
         	classroom_group_code,classroom_group_shortName,classroom_group_name');
@@ -166,6 +168,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
 
 		$this->db->where('lesson.lesson_classroom_group_id',$classroom_group_id);
+		$this->db->where('lesson.lesson_academic_period_id',$current_academic_period_id);
         
         $query = $this->db->get();
 
@@ -193,15 +196,17 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
 
+				$not_new_day=true;
 				if ($previous_day == null || $day != $previous_day) {
 					$day_lessons = new stdClass;	
 					$lesson_by_day = array();
+					$not_new_day=false;
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) ) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day) {
 					//Change previous lesson duration (++) and skip this one
-					@$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
+					$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
 				} else {
 					$lesson_data = new stdClass;
