@@ -168,7 +168,16 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	function get_all_lessonsfortimetablebygroupid($classroom_group_id)	{
 		/*
-
+		SELECT `lesson_id`, `lesson_teacher_id`, `lesson_code`, `lesson_day`, `time_slot_start_time`, `time_slot_order`, `study_module_id`, 
+		`study_module_shortname`, `study_module_name`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name`, 
+		`lesson_location_id`, `location_shortName` 
+		FROM (`lesson`) 
+		JOIN `time_slot` ON `lesson`.`lesson_time_slot_id` = `time_slot`.`time_slot_id` 
+		LEFT JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
+		LEFT JOIN `classroom_group` ON `lesson`.`lesson_classroom_group_id` = `classroom_group`.`classroom_group_id` 
+		LEFT JOIN `location` ON `location`.`location_id` = `lesson`.`lesson_location_id` 
+		WHERE `lesson`.`lesson_classroom_group_id` = '2' AND `lesson`.`lesson_academic_period_id` = '5' 
+		ORDER BY `lesson_day`, `time_slot_order` asc 
 		*/
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
@@ -188,7 +197,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
         
         $query = $this->db->get();
 
-      	echo $this->db->last_query();
+      	//echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0) {
 
