@@ -167,25 +167,28 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	function get_all_lessonsfortimetablebygroupid($classroom_group_id)	{
+		/*
 
+		*/
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_teacher_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	classroom_group_code,classroom_group_shortName,classroom_group_name');
+        	classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
+		$this->db->join('location', 'location.location_id = lesson.lesson_location_id','left');
 
 		$this->db->where('lesson.lesson_classroom_group_id',$classroom_group_id);
 		$this->db->where('lesson.lesson_academic_period_id',$current_academic_period_id);
         
         $query = $this->db->get();
 
-      	//echo $this->db->last_query();
+      	echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0) {
 
@@ -212,6 +215,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$group_code = $row['classroom_group_code'];
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
+				$location_shortname = $row['location_shortName'];
 
 				$not_new_day=true;
 				if ($previous_day == null || $day != $previous_day) {
@@ -263,7 +267,12 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$lesson_data->teachers[]=$lesson_teacher_id;
 
 						//TODO: Multiple locations
-						$lesson_data->location_code="20.2";
+						if ($location_shortname != null) {
+							$lesson_data->location_code=$location_shortname;	
+						} else {
+							$lesson_data->location_code="";	
+						}
+						
 						
 						$lesson_data->duration= 1;
 
