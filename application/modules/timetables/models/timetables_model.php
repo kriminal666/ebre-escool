@@ -213,8 +213,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				//DETECT LESSONS DONE BY MULTIPLE TEACHERS
 
 				$not_doubled_lesson=true;
-				if ( ($day == $previous_day) && ($time_slot_start_time == $previous_time_slot_start_time) ) {
-					if ($lesson_teacher_id ==$previous_lesson_teacher_id) {
+				if ( ($day == $previous_day) && ($time_slot_start_time == $real_previous_time_slot_start_time) ) {
+					if ($lesson_teacher_id == $previous_lesson_teacher_id) {
 						echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
 						echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
 						. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
@@ -227,7 +227,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration 
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day && $not_doubled_lesson) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day && $not_doubled_lesson  ) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -245,7 +245,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$lesson_data->group_code= $group_code;
 						$lesson_data->group_shortName= $group_shortName;
 						$lesson_data->group_name= $group_name;
-						$lesson_data->time_slot_lective=false;
+						$lesson_data->time_slot_lective=true;
 
 						$lesson_data->teachers[]=$lesson_teacher_id;
 
@@ -260,11 +260,17 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$day_lessons->lesson_by_day = $lesson_by_day;
 
 	   					$all_lessonsfortimetablebygroupid[$day] = $day_lessons;	
+
+	   					$previous_time_slot_start_time = $time_slot_start_time;
+
 					} else {
 						$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers[]=$lesson_teacher_id;
+						$previous_time_slot_start_time = $previous_time_slot_start_time;
 					}
    				}
-   				$previous_time_slot_start_time = $time_slot_start_time;
+
+   				$real_previous_time_slot_start_time = $time_slot_start_time;
+   				
    				$previous_day=$day;
    				$previous_lesson_teacher_id = $lesson_teacher_id;
    				$previous_lesson_code = $lesson_code;

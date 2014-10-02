@@ -509,7 +509,7 @@ class timetables extends skeleton_main {
                     continue;
                 }
 
-                $lesson_data->time_slot_lective = true;
+                $lesson_data->time_slot_lective = false;
                 $lesson_data->group_shortName ="";
                 $lesson_data->group_code = "";
                 $lesson_data->location_code="";
