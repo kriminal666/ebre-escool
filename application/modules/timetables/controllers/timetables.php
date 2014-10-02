@@ -190,8 +190,9 @@ class timetables extends skeleton_main {
             /* Get Week hours */
             $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
-                $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
-                $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $hours[] = $num_hours;
+                $total_week_hours += $num_hours;
             }
 
             $data['total_week_hours'] = $total_week_hours;
@@ -301,8 +302,9 @@ class timetables extends skeleton_main {
             /* Get Week hours */
             $total_week_hours = 0;
             foreach($all_group_study_modules as $module){
-                $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
-                $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,$classroom_group_id);
+                $hours[] = $num_hours;
+                $total_week_hours += $num_hours;
             }
             $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
@@ -376,8 +378,9 @@ class timetables extends skeleton_main {
             /* Get Week hours */
             $total_week_hours = 0;
             foreach($all_teacher_study_modules as $module){
-                $hours[] = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
-                $total_week_hours += $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $hours[] = $num_hours;
+                $total_week_hours += $num_hours;
             }
 
             $data['total_week_hours'] = $total_week_hours;

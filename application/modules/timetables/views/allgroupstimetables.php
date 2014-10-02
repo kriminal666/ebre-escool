@@ -55,6 +55,9 @@
             data-off-label="<i class='icon-remove'></i>"
             data-off="danger">
         </center>
+        <center>
+            <strong>Hores totals setmanals:</strong> <?php echo $total_week_hours;?>
+        </center>
         <div style="height: 10px;"></div>
 
         <div id="study_modules_legend" style="display: none;">
