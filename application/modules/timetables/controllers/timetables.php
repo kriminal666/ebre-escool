@@ -514,8 +514,11 @@ class timetables extends skeleton_main {
 
                 $lesson_data->time_slot_lective = false;
                 $lesson_data->group_shortName ="";
+                $lesson_data->group_id = "";
+                $lesson_data->study_module_id="";
                 $lesson_data->group_code = "";
                 $lesson_data->location_code="";
+                $lesson_data->location_id="";
                 
                 if ($time_slot_start_time == "14:30") {
                     $lesson_data->study_module_shortname= strtoupper(lang("lunch_break"));

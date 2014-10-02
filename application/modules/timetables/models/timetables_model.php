@@ -183,7 +183,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_teacher_id,lesson_code,lesson_day,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
+        	lesson_classroom_group_id, classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
 
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
@@ -221,10 +221,12 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$study_module_id = $row['study_module_id'];
 				$study_module_shortname = $row['study_module_shortname'];
 				$study_module_name = $row['study_module_name'];
+				$group_id = $row['lesson_classroom_group_id'];
 				$group_code = $row['classroom_group_code'];
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
 				$location_shortname = $row['location_shortName'];
+				$location_id = $row['lesson_location_id'];
 
 				$not_new_day=true;
 				if ($previous_day == null || $day != $previous_day) {
@@ -269,6 +271,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$lesson_data->study_module_shortname= $study_module_shortname;
 						$lesson_data->study_module_name= $study_module_name;
 						$lesson_data->group_code= $group_code;
+						$lesson_data->group_id= $group_id;
 						$lesson_data->group_shortName= $group_shortName;
 						$lesson_data->group_name= $group_name;
 						$lesson_data->time_slot_lective=true;
@@ -278,8 +281,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						//TODO: Multiple locations
 						if ($location_shortname != null) {
 							$lesson_data->location_code=$location_shortname;	
+							$lesson_data->location_id=$location_id;
 						} else {
 							$lesson_data->location_code="";	
+							$lesson_data->location_id="";
 						}
 						
 						
