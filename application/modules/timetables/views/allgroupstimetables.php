@@ -21,10 +21,10 @@
 
         <div class="page-header position-relative">
             <h1>
-                <?php echo lang("mytimetables_teacher_timetable_title");?>
+                <?php echo "Horaris grups de classe";?>
                 <small>
                     <i class="icon-double-angle-right"></i>
-                    <?php echo "TODO Nom Professor";?>
+                    <span id="classroom_group_name"></span>
                 </small>
             </h1>
         </div><!-- /.page-header -->
@@ -181,8 +181,14 @@ $(function() {
 //Jquery select plugin: http://ivaynberg.github.io/select2/
 $("#cl_groups").select2(); 
 
+var theSelection = $("#cl_groups").select2('data').text;
+$("#classroom_group_name").text(theSelection);
+
 $('#cl_groups').on("change", function(e) {   
+
     selectedValue = $("#cl_groups").select2("val");
+    var theSelection = $("#cl_groups").select2('data').text;
+    $("#classroom_group_name").text(theSelection);
     var pathArray = window.location.pathname.split( '/' );
     var secondLevelLocation = pathArray[1];
     var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allgroupstimetables";

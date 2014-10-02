@@ -947,7 +947,6 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_hoursPerWeek',lang($this->current_table.'_hoursPerWeek'));
         $this->grocery_crud->display_as($this->current_table.'_courseid',lang($this->current_table.'_courseid'));        
         $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
-        $this->grocery_crud->display_as($this->current_table.'_teacher_id',lang($this->current_table.'_teacher_id'));
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
         $this->grocery_crud->display_as($this->current_table.'_type',lang($this->current_table.'_type'));   
         $this->grocery_crud->display_as($this->current_table.'_subtype',lang($this->current_table.'_subtype'));        
@@ -978,7 +977,6 @@ class curriculum extends skeleton_main {
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COUL APPLY
         //$this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','({classroom_group_id} - {classroom_group_code} | {classroom_group_shortName})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname} - {course_name})');
-        $this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','{teacher_id}');
         $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'study_module_academic_periods', 'academic_periods', 
             'study_module_academic_periods_study_module_id', 'study_module_academic_periods_academic_period_id', 'academic_periods_name');
 
