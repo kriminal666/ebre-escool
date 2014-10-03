@@ -816,6 +816,14 @@ class curriculum extends skeleton_main {
 
 /* study_module by ACADEMIC PERIOD: ASSIGNATURA/Mòdul professional/ Crèdit */
 
+/*
+MIGRATION SCRIPT:
+INSERT INTO  study_module_ap_courses (`study_module_ap_courses_study_module_ap_id`,`study_module_ap_courses_course_id`)
+SELECT `study_module_academic_periods_id`, `study_module_courseid`
+FROM `study_module`
+INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study_module_academic_periods_study_module_id`  = study_module.`study_module_id`
+*/
+
     public function study_module_academic_periods ( $study_id = false) {
 
         $active_menu = array();
@@ -849,7 +857,18 @@ class curriculum extends skeleton_main {
         //COMMON_COLUMNS               
         $this->set_common_columns_name($this->current_table);
 
+        $this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_study_module_id',$this->current_table.'_academic_period_id',
+                                     $this->current_table.'_external_code', 'courses' ,$this->current_table.'_initialDate', $this->current_table.'_endDate',
+                                     $this->current_table.'_entryDate',$this->current_table.'_last_update',$this->current_table.'_creationUserId',
+                                     $this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',$this->current_table.'_markedForDeletionDate'); 
+
+        $this->grocery_crud->fields($this->current_table.'_study_module_id',$this->current_table.'_academic_period_id',
+                                     $this->current_table.'_external_code', $this->current_table.'_initialDate', $this->current_table.'_endDate',
+                                     $this->current_table.'_entryDate',$this->current_table.'_last_update',$this->current_table.'_creationUserId',
+                                     $this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',$this->current_table.'_markedForDeletionDate'); 
+
         //SPECIFIC COLUMNS
+        $this->grocery_crud->display_as('courses',"Cursos");
         $this->grocery_crud->display_as($this->current_table.'_id',lang('study_module_academic_periods_id'));
         $this->grocery_crud->display_as($this->current_table.'_study_module_id',lang($this->current_table.'_study_module_id'));
         $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table.'_academic_period_id'));
@@ -859,8 +878,11 @@ class curriculum extends skeleton_main {
         $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate')); 
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_shortname} | {study_module_name} - {study_module_external_code}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_shortname} | {study_module_name}');
         $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_shortname}');
+
+        $this->grocery_crud->set_relation_n_n('courses', 'study_module_ap_courses', 'course', 
+            'study_module_ap_courses_study_module_ap_id', 'study_module_ap_courses_course_id', '{course_shortname} | {course_name} ({course_id})');
         
         /*
         Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
