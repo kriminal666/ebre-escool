@@ -104,6 +104,165 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 }	
 
+	function get_teachers_study_modules_list($classroom_group_id) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT DISTINCT `lesson_teacher_id`,`lesson_study_module_id`
+		FROM lesson
+		INNER JOIN teacher ON teacher.teacher_id = lesson.lesson_teacher_id
+		INNER JOIN teacher_academic_periods ON  teacher_academic_periods.`teacher_academic_periods_teacher_id` = teacher.teacher_id
+		INNER JOIN person ON person.person_id = teacher.teacher_person_id
+		WHERE `lesson_classroom_group_id`=1 AND `teacher_academic_periods_academic_period_id`=5 
+		ORDER BY `lesson_teacher_id`,`lesson_study_module_id`
+		*/
+
+		$this->db->select('lesson_teacher_id,lesson_study_module_id, study_module_shortname, study_module_name');
+		$this->db->distinct();
+		$this->db->from('lesson');        
+        $this->db->join('teacher','teacher.teacher_id = lesson.lesson_teacher_id');
+        $this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
+        $this->db->join('person','person.person_id = teacher.teacher_person_id');
+        $this->db->join('study_module', 'study_module.study_module_id = lesson_study_module_id');
+
+		$this->db->where('lesson_classroom_group_id',$classroom_group_id);
+		$this->db->where('teacher_academic_periods_academic_period_id',$current_academic_period_id);
+
+		$this->db->order_by('lesson_teacher_id, study_module_shortname','ASC');
+        
+        $query = $this->db->get();	
+
+        if ($query->num_rows() > 0) {
+
+			$teachers_study_modules_list = array();
+
+			foreach ($query->result_array() as $row)	{	
+				$study_module = new stdClass();
+
+				$study_module->id = $row["lesson_study_module_id"];
+				$study_module->shortName = $row["study_module_shortname"];
+				$study_module->name = $row["study_module_name"];
+
+				$teachers_study_modules_list[$row["lesson_teacher_id"]]->studymodules[] = $study_module;
+			}
+
+			return $teachers_study_modules_list;
+
+		}
+
+		return false;
+
+	}
+
+	function get_teachers_list($classroom_group_id) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		$teachers_study_modules_list = $this->get_teachers_study_modules_list($classroom_group_id);
+
+		/*
+		SELECT DISTINCT `lesson_teacher_id`,`teacher_person_id`, `teacher_academic_periods_code`, person.person_sn1, person.person_sn2,person.person_givenName
+		FROM lesson
+		INNER JOIN teacher ON teacher.teacher_id = lesson.lesson_teacher_id
+		INNER JOIN  teacher_academic_periods ON  teacher_academic_periods.`teacher_academic_periods_teacher_id` = teacher.teacher_id
+		INNER JOIN person ON person.person_id = teacher.teacher_person_id
+		WHERE `lesson_classroom_group_id`=1 AND `teacher_academic_periods_academic_period_id`=5
+		*/
+
+		$this->db->select('lesson_teacher_id, teacher_person_id, teacher_academic_periods_code, person.person_sn1, person.person_sn2,person.person_givenName');
+		$this->db->distinct();
+		$this->db->from('lesson');        
+        $this->db->join('teacher','teacher.teacher_id = lesson.lesson_teacher_id');
+        $this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
+        $this->db->join('person','person.person_id = teacher.teacher_person_id');
+
+		$this->db->where('lesson_classroom_group_id',$classroom_group_id);
+		$this->db->where('teacher_academic_periods_academic_period_id',$current_academic_period_id);
+        
+        $query = $this->db->get();	
+
+        if ($query->num_rows() > 0) {
+
+			$teachers_list = array();
+
+			foreach ($query->result_array() as $row)	{	
+				$teacher = new stdClass();
+
+				$teacher->id = $row['lesson_teacher_id'];
+				$teacher->sn1 = $row['person_sn1'];
+				$teacher->sn2 = $row['person_sn2'];
+				$teacher->givenName = $row['person_givenName'];
+				$teacher->code = $row['teacher_academic_periods_code'];
+
+				$study_modules = "";
+
+				$i=1;
+				foreach ( $teachers_study_modules_list[$teacher->id]->studymodules as $study_module ) {
+					$study_modules = $study_modules . $study_module->shortName;
+					if ($i < count( $teachers_study_modules_list[$teacher->id]->studymodules )) {
+						$study_modules = $study_modules . ", "; 	
+					}
+					$i++;
+				}
+
+				$teacher->study_modules = $study_modules;
+
+				$teachers_list[$teacher->id]=$teacher;
+			}
+
+			return $teachers_list;
+
+		}
+
+		return false;
+
+	}
+	
+
+	function get_mentor( $classroom_group_id ) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT `classroom_group_academic_periods_mentorId`,person_sn1,person_sn2,person_givenName, `teacher_academic_periods_code`
+		FROM `classroom_group` 
+		INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = `classroom_group`.`classroom_group_id`
+		INNER JOIN teacher ON teacher.teacher_id = classroom_group_academic_periods_mentorId
+		INNER JOIN teacher_academic_periods ON teacher_academic_periods.`teacher_academic_periods_teacher_id` = teacher.teacher_id
+		INNER JOIN person ON person.person_id = teacher.teacher_person_id
+		WHERE `classroom_group_academic_periods_classroom_group_id`=10 AND `classroom_group_academic_periods_academic_period_id`= 5
+		*/
+
+		$this->db->select('classroom_group_academic_periods_mentorId, person_sn1, person_sn2, person_givenName, teacher_academic_periods_code, teacher_id');
+		$this->db->from('classroom_group');        
+        $this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+        $this->db->join('teacher','teacher.teacher_id = classroom_group_academic_periods_mentorId');
+        $this->db->join('teacher_academic_periods','teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
+        $this->db->join('person','person.person_id = teacher.teacher_person_id');
+
+		$this->db->where('classroom_group_academic_periods_classroom_group_id',$classroom_group_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+		$this->db->limit(1);
+        
+        $query = $this->db->get();
+		
+		if ($query->num_rows() == 1) {
+			$row = $query->row();
+			$teacher = new stdClass();
+
+			$teacher->id = $row->teacher_id;
+			$teacher->code = $row->teacher_academic_periods_code;
+			$teacher->sn1 = $row->person_sn1;
+			$teacher->sn2 = $row->person_sn2;
+			$teacher->givenName = $row->person_givenName;
+
+			return $teacher;
+		}
+
+		return false;
+	}
+
 
 	//
 	function get_all_group_study_modules($classroom_group_id) {

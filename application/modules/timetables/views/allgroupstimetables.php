@@ -48,15 +48,37 @@
 
         <div style="height: 10px;"></div>
         <center>
-            <?php echo lang('show_legend'); ?> 
-            <input id="hide_show_legend" type="checkbox" class="switch-small" 
-            data-label-icon="icon-eye-open" 
-            data-on-label="<i class='icon-ok'></i>" 
-            data-off-label="<i class='icon-remove'></i>"
-            data-off="danger">
-        </center>
+        <table border="0">
+            <tr>
+                <td>
+                    <?php echo lang('show_legend'); ?> 
+                </td>
+                <td>
+                    <input id="hide_show_legend" type="checkbox" class="switch-small" 
+                    data-label-icon="icon-eye-open" 
+                    data-on-label="<i class='icon-ok'></i>" 
+                    data-off-label="<i class='icon-remove'></i>"
+                    data-off="danger">
+                </td>
+            </tr>
+            <tr>
+                <td><?php echo "Mostrar llista de professors"; ?></td>
+                <td>
+                    <input id="hide_show_teachers_list" type="checkbox" class="switch-small" 
+                    data-label-icon="icon-eye-open" 
+                    data-on-label="<i class='icon-ok'></i>" 
+                    data-off-label="<i class='icon-remove'></i>"
+                    data-off="danger">    
+                </td>    
+            </tr>
+        </table>
+        </center>            
+        
         <center>
             <strong>Hores totals setmanals:</strong> <?php echo $total_week_hours;?>
+        </center>
+        <center>
+            <strong>Tutor:</strong> <?php echo $group_mentor->sn1 . " " . $group_mentor->sn2 . ", " . $group_mentor->givenName . " ( " . $group_mentor->code  . ")" ;?>
         </center>
         <div style="height: 10px;"></div>
 
@@ -93,6 +115,45 @@
                             </td>
                             <td>
                                 <?php echo $all_teacher_study_modules_hours_per_week[$i]; $i++;?>
+                            </td>  
+                        </tr>
+                        <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </center>
+        </div>
+
+        <div style="height: 5px;"></div>
+
+        <div id="teachers_list_legend" style="display: none;">
+            <center>
+                <table class="table table-striped table-bordered table-hover table-condensed" id="teachers_list_legend_table" style="width:50%;">
+                    <thead style="background-color: #d9edf7;">
+                        <tr>
+                            <td colspan="4" style="text-align: center;">
+                                <h4><?php echo "Llista de professors";?></h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!--<th><?php //echo lang('group');?></th>-->
+                            <th><?php echo "Codi";?></th>
+                            <th><?php echo "Nom";?></th>
+                            <th><?php echo "Mòduls";?></th>
+                        </tr>
+                    </thead>
+                    <tbody><?php $i=0; ?>
+                        <?php foreach ($all_group_teachers as $teacher) : ?>
+                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                            <!--<td>TODO</td>-->
+                            <td>
+                                <?php echo $teacher->code;?>
+                            </td>
+                            <td>
+                                <?php echo $teacher->sn1 . " " . $teacher->sn2 . ", " . $teacher->givenName;?>
+                            </td>
+                            <td>
+                                <?php echo $teacher->study_modules;?>
                             </td>  
                         </tr>
                         <?php endforeach; ?>
@@ -202,6 +263,8 @@ window.location.href = baseURL + "/" + selectedValue;
 
 $('#hide_show_legend').bootstrapSwitch({});
 
+$('#hide_show_teachers_list').bootstrapSwitch({});
+
 $('#hide_show_legend').on('switch-change', function (e, data) {
     var $element = $(data.el),
     value = data.value;
@@ -209,8 +272,38 @@ $('#hide_show_legend').on('switch-change', function (e, data) {
 $("#study_modules_legend").slideToggle();
 });
 
+$('#hide_show_teachers_list').on('switch-change', function (e, data) {
+    var $element = $(data.el),
+    value = data.value;
+//console.log(e, $element, value);
+$("#teachers_list_legend").slideToggle();
+});
 
 $('#study_modules_legend_table').dataTable( {
+    "oLanguage": {
+        "sProcessing":   "Processant...",
+        "sLengthMenu":   "Mostra _MENU_ registres",
+        "sZeroRecords":  "No s'han trobat registres.",
+        "sInfo": "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+        "sInfoEmpty":"Mostrant de 0 a 0 de 0 registres",
+        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+        "sInfoPostFix":  "",
+        "sSearch":   "Filtrar:",
+        "sUrl":  "",
+        "oPaginate": {
+            "sFirst":"Primer",
+            "sPrevious": "Anterior",
+            "sNext": "Següent",
+            "sLast": "Últim"
+        }
+    },
+    "bPaginate": false,
+    "bFilter": false,
+    "bInfo": false,
+});
+
+
+$('#teachers_list_legend_table').dataTable( {
     "oLanguage": {
         "sProcessing":   "Processant...",
         "sLengthMenu":   "Mostra _MENU_ registres",
