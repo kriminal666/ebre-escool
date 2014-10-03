@@ -270,6 +270,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	//
 	function get_all_group_study_modules($classroom_group_id) {
+		
 		/*
 		SELECT `study_module_id`, `study_module_shortname`, `study_module_name`, `study_module_hoursPerWeek` 
 		FROM (`study_module`) 
@@ -308,9 +309,6 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		WHERE `lesson_teacher_id`=127
 
 		*/
-		//$this->db->from('study_module');
-        //$this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
-		//$this->db->where('study_module_teacher_id',$teacher_id);
         $this->db->select('classroom_group_code,study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
 		$this->db->from('lesson');
 		$this->db->distinct();

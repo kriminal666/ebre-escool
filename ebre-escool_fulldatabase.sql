@@ -861,7 +861,6 @@ CREATE TABLE `study_module` (
   `study_module_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `study_module_hoursPerWeek` int(3) NOT NULL,
   `study_module_course_id` int(11) NOT NULL,
-  `study_module_teacher_id` int(11) NOT NULL,
   `study_module_initialDate` datetime NOT NULL,
   `study_module_endDate` datetime NOT NULL,
   `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,

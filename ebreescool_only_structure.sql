@@ -585,8 +585,6 @@ CREATE TABLE IF NOT EXISTS `study_module` (
   `study_module_shortname` varchar(50) CHARACTER SET utf8 NOT NULL,
   `study_module_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `study_module_hoursPerWeek` int(3) NOT NULL,
-  `study_module_courseid` int(11) NOT NULL,
-  `study_module_teacher_id` int(11) NOT NULL,
   `study_module_order` int(11) NOT NULL,
   `study_module_description` text,
   `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
@@ -622,6 +620,25 @@ CREATE TABLE IF NOT EXISTS `study_module_academic_periods` (
   PRIMARY KEY (`study_module_academic_periods_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 -- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module_academic_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `study_module_academic_periods_courses` (
+  `study_module_academic_periods_courses_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_module_academic_periods_courses_study_module_academic_periods_id` int(11) NOT NULL,
+  `study_module_academic_periods_courses_course_id` int(11) NOT NULL,
+  `study_module_academic_periods_courses_entryDate` datetime NOT NULL,
+  `study_module_academic_periods_courses_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_academic_periods_courses_creationUserId` int(11) DEFAULT NULL,
+  `study_module_academic_periods_courses_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_academic_periods_courses_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_academic_periods_courses_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_academic_periods_courses_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
 
 --
 -- Estructura de la taula `study_submodules`
@@ -1850,7 +1867,6 @@ CREATE TABLE IF NOT EXISTS `non_lective_hours` (
 CREATE TABLE IF NOT EXISTS `lesson` (
   `lesson_id` int(11) NOT NULL AUTO_INCREMENT,
   `lesson_academic_period_id` int(11) NOT NULL,
-  `lesson_periodid` varchar(50) NOT NULL,
   `lesson_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `lesson_codi_assignatura` varchar(30) NOT NULL COMMENT 'ESBORRAR',
   `lesson_classroom_group_id` int(11) NOT NULL,

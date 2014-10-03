@@ -2331,7 +2331,6 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('study_module_markedForDeletionDate',lang('markedForDeletionDate'));        		
 		$this->grocery_crud->display_as('study_module_hoursPerWeek',lang('study_module_hoursPerWeek'));
         $this->grocery_crud->display_as('study_module_course_id',lang('course'));        
-        $this->grocery_crud->display_as('study_module_teacher_id',lang('study_module_teacher_id'));
         $this->grocery_crud->display_as('study_module_initialDate',lang('study_module_initialDate'));
         $this->grocery_crud->display_as('study_module_endDate',lang('study_module_endDate'));          
         $this->grocery_crud->display_as('study_module_type',lang('type'));   

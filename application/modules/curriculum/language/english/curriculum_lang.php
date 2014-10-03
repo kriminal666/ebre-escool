@@ -47,7 +47,6 @@ $lang['lesson_markedForDeletionDate']   = "Data de baixa";
 $lang['studies_departments']   = "Departaments";
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
-$lang['study_module_teacher_id']="Codi Professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          
 $lang['study_module_external_code']="Codi extern";          
@@ -55,7 +54,6 @@ $lang['type']="Tipus";
 $lang['subtype']="Subtipus";   
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
-$lang['study_module_teacher_id']="Codi Professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          
 $lang['type']="Tipus";   

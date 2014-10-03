@@ -359,11 +359,12 @@ class attendance_model  extends CI_Model  {
 	}
 
 	public function getStudy_module_info($day,$time_lot,$classgroup_id) {
+		//TODO
 		/*
 			SELECT `lesson_study_module_id` , `study_module_shortname` , nom_grup, teacher_id, `person_givenName` , `person_sn1` , `person_sn2`
 			FROM `lesson`
 			INNER JOIN study_module ON `lesson`.`lesson_study_module_id` = study_module.study_module_id
-			INNER JOIN teacher ON `study_module`.`study_module_teacher_id` = teacher.teacher_id
+			INNER JOIN teacher ON `study_module`.`study_TODOmodule_teacher_id` = teacher.teacher_id
 			INNER JOIN person ON `teacher`.`teacher_person_id` = person.person_id
 			WHERE `lesson_day` =1
 			AND `lesson_time_slot_id` =14
@@ -373,7 +374,7 @@ class attendance_model  extends CI_Model  {
 		$this->db->select("lesson_study_module_id, study_module_shortname, study_module_name, teacher_id, teacher_code , person_givenName, person_sn1, person_sn2");
 		$this->db->from('lesson');
 		$this->db->join('study_module','lesson.lesson_study_module_id = study_module.study_module_id');
-		$this->db->join('teacher','study_module.study_module_teacher_id = teacher.teacher_id');
+		$this->db->join('teacher','study_module.study_TODOmodule_teacher_id = teacher.teacher_id');
 		$this->db->join('person','teacher.teacher_person_id = person.person_id');
 		$this->db->where('lesson.lesson_day',$day);
 		$this->db->where('lesson.lesson_time_slot_id',$time_lot);

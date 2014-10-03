@@ -317,34 +317,7 @@ class timetables extends skeleton_main {
 
 
             $all_group_teachers = array();
-            /*
-            $teacher = new stdClass();
-            $teacher->teacher_id = 1;
-            $teacher->givenName = "Pepito";
-            $teacher->sn1 = "Jeans";
-            $teacher->sn2 = "Palotes";
-            $teacher->code = "05";
-
-            $all_group_teachers[$teacher->teacher_id] = $teacher;
-
-            $teacher = new stdClass();
-            $teacher->teacher_id = 2;
-            $teacher->givenName = "Pepita";
-            $teacher->sn1 = "Jeans A";
-            $teacher->sn2 = "Palotes B";
-            $teacher->code = "06";
-
-            $all_group_teachers[$teacher->teacher_id] = $teacher;
-
-            $teacher = new stdClass();
-            $teacher->teacher_id = 3;
-            $teacher->givenName = "HEY";
-            $teacher->sn1 = "Jude";
-            $teacher->sn2 = "Palotes";
-            $teacher->code = "07";
-
-            $all_group_teachers[$teacher->teacher_id] = $teacher;*/
-
+            
             $all_group_teachers = $this->timetables_model->get_teachers_list($classroom_group_id);
 
             $data['all_group_teachers'] = $all_group_teachers;

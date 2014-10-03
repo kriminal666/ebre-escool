@@ -61,7 +61,6 @@ $lang['study_module_id']="Id";
 $lang['study_module_courseid']="Curs";
 $lang['study_module_order']="Ordre";
 $lang['study_module_description']="Descripció";
-$lang['study_module_teacher_id']="Id professor";
 $lang['study_module_initialDate']="Data inici";
 $lang['study_module_endDate']="Data fí";          
 $lang['study_module_external_code']="Codi extern";          
