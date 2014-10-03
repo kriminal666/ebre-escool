@@ -285,12 +285,16 @@ class managment_model  extends CI_Model  {
 
 		//THEN SEARCH AND APROXIMATE MATCH
 
+		//Problems with M11 -> M1 OR M2 -> M12!!!!
 		$study_module_shortname_number = preg_replace("/[^0-9]/","",$study_module_shortname);
 
 		$this->db->select('study_module_id');
 		$this->db->from('study_module');
+		//BE CAREFUL ! Like 2 will match MP12
 		$this->db->like('study_module_shortname',$study_module_shortname_number);
 		$this->db->where('study_module_courseid',$course_id);
+		//IF QUERY SELECT M12 AND M2 then select ONLY M2!
+		$this->db->order_by('study_module_shortname', 'ASC');
 		$this->db->limit(1);
 
 		$query = $this->db->get();

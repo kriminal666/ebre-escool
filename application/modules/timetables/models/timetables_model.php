@@ -111,9 +111,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		SELECT `study_module_id`, `study_module_shortname`, `study_module_name`, `study_module_hoursPerWeek` 
 		FROM (`study_module`) 
 		JOIN `study_module_academic_periods` ON `study_module_academic_periods`.`study_module_academic_periods_study_module_id` = `study_module`.`study_module_id` 
-		LEFT JOIN `course` ON `study_module`.`study_module_courseid` = `course`.`course_id` 
-		LEFT JOIN `classroom_group` ON `classroom_group`.`classroom_group_course_id` = `course`.`course_id` 
-		WHERE `classroom_group`.`classroom_group_id` = 25 AND `study_module_academic_periods_academic_period_id` = '5' 
+		WHERE `study_module_classroom_group_id` = '9' AND `study_module_academic_periods_academic_period_id` = '5' 
+		ORDER BY `study_module`.`study_module_shortname` ASC
 		*/
 
 		$current_academic_period_id = $this->get_current_academic_period_id();
@@ -122,11 +121,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
         $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_hoursPerWeek');
 		$this->db->from('study_module');
 		$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');
-		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
-		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = course.course_id', 'left');
 		//$this->db->distinct();
-		$this->db->where('classroom_group.classroom_group_id',$classroom_group_id);
+		$this->db->where('study_module_classroom_group_id',$classroom_group_id);
 		$this->db->where('study_module_academic_periods_academic_period_id',$current_academic_period_id);
+		$this->db->order_by('study_module_shortname', "asc");
         
         $query = $this->db->get();
 		//echo $this->db->last_query();
