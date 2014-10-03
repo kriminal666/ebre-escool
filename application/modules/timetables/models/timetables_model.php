@@ -197,14 +197,18 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 				$study_modules = "";
 
-				$i=1;
-				foreach ( $teachers_study_modules_list[$teacher->id]->studymodules as $study_module ) {
-					$study_modules = $study_modules . $study_module->shortName;
-					if ($i < count( $teachers_study_modules_list[$teacher->id]->studymodules )) {
-						$study_modules = $study_modules . ", "; 	
-					}
-					$i++;
+				
+				if (array_key_exists($teacher->id,$teachers_study_modules_list)) {
+					$i=1;
+					foreach ( $teachers_study_modules_list[$teacher->id]->studymodules as $study_module ) {
+						$study_modules = $study_modules . $study_module->shortName;
+						if ($i < count( $teachers_study_modules_list[$teacher->id]->studymodules )) {
+							$study_modules = $study_modules . ", "; 	
+						}
+						$i++;
+					}	
 				}
+				
 
 				$teacher->study_modules = $study_modules;
 
