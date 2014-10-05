@@ -2360,6 +2360,9 @@ class managment_model  extends CI_Model  {
 
 	function get_all_studymodules_report_info($academic_period,$orderby = "DESC") {
 
+		//TODO: GET COURSES INFO: pot haver 1 o més cursos per study_momdule
+
+		//TODO: GET STUDY. ONLY COULD BE ONE. COULD BE OBTAINED BY courses_is. Tots els cursos han de ser del mateix estudy
 
 
 		//classgroups
@@ -2376,17 +2379,15 @@ class managment_model  extends CI_Model  {
 		WHERE study_module_academic_periods_academic_period_id = 5
 		*/
 
-		$this->db->select('study_module_id, study_module_academic_periods_external_code, study_module_shortname, study_module_name, study_module_courseid, course_shortname, course_name, course_study_id, 
-			               studies_shortname , studies_name, studies_studies_law_id, studies_law_shortname , studies_law_name ,study_module_hoursPerWeek, study_module_order, 
+		$this->db->select('study_module_id, study_module_academic_periods_external_code, study_module_shortname, study_module_name,study_module_hoursPerWeek, study_module_order, 
 			               study_module_academic_periods_initialDate, study_module_academic_periods_endDate, study_module_type, study_module_subtype, study_module_description');
 		$this->db->from('study_module_academic_periods');
 		$this->db->join('study_module','study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id', 'left');
-		$this->db->join('course','course.course_id = study_module_courseid', 'left');
-		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
-		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
 		$this->db->where('study_module_academic_periods_academic_period_id',$academic_period);
 		
-		$this->db->order_by('studies_shortname', $orderby);
+		//$this->db->order_by('studies_shortname', $orderby);
+
+
 		
 		$query = $this->db->get();
 
