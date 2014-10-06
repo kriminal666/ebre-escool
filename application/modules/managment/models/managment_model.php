@@ -2641,7 +2641,7 @@ class managment_model  extends CI_Model  {
 
 	function get_all_study_submodules_report_info($academic_period,$orderby = "DESC") {
 
-		$current_academic_period_id = $this->get_current_academic_period_id();
+		$current_academic_period_id = $this->get_curr
 
 		//classgroups
 		//Example SQL:
@@ -2664,7 +2664,6 @@ class managment_model  extends CI_Model  {
 							study_submodules_order,study_submodules_description');
 		$this->db->from('study_submodules_academic_periods');
 		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
-		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
 		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid', 'left');
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
