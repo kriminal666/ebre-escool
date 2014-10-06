@@ -2641,10 +2641,12 @@ class managment_model  extends CI_Model  {
 
 	function get_all_study_submodules_report_info($academic_period,$orderby = "DESC") {
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
 		//classgroups
 		//Example SQL:
 		/*
-		SELECT study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_external_code, study_module_shortname, 
+		SELECT study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
 		study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
 		studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,study_submodules_order,study_submodules_description
 		FROM study_submodules_academic_periods 
@@ -2656,12 +2658,13 @@ class managment_model  extends CI_Model  {
 		WHERE study_submodules_academic_periods_academic_period_id = 5
 		*/
 
-		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_external_code, study_module_shortname, 
+		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
 							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
 							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
 							study_submodules_order,study_submodules_description');
 		$this->db->from('study_submodules_academic_periods');
 		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
 		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid', 'left');
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
