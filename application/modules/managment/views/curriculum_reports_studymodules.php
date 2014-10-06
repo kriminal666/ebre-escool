@@ -110,15 +110,15 @@
                 $("#select_study_module_study_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
         } );
         
-        $("#select_study_module_course_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un curs", allowClear: true });
-        $("#select_study_module_course_code_filter").on( 'change', function () {
+        $("#select_study_module_bcourse_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un curs", allowClear: true });
+        $("#select_study_module_bcourse_code_filter").on( 'change', function () {
             var val = $(this).val();
 
             all_study_modules_table.column(6).search( val ? '^'+$(this).val()+'$' : val, true, false ).draw();
         } );
 
         all_study_modules_table.column(6).data().unique().sort().each( function ( d, j ) {
-                $("#select_study_module_course_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
+                $("#select_study_module_bcourse_code_filter").append( '<option value="'+d+'">'+d+'</option>' )
         } );
 
 });
@@ -156,7 +156,7 @@
           </select>
        </td>
        <td><?php echo lang('study_module_study_code')?>: <select id="select_study_module_study_code_filter"><option value=""></option></select></td>
-       <td><?php echo lang('study_module_course_code')?>: <select id="select_study_module_course_code_filter"><option value=""></option></select></td>
+       <td><?php echo lang('study_module_bcourse_code')?>: <select id="select_study_module_bcourse_code_filter"><option value=""></option></select></td>
     </tr>
   </thead>  
 </table> 
@@ -177,8 +177,8 @@
      <th><?php echo lang('study_module_name')?></th>
      <th><?php echo lang('study_module_study_code')?></th>
      <th><?php echo lang('study_module_study')?></th>
-     <th><?php echo lang('study_module_course_code')?></th>
-     <th><?php echo lang('study_module_course')?></th>
+     <th><?php echo lang('study_module_bcourse_code')?></th>
+     <th><?php echo lang('study_module_bcourse')?></th>
      <th><?php echo lang('study_module_hoursPerWeek')?></th>
      <th><?php echo lang('study_module_order')?></th>
      <th><?php echo lang('study_module_initialDate')?></th>
@@ -215,29 +215,57 @@
      </td>
 
      <td>
-        <?php echo $study_module->study_shortname . ". " . $study_module->study_name . " - " . $study_module->study_law_name . " -" . $study_module->study_law_shortname;?>
+        <?php 
+          echo $study_module->courses[0]->studies_shortname . ". " . $study_module->courses[0]->studies_name . " - " . $study_module->courses[0]->studies_law_name . " -" . $study_module->courses[0]->studies_law_shortname;  
+        ?>
+        
      </td>
      
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/studies/read/' . $study_module->study_id ) ;?>">
-          <?php echo $study_module->study_shortname . ". " . $study_module->study_name . " - " . $study_module->study_law_name . " -" . $study_module->study_law_shortname;?>
-      </a>
-      ( <a href="<?php echo base_url('/index.php/curriculum/studies/edit/' . $study_module->study_id ) ;?>">
-          <?php echo $study_module->study_id ;?>
-      </a> )
+          <?php 
+
+          $num_courses = count($study_module->courses);
+          
+            echo "<a href=\"" . base_url('/index.php/curriculum/studies/read/' . $study_module->courses[0]->study_id ) . "\">" . 
+            $study_module->courses[0]->studies_shortname . ". " . $study_module->courses[0]->studies_name . " - " . $study_module->courses[0]->studies_law_name . " -" . $study_module->courses[0]->studies_law_shortname . "</a>" .
+            " ( <a href=\" " . base_url('/index.php/curriculum/studies/edit/' . $study_module->courses[0]->study_id ) . "\">" . $study_module->courses[0]->study_id . "</a> )";          
+
+          ?>
      </td>
      
      <td>
-       <?php echo $study_module->course_shortname . ". " . $study_module->course_name;?>
+          <?php 
+
+          $num_courses = count($study_module->courses);
+          $i=1;
+          foreach ($study_module->courses as $course_key => $course) {
+            echo $course->shortname . ". " . $course->name;
+            if ($i < $num_courses) {
+              echo ", ";
+            }
+            $i++;
+          }
+
+          ?>
      </td>
 
      <td>
-      <a href="<?php echo base_url('/index.php/curriculum/course/read/' . $study_module->course_id ) ;?>">
-          <?php echo $study_module->course_shortname . ". " . $study_module->course_name;?>
-      </a>
-      ( <a href="<?php echo base_url('/index.php/curriculum/course/edit/' . $study_module->course_id ) ;?>">
-          <?php echo $study_module->course_id ;?>
-      </a> )
+          <?php 
+
+          $num_courses = count($study_module->courses);
+          $i=1;
+          foreach ($study_module->courses as $course_key => $course) {
+            echo "<a href=\"" . base_url('/index.php/curriculum/course/read/' . $course->id ) . "\">" . 
+            $course->shortname . ". " . $course->name . "</a>" .
+            " ( <a href=\" " . base_url('/index.php/curriculum/course/edit/' . $course->id ) . "\">" . $course->id . "</a> )";
+            if ($i < $num_courses) {
+              echo ", ";
+            }
+            $i++;
+          }
+
+          ?>
+
      </td>
 
      <td>

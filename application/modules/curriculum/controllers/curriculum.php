@@ -819,7 +819,7 @@ class curriculum extends skeleton_main {
 /*
 MIGRATION SCRIPT:
 INSERT INTO  study_module_ap_courses (`study_module_ap_courses_study_module_ap_id`,`study_module_ap_courses_course_id`)
-SELECT `study_module_academic_periods_id`, `study_module_courseid`
+SELECT `study_module_academic_periods_id`, `study_module_bcourseid`
 FROM `study_module`
 INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study_module_academic_periods_study_module_id`  = study_module.`study_module_id`
 */
@@ -967,7 +967,6 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         $this->grocery_crud->display_as($this->current_table.'_shortname',lang('shortName'));
         $this->grocery_crud->display_as($this->current_table.'_name',lang('name'));
         $this->grocery_crud->display_as($this->current_table.'_hoursPerWeek',lang($this->current_table.'_hoursPerWeek'));
-        $this->grocery_crud->display_as($this->current_table.'_courseid',lang($this->current_table.'_courseid'));        
         $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
         $this->grocery_crud->display_as($this->current_table.'_type',lang($this->current_table.'_type'));   
@@ -994,11 +993,9 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         */
 
         //RELACIONS
-        //$this->grocery_crud->set_relation($this->current_table.'_course_id','course','course_shortname'); 
         //$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','teacher_id)');
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COUL APPLY
         //$this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','({classroom_group_id} - {classroom_group_code} | {classroom_group_shortName})');
-        $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname} - {course_name})');
         $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', 'study_module_academic_periods', 'academic_periods', 
             'study_module_academic_periods_study_module_id', 'study_module_academic_periods_academic_period_id', 'academic_periods_name');
 

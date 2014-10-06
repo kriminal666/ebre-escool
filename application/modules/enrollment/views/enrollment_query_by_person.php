@@ -447,6 +447,8 @@
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
 
+
+
 //DEFAULT PERIOD
 var periode = "2014-15";
 var enrollment_id = "";
@@ -611,7 +613,23 @@ jQuery(function($) {
       { "mData": "study_module_external_code" },
       { "mData": "study_module_shortname" },
       { "mData": "study_module_name" },
-      { "mData": "study_module_course" },
+      { "mData": function ( source, type, val ) { 
+
+            json_courses = JSON.stringify(source.courses);
+
+            course_str = "";
+            data = JSON.parse(json_courses);
+            $.each(data, function(i, course) {
+                course_full_name =  course.shortname + ". " + course.name;
+                course_str = course_str + course_full_name;
+                if (i < (data.length-1)) {
+                  course_str = course_str + ", ";  
+                }
+            });
+
+            return course_str;
+          }
+      },
       { "mData": "study_module_hoursPerWeek" }
     ],
     "bPaginate": false,

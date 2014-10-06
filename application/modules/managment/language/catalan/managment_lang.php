@@ -149,6 +149,8 @@ $lang['studies_studysubmodules_short']="UFs";
 $lang['studies_enrolled']="# Matrículats";
 
 //Course report
+$lang['course']="Curs";
+$lang['courses']="Cursos";
 $lang['course_id']="Id";
 $lang['course_shortname']="Nom curt";
 $lang['course_name']="Nom";
@@ -183,7 +185,7 @@ $lang['study_module_id']="Id";
 $lang['study_module_code']="Codi";
 $lang['study_module_shortname']="Nom curt";
 $lang['study_module_name']="Nom";
-$lang['study_module_course']="Curs";
+$lang['study_module_bcourse']="Curs";
 $lang['study_module_study']="Estudi";
 $lang['study_module_hoursPerWeek']="Hores setmanals";
 $lang['study_module_order']="Ordre";
@@ -195,7 +197,7 @@ $lang['study_module_description']="Descripció";
 
 $lang['study_module_academic_period']="Període acadèmic";
 $lang['study_module_study_code']="Codi estudi";
-$lang['study_module_course_code']="Codi curs";
+$lang['study_module_bcourse_code']="Codi curs";
 
 
 

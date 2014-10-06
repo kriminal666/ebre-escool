@@ -1549,11 +1549,13 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         username = username_input.val();
 
         givenName_input.blur(function(){
-          console.debug("existeix:" + existeix );
+          //console.debug("existeix:" + existeix );
           givenName = $.trim(givenName_input.val());
           if (!existeix) {
-             username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));  
-            person_email.val(username.val() + "@<?php echo $this->config->item('default_emaildomain');?>" );
+             proposed_value = accent_fold(givenName.toLowerCase()+sn1.toLowerCase());
+             proposed_value = proposed_value.replace(/\s+/g, '');
+             username = username_input.val(proposed_value);  
+             person_email.val(proposed_value + "@<?php echo $this->config->item('default_emaildomain');?>" );
           }
           if(givenName!='' && sn1!='' && !existeix){
              generate_username();            
@@ -1563,8 +1565,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
         sn1_input.blur(function(){
           sn1 = $.trim(sn1_input.val());
           if (!existeix) {
-            username = username_input.val(accent_fold(givenName.toLowerCase()+sn1.toLowerCase()));
-             person_email.val(username.val() + "@<?php echo $this->config->item('default_emaildomain');?>");
+            proposed_value = accent_fold(givenName.toLowerCase()+sn1.toLowerCase());
+            proposed_value = proposed_value.replace(/\s+/g, '');
+            username = username_input.val(proposed_value);
+            person_email.val(proposed_value + "@<?php echo $this->config->item('default_emaildomain');?>");
           }
           if(givenName!='' && sn1!='' && !existeix){
             generate_username();
@@ -2327,11 +2331,11 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                             checked = '';
                           }
 
-                          $_step4_widget_main.append('<input class="ace" type="checkbox" '+ checked +' name="'+object.study_module_shortname+'" value="'+object.study_module_id+'"/> <span class="lbl">  ('+object.study_module_courseid+') '+object.study_module_shortname+' - '+object.study_module_name+' ('+object.study_module_id+')</span><br />');
+                          $_step4_widget_main.append('<input class="ace" type="checkbox" '+ checked +' name="'+object.study_module_shortname+'" value="'+object.study_module_id+'"/> <span class="lbl">  ('+object.study_module_ap_courses_course_id+') '+object.study_module_shortname+' - '+object.study_module_name+' ('+object.study_module_id+')</span><br />');
 
-                          //console.debug("courseid: " + object.study_module_courseid);
+                          //console.debug("courseid: " + object.study_module_ap_courses_course_id);
 
-                          var $_module_widget = $('#step6_module_container_widget_' + object.study_module_courseid);   
+                          var $_module_widget = $('#step6_module_container_widget_' + object.study_module_ap_courses_course_id);   
                           $_module_widget.append("<div class='widget-box'>"+
                                                   "<div class='widget-header'>"+
                                                     "<h4 id='h4_study_module_" + object.study_module_id + "'>" + object.study_module_shortname + " - " + object.study_module_name + "</h4>"+

@@ -820,6 +820,59 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	}
 
 
+    public function get_courses_study_module($study_module_id,$period=null,$order_by="ASC") {
+
+        //GET period_id
+        $period_id = $this->get_current_academic_period_id();
+        if ($period!=null) {
+            $period_id = $this->get_academic_period_id_by_period($period);    
+        }
+
+        /*
+        SELECT study_module_ap_courses_course_id,course_shortname,course_name,course_number
+        FROM study_module_ap_courses
+        INNER JOIN study_module_academic_periods  ON study_module_academic_periods.study_module_academic_periods_id =   study_module_ap_courses.study_module_ap_courses_study_module_ap_id
+        INNER JOIN study_module ON study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id
+        INNER JOIN course ON course.course_id = study_module_ap_courses.study_module_ap_courses_course_id
+        WHERE study_module_academic_periods_academic_period_id=5 AND study_module_id=1
+        */
+
+        $this->db->select('study_module_ap_courses_course_id,course_shortname,course_name,course_number,course_cycle_id, course_study_id');
+        $this->db->distinct();
+        $this->db->from('study_module_ap_courses');
+        $this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_id =   study_module_ap_courses.study_module_ap_courses_study_module_ap_id');
+        $this->db->join('study_module','study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id');
+        $this->db->join('course','course.course_id = study_module_ap_courses.study_module_ap_courses_course_id');
+
+        $this->db->where('study_module_id',$study_module_id);
+        $this->db->where('study_module_academic_periods_academic_period_id',$period_id);
+
+        $this->db->order_by('course_number', $order_by);
+
+               
+        $query = $this->db->get();
+
+        //echo $this->db->last_query();
+
+        $courses_study_module = array();        
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)    {
+                $course = new stdClass();   
+
+                $course->id = $row->study_module_ap_courses_course_id;
+                $course->shortname = $row->course_shortname;
+                $course->name = $row->course_name;
+                $course->number = $row->course_number;
+
+                $course->cycle_id = $row->course_cycle_id;                
+                $course->study_id = $row->course_study_id;
+
+                $courses_study_module[]=$course;
+            }
+        }   
+        return $courses_study_module;
+
+    }
 
 	public function get_enrollment_study_modules_by_enrollment_id_and_period($enrollment_id,$period,$orderby="asc") {
 
@@ -827,52 +880,40 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		$period_id = $this->get_academic_period_id_by_period($period);
 
 		/*
-		SELECT DISTINCT enrollment_periodid,enrollment_id,study_module_id, study_module_academic_periods_external_code,study_module_shortname, study_module_name,study_module_courseid,course.course_shortName,course.course_name,study_module_hoursPerWeek
-		FROM study_module_academic_periods
-		INNER JOIN study_module ON study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id
-		INNER JOIN enrollment_submodules ON enrollment_submodules.enrollment_submodules_moduleid = study_module.study_module_id
-		INNER JOIN enrollment ON enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id
-		INNER JOIN course ON course.course_id = study_module.study_module_courseid
-		WHERE enrollment_periodid = "2014-15" AND enrollment_id=4326 AND `study_module_academic_periods_id`=5
-		ORDER BY study_module_order ASC
+		
 		*/
 
 	    $this->db->select('enrollment_periodid,enrollment_id,study_module_id, study_module_academic_periods_external_code,study_module_shortname, study_module_name,
-	    				   study_module_courseid,course.course_shortName,course.course_name,study_module_hoursPerWeek,study_module_order');
+	    				   study_module_hoursPerWeek,study_module_order');
 	    $this->db->distinct();
 		$this->db->from('study_module_academic_periods');
 		$this->db->join('study_module','study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id');
 		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_moduleid = study_module.study_module_id');
 		$this->db->join('enrollment','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id');
-		$this->db->join('course','course.course_id = study_module.study_module_courseid');
 
 		$this->db->where('enrollment_periodid',$period);
 		$this->db->where('enrollment_id',$enrollment_id);
 		$this->db->where('study_module_academic_periods_academic_period_id',$period_id);
 
 		$this->db->order_by('study_module_order', $orderby);
-
-		       
+ 
         $query = $this->db->get();
 
-		//echo $this->db->last_query();
+		//echo(arg1)o $this->db->last_query();
 
 		$enrollment_study_modules = array();
 		
 		if ($query->num_rows() > 0) {
-
 			$i=0;
 			foreach ($query->result_array() as $row)	{
+                $courses = $this->get_courses_study_module($row['study_module_id'],$period);
 				$enrollment_study_modules[$i]['enrollment_periodid'] = $row['enrollment_periodid'];
 				$enrollment_study_modules[$i]['enrollment_id'] = $row['enrollment_id'];
    				$enrollment_study_modules[$i]['study_module_id'] = $row['study_module_id'];
    				$enrollment_study_modules[$i]['study_module_external_code'] = $row['study_module_academic_periods_external_code'];
    				$enrollment_study_modules[$i]['study_module_shortname'] = $row['study_module_shortname'];   				
    				$enrollment_study_modules[$i]['study_module_name'] = $row['study_module_name'];
-   				$enrollment_study_modules[$i]['study_module_courseid'] = $row['study_module_courseid'];
-   				$enrollment_study_modules[$i]['study_module_course_shortName'] = $row['course_shortName'];
-   				$enrollment_study_modules[$i]['study_module_course_name'] = $row['course_name'];
-   				$enrollment_study_modules[$i]['study_module_course'] = $row['course_shortName'] . " - " . $row['course_name'];
+                $enrollment_study_modules[$i]['courses'] = $courses;
    				$enrollment_study_modules[$i]['study_module_hoursPerWeek'] = $row['study_module_hoursPerWeek'];
    				$enrollment_study_modules[$i]['study_module_order'] = $row['study_module_order'];   				
    				$i++;
@@ -1046,15 +1087,31 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	/* Mòduls */
 	public function get_enrollment_study_modules($courses=false,$course_id=false,$orderby="asc",$order_field = "") {
 		
+        $current_academic_period = $this->get_current_academic_period_id();
+
 		if(!$courses){
 			//$course_id=3;	//	"1ASIX-DAM"
 		}		
-		//echo $course_id."<br />";
-        $this->db->select('study_module_id,study_module_shortname,study_module_name,study_module_courseid,course.course_shortname,course.course_name');
-		$this->db->from('study_module');
-		$this->db->join('course','course.course_id = study_module.study_module_courseid');
-		$this->db->where_in('course.course_id', $courses);
-		$this->db->order_by('course.course_id', $orderby);
+		
+        /*
+        SELECT DISTINCT study_module_ap_courses_course_id, study_module_academic_periods_study_module_id, course_shortname, course_name, study_module_shortname, study_module_name
+        FROM study_module_ap_courses
+        INNER JOIN study_module_academic_periods ON study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id
+        INNER JOIN course ON course.course_id = study_module_ap_courses_course_id
+        INNER JOIN study_module ON study_module.study_module_id = study_module_academic_periods_study_module_id
+        WHERE study_module_ap_courses_course_id =1
+        AND study_module_academic_periods_academic_period_id =5
+        */
+
+        $this->db->select('study_module_ap_courses_course_id, study_module_academic_periods_study_module_id, course_shortname, course_name, study_module_shortname, study_module_name');
+        $this->db->distinct();
+		$this->db->from('study_module_ap_courses');
+		$this->db->join('study_module_academic_periods','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');
+        $this->db->join('course','course.course_id = study_module_ap_courses_course_id');
+        $this->db->join('study_module','study_module.study_module_id = study_module_academic_periods_study_module_id');
+		$this->db->where_in('study_module_ap_courses_course_id', $courses);
+        $this->db->where_in('study_module_academic_periods_academic_period_id', $current_academic_period);
+		$this->db->order_by('study_module_ap_courses_course_id', $orderby);
 		if ($order_field != "") {
 			if ($order_field == "order") {
 				$this->db->order_by('study_module_order', $orderby);
@@ -1073,14 +1130,14 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			$study_module_array = array();
 			$i=0;
 			foreach ($query->result_array() as $row)	{
-   				$study_module_array[$i]['study_module_id'] = $row['study_module_id'];
+   				$study_module_array[$i]['study_module_id'] = $row['study_module_academic_periods_study_module_id'];
    				$study_module_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
    				$study_module_array[$i]['study_module_name'] = $row['study_module_name'];
-   				$study_module_array[$i]['study_module_courseid'] = $row['study_module_courseid'];
+   				$study_module_array[$i]['study_module_ap_courses_course_id'] = $row['study_module_ap_courses_course_id'];
    				$study_module_array[$i]['course_shortname'] = $row['course_shortname'];
    				$study_module_array[$i]['course_name'] = $row['course_name'];
    				
-   				if($row['study_module_courseid'] == $course_id){
+   				if($row['study_module_ap_courses_course_id'] == $course_id){
    					$study_module_array[$i]['selected_course'] = 'yes';
    				} else {
 					$study_module_array[$i]['selected_course'] = 'no';
@@ -1157,7 +1214,6 @@ function update_user_ldap_dn($username, $ldap_dn) {
         				   study_module_order,study_submodules_study_module_id');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
-		$this->db->join('course','course.course_id = study_module.study_module_courseid');
 		$this->db->where_in('study_submodules_study_module_id',$study_modules);
 		if ( $order_field != "") {
 			if ( $order_field == "order") {
@@ -1195,17 +1251,33 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	/* Unitats formatives */
 	public function get_enrollment_study_submodules($study_modules=false,$classroom_group=false,$orderby="asc",$order_field="") {
 
+        $current_academic_period_id = $this->get_current_academic_period_id();
+
 		if(!$study_modules){
 			//$study_modules[]=282;	//	"M1"
 			//$study_modules[]=268;	//	"M2"
 		}	
 
-        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_module_order,study_submodules_study_module_id,classroom_group_code');
-		$this->db->from('study_submodules');
-		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
-		$this->db->join('course','course.course_id = study_module.study_module_courseid');
-		$this->db->join('classroom_group','classroom_group.classroom_group_course_id=course.course_id');
-		$this->db->where_in('study_submodules_study_module_id',$study_modules);
+        /*
+        SELECT DISTINCT study_submodules_id, study_submodules_shortname, study_submodules_name, study_module_shortname, study_module_order, study_submodules_study_module_id, classroom_group_code
+        FROM study_module_ap_courses
+        INNER JOIN study_module_academic_periods  ON  study_module_academic_periods.study_module_academic_periods_id = study_module_ap_courses.study_module_ap_courses_study_module_ap_id
+        INNER JOIN study_module  ON study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id
+        INNER JOIN study_submodules ON study_submodules.study_submodules_study_module_id = study_module.study_module_id
+        INNER JOIN classroom_group ON classroom_group.classroom_group_course_id= study_module_ap_courses_course_id
+        WHERE study_module_ap_courses_course_id IN (1,2) AND study_module_academic_periods_academic_period_id=5
+        */
+
+        $this->db->select('study_submodules_id, study_submodules_shortname, study_submodules_name, study_submodules_order , study_module_shortname, study_module_order, 
+            study_submodules_study_module_id, classroom_group_code');
+        $this->db->distinct();
+		$this->db->from('study_module_ap_courses');
+		$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_id = study_module_ap_courses.study_module_ap_courses_study_module_ap_id');
+		$this->db->join('study_module','study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id');
+		$this->db->join('study_submodules','study_submodules.study_submodules_study_module_id = study_module.study_module_id');
+        $this->db->join('classroom_group','classroom_group.classroom_group_course_id= study_module_ap_courses_course_id');
+		$this->db->where_in('study_module_ap_courses_course_id',$study_modules);
+        $this->db->where('study_module_academic_periods_academic_period_id',$current_academic_period_id);
 		if ( $order_field != "") {
 			if ( $order_field == "order") {
 				$this->db->order_by('study_module_order', $orderby);

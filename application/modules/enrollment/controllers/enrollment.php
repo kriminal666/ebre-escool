@@ -1014,7 +1014,7 @@ public function get_enrollment_study_modules( $enrollment_id = false, $period = 
 
     $study_modules = array();
 
-    if ( ! ($enrollment_id == false) ) {
+    if ( ! ($enrollment_id == false) && ! ( $period == false ) ) {
         $study_modules = $this->enrollment_model->get_enrollment_study_modules_by_enrollment_id_and_period($enrollment_id,$period );    
     }    
 
@@ -1610,7 +1610,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $courses = array();
         foreach($enrollment_study_modules as $key => $value){
             $resultat[$key]=$value;
-            $courses[] = $value['study_module_courseid'];
+            $courses[] = $value['study_module_ap_courses_course_id'];
         }
                 
         $courses = array_unique($courses);
@@ -1619,7 +1619,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         foreach ($courses as $course)
         {
             foreach ($enrollment_study_modules as $enrollment_study_module){
-                if($enrollment_study_module['study_module_courseid'] == $course){
+                if($enrollment_study_module['study_module_ap_courses_course_id'] == $course){
                     $res[$course][]=$enrollment_study_module;    
                 }
                 

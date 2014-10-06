@@ -262,18 +262,25 @@ class managment_model  extends CI_Model  {
 	}	
 
 	function get_study_module_id_by_shortname_and_course_id ($study_module_shortname,$course_id) {
+		
+		$current_academic_period = $this->get_current_academic_period_id();
+
 		/*
-		SELECT `study_module_id` , `study_module_shortname` , `study_module_name` , `study_module_hoursPerWeek` , `study_module_courseid`
+		SELECT study_module_id
 		FROM study_module
-		WHERE `study_module_shortname` = "MP07" AND study_module_courseid=2
+		INNER JOIN study_module_academic_periods ON study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id
+		INNER JOIN study_module_ap_courses ON study_module_academic_periods.study_module_academic_periods_id = study_module_ap_courses.study_module_ap_courses_study_module_ap_id
+		WHERE study_module_shortname = "MP07" AND study_module_ap_courses_course_id =2 AND study_module_academic_periods_academic_period_id=5
 		*/
 
 		//FIRST SEARCH A PERFECT MATCH
 		$this->db->select('study_module_id');
 		$this->db->from('study_module');
+		$this->db->join('study_module_academic_periods','study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id');
+		$this->db->join('study_module_ap_courses','study_module_academic_periods.study_module_academic_periods_id = study_module_ap_courses.study_module_ap_courses_study_module_ap_id');
 		$this->db->where('study_module_shortname',$study_module_shortname);
-		$this->db->where('study_module_courseid',$course_id);
-		$this->db->limit(1);
+		$this->db->where('study_module_ap_courses_course_id',$course_id);
+		$this->db->where('study_module_academic_periods_academic_period_id',$course_id);
 
 		$query = $this->db->get();
 		//echo $this->db->last_query();
@@ -290,15 +297,17 @@ class managment_model  extends CI_Model  {
 
 		$this->db->select('study_module_id');
 		$this->db->from('study_module');
+		$this->db->join('study_module_academic_periods','study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id');
+		$this->db->join('study_module_ap_courses','study_module_academic_periods.study_module_academic_periods_id = study_module_ap_courses.study_module_ap_courses_study_module_ap_id');
 		//BE CAREFUL ! Like 2 will match MP12
 		$this->db->like('study_module_shortname',$study_module_shortname_number);
-		$this->db->where('study_module_courseid',$course_id);
+		$this->db->where('study_module_ap_courses_course_id',$course_id);
 		//IF QUERY SELECT M12 AND M2 then select ONLY M2!
 		$this->db->order_by('study_module_shortname', 'ASC');
-		$this->db->limit(1);
+		$this->db->where('study_module_academic_periods_academic_period_id',$course_id);
 
 		$query = $this->db->get();
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 
 		if ($query->num_rows() == 1){ 
@@ -363,6 +372,7 @@ class managment_model  extends CI_Model  {
 				if (!$course_id) {
 					return false;
 				}
+				// TODO: add classroomgroup as condition! MP07 in course 2 could give MP07 of ASIX and DAM! 3x2 problem!!!
 				$study_module_id = $this->get_study_module_id_by_shortname_and_course_id($lesson->codi_assignatura,$course_id);
 				if ($study_module_id) {
 					$this->update_study_module_id($lesson_id,$study_module_id);
@@ -1862,18 +1872,29 @@ class managment_model  extends CI_Model  {
 
 	function get_studymodules_by_study($withtotal = true) {
 		/* studymodules by study
-		SELECT course_study_id, count(`study_module_id`) 
+		SELECT course_study_id , count(study_module_id) 
 		FROM study_module 
-		LEFT JOIN course ON study_module.study_module_courseid = course.course_id
+		INNER JOIN  study_module_academic_periods ON  study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id
+		INNER JOIN study_module_ap_courses ON study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id
+		INNER JOIN course ON study_module_ap_courses.study_module_ap_courses_course_id = course.course_id
+		WHERE study_module_academic_periods.study_module_academic_periods_academic_period_id=5
 		GROUP BY course_study_id
 		 */
+
+		$current_academic_period = $this->get_current_academic_period_id();
 
 		//courses
 		$this->db->select('course_study_id,count(study_module_id) as total');
 		$this->db->from('study_module');
-		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');	
+		$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');	
+		$this->db->join('study_module_ap_courses','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');	
+		$this->db->join('course','study_module_ap_courses.study_module_ap_courses_course_id = course.course_id');	
+		$this->db->where('study_module_academic_periods.study_module_academic_periods_academic_period_id',$current_academic_period);	
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
+
+        //echo $this->db->last_query();
+
 
 		$studymodules_by_study = array();
 		if ($query->num_rows() > 0){
@@ -1883,9 +1904,15 @@ class managment_model  extends CI_Model  {
 
 				$studymodules_ids = array();
 				//study_modules
+				/*
+
+				*/
 				$this->db->select('study_module_id');
 				$this->db->from('study_module');
-				$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
+				$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');	
+				$this->db->join('study_module_ap_courses','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');	
+				$this->db->join('course','study_module_ap_courses.study_module_ap_courses_course_id = course.course_id');	
+				$this->db->where('study_module_academic_periods.study_module_academic_periods_academic_period_id',$current_academic_period);	
 				$this->db->where('course_study_id',$row->course_study_id);
 				$query1 = $this->db->get();
 				if ($query1->num_rows() > 0){
@@ -1960,20 +1987,31 @@ class managment_model  extends CI_Model  {
 	function get_studysubmodules_by_study( $withtotal = true) {
 
 		/* studysubmodules by study
-		SELECT course_study_id, count(`study_module_id`) 
-		FROM study_submodules
-		JOIN study_module ON study_submodules.study_submodules_study_module_id=study_module.study_module_id
-		LEFT JOIN course ON study_module.study_module_courseid = course.course_id
-		GROUP BY course_study_id
+	
+		 SELECT `course_study_id`, count(study_module_id) as total 
+		 FROM (`study_submodules`) 
+		 LEFT JOIN `study_module` ON `study_submodules`.`study_submodules_study_module_id` = `study_module`.`study_module_id` 
+		 JOIN `study_module_academic_periods` ON `study_module_academic_periods`.`study_module_academic_periods_study_module_id` = `study_module`.`study_module_id` 
+		 JOIN `study_module_ap_courses` ON `study_module_ap_courses`.`study_module_ap_courses_study_module_ap_id` = `study_module_academic_periods`.`study_module_academic_periods_id` 
+		 JOIN `course` ON `study_module_ap_courses`.`study_module_ap_courses_course_id` = `course`.`course_id` 
+		 WHERE `study_module_academic_periods`.`study_module_academic_periods_academic_period_id` = '5' 
+		 GROUP BY `course_study_id` 
 		 */
+
+		$current_academic_period = $this->get_current_academic_period_id();
 
 		//courses
 		$this->db->select('course_study_id,count(study_module_id) as total');
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
-		$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
+		$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');	
+		$this->db->join('study_module_ap_courses','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');	
+		$this->db->join('course','study_module_ap_courses.study_module_ap_courses_course_id = course.course_id');	
+		$this->db->where('study_module_academic_periods.study_module_academic_periods_academic_period_id',$current_academic_period);	
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
+		echo $this->db->last_query();
+
 
 		$studysubmodules_by_study = array();
 		if ($query->num_rows() > 0){
@@ -1986,7 +2024,10 @@ class managment_model  extends CI_Model  {
 				$this->db->select('study_submodules_id');
 				$this->db->from('study_submodules');
 				$this->db->join('study_module','study_submodules.study_submodules_study_module_id = study_module.study_module_id', 'left');
-				$this->db->join('course','study_module.study_module_courseid = course.course_id', 'left');
+				$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');	
+				$this->db->join('study_module_ap_courses','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');	
+				$this->db->join('course','study_module_ap_courses.study_module_ap_courses_course_id = course.course_id');	
+				$this->db->where('study_module_academic_periods.study_module_academic_periods_academic_period_id',$current_academic_period);	
 				$this->db->where('course_study_id',$row->course_study_id);
 				$query1 = $this->db->get();
 				if ($query1->num_rows() > 0){
@@ -2358,6 +2399,70 @@ class managment_model  extends CI_Model  {
 		return $all_studies;*/
 	}
 
+	public function get_courses_study_module($study_module_id,$period=null,$order_by="ASC") {
+
+        //GET period_id
+        $period_id = $this->get_current_academic_period_id();
+        if ($period!=null) {
+            $period_id = $period;    
+        }
+
+        /*
+        SELECT study_module_ap_courses_course_id,course_shortname,course_name,course_number
+        FROM study_module_ap_courses
+        INNER JOIN study_module_academic_periods  ON study_module_academic_periods.study_module_academic_periods_id =   study_module_ap_courses.study_module_ap_courses_study_module_ap_id
+        INNER JOIN study_module ON study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id
+        INNER JOIN course ON course.course_id = study_module_ap_courses.study_module_ap_courses_course_id
+        WHERE study_module_academic_periods_academic_period_id=5 AND study_module_id=1
+        */
+
+        $this->db->select('study_module_ap_courses_course_id,course_shortname,course_name,course_number,course_cycle_id, course_study_id,studies_shortname,
+        				   studies_name, studies_studies_law_id, studies_law_shortname, studies_law_name');
+        $this->db->distinct();
+        $this->db->from('study_module_ap_courses');
+        $this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_id =   study_module_ap_courses.study_module_ap_courses_study_module_ap_id');
+        $this->db->join('study_module','study_module.study_module_id  = study_module_academic_periods.study_module_academic_periods_study_module_id');
+        $this->db->join('course','course.course_id = study_module_ap_courses.study_module_ap_courses_course_id');
+        $this->db->join('studies','studies.studies_id = course.course_study_id');
+   		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
+
+
+        $this->db->where('study_module_id',$study_module_id);
+        $this->db->where('study_module_academic_periods_academic_period_id',$period_id);
+
+        $this->db->order_by('course_number', $order_by);
+
+               
+        $query = $this->db->get();
+
+        //echo $this->db->last_query();
+
+        $courses_study_module = array();        
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)    {
+                $course = new stdClass();   
+
+                $course->id = $row->study_module_ap_courses_course_id;
+                $course->shortname = $row->course_shortname;
+                $course->name = $row->course_name;
+                $course->number = $row->course_number;
+
+				$course->cycle_id = $row->course_cycle_id;                
+                
+                $course->study_id = $row->course_study_id;
+                $course->studies_name = $row->studies_name;
+                $course->studies_shortname = $row->studies_shortname;
+                $course->studies_law_shortname = $row->studies_law_shortname;
+                $course->studies_law_name = $row->studies_law_name;
+                $course->studies_studies_law_id = $row->studies_studies_law_id;
+
+                $courses_study_module[]=$course;
+            }
+        }   
+        return $courses_study_module;
+
+    }
+
 	function get_all_studymodules_report_info($academic_period,$orderby = "DESC") {
 
 		//TODO: GET COURSES INFO: pot haver 1 o més cursos per study_momdule
@@ -2368,19 +2473,12 @@ class managment_model  extends CI_Model  {
 		//classgroups
 		//Example SQL:
 		/*
-		SELECT study_module_id, study_module_external_code, study_module_shortname, study_module_name, study_module_courseid, course_shortname, course_name, course_study_id, studies_shortname , 
-		       studies_name, studies_studies_law_id, studies_law_shortname , studies_law_name ,study_module_hoursPerWeek, study_module_order, study_module_academic_periods_initialDate, study_module_academic_periods_endDate, 
-		       study_module_type, study_module_subtype, study_module_description
-		FROM study_module_academic_periods
-		LEFT JOIN study_module ON study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id
-		LEFT JOIN course ON course.course_id = study_module_courseid
-		LEFT JOIN studies ON studies.studies_id = course.course_study_id
-		LEFT JOIN studies_law ON studies_law.studies_law_id = studies.studies_studies_law_id
-		WHERE study_module_academic_periods_academic_period_id = 5
+		
 		*/
 
-		$this->db->select('study_module_id, study_module_academic_periods_external_code, study_module_shortname, study_module_name,study_module_hoursPerWeek, study_module_order, 
-			               study_module_academic_periods_initialDate, study_module_academic_periods_endDate, study_module_type, study_module_subtype, study_module_description');
+		$this->db->select('study_module_id, study_module_academic_periods_external_code, study_module_shortname, study_module_name,study_module_hoursPerWeek, 
+						   study_module_order, study_module_academic_periods_initialDate, study_module_academic_periods_endDate, study_module_type, 
+						   study_module_subtype, study_module_description');
 		$this->db->from('study_module_academic_periods');
 		$this->db->join('study_module','study_module.study_module_id = study_module_academic_periods.study_module_academic_periods_study_module_id', 'left');
 		$this->db->where('study_module_academic_periods_academic_period_id',$academic_period);
@@ -2390,6 +2488,8 @@ class managment_model  extends CI_Model  {
 
 		
 		$query = $this->db->get();
+		//echo $this->db->last_query();
+
 
 		if ($query->num_rows() > 0){
 			$all_study_modules = array();
@@ -2402,16 +2502,9 @@ class managment_model  extends CI_Model  {
 				$study_module->name = $row->study_module_name;
 				$study_module->description = $row->study_module_description;
 
-				$study_module->course_id = $row->study_module_courseid;
-				$study_module->course_shortname = $row->course_shortname;
-				$study_module->course_name = $row->course_name;
+				$courses = $this->get_courses_study_module($row->study_module_id,$academic_period);
 
-				$study_module->study_id = $row->course_study_id;
-				$study_module->study_shortname = $row->studies_shortname;
-				$study_module->study_name = $row->studies_name;
-				$study_module->study_law_id = $row->studies_studies_law_id;
-				$study_module->study_law_name = $row->studies_law_shortname;
-				$study_module->study_law_shortname = $row->studies_law_name;
+				$study_module->courses = $courses;
 
 				$study_module->study_module_hoursPerWeek = $row->study_module_hoursPerWeek;
 				$study_module->study_module_order = $row->study_module_order;

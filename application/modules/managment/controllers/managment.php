@@ -2330,14 +2330,14 @@ class managment extends skeleton_main {
         $this->grocery_crud->display_as('study_module_markedForDeletion',lang('markedForDeletion'));   
         $this->grocery_crud->display_as('study_module_markedForDeletionDate',lang('markedForDeletionDate'));        		
 		$this->grocery_crud->display_as('study_module_hoursPerWeek',lang('study_module_hoursPerWeek'));
-        $this->grocery_crud->display_as('study_module_course_id',lang('course'));        
+        
         $this->grocery_crud->display_as('study_module_initialDate',lang('study_module_initialDate'));
         $this->grocery_crud->display_as('study_module_endDate',lang('study_module_endDate'));          
         $this->grocery_crud->display_as('study_module_type',lang('type'));   
         $this->grocery_crud->display_as('study_module_subtype',lang('subtype'));        
 
         //RELACIONS
-        $this->grocery_crud->set_relation('study_module_course_id','course','course_shortname'); 
+        
 /*
 	    Param 1: The name of the field that we have the relation in the basic table (course_cycle_id)
     	Param 2: The relation table (cycle)
