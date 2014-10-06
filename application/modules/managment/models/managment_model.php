@@ -2641,8 +2641,6 @@ class managment_model  extends CI_Model  {
 
 	function get_all_study_submodules_report_info($academic_period,$orderby = "DESC") {
 
-		$current_academic_period_id = $this->get_curr
-
 		//classgroups
 		//Example SQL:
 		/*
