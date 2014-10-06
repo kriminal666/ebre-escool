@@ -1,5 +1,6 @@
 <?php
 /**
+* ********************************* OBSOLET **************************************
  * Attendance_model Model
  *
  *
@@ -125,7 +126,7 @@ class Wizard_model  extends CI_Model  {
 //echo $classroom_group."<br />";
         $this->db->select('study_module_id,study_module_shortname,study_module_name');
 		$this->db->from('study_module');
-		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
+		$this->db->join('classroom_group','study_module_bclassroom_group_id=classroom_group_id');
 		$this->db->where('classroom_group_id',$classroom_group);
 		$this->db->order_by('study_module_shortname', $orderby);
 		       

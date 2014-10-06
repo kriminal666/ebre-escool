@@ -56,7 +56,7 @@ $lang['studies_departments']   = "Departaments";
 
 $lang['study_module_hoursPerWeek']="Hores Setmanals";
 //Sergi Tur 15 juny 2014: Els estudis no estan associats a grups de classse! Associats a cursos. Els grups de classe si estan associats a cursos
-//$lang['study_module_classroom_group_id']="Id Grup";
+//$lang['study_module_bclassroom_group_id']="Id Grup";
 $lang['study_module_id']="Id";
 $lang['study_module_order']="Ordre";
 $lang['study_module_description']="Descripció";

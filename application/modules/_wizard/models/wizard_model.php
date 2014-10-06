@@ -116,17 +116,57 @@ class Wizard_model  extends CI_Model  {
 			return false;
 	}	
 
+	function get_current_academic_period_id() {
+
+		/*
+		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current 
+		FROM academic_periods WHERE academic_periods_current=1
+		*/
+		$this->db->select('academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_current',1);
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row->academic_periods_id;
+		}	
+		else
+			return false;
+	}
+
 	/* Mòduls */
 	public function get_enrollment_study_modules($classroom_group=false,$orderby="asc") {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
 		
 		if(!$classroom_group){
 			//$classroom_group=3;	//	"1ASIX-DAM"
 		}		
-//echo $classroom_group."<br />";
-        $this->db->select('study_module_id,study_module_shortname,study_module_name');
+		//echo $classroom_group."<br />";
+
+		//GT
+		/*
+		SELECT study_module_id, study_module_shortname, study_module_name
+		FROM study_module
+		INNER JOIN study_module_academic_periods ON study_module_academic_periods.study_module_academic_periods_study_module_id   = study_module.study_module_id
+		INNER JOIN study_module_ap_courses ON study_module_ap_courses.study_module_ap_courses_study_module_ap_id =  study_module_academic_periods.study_module_academic_periods_id
+		INNER JOIN course ON course.course_id = study_module_ap_courses.study_module_ap_courses_course_id
+		INNER JOIN classroom_group ON course.course_id = classroom_group.classroom_group_course_id
+		WHERE classroom_group_id = 1 AND `study_module_academic_periods_academic_period_id`=5
+		ORDER BY study_module_shortname ASC
+		*/	
+
+        $this->db->select('study_module_id, study_module_shortname, study_module_name');
 		$this->db->from('study_module');
-		$this->db->join('classroom_group','study_module_classroom_group_id=classroom_group_id');
+		$this->db->join('study_module_academic_periods','study_module_academic_periods.study_module_academic_periods_study_module_id   = study_module.study_module_id');
+		$this->db->join('study_module_ap_courses','study_module_ap_courses.study_module_ap_courses_study_module_ap_id =  study_module_academic_periods.study_module_academic_periods_id');
+		$this->db->join('course','course.course_id = study_module_ap_courses.study_module_ap_courses_course_id');
+		$this->db->join('classroom_group','course.course_id = classroom_group.classroom_group_course_id');
 		$this->db->where('classroom_group_id',$classroom_group);
+		$this->db->where('study_module_academic_periods_academic_period_id',$current_academic_period_id);
 		$this->db->order_by('study_module_shortname', $orderby);
 		       
         $query = $this->db->get();
