@@ -2010,7 +2010,7 @@ class managment_model  extends CI_Model  {
 		$this->db->where('study_module_academic_periods.study_module_academic_periods_academic_period_id',$current_academic_period);	
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 
 		$studysubmodules_by_study = array();
@@ -2063,6 +2063,7 @@ class managment_model  extends CI_Model  {
 		$this->db->join('course','classroom_group.classroom_group_course_id = course.course_id', 'left');
 		$this->db->group_by('course_study_id');
 		$query = $this->db->get();
+        //echo $this->db->last_query();
 
 		$classroomgroups_by_study = array();
 		if ($query->num_rows() > 0){
@@ -2267,6 +2268,8 @@ class managment_model  extends CI_Model  {
 		$this->db->order_by('studies_shortname', $orderby);
 		
 		$query = $this->db->get();
+        //echo $this->db->last_query();
+
 
 		if ($query->num_rows() > 0){
 			$all_studies = array();
