@@ -627,6 +627,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
         $this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
         $this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+        $this->db->where('classroom_group_type',1);
+        
 
 		$this->db->order_by('classroom_group_code', $orderby);
 		
