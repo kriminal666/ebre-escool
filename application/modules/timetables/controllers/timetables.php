@@ -148,7 +148,18 @@ class timetables extends skeleton_main {
 
             //TODO: select current user (sessions user as default teacher)
             if ($teacher_code == null) {
-                $teacher_code = 41;
+
+                    //TODO: set teacher id by session values (current session user)
+                    $person_id = $this->session->userdata['person_id'];
+
+                    if($this->session->userdata['is_teacher'] == 1) {
+                        $teacher_id = $this->timetables_model->get_teacher_id_from_person_id($person_id);
+                    } else {
+                        $teacher_id=40;                
+                    }
+        //            print_r($this->session->userdata);           
+
+                    $teacher_code = $this->timetables_model->get_teacher_code_from_teacher_id($teacher_id);   
             }
 
             $teacher_id=$this->timetables_model->get_teacher_id_from_teacher_code($teacher_code);//;
