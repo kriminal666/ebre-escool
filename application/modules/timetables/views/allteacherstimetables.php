@@ -119,9 +119,9 @@
         <?php foreach ( $day_lessons as $day_lesson) : ?>
         <?php 
         if ($day_lesson->time_slot_lective) {
-            $bootstrap_button_colour = "btn-inverse";
-        } else {
             $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
+        } else {
+            $bootstrap_button_colour = "btn-inverse";
         }
 
         $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_order;

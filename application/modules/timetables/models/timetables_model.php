@@ -508,16 +508,27 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	function get_all_lessonsfortimetablebyteacherid($teacher_id) {
 
+		/*
+		SELECT `lesson_id`, `lesson_code`, `lesson_day`, `lesson_time_slot_id`, `time_slot_start_time`, `time_slot_order`, `study_module_id`, 
+		`study_module_shortname`, `study_module_name`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name` 
+		FROM (`lesson`) 
+		JOIN `teacher` ON `lesson`.`lesson_teacher_id` = `teacher`.`teacher_id` 
+		JOIN `time_slot` ON `lesson`.`lesson_time_slot_id` = `time_slot`.`time_slot_id` 
+		LEFT JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
+		LEFT JOIN `classroom_group` ON `lesson`.`lesson_classroom_group_id` = `classroom_group`.`classroom_group_id` 
+		WHERE `teacher`.`teacher_id` = '89' ORDER BY `lesson_day`, `time_slot_order` asc 
+		*/
+
 		$this->db->from('lesson');
         $this->db->select('lesson_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	classroom_group_code,classroom_group_shortName,classroom_group_name');
-
+        	classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
 		$this->db->join('teacher', 'lesson.lesson_teacher_id = teacher.teacher_id');
 		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
+		$this->db->join('location', 'location.location_id = lesson.lesson_location_id','left');
 
 		$this->db->where('teacher.teacher_id',$teacher_id);
         
@@ -549,6 +560,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$group_code = $row['classroom_group_code'];
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
+				$location_shortname = $row['location_shortName'];
+				$location_id = $row['lesson_location_id'];
 			
 				$is_not_new_day=true;
 				if ($previous_day == null || $day != $previous_day) {
@@ -576,8 +589,16 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					$lesson_data->group_code= $group_code;
 					$lesson_data->group_shortName= $group_shortName;
 					$lesson_data->group_name= $group_name;
-					$lesson_data->time_slot_lective=false;
-					$lesson_data->location_code="20.2";
+					$lesson_data->time_slot_lective=true;
+
+					//TODO: Multiple locations
+					if ($location_shortname != null) {
+						$lesson_data->location_code=$location_shortname;	
+						$lesson_data->location_id=$location_id;
+					} else {
+						$lesson_data->location_code="";	
+						$lesson_data->location_id="";
+					}
 					
 					$lesson_data->duration= 1;
 
