@@ -303,9 +303,10 @@
             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                 data-start="<?php echo $time_slot_current_position;?>" 
                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                <a href="classroom_group_info/<?php echo $day_lesson->group_code;?>"><?php echo $day_lesson->group_code;?></a>
-                <a href="study_module_info/<?php echo $day_lesson->study_module_shortname;?>"><?php echo $day_lesson->study_module_shortname;?></a><br />
-                <a href="location_info/<?php echo $day_lesson->location_code;?>"><?php echo $day_lesson->location_code;?></a>
+
+                <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
+                <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+                <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
             </li>
             <?php $iii++;?>  
         <?php endforeach; ?>
