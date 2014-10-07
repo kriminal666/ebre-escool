@@ -407,6 +407,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 				//DETECT LESSONS DONE BY MULTIPLE TEACHERS
 
+				//DOUBLED LESSONS ARE PER TEACHER IN GROUP TIMETABLES: Múltiple teachers at same day and time_slot doubling a group : DESDOBLAMENT
 				$not_doubled_lesson=true;
 				if ( ($day == $previous_day) && ($time_slot_start_time == $real_previous_time_slot_start_time) ) {
 					if ($lesson_teacher_id == $previous_lesson_teacher_id) {
@@ -523,8 +524,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		*/
 
 		$this->db->from('lesson');
-        $this->db->select('lesson_id,lesson_teacher_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
-        	classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
+        $this->db->select('lesson_id, lesson_teacher_id, lesson_code, lesson_day, lesson_time_slot_id, time_slot_start_time, time_slot_order, study_module_id, study_module_shortname, study_module_name,
+        	lesson_classroom_group_id,classroom_group_code, classroom_group_shortName, classroom_group_name, lesson_location_id,location_shortName');
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
 		$this->db->join('teacher', 'lesson.lesson_teacher_id = teacher.teacher_id');
@@ -563,6 +564,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$study_module_id = $row['study_module_id'];
 				$study_module_shortname = $row['study_module_shortname'];
 				$study_module_name = $row['study_module_name'];
+				$group_id = $row['lesson_classroom_group_id'];
 				$group_code = $row['classroom_group_code'];
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
@@ -582,59 +584,99 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 				//DETECT LESSONS DONE BY MULTIPLE TEACHERS
 
-				//Check errors:	
+				//DOUBLED LESSONS ARE PER GROUP IN TEACHERS TIMETABLES: Same teacher at same day and time_slot is doing a lesson for students of multiple groups!
+				$not_doubled_lesson=true;
 				if ( ($day == $previous_day) && ($time_slot_start_time == $real_previous_time_slot_start_time) ) {
-					echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
-					echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
-					. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+					if ($group_id == $previous_group_id) {
+						echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
+						echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+						. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+						$not_doubled_lesson=false;
+					} else {
+						//DOUBLED LESSON:
+						$not_doubled_lesson=false;
+					}
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day  ) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day && $not_doubled_lesson ) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
 				} else {
-					$lesson_data = new stdClass;
+					if ($not_doubled_lesson) {
+						$lesson_data = new stdClass;
 
-					$lesson_data->lesson_id= $lesson_id;
-					$lesson_data->lesson_code= $lesson_code;
-					$lesson_data->time_slot_order= $time_slot_order;
-					$lesson_data->study_module_id= $study_module_id;
-					$lesson_data->study_module_shortname= $study_module_shortname;
-					$lesson_data->study_module_shortname= $study_module_shortname;
-					$lesson_data->study_module_name= $study_module_name;
-					$lesson_data->group_code= $group_code;
-					$lesson_data->group_shortName= $group_shortName;
-					$lesson_data->group_name= $group_name;
-					$lesson_data->time_slot_lective=true;
+						$lesson_data->lesson_id= $lesson_id;
+						$lesson_data->lesson_code= $lesson_code;
+						$lesson_data->time_slot_order= $time_slot_order;
+						$lesson_data->study_module_id= $study_module_id;
+						$lesson_data->study_module_shortname= $study_module_shortname;
+						$lesson_data->study_module_shortname= $study_module_shortname;
+						$lesson_data->study_module_name= $study_module_name;
+						
+						$lesson_data->time_slot_lective=true;
+	
+						/* a doubled lesson could have múltiple groups: Next lines are obsolet!
+						$lesson_data->group_id= $group_id;
+						$lesson_data->group_code= $group_code;
+						$lesson_data->group_shortName= $group_shortName;
+						$lesson_data->group_name= $group_name;
+						*/
 
-					//TODO: Multiple locations
-					if ($location_shortname != null) {
-						$lesson_data->location_code=$location_shortname;	
-						$lesson_data->location_id=$location_id;
+						$new_group = new stdClass();
+
+						$new_group->group_id = $group_id;
+						$new_group->group_code = $group_code;
+						$new_group->group_shortName = $group_shortName;
+						$new_group->group_name = $group_name;
+
+						$lesson_data->groups[$new_group->group_id]=$new_group;				
+
+						//TODO: Multiple locations
+						if ($location_shortname != null) {
+							$lesson_data->location_code=$location_shortname;	
+							$lesson_data->location_id=$location_id;
+						} else {
+							$lesson_data->location_code="";	
+							$lesson_data->location_id="";
+						}
+						
+						$lesson_data->duration= 1;
+
+						$lesson_by_day[$time_slot_start_time] = $lesson_data;
+
+									
+						$day_lessons->lesson_by_day = $lesson_by_day;
+
+	   					$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
+	   					$previous_time_slot_start_time = $time_slot_start_time;
+	   					
+	   					//TODO REMOVE
+	   					//$previous_lesson_time_slot_id = $lesson_time_slot_id;
 					} else {
-						$lesson_data->location_code="";	
-						$lesson_data->location_id="";
+
+						if ( ! array_key_exists ( $group_id , $all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->groups ) ) {
+							$new_group = new stdClass();
+
+							$new_group->group_id = $group_id;
+							$new_group->group_code = $group_code;
+							$new_group->group_shortName = $group_shortName;
+							$new_group->group_name = $group_name;
+
+							$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->groups[$new_group->group_id]=$new_group;
+						}
+						
+						$previous_time_slot_start_time = $previous_time_slot_start_time;
 					}
-					
-					$lesson_data->duration= 1;
-
-					$lesson_by_day[$time_slot_start_time] = $lesson_data;
-
-								
-					$day_lessons->lesson_by_day = $lesson_by_day;
-
-   					$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
-   					$previous_time_slot_start_time = $time_slot_start_time;
-   					
-   					//TODO REMOVE
-   					//$previous_lesson_time_slot_id = $lesson_time_slot_id;
+	
    				}
 
    				$real_previous_time_slot_start_time = $time_slot_start_time;
 
    				$previous_day=$day;
+   				$previous_group_id=$group_id;
+
    				$previous_lesson_code = $lesson_code;
    				$counter_i++;
    			}
