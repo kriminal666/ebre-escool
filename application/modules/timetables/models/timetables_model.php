@@ -37,6 +37,8 @@ class timetables_model  extends CI_Model  {
 
 	function get_all_groups_byteacherid($teacher_id, $orderby = "asc") {
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
 		/*
 		SELECT DISTINCT group_code,group_shortName,group_name
 		FROM `lesson` 
@@ -44,15 +46,15 @@ class timetables_model  extends CI_Model  {
 		WHERE lesson_teacher_id=39
 		*/
 
-		$this->db->from('lesson');
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 		$this->db->distinct();
-        $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
-
-		$this->db->order_by('classroom_group_code', $orderby);
-		
+		$this->db->from('lesson');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
 
 		$this->db->where('lesson.lesson_teacher_id',$teacher_id);
+		$this->db->where('lesson.lesson_academic_period_id',$current_academic_period_id);
+		
+		$this->db->order_by('classroom_group_code', $orderby);
         
         $query = $this->db->get();
 		
@@ -461,7 +463,6 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$day_lessons->lesson_by_day = $lesson_by_day;
 
 	   					$all_lessonsfortimetablebygroupid[$day] = $day_lessons;	
-
 	   					$previous_time_slot_start_time = $time_slot_start_time;
 
 					} else {
@@ -508,6 +509,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 	function get_all_lessonsfortimetablebyteacherid($teacher_id) {
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
 		/*
 		SELECT `lesson_id`, `lesson_code`, `lesson_day`, `lesson_time_slot_id`, `time_slot_start_time`, `time_slot_order`, `study_module_id`, 
 		`study_module_shortname`, `study_module_name`, `classroom_group_code`, `classroom_group_shortName`, `classroom_group_name` 
@@ -520,7 +523,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		*/
 
 		$this->db->from('lesson');
-        $this->db->select('lesson_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
+        $this->db->select('lesson_id,lesson_teacher_id,lesson_code,lesson_day,lesson_time_slot_id,time_slot_start_time,time_slot_order,study_module_id,study_module_shortname,study_module_name,
         	classroom_group_code,classroom_group_shortName,classroom_group_name,lesson_location_id,location_shortName');
 		$this->db->order_by('lesson_day,time_slot_order', "asc");
 		
@@ -531,6 +534,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->join('location', 'location.location_id = lesson.lesson_location_id','left');
 
 		$this->db->where('teacher.teacher_id',$teacher_id);
+		$this->db->where('lesson.lesson_academic_period_id',$current_academic_period_id);
+		 	
         
         $query = $this->db->get();
 
@@ -552,6 +557,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$lesson_time_slot_id = $row['lesson_time_slot_id'];
 				$time_slot_start_time = $row['time_slot_start_time'];
 				$lesson_id = $row['lesson_id'];
+				$lesson_teacher_id = $row['lesson_teacher_id'];
 				$lesson_code = $row['lesson_code'];
 				$time_slot_order = $row['time_slot_order'];
 				$study_module_id = $row['study_module_id'];
@@ -571,8 +577,20 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					$lesson_by_day = array();
 				}
 
+				//echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+				//. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+
+				//DETECT LESSONS DONE BY MULTIPLE TEACHERS
+
+				//Check errors:	
+				if ( ($day == $previous_day) && ($time_slot_start_time == $real_previous_time_slot_start_time) ) {
+					echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
+					echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+					. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname ."<br/>" ; 
+				}
+
 				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day) {
+				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day  ) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -609,8 +627,12 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
    					$all_lessonsfortimetablebyteacherid[$day] = $day_lessons;
    					$previous_time_slot_start_time = $time_slot_start_time;
-   					$previous_lesson_time_slot_id = $lesson_time_slot_id;
+   					
+   					//TODO REMOVE
+   					//$previous_lesson_time_slot_id = $lesson_time_slot_id;
    				}
+
+   				$real_previous_time_slot_start_time = $time_slot_start_time;
 
    				$previous_day=$day;
    				$previous_lesson_code = $lesson_code;

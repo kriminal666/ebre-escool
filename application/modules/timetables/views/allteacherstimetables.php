@@ -14,7 +14,7 @@
                     <i class="icon-angle-right arrow-icon"></i>
                 </span>
             </li>
-            <li class="active"><?php echo lang('mytimetables_teacher_timetable_title');?></li>
+            <li class="active"><?php echo "Horaris del professorat";?></li>
         </ul>
     </div><!-- /.breadcrumbs -->
 
@@ -27,7 +27,7 @@
                 <?php echo lang("mytimetables_teacher_timetable_title");?>
                 <small>
                     <i class="icon-double-angle-right"></i>
-                    <?php echo "TODO Nom Professor  ( ". lang("mytimetables_teacher_timetable_code") . " " .  $teacher_code . " )";?>
+                    <span id="teacher_title_name"></span>
                 </small>
             </h1>
         </div><!-- /.page-header -->
@@ -274,9 +274,8 @@
             <?php foreach ( $day_lessons as $day_lesson) : ?>
             <?php 
             if ($day_lesson->time_slot_lective) {
-                $bootstrap_button_colour = "btn-inverse";
-            } else {
-                                        //TODO not enough colours
+                
+                //TODO not enough colours
                 if (array_key_exists($day_lesson->study_module_id, $study_modules_colours)) {
                     $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
                 } else {
@@ -284,6 +283,8 @@
                 }
                 
                                         //$bootstrap_button_colour = "btn-warning";
+            } else {
+                $bootstrap_button_colour = "btn-inverse";
             }
 
             $time_slot_current_position = $day_lesson->time_slot_order - $first_time_slot_orderbygroupid[$teacher_group['classroom_group_id']];
@@ -352,8 +353,13 @@ $(function() {
     //Jquery select plugin: http://ivaynberg.github.io/select2/
     $("#teacher").select2();
 
+    var theSelection = $("#teacher").select2('data').text;
+    $("#teacher_title_name").text(theSelection);
+
     $('#teacher').on("change", function(e) {  
         var selectedValue = $("#teacher").select2("val");
+        var theSelection = $("#teacher").select2('data').text;
+        $("#teacher_title_name").text(theSelection);
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
@@ -389,7 +395,7 @@ $(function() {
         
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
-        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytymetables";
+        var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
 
         selectedValue = "";
         console.log(value);
