@@ -414,14 +414,30 @@ class timetables extends skeleton_main {
 
             /* Get Week hours */
             $total_week_hours = 0;
+            $total_morning_week_hours = 0;
+            $total_afternoon_week_hours = 0;
+
             foreach($all_teacher_study_modules as $module){
-                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id);
+                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,null,$teacher_id);                
                 $hours[] = $num_hours;
+
+                $num_morning_hours = $this->timetables_model->get_module_morning_hours($module->study_module_id,null,$teacher_id);
+                $num_hours_morning[] = $num_morning_hours;
+
+                $num_afternoon_hours = $this->timetables_model->get_module_afternoon_hours($module->study_module_id,null,$teacher_id);
+                $num_hours_afternoon[] = $num_afternoon_hours;
+                
                 $total_week_hours += $num_hours;
+                $total_morning_week_hours += $num_morning_hours;
+                $total_afternoon_week_hours += $num_afternoon_hours;
             }
 
             $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
+
+            $data['total_morning_week_hours']= $total_morning_week_hours;
+            $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
+
 
             /* Get StudyModules Colours */
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_teacher_study_modules);
@@ -463,13 +479,6 @@ class timetables extends skeleton_main {
 
             //$all_teacher_study_modules_count = 11;
             $all_teacher_study_modules_count = count($all_teacher_study_modules);
-
-            /* S'han de calcular les hores de matí i de tarde */
-            $total_morning_week_hours = "TODO";
-            $total_afternoon_week_hours = "TODO";
-
-            $data['total_morning_week_hours']= $total_morning_week_hours;
-            $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
 
             $data['all_teacher_study_modules_count'] = $all_teacher_study_modules_count;
 

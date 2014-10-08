@@ -231,7 +231,7 @@
                             </td>
                         </tr>
 
-                        <tr align="center" class="{cycle values='tr0,tr1'}">
+                        <!--<tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
                                 <?php echo lang('groups');?>
                             </td>
@@ -240,7 +240,7 @@
                                 <a href="classroom_group_info/<?php echo $teacher_groups;?>"><?php echo $teacher_groups;?></a>
                                 <?php echo " ";} ?>
                             </td>
-                        </tr>
+                        </tr>-->
 
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
@@ -251,6 +251,7 @@
                             </td>
                         </tr>
 
+                        <!--
                         <tr align="center" class="{cycle values='tr0,tr1'}">
                             <td>
                                 <?php echo lang('modules');?>
@@ -261,6 +262,7 @@
                                 <?php echo " ";} ?>                                
                             </td>
                         </tr>
+                        -->
                     
                 </tbody>
             </table>
