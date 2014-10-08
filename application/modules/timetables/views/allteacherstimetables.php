@@ -148,6 +148,7 @@
                 ?>  
                 <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
                 <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+                <?php echo @$day_lesson->study_module_id;?>
             <?php else:?>
                 <?php echo $day_lesson->study_module_shortname;?>
             <?php endif;?>
