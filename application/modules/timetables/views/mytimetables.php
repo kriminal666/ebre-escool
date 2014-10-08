@@ -35,7 +35,7 @@
 
         <center>
             <?php echo lang('show_full_timetable'); ?>
-            <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
+            <input id="show_compact_timetable" <?php if ($compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
             data-label-icon="icon-eye-open" 
             data-on-label="<i class='icon-ok'></i>" 
             data-off-label="<i class='icon-remove'></i>"
@@ -297,7 +297,7 @@
                                             <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
                                             <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
                                             <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
-                                            
+
                                     </li>
                                     <?php $iii++;?>  
                                 <?php endforeach; ?>
@@ -381,11 +381,13 @@ $(function() {
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/mytimetables";
 
         selectedValue = "";
-        console.log(value);
+        //console.log($element);
+        //console.log(value);
         if (value) {
             selectedValue = "compact";
         }
-        alert(baseURL + "/" + selectedValue);
+        //console.log("selectedValue:" + selectedValue);
+        //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
     });
 

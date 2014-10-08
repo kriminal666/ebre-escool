@@ -1038,11 +1038,11 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	function getCompactTimeSlotsForTeacher($teacher_id,$orderby="asc",$min_time_slot_order=1,$max_time_slot_order=15) {
 
 		//if($this->getMinTimeSlotOrderForTeacher($teacher_id)){
-			$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
+		$min_time_slot_order=$this->getMinTimeSlotOrderForTeacher($teacher_id);
 		//}
 
 		//if($this->getMinTimeSlotOrderForTeacher($teacher_id)){
-			$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);
+		$max_time_slot_order=$this->getMaxTimeSlotOrderForTeacher($teacher_id);
 		//}
 
 		//echo "MIN: " . $min_time_slot_order ."<br/>";

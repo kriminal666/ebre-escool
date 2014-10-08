@@ -147,6 +147,7 @@ class timetables extends skeleton_main {
             $this->_load_body_header();
 
             //TODO: select current user (sessions user as default teacher)
+            $teacher_id = 0;
             if ($teacher_code == null) {
 
                     //TODO: set teacher id by session values (current session user)

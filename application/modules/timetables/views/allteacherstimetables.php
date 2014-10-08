@@ -48,13 +48,15 @@
         </select> 
     </center>
     <div style="height: 10px;"></div>
-    <center>
+    <!-- <center>
         <?php echo lang('show_full_timetable'); ?>
-        <input id="show_compact_timetable" <?php if (!$compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
+        <input id="show_compact_timetable" <?php if ($compact) { echo "checked"; }?> type="checkbox" class="switch-small" 
         data-label-icon="icon-eye-open" 
         data-on-label="<i class='icon-ok'></i>" 
         data-off-label="<i class='icon-remove'></i>"
         data-off="danger">
+    </center>-->
+    <center>
         <?php echo lang('show_legend'); ?> <input id="hide_show_legend" type="checkbox" class="switch-small" 
         data-label-icon="icon-eye-open" 
         data-on-label="<i class='icon-ok'></i>" 
@@ -409,11 +411,11 @@ $(function() {
         var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/timetables/allteacherstimetables";
 
         selectedValue = "";
-        console.log(value);
+        //console.log(value);
         if (value) {
             selectedValue = "compact";
         }
-        alert(baseURL + "/" + selectedValue);
+        //alert(baseURL + "/" + selectedValue);
         window.location.href = baseURL + "/" + selectedValue;
     });
 
