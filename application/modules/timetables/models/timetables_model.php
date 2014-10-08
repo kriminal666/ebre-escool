@@ -309,6 +309,9 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	function get_all_teacher_study_modules($teacher_id) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
 		/*
 		SELECT DISTINCT `classroom_group_code`, `study_module_id`, `study_module_shortname`, `study_module_name`, `study_module_hoursPerWeek` 
 		FROM (`lesson`) 
@@ -323,6 +326,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id','left');
 		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id','left');
 		$this->db->where('lesson_teacher_id',$teacher_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
 
         $query = $this->db->get();
 		//echo $this->db->last_query();
@@ -1138,7 +1142,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	
-	function get_module_morning_hours($module,$lesson_classroom_group_id=null)
+	function get_module_morning_hours($module,$lesson_classroom_group_id=null,$teacher_id=null)
 	{
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
@@ -1152,6 +1156,9 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
 		if ($lesson_classroom_group_id!=null)	{
 			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
+		}
+		if ($teacher_id!=null)	{
+			$this->db->where('lesson_teacher_id', $teacher_id);
 		}		
 		
 		$query = $this->db->get();
@@ -1164,7 +1171,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			return 0;
 	}
 
-	function get_module_afternoon_hours($module,$lesson_classroom_group_id=null)
+	function get_module_afternoon_hours($module,$lesson_classroom_group_id=null,$teacher_id=null)
 	{
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
@@ -1179,6 +1186,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		if ($lesson_classroom_group_id!=null)	{
 			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
 		}		
+				
+		if ($teacher_id!=null)	{
+			$this->db->where('lesson_teacher_id', $teacher_id);
+		}
 		
 		$query = $this->db->get();
         //echo $this->db->last_query()."<br />";		
@@ -1191,7 +1202,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	}
 
 	//Hores Setmanals
-	function get_module_hours_per_week($module,$lesson_classroom_group_id=null)
+	function get_module_hours_per_week($module,$lesson_classroom_group_id=null,$teacher_id=null)
 	{
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
@@ -1204,6 +1215,9 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		if ($lesson_classroom_group_id!=null)	{
 			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
 		}		
+		if ($teacher_id!=null)	{
+			$this->db->where('lesson_teacher_id', $teacher_id);
+		}
 		
 		$query = $this->db->get();
         //echo $this->db->last_query()."<br />";		

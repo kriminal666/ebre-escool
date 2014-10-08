@@ -213,13 +213,13 @@ class timetables extends skeleton_main {
             $total_afternoon_week_hours = 0;
 
             foreach($all_teacher_study_modules as $module){
-                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id);                
+                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,null,$teacher_id);                
                 $hours[] = $num_hours;
 
-                $num_morning_hours = $this->timetables_model->get_module_morning_hours($module->study_module_id);
+                $num_morning_hours = $this->timetables_model->get_module_morning_hours($module->study_module_id,null,$teacher_id);
                 $num_hours_morning[] = $num_morning_hours;
 
-                $num_afternoon_hours = $this->timetables_model->get_module_afternoon_hours($module->study_module_id);
+                $num_afternoon_hours = $this->timetables_model->get_module_afternoon_hours($module->study_module_id,null,$teacher_id);
                 $num_hours_afternoon[] = $num_afternoon_hours;
                 
                 $total_week_hours += $num_hours;
