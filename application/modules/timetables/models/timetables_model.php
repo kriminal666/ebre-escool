@@ -374,6 +374,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			$all_lessonsfortimetablebygroupid = array();
 
 			$previous_day = null;
+			$real_previous_time_slot_start_time = null;
 
 			$previous_lesson_code = null;
 
@@ -427,7 +428,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				}
 
 				//detect consecutive lessons and aggrupate in on event with more duration 
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day && $not_doubled_lesson  ) {
+				if ( (($time_slot_start_time -1) == $real_previous_time_slot_start_time) &&  $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $not_new_day && $not_doubled_lesson  ) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -562,6 +563,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			$all_lessonsfortimetablebyteacherid = array();
 
 			$previous_day = null;
+			$real_previous_time_slot_start_time = null;
 
 			$previous_lesson_code = null;
 
@@ -613,8 +615,8 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					}
 				}
 
-				//detect consecutive lessons and aggrupate in on event with more duration
-				if ( $previous_lesson_code == $lesson_code && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day && $not_doubled_lesson ) {
+				//detect consecutive lessons and aggrupate in on event with more duration. Consecutive lesson: same lesson && time slots consecutive
+				if ( (($time_slot_start_time -1) == $real_previous_time_slot_start_time) && ($previous_lesson_code == $lesson_code) && $this->is_time_slot_lective_by_time_slot_order($time_slot_order-1) && $is_not_new_day && $not_doubled_lesson ) {
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
