@@ -133,19 +133,26 @@
         <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
             data-start="<?php echo $time_slot_current_position;?>" 
             data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
+
+
+            <?php if ($day_lesson->time_slot_lective): ?>
+                <?php
+                    $count_i=0;
+                    foreach ($day_lesson->groups as $group_key => $group) {
+                       echo "<a href=\"" . base_url('/index.php/curriculum/classroom_group/read/' . $group->group_id ) ."\">" . $group->group_code . "</a>";
+                       if ($count_i < (count($day_lesson->groups)-1)) {
+                            echo ", ";
+                       }       
+                       $count_i++; 
+                    }
+                ?>  
+                <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+                <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+            <?php else:?>
+                <?php echo $day_lesson->study_module_shortname;?>
+            <?php endif;?>
             
-            <?php
-                $count_i=0;
-                foreach ($day_lesson->groups as $group_key => $group) {
-                   echo "<a href=\"" . base_url('/index.php/curriculum/classroom_group/read/' . $group->group_id ) ."\">" . $group->group_code . "</a>";
-                   if ($count_i < (count($day_lesson->groups)-1)) {
-                        echo ", ";
-                   }       
-                   $count_i++; 
-                }
-            ?>
-            <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
-            <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+         
         </li>
         <?php $iii++;?>  
     <?php endforeach; ?>
@@ -236,6 +243,7 @@
                     </td>
                 </tr>
 
+                <!--
                 <tr align="center" class="{cycle values='tr0,tr1'}">
                     <td>
                         <?php echo lang('groups');?>
@@ -245,7 +253,7 @@
                         <a href="classroom_group_info/<?php echo $teacher_groups;?>"><?php echo $teacher_groups;?></a>
                         <?php echo " ";} ?>
                     </td>
-                </tr>
+                </tr>-->
 
                 <tr align="center" class="{cycle values='tr0,tr1'}">
                     <td>
@@ -256,6 +264,7 @@
                     </td>
                 </tr>
 
+                <!--
                 <tr align="center" class="{cycle values='tr0,tr1'}">
                     <td>
                         <?php echo lang('modules');?>
@@ -266,6 +275,7 @@
                         <?php echo " ";} ?>                                
                     </td>
                 </tr>
+                -->
                 
             </tbody>
         </table>
@@ -306,9 +316,14 @@
                 data-start="<?php echo $time_slot_current_position;?>" 
                 data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
 
-                <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
-                <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
-                <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+                <?php if ($day_lesson->time_slot_lective): ?>
+                    <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
+                    <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+                    <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>    
+                <?php else:?>
+                    <?php echo $day_lesson->study_module_shortname;?>
+                <?php endif;?>
+
             </li>
             <?php $iii++;?>  
         <?php endforeach; ?>

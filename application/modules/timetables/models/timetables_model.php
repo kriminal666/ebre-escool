@@ -1120,6 +1120,59 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			return false;
 	}
 
+	
+	function get_module_morning_hours($module,$lesson_classroom_group_id=null)
+	{
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_study_module_id,lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_study_module_id', $module);
+		$this->db->where('lesson_time_slot_id >=', 1);
+		$this->db->where('lesson_time_slot_id <=',7);	
+
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		if ($lesson_classroom_group_id!=null)	{
+			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
+		}		
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+
+	function get_module_afternoon_hours($module,$lesson_classroom_group_id=null)
+	{
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_study_module_id,lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_study_module_id', $module);
+		$this->db->where('lesson_time_slot_id >=', 9);
+		$this->db->where('lesson_time_slot_id <=',15);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		if ($lesson_classroom_group_id!=null)	{
+			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
+		}		
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+
 	//Hores Setmanals
 	function get_module_hours_per_week($module,$lesson_classroom_group_id=null)
 	{

@@ -62,7 +62,7 @@
                 </td>
             </tr>
             <tr>
-                <td><?php echo "Mostrar llista de professors"; ?></td>
+                <td><?php echo "Mostrar llista de professors: "; ?></td>
                 <td>
                     <input id="hide_show_teachers_list" type="checkbox" class="switch-small" 
                     data-label-icon="icon-eye-open" 
@@ -71,15 +71,22 @@
                     data-off="danger">    
                 </td>    
             </tr>
+            <tr>
+                <td><strong>Hores totals setmanals:</strong></td>
+                <td>
+                    <?php echo $total_week_hours;?>
+                </td>    
+            </tr>
+            <tr>
+                <td><strong>Tutor/a:</strong></td>
+                <td>
+                    <?php echo $group_mentor->sn1 . " " . $group_mentor->sn2 . ", " . $group_mentor->givenName . " ( " . $group_mentor->code  . ")" ;?>
+                </td>    
+            </tr>
+
         </table>
         </center>            
-        
-        <center>
-            <strong>Hores totals setmanals:</strong> <?php echo $total_week_hours;?>
-        </center>
-        <center>
-            <strong>Tutor:</strong> <?php echo $group_mentor->sn1 . " " . $group_mentor->sn2 . ", " . $group_mentor->givenName . " ( " . $group_mentor->code  . ")" ;?>
-        </center>
+
         <div style="height: 10px;"></div>
 
         <div id="study_modules_legend" style="display: none;">
@@ -184,13 +191,18 @@
                             <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                             data-start="<?php echo $time_slot_current_position;?>" 
                             data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
-                                <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
-                                <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
-                                <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
-                                <?php //DEBUG:echo $day_lesson->group_code;?>
-                                <?php //echo $day_lesson->study_module_shortname;?>
-                                <?php //echo $day_lesson->location_code;?> 
-                                <?php echo @$day_lesson->study_module_id;?>
+                                 <?php if ($day_lesson->time_slot_lective): ?>
+                                    <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
+                                    <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+                                    <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+                                    <?php //DEBUG:echo $day_lesson->group_code;?>
+                                    <?php //echo $day_lesson->study_module_shortname;?>
+                                    <?php //echo $day_lesson->location_code;?> 
+                                    <?php echo @$day_lesson->study_module_id;?>    
+                                <?php else:?>
+                                    <?php echo $day_lesson->study_module_shortname;?>
+                                <?php endif;?>
+                                
                             </li>
                         <?php endforeach; ?>
 
