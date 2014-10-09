@@ -130,7 +130,15 @@
                                         }
                                     ?>
                                     <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
-                                    <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>
+
+
+                                    <?php
+                                        $count_i=1;
+                                        foreach ($day_lesson->locations as $location_key => $location) {
+                                           echo "<a href=\"" . base_url('/index.php/location/location/index/read/' . $location->id ) ."\">" . $location->code . "</a> ";
+                                           $count_i++; 
+                                        }
+                                    ?>                                    
                                 
                                 <?php else:?>
                                     <?php echo $day_lesson->study_module_shortname;?>
@@ -304,7 +312,9 @@
                                             <?php if ($day_lesson->time_slot_lective): ?>
                                                 <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
                                                 <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+
                                                 <a href="<?php echo base_url('/index.php/location/location/index/read') ."/". $day_lesson->location_id;?>"><?php echo $day_lesson->location_code;?></a>    
+
                                             <?php else:?>
                                                 <?php echo $day_lesson->study_module_shortname;?>
                                             <?php endif;?>
