@@ -207,11 +207,6 @@ class timetables extends skeleton_main {
             $group_by_study_modules = $this->getGroupByStudyModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
-            /* Get Week hours */
-            $total_week_hours = 0;
-            $total_morning_week_hours = 0;
-            $total_afternoon_week_hours = 0;
-
             foreach($all_teacher_study_modules as $module){
                 $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,null,$teacher_id);                
                 $hours[] = $num_hours;
@@ -221,15 +216,21 @@ class timetables extends skeleton_main {
 
                 $num_afternoon_hours = $this->timetables_model->get_module_afternoon_hours($module->study_module_id,null,$teacher_id);
                 $num_hours_afternoon[] = $num_afternoon_hours;
-                
-                $total_week_hours += $num_hours;
-                $total_morning_week_hours += $num_morning_hours;
-                $total_afternoon_week_hours += $num_afternoon_hours;
             }
 
-            $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
+            /* Get Week hours */
+            $total_week_hours = 0;
+            $total_morning_week_hours = 0;
+            $total_afternoon_week_hours = 0;
+
+            $total_week_hours = $this->timetables_model->get_real_total_hours_by_teacher_id($teacher_id);
+            $total_morning_week_hours = $this->timetables_model->get_real_total_morning_hours_by_teacher_id($teacher_id);
+            $total_afternoon_week_hours = $this->timetables_model->get_real_total_afternoon_hours_by_teacher_id($teacher_id);
+
+
+            $data['total_week_hours'] = $total_week_hours;
             $data['total_morning_week_hours']= $total_morning_week_hours;
             $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
 
@@ -412,10 +413,7 @@ class timetables extends skeleton_main {
             $group_by_study_modules = $this->getGroupByStudyModules($teacher_id);
             $data['group_by_study_modules'] = $group_by_study_modules;
 
-            /* Get Week hours */
-            $total_week_hours = 0;
-            $total_morning_week_hours = 0;
-            $total_afternoon_week_hours = 0;
+            
 
             foreach($all_teacher_study_modules as $module){
                 $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,null,$teacher_id);                
@@ -426,15 +424,20 @@ class timetables extends skeleton_main {
 
                 $num_afternoon_hours = $this->timetables_model->get_module_afternoon_hours($module->study_module_id,null,$teacher_id);
                 $num_hours_afternoon[] = $num_afternoon_hours;
-                
-                $total_week_hours += $num_hours;
-                $total_morning_week_hours += $num_morning_hours;
-                $total_afternoon_week_hours += $num_afternoon_hours;
             }
 
-            $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 
+            /* Get Week hours */
+            $total_week_hours = 0;
+            $total_morning_week_hours = 0;
+            $total_afternoon_week_hours = 0;
+
+            $total_week_hours = $this->timetables_model->get_real_total_hours_by_teacher_id($teacher_id);
+            $total_morning_week_hours = $this->timetables_model->get_real_total_morning_hours_by_teacher_id($teacher_id);
+            $total_afternoon_week_hours = $this->timetables_model->get_real_total_afternoon_hours_by_teacher_id($teacher_id);
+
+            $data['total_week_hours'] = $total_week_hours;
             $data['total_morning_week_hours']= $total_morning_week_hours;
             $data['total_afternoon_week_hours']= $total_afternoon_week_hours;
 

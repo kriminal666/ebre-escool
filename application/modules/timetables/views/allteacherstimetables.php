@@ -86,7 +86,7 @@
                     <?php foreach ($all_teacher_study_modules as $study_module) : ?>
                     <tr align="center" class="{cycle values='tr0,tr1'}">
                         <td class="group">
-                            <a href="classroom_group_info/<?php echo $group_by_study_modules[$study_module->study_module_id];?>"><?php echo $group_by_study_modules[$study_module->study_module_id];?></a>
+                            <a href="classroom_group_info/<?php echo $group_by_study_modules[$study_module->study_module_id];?>"><?php echo $study_module->classroom_group_code;?></a>
                         </td>
                         <td class="<?php echo $study_modules_colours[$study_module->study_module_id];?>">
                             <a href="study_module_info/<?php echo $study_module->study_module_shortname;?>"><?php echo $study_module->study_module_shortname;?></a>

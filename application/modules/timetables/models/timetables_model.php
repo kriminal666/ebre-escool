@@ -329,7 +329,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
 
         $query = $this->db->get();
-		//echo $this->db->last_query();
+		//	echo $this->db->last_query();
 		if ($query->num_rows() > 0) {
 			return $query;
 		}			
@@ -1226,6 +1226,87 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		else
 			return 0;
 	}
+
+	function get_real_total_morning_hours_by_teacher_id($teacher_id) {
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT DISTINCT `lesson_day`,`lesson_time_slot_id`
+		FROM lesson
+		WHERE `lesson_teacher_id`=8 AND `lesson_academic_period_id`=5
+		*/	
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_teacher_id', $teacher_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		$this->db->where('lesson_time_slot_id >=', 1);
+		$this->db->where('lesson_time_slot_id <=',7);	
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+
+	function get_real_total_afternoon_hours_by_teacher_id($teacher_id) {
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT DISTINCT `lesson_day`,`lesson_time_slot_id`
+		FROM lesson
+		WHERE `lesson_teacher_id`=8 AND `lesson_academic_period_id`=5
+		*/	
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_teacher_id', $teacher_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		$this->db->where('lesson_time_slot_id >=', 9);
+		$this->db->where('lesson_time_slot_id <=',15);
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+
+	function get_real_total_hours_by_teacher_id($teacher_id) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT DISTINCT `lesson_day`,`lesson_time_slot_id`
+		FROM lesson
+		WHERE `lesson_teacher_id`=8 AND `lesson_academic_period_id`=5
+		*/	
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_teacher_id', $teacher_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+	
 
 	//Hores Setmanals
 	function get_module_hours_per_week($module,$lesson_classroom_group_id=null,$teacher_id=null)
