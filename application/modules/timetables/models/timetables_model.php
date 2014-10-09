@@ -436,6 +436,13 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
+					if ( ! array_key_exists ( $location_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->locations ) ) {
+						$new_location = new stdClass();
+						$new_location->code=$location_shortname;
+						$new_location->id=$location_id;
+						
+						$lesson_data->locations[$new_location->id]=$new_location;	
+					}
 				} else {
 					if ($not_doubled_lesson) {
 						$lesson_data = new stdClass;
@@ -459,15 +466,13 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						
 						$lesson_data->teachers[$new_teacher->id]=$new_teacher;
 
-						//TODO: Multiple locations
+						$lesson_data->locations=array();
 						if ($location_shortname != null) {
-							$lesson_data->location_code=$location_shortname;	
-							$lesson_data->location_id=$location_id;
-						} else {
-							$lesson_data->location_code="";	
-							$lesson_data->location_id="";
-						}
-						
+							$new_location = new stdClass();
+							$new_location->code=$location_shortname;
+							$new_location->id=$location_id;
+							$lesson_data->locations[$new_location->id]=$new_location;
+						} 
 						
 						$lesson_data->duration= 1;
 
@@ -487,7 +492,13 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 							
 							$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers[$new_teacher->id]=$new_teacher;	
 						}
-						
+						if ( ! array_key_exists ( $location_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->locations ) ) {
+							$new_location = new stdClass();
+							$new_location->code=$location_shortname;
+							$new_location->id=$location_id;
+							
+							$lesson_data->locations[$new_location->id]=$new_location;	
+						}
 						$previous_time_slot_start_time = $previous_time_slot_start_time;
 					}
    				}
@@ -589,6 +600,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 				$group_code = $row['classroom_group_code'];
 				$group_shortName = $row['classroom_group_shortName'];
 				$group_name = $row['classroom_group_name'];
+
 				$location_shortname = $row['location_shortName'];
 				$location_id = $row['lesson_location_id'];
 			
@@ -624,6 +636,13 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 					//Change previous lesson duration (++) and skip this one
 					$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->duration++;
 					$previous_time_slot_start_time = $previous_time_slot_start_time;
+					if ( ! array_key_exists ( $location_id , $all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->locations ) ) {
+						$new_location = new stdClass();
+						$new_location->code=$location_shortname;
+						$new_location->id=$location_id;
+						
+						$lesson_data->locations[$new_location->id]=$new_location;	
+					}
 				} else {
 					if ($not_doubled_lesson) {
 						$lesson_data = new stdClass;
@@ -654,13 +673,12 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 						$lesson_data->groups[$new_group->group_id]=$new_group;				
 
-						//TODO: Multiple locations
+						$lesson_data->locations=array();
 						if ($location_shortname != null) {
-							$lesson_data->location_code=$location_shortname;	
-							$lesson_data->location_id=$location_id;
-						} else {
-							$lesson_data->location_code="";	
-							$lesson_data->location_id="";
+							$new_location = new stdClass();
+							$new_location->code=$location_shortname;
+							$new_location->id=$location_id;
+							$lesson_data->locations[$new_location->id]=$new_location;
 						}
 						
 						$lesson_data->duration= 1;
@@ -686,6 +704,14 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 							$new_group->group_name = $group_name;
 
 							$all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->groups[$new_group->group_id]=$new_group;
+						}
+
+						if ( ! array_key_exists ( $location_id , $all_lessonsfortimetablebyteacherid[$day]->lesson_by_day[$previous_time_slot_start_time]->locations ) ) {
+							$new_location = new stdClass();
+							$new_location->code=$location_shortname;
+							$new_location->id=$location_id;
+							
+							$lesson_data->locations[$new_location->id]=$new_location;	
 						}
 						
 						$previous_time_slot_start_time = $previous_time_slot_start_time;
@@ -749,7 +775,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			$classroom_groups_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$classroom_groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . " ( " . $row['classroom_group_shortName'] . ")";
+   				$classroom_groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . " ( " . $row['classroom_group_shortName'] . ") - " . $row['classroom_group_id'];
 			}
 			return $classroom_groups_array;
 		}			
