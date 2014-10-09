@@ -331,7 +331,7 @@ class timetables extends skeleton_main {
             /* Get Week hours */
             $total_week_hours = 0;
             foreach($all_group_study_modules as $module){
-                $num_hours = $this->timetables_model->get_module_hours_per_week($module->study_module_id,$classroom_group_id);
+                $num_hours = $this->timetables_model->get_real_module_hours_per_week($module->study_module_id,$classroom_group_id);
                 $hours[] = $num_hours;
                 $total_week_hours += $num_hours;
             }

@@ -1306,9 +1306,37 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		else
 			return 0;
 	}
-	
 
-	//Hores Setmanals
+
+	//Hores Setmanals totals reals
+	function get_real_module_hours_per_week($module,$lesson_classroom_group_id=null,$teacher_id=null)
+	{
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_study_module_id', $module);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		if ($lesson_classroom_group_id!=null)	{
+			$this->db->where('lesson_classroom_group_id', $lesson_classroom_group_id);
+		}		
+		if ($teacher_id!=null)	{
+			$this->db->where('lesson_teacher_id', $teacher_id);
+		}
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}	
+
+	//Hores Setmanals totals no reals
 	function get_module_hours_per_week($module,$lesson_classroom_group_id=null,$teacher_id=null)
 	{
 		$current_academic_period_id = $this->get_current_academic_period_id();
