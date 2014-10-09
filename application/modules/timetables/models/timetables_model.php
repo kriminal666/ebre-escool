@@ -1115,7 +1115,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 		*/
 
 		$this->db->from('teacher');
-        $this->db->select('teacher_academic_periods_code,person_sn1,person_sn2,person_givenName,person_id,person_official_id');
+        $this->db->select('teacher.teacher_id, teacher_academic_periods_code, person_sn1,person_sn2, person_givenName, person_id, person_official_id');
 
 		$this->db->order_by('teacher_academic_periods_code', $orderby);
 		
@@ -1133,7 +1133,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			$teachers_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
+   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'] . " (" . $row['teacher_id'] . ")";
 			}
 			return $teachers_array;
 		}			
