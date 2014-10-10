@@ -291,13 +291,14 @@
                                 <?php foreach ( $day_lessons as $day_lesson) : ?>
                                     <?php 
                                     if ($day_lesson->time_slot_lective) {
-                                        //TODO not enough colours
-                                        if (array_key_exists($day_lesson->study_module_id, $study_modules_colours)) {
-                                            $bootstrap_button_colour = $study_modules_colours[$day_lesson->study_module_id];
-                                        } else {
-                                            $bootstrap_button_colour = "btn-beige";
-                                        }
-                                        
+                                         //var_export($day_lesson->study_modules);
+                                         $first_study_module= array_values($day_lesson->study_modules);
+                                         //TODO not enough colours
+                                         if (array_key_exists($first_study_module[0]->id, $study_modules_colours)) {
+                                                $bootstrap_button_colour = $study_modules_colours[ $first_study_module[0]->id ];
+                                         } else {
+                                                $bootstrap_button_colour = "btn-beige";
+                                         }
                                         //$bootstrap_button_colour = "btn-warning";
                                     } else {
                                         $bootstrap_button_colour = "btn-inverse";
@@ -310,14 +311,18 @@
                                         data-start="<?php echo $time_slot_current_position;?>" 
                                         data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
                                             <?php if ($day_lesson->time_slot_lective): ?>
+                                                
                                                 <a href="<?php echo base_url('/index.php/curriculum/classroom_group/read') ."/". $day_lesson->group_id;?>"><?php echo $day_lesson->group_code;?></a>
-                                                <a href="<?php echo base_url('/index.php/curriculum/study_module/read') ."/". $day_lesson->study_module_id;?>"><?php echo $day_lesson->study_module_shortname;?></a><br/>
+                                                
+                                                <?php
+                                                    foreach ($day_lesson->study_modules as $study_module_key => $study_module) {
+                                                       echo "<a href=\"" . base_url('/index.php/curriculum/study_module/read/' . $study_module->id ) ."\">" . $study_module->shortname . "</a> ";    
+                                                    }
+                                                ?> <br/>
 
                                                 <?php
-                                                    $count_i=1;
                                                     foreach ($day_lesson->locations as $location_key => $location) {
                                                        echo "<a href=\"" . base_url('/index.php/location/location/index/read/' . $location->id ) ."\">" . $location->code . "</a> ";
-                                                       $count_i++; 
                                                     }
                                                 ?>
                                                 

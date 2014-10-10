@@ -443,6 +443,21 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						
 						$lesson_data->locations[$new_location->id]=$new_location;	
 					}
+					if ( ! array_key_exists ( $study_module_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->study_modules ) ) {
+						$new_study_module = new stdClass();
+						$new_study_module->id = $study_module_id;
+						$new_study_module->shortname = $study_module_shortname;
+						$new_study_module->name = $study_module_name;						
+						
+						$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->study_modules[$new_study_module->id]=$new_study_module;	
+					}
+					if ( ! array_key_exists ( $lesson_teacher_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers ) ) {
+						$new_teacher = new stdClass();
+						$new_teacher->id = $lesson_teacher_id;
+						$new_teacher->code = $lesson_teacher_code;
+						
+						$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers[$new_teacher->id]=$new_teacher;	
+					}
 				} else {
 					if ($not_doubled_lesson) {
 						$lesson_data = new stdClass;
@@ -450,10 +465,13 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 						$lesson_data->lesson_id= $lesson_id;
 						$lesson_data->lesson_code= $lesson_code;
 						$lesson_data->time_slot_order= $time_slot_order;
-						$lesson_data->study_module_id= $study_module_id;
-						$lesson_data->study_module_shortname= $study_module_shortname;
-						$lesson_data->study_module_shortname= $study_module_shortname;
-						$lesson_data->study_module_name= $study_module_name;
+
+						$new_study_module = new stdClass();
+						$new_study_module->id = $study_module_id;
+						$new_study_module->shortname = $study_module_shortname;
+						$new_study_module->name = $study_module_name;						
+						$lesson_data->study_modules[$new_study_module->id]=$new_study_module;
+
 						$lesson_data->group_code= $group_code;
 						$lesson_data->group_id= $group_id;
 						$lesson_data->group_shortName= $group_shortName;
@@ -462,8 +480,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 						$new_teacher = new stdClass();
 						$new_teacher->id = $lesson_teacher_id;
-						$new_teacher->code = $lesson_teacher_code;
-						
+						$new_teacher->code = $lesson_teacher_code;						
 						$lesson_data->teachers[$new_teacher->id]=$new_teacher;
 
 						$lesson_data->locations=array();
@@ -485,7 +502,16 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	   					$previous_time_slot_start_time = $time_slot_start_time;
 
 					} else {
-						if ( ! array_key_exists ( $group_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers ) ) {
+						
+						if ( ! array_key_exists ( $study_module_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->study_modules ) ) {
+							$new_study_module = new stdClass();
+							$new_study_module->id = $study_module_id;
+							$new_study_module->shortname = $study_module_shortname;
+							$new_study_module->name = $study_module_name;						
+							
+							$all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->study_modules[$new_study_module->id]=$new_study_module;	
+						}
+						if ( ! array_key_exists ( $lesson_teacher_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->teachers ) ) {
 							$new_teacher = new stdClass();
 							$new_teacher->id = $lesson_teacher_id;
 							$new_teacher->code = $lesson_teacher_code;
@@ -1309,6 +1335,7 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 
 	//Hores Setmanals totals reals
+	//IT SEEMS NOT WORKS. OBSOLET!!!
 	function get_real_module_hours_per_week($module,$lesson_classroom_group_id=null,$teacher_id=null)
 	{
 		$current_academic_period_id = $this->get_current_academic_period_id();
