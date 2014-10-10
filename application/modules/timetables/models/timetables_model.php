@@ -502,7 +502,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 	   					$previous_time_slot_start_time = $time_slot_start_time;
 
 					} else {
-						
+						/*echo "ALERT DUPLICATED LESSON! Lesson _info:<br/>";
+						echo "<br/>day: " . $day . " | time_slot_start_time: " . $time_slot_start_time . " | lesson_id: " . $lesson_id . " | teacher: " . $lesson_teacher_id 
+						. " | lesson_code: " . $lesson_code . " | time_slot_order: " . $time_slot_order . " | study_module_shortname: " . $study_module_shortname .
+						" | location: " . $location_id . " | location_shortname: " . $location_shortname  ."<br/>";*/
 						if ( ! array_key_exists ( $study_module_id , $all_lessonsfortimetablebygroupid[$day]->lesson_by_day[$previous_time_slot_start_time]->study_modules ) ) {
 							$new_study_module = new stdClass();
 							$new_study_module->id = $study_module_id;

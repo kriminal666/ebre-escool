@@ -340,7 +340,9 @@ class timetables extends skeleton_main {
 
             /* Get Modules Colors */
             $study_modules_colours = $this->_assign_colours_to_study_modules($all_group_study_modules);
-            $data['study_modules_colours']= $study_modules_colours; //Color Yellow no apareix correctament
+            $study_modules_alternate_colours = $this->_assign_alternate_colours_to_study_modules($all_group_study_modules);
+            $data['study_modules_colours']= $study_modules_colours;
+            $data['study_modules_alternate_colours']= $study_modules_alternate_colours;
 
             $data['group_mentor'] = $this->timetables_model->get_mentor($classroom_group_id);
 
@@ -498,6 +500,64 @@ class timetables extends skeleton_main {
 
             $this->_load_body_footer();
     }
+
+    protected function _assign_alternate_colours_to_study_modules($study_modules) {
+        $study_modules_alternate_colours = array();
+        /*$bootstrap_button_colours = 
+            array( 1 => "btn-primary" ,
+                   2 => "btn-info"    ,
+                   3 => "btn-warning" ,
+                   4 => "btn-success" ,
+                   5 => "btn-danger"  ,
+                   6 => "btn-sadlebrown" ,
+                   7 => "btn-purple" ,
+                   8 => "btn-gold" ,
+                   9 => "btn-palegreen" ,
+                   10 => "btn-lightgray" ,
+                   11 => "btn-yellow" ,
+                   12 => "btn-chocolate",
+                   13 => "btn-coral",
+                   14 => "btn-olivedrab",
+                   15 => "btn-yellowgreen",
+                   16 => "btn-mignightblue",
+                   17 => "btn-darkred",
+                   18 => "btn-crimson",
+                   19 => "btn-default",
+                   20 => "btn-darkslategray"
+                   );*/
+            
+            $bootstrap_button_colours = 
+            array( 1 => "rgba(34,131,197,0.5)" ,
+                   2 => "rgba(111,179,224,0.5)"    ,
+                   3 => "rgba(255,183,82,0.5)" ,
+                   4 => "rgba(135,184,127,0.5)" ,
+                   5 => "rgba(209,91,71,0.5)"  ,
+                   6 => "rgba(139,69,19,0.5)" ,
+                   7 => "rgba(160,32,240,0.5)" ,
+                   8 => "rgba(255,215,0,0.5)" ,
+                   9 => "rgba(152,251,152,0.5)" ,
+                   10 => "rgba(211,211,211,0.5)" ,
+                   11 => "rgba(255,255,0,0.5)" ,
+                   12 => "rgba(210,105,30,0.5)",
+                   13 => "rgba(255,127,80,0.5)",
+                   14 => "rgba(107,142,35,0.5)",
+                   15 => "rgba(154,205,50,0.5)",
+                   16 => "rgba(25,25,112,0.5)",
+                   17 => "rgba(139,0,0,0.5)",
+                   18 => "rgba(214,105,127,0.5)",
+                   19 => "rgba(171,186,195,0.5)",
+                   20 => "rgba(47,79,79,0.5)"
+                   );
+
+            
+        $index=1;
+        foreach ($study_modules as $study_module) {
+            $study_modules_alternate_colours[$study_module->study_module_id] = $bootstrap_button_colours[$index];
+            $index++;
+        }
+            
+        return $study_modules_alternate_colours;
+    }            
 
     protected function _assign_colours_to_study_modules($study_modules) {
         $study_modules_colours = array();

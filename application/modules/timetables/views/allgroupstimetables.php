@@ -172,6 +172,55 @@
 
         <div style="height: 10px;"></div>
 
+
+        <style type="text/css"> 
+            <?php
+            $colours_already_alternated = array();
+            ?>
+            <?php foreach ($days as $day) : ?>
+                <?php foreach ( $lessonsfortimetablebygroupid[$day->day_number] as $day_lessons) : ?>
+                        <?php foreach ( $day_lessons as $day_lesson) : ?>                
+                        <?php 
+                            if ($day_lesson->time_slot_lective) {
+                                //var_export($day_lesson->study_modules);
+                                $num_study_modules_same_time_slot = count($day_lesson->study_modules);
+                                if ( $num_study_modules_same_time_slot > 1 ) {
+                                    //Multiple study lessons for this time slot cell
+                                    $study_module_values = array_values($day_lesson->study_modules);
+                                    $first_bootstrap_button_colour = $study_modules_colours[ $study_module_values[0]->id ];
+                                    $second_bootstrap_button_colour = $study_modules_colours[ $study_module_values[1]->id ];
+                                    $alternate_colour = $study_modules_alternate_colours[ $study_module_values[1]->id ];
+                                    if ( ! array_key_exists ( $first_bootstrap_button_colour , $colours_already_alternated ) ) {
+echo <<<EOT
+    .${first_bootstrap_button_colour}_alternate:before { 
+      content: '';
+      position: absolute;
+      left: 0%;
+      width: 100%; 
+      height: 200%; 
+      background-color: rgb(255, 255, 255); /* fallback */
+      background-color: $alternate_colour;
+      top: 0;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      transform: rotate(-45deg);
+    }
+EOT;
+
+                                    }
+
+                                    $colours_already_alternated[$first_bootstrap_button_colour] = true;
+                                }
+                            }
+                        ?>
+                        <?php endforeach;?>
+                <?php endforeach;?>
+            <?php endforeach;?>
+
+            
+
+        </style>
+
         <div id="group_timetable" class="timetable" data-days="5" data-hours="<?php echo $time_slots_count;?>">
             <ul class="tt-events">
 
@@ -181,10 +230,16 @@
                     <?php foreach ( $lessonsfortimetablebygroupid[$day->day_number] as $day_lessons) : ?>
                         <?php foreach ( $day_lessons as $day_lesson) : ?>
                             <?php 
+                                $bootstrap_button_colour_alternate="";
                                 if ($day_lesson->time_slot_lective) {
                                     //var_export($day_lesson->study_modules);
                                     $first_study_module= array_values($day_lesson->study_modules);
                                     $bootstrap_button_colour = $study_modules_colours[ $first_study_module[0]->id ];
+
+                                    $num_study_modules_same_time_slot = count($day_lesson->study_modules);
+                                    if ( $num_study_modules_same_time_slot > 1 ) {
+                                        $bootstrap_button_colour_alternate = $bootstrap_button_colour . "_alternate";
+                                    }
                                     //$bootstrap_button_colour = "btn-sadlebrown";
                                 } else {
                                     $bootstrap_button_colour = "btn-inverse";
@@ -193,7 +248,7 @@
 
 
 
-                            <li class="tt-event <?php echo $bootstrap_button_colour;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
+                            <li class="test1 tt-event <?php echo $bootstrap_button_colour;?> <?php echo $bootstrap_button_colour_alternate;  ;?>" data-id="10" data-day="<?php echo $day->day_number - 1 ;?>" 
                             data-start="<?php echo $time_slot_current_position;?>" 
                             data-duration="<?php echo $day_lesson->duration;?>" style="margin-top:5px;">
                                     <?php if ($day_lesson->time_slot_lective): ?>
@@ -213,10 +268,8 @@
                                     ?><br/>
                                     
                                     <?php
-                                        $count_i=0;
                                         foreach ($day_lesson->locations as $location_key => $location) {
                                            echo "<a href=\"" . base_url('/index.php/location/location/index/read/' . $location->id ) ."\">" . $location->code . "</a> ";
-                                           $count_i++; 
                                         }
                                     ?>
                                     
