@@ -329,12 +329,15 @@ class timetables extends skeleton_main {
             $data['all_group_study_modules']= $all_group_study_modules;
 
             /* Get Week hours */
-            $total_week_hours = 0;
+            
             foreach($all_group_study_modules as $module){
                 $num_hours = $this->timetables_model->get_real_module_hours_per_week($module->study_module_id,$classroom_group_id);
                 $hours[] = $num_hours;
-                $total_week_hours += $num_hours;
             }
+
+            $total_week_hours = 0;
+            $total_week_hours = $this->timetables_model->get_real_total_hours_by_group_id($classroom_group_id);
+
             $data['total_week_hours'] = $total_week_hours;
             $data['all_teacher_study_modules_hours_per_week'] = $hours;
 

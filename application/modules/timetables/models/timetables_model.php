@@ -1336,6 +1336,32 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 			return 0;
 	}
 
+	function get_real_total_hours_by_group_id($group_id) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT DISTINCT `lesson_day`,`lesson_time_slot_id`
+		FROM lesson
+		WHERE `lesson_classroom_group_id`=8 AND `lesson_academic_period_id`=5
+		*/	
+
+		$this->db->from('lesson');
+		$this->db->select('lesson_day,lesson_time_slot_id');
+		$this->db->distinct();
+		$this->db->where('lesson_classroom_group_id', $group_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		
+		$query = $this->db->get();
+        //echo $this->db->last_query()."<br />";		
+
+		if ($query->num_rows() > 0) {
+			return $query->num_rows;
+		}
+		else
+			return 0;
+	}
+
 
 	//Hores Setmanals totals reals
 	//IT SEEMS NOT WORKS. OBSOLET!!!
