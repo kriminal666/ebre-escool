@@ -181,8 +181,10 @@ JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_class
 
 		$this->db->where('lesson_classroom_group_id',$classroom_group_id);
 		$this->db->where('teacher_academic_periods_academic_period_id',$current_academic_period_id);
+		$this->db->where('lesson_academic_period_id',$current_academic_period_id);
         
         $query = $this->db->get();	
+     	echo $this->db->last_query();
 
         if ($query->num_rows() > 0) {
 
