@@ -1130,73 +1130,76 @@ class attendance extends skeleton_main {
    			$all_time_slots[] = $time_slot_data;
 		}
 
-		foreach ($all_lessons_by_teacherid_and_day as $time_slot)	{
+		if (is_array($all_lessons_by_teacherid_and_day)) {
+			foreach ($all_lessons_by_teacherid_and_day as $time_slot)	{
 			
-			$group_id = 0;
-			$group_code = "";
-			$base_url =  "";
-			$group_shortname =  "";
-			$group_name =  "";
-			
-			$lesson_id = 0;
-			$lesson_code =  "";
-			$lesson_shortname =  "";
-			$lesson_name =  "";
+				$group_id = 0;
+				$group_code = "";
+				$base_url =  "";
+				$group_shortname =  "";
+				$group_name =  "";
+				
+				$lesson_id = 0;
+				$lesson_code =  "";
+				$lesson_shortname =  "";
+				$lesson_name =  "";
 
 
-			$lesson_location =  "";
-   			$time_slot_data = new stdClass;
-			$time_slot_data->time_interval = $time_slot->time_slot_start_time . " - " . $time_slot->time_slot_end_time;
-			$time_slot_data->time_slot_lective = $time_slot->time_slot_lective;
-			$time_slot_id = $time_slot->time_slot_id;
-			$lesson_id = $time_slot->lesson_id;
+				$lesson_location =  "";
+	   			$time_slot_data = new stdClass;
+				$time_slot_data->time_interval = $time_slot->time_slot_start_time . " - " . $time_slot->time_slot_end_time;
+				$time_slot_data->time_slot_lective = $time_slot->time_slot_lective;
+				$time_slot_id = $time_slot->time_slot_id;
+				$lesson_id = $time_slot->lesson_id;
 
-			//Obtain lesson for this teacher date and time slot
-			$study_module_id = null;
-			
-			if (array_key_exists($lesson_id, $all_lessons_by_teacherid_and_day)) {
-				$group_id = $all_lessons_by_teacherid_and_day[$lesson_id]->group_id;
-				$group_code = $all_lessons_by_teacherid_and_day[$lesson_id]->group_code;
-				$group_shortname = $all_lessons_by_teacherid_and_day[$lesson_id]->group_shortname;
-				$group_name = $all_lessons_by_teacherid_and_day[$lesson_id]->group_name;
-				$study_module_id = $all_lessons_by_teacherid_and_day[$lesson_id]->study_module_id;
-				$lesson_code = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_code;
-				$lesson_shortname = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_shortname;
-				$lesson_name = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_name;
-				$lesson_location = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_location;
-				$lesson_location_id = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_location_id;
-			}
-
-			$time_slot_data->group_id = $group_id;
-			$time_slot_data->group_code = $group_code;
-			$time_slot_data->group_url= $base_url;
-			$time_slot_data->group_shortname = $group_shortname;
-			$time_slot_data->group_name = $group_name;
-
-			$time_slot_data->study_module_id = $study_module_id;
-
-			$time_slot_data->lesson_id = $lesson_id;
-			$time_slot_data->lesson_code = $lesson_code;
-			$time_slot_data->lesson_shortname = $lesson_shortname;
-			$time_slot_data->lesson_name = $lesson_name;
-			$time_slot_data->lesson_location = $lesson_location;
-			$time_slot_data->lesson_location_id = $lesson_location_id;
-			//Fallback color!
-			$time_slot_data->classroom_group_colour = "btn-default";
-			if ( $group_code != null ) {
-				if (array_key_exists($group_code, $classroom_groups_colours)) {
-					$time_slot_data->classroom_group_colour = $classroom_groups_colours[$group_code];
-				} 
-			}
-			$time_slot_data->lesson_colour = "btn-default";
-			if ( $study_module_id != null ) {
-				if (array_key_exists($study_module_id, $study_modules_colours)) {
-					$time_slot_data->lesson_colour = $study_modules_colours[$study_module_id];
+				//Obtain lesson for this teacher date and time slot
+				$study_module_id = null;
+				
+				if (array_key_exists($lesson_id, $all_lessons_by_teacherid_and_day)) {
+					$group_id = $all_lessons_by_teacherid_and_day[$lesson_id]->group_id;
+					$group_code = $all_lessons_by_teacherid_and_day[$lesson_id]->group_code;
+					$group_shortname = $all_lessons_by_teacherid_and_day[$lesson_id]->group_shortname;
+					$group_name = $all_lessons_by_teacherid_and_day[$lesson_id]->group_name;
+					$study_module_id = $all_lessons_by_teacherid_and_day[$lesson_id]->study_module_id;
+					$lesson_code = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_code;
+					$lesson_shortname = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_shortname;
+					$lesson_name = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_name;
+					$lesson_location = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_location;
+					$lesson_location_id = $all_lessons_by_teacherid_and_day[$lesson_id]->lesson_location_id;
 				}
-			}
 
-   			$all_time_slots_reduced[$lesson_id] = $time_slot_data;
+				$time_slot_data->group_id = $group_id;
+				$time_slot_data->group_code = $group_code;
+				$time_slot_data->group_url= $base_url;
+				$time_slot_data->group_shortname = $group_shortname;
+				$time_slot_data->group_name = $group_name;
+
+				$time_slot_data->study_module_id = $study_module_id;
+
+				$time_slot_data->lesson_id = $lesson_id;
+				$time_slot_data->lesson_code = $lesson_code;
+				$time_slot_data->lesson_shortname = $lesson_shortname;
+				$time_slot_data->lesson_name = $lesson_name;
+				$time_slot_data->lesson_location = $lesson_location;
+				$time_slot_data->lesson_location_id = $lesson_location_id;
+				//Fallback color!
+				$time_slot_data->classroom_group_colour = "btn-default";
+				if ( $group_code != null ) {
+					if (array_key_exists($group_code, $classroom_groups_colours)) {
+						$time_slot_data->classroom_group_colour = $classroom_groups_colours[$group_code];
+					} 
+				}
+				$time_slot_data->lesson_colour = "btn-default";
+				if ( $study_module_id != null ) {
+					if (array_key_exists($study_module_id, $study_modules_colours)) {
+						$time_slot_data->lesson_colour = $study_modules_colours[$study_module_id];
+					}
+				}
+
+	   			$all_time_slots_reduced[$lesson_id] = $time_slot_data;
+			}	
 		}
+		
 		
 		$data['all_time_slots']=$all_time_slots;
 		$data['all_time_slots_reduced']=$all_time_slots_reduced;

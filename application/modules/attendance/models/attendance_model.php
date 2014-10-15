@@ -1149,13 +1149,15 @@ function get_current_academic_period() {
 
 		$found_lesson_ids_by_time_slot_id = array();
 
-		foreach ($all_lessons_by_teacherid_and_day as $lesson_key => $lesson) {
-			# code...
-			if ( $lesson->time_slot_id == $time_slot_id) {
-				$found_lesson_ids_by_time_slot_id[] = $lesson->lesson_id;				
-			}
+		if (is_array($all_lessons_by_teacherid_and_day)) {
+			foreach ($all_lessons_by_teacherid_and_day as $lesson_key => $lesson) {
+				# code...
+				if ( $lesson->time_slot_id == $time_slot_id) {
+					$found_lesson_ids_by_time_slot_id[] = $lesson->lesson_id;				
+				}
+			}	
 		}
-
+		
 		return $found_lesson_ids_by_time_slot_id;
 	}
 
