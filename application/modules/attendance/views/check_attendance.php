@@ -71,8 +71,9 @@
            <?php endif; ?> 
    <?php endforeach; ?>	
   </select> 
+
 </div>
-  <div class="span4"></div>
+  <div class="span4"><a id="link_to_teacher_timetable" href="<?php echo base_url('/index.php/timetables/allteacherstimetables');?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar"></i> Horari</a></div>
 </div>
   <div style="height: 10px;"></div>
 <center>
@@ -149,7 +150,7 @@
         <?php
         $url_part = $time_slot->group_id . "/" . $teacher_code . "/" . $time_slot->study_module_id . "/" . $time_slot->lesson_id . "/" . $day . "/" . $month . "/" . $year;
         ?>
-        <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group/" . $url_part;?>" class="btn btn-primary">
+        <a href="<?php echo base_url('/index.php/attendance/check_attendance_classroom_group') . "/" . $url_part;?>" class="btn btn-primary">
           <i class="icon-bell icon-white"></i> Passar llista
         </a>
      </td>
@@ -231,7 +232,7 @@
         <?php
         $url_part = $time_slot->group_id . "/" . $teacher_code . "/" . $time_slot->study_module_id . "/" . $time_slot->lesson_id . "/" . $day . "/" . $month . "/" . $year;
         ?>
-    <a href="<?php echo base_url() . "/index.php/attendance/check_attendance_classroom_group/" . $url_part;?>" class="btn btn-primary">
+    <a href="<?php echo base_url('/index.php/attendance/check_attendance_classroom_group') . "/" . $url_part;?>" class="btn btn-primary">
   			<i class="icon-bell icon-white"></i> Passar llista
 		</a>
     <?php endif; ?>
@@ -249,6 +250,11 @@
 <script>
 
 $(function() {
+
+    base_teacher_timetable_url = "<?php echo base_url('/index.php/timetables/allteacherstimetables'); ?>";
+    base_teacher_timetable_url = base_teacher_timetable_url + "/<?php echo $default_teacher;?>";
+    console.debug(base_teacher_timetable_url);
+    $('#link_to_teacher_timetable').attr("href", base_teacher_timetable_url);
 
     $('.tt-event').tooltip();
 
@@ -288,6 +294,7 @@ $(function() {
     year=selected_date.getFullYear();
     formated_selectedDate = day + "/" + converted_month + "/" + year;
     //alert (formated_selectedDate);
+
     var pathArray = window.location.pathname.split( '/' );
     var secondLevelLocation = pathArray[1];
     var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance";
@@ -387,7 +394,7 @@ $(function() {
 
 
 
-  $("select").change(function(){
+  $("select_TODOTODO").change(function(){
     var fila = null;
     var columna = null;
     var hora = null;

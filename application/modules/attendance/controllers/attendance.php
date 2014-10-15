@@ -1361,13 +1361,13 @@ class attendance extends skeleton_main {
 //OSCAR: GET TIME SLOTS
     public function get_time_slots($classroom_group_id=null,$lective)
     {
-            $complete_time_slots_array = $this->timetables_model->getAllTimeSlots()->result_array();
+            $complete_time_slots_array = $this->attendance_model->getAllTimeSlots()->result_array();
             $data['complete_time_slots_count'] = count($complete_time_slots_array);            
             if($classroom_group_id){
-                $shift = $this->timetables_model->get_group_shift($classroom_group_id);
-			    $all_teacher_groups_time_slots[$classroom_group_id] = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+                $shift = $this->attendance_model->get_group_shift($classroom_group_id);
+			    $all_teacher_groups_time_slots[$classroom_group_id] = $this->attendance_model->get_time_slots_byShift($shift)->result_array();
 
-                $time_slots_array = $this->timetables_model->get_time_slots_byShift($shift)->result_array();
+                $time_slots_array = $this->attendance_model->get_time_slots_byShift($shift)->result_array();
             } else {
                 $time_slots_array = $complete_time_slots_array;
             }
