@@ -40,6 +40,22 @@
   </small>
  </h1>
 </div>
+
+<div class="alert alert-block alert-success">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <i class="icon-ok green"></i>
+
+                
+                <strong class="green">
+                  IMPORTANT : 
+                </strong>
+                No passeu faltes fins que no rebeu un correu conforme ja està activada la funcionalitat. Estem treballant per posar en marxa aquesta funcionalitat.
+              </div>
+
+
 <div class="space-3"></div>
 
               <div class="row-fluid">
@@ -227,8 +243,9 @@
     <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
 
     <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?>
+    <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables/' . $selected_classroom_group_key) ?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar" style="margin-left:50px;"></i> Horari de grup</a>
 
-    <div class="inline position-relative" style="float:right;">
+    <div class="inline position-relative" style="float:right;color:#555;">
               Professor: <strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong> | 
               Professors del grup: 
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -279,18 +296,22 @@
                              <?php if (isset ($time_slot->study_module_id)): ?>
                               <p>
                                <span class="label label-purple" data-rel="tooltip" 
-                                title="<?php echo $time_slot->study_module_name . ". " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>">
+                                title="<?php echo $time_slot->study_module_name . " ( " . $time_slot->study_module_id . " ). " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>">
                                 <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
                                </span>
                               </p>
-                              <div class="btn-group">
+                              <div class="btn-group" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>">
 
                                <?php if (is_array ($time_slot->study_submodules)): ?>  
                                 <?php foreach ( $time_slot->study_submodules as $study_submodule_key => $study_submodule): ?>
-                                 <button style="font-size: x-small;" id="<?php echo $study_submodule_key;?>"
+                                 <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>"
                                   class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" 
-                                  title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " ( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
-                                  <?php echo $study_submodule->shortname;?>
+                                  title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") <br/>( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
+                                  <?php echo $study_submodule->shortname;?> 
+                                    <?php if($study_submodule->active):?> 
+                                      <i class="icon-check bigger-120"></i>
+                                    <?php endif;?>
+                                    
                                  </button> 
                                 <?php endforeach; ?>
                                <?php endif; ?> 
@@ -320,23 +341,23 @@
                         </a>
                       </td>
                       <td>
-                        <a href="#"><?php echo $student->person_id;?></a>
+                        <a href="<?php echo base_url('/index.php/persons/index/read/' . $student->person_id );?>"><?php echo $student->person_id;?></a>
                       </td>
                       <td>
-                        <a href="#"><?php echo $student->sn1;?></a>
+                        <?php echo $student->sn1;?>
                       </td>
                       <td>
-                        <a href="#"><?php echo $student->sn2;?></a>
+                        <?php echo $student->sn2;?>
                       </td>
                       <td>
-                        <a href="#"><?php echo $student->givenName;?></a>
+                        <?php echo $student->givenName;?>
                       </td>
                       <td>
-                        <a href="#"><?php echo $student->username;?></a>
+                        <div title="<?php echo $student->username . " ( " . $student->userid . ")";?>"><a href="<?php echo base_url('/index.php/users/index/read/' . $student->userid ) ;?>"><?php echo $student->username;?></a></div>
                       </td>
-                      <th>
-                        <a href="#"><?php echo $student->email;?></a>                      
-                      </th> 
+                      <td>
+                        <?php echo $student->email;?>
+                      </td> 
 
                       <?php foreach ( $time_slots as $time_slot_key => $time_slot): ?>
 

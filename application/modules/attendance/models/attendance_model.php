@@ -133,7 +133,7 @@ class attendance_model  extends CI_Model  {
 		*/
 
 
-		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
 		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
@@ -160,6 +160,7 @@ class attendance_model  extends CI_Model  {
 				$student->sn2 = $row['person_sn2'];
 				$student->givenName = $row['person_givenName'];
 				$student->username = $row['username'];
+				$student->userid = $row['id'];
 				$student->email = $row['person_secondary_email'];
 				$student->photo_url = $row['person_photo'];
 				$student->person_official_id = $row['person_official_id'];
@@ -551,6 +552,7 @@ class attendance_model  extends CI_Model  {
 					$startdate = date_format(new DateTime($row['study_submodules_academic_periods_initialDate']),"d/m/Y");
 					$finaldate = date_format(new DateTime($row['study_submodules_academic_periods_endDate']),"d/m/Y");
 
+					$study_submodule->id = $row['study_submodules_id'];
 					$study_submodule->startdate = $startdate;
 					$study_submodule->finaldate = $finaldate;
 					$study_submodule->totalHours = $row['study_submodules_academic_periods_totalHours'];
@@ -561,11 +563,30 @@ class attendance_model  extends CI_Model  {
 				}	
 			}
 			
+			//check at least one study submodule is active!
+			if ( ! $this->_check_if_at_least_one_study_submodule_is_active($study_submodules)) {
+				list($key, $first_study_submodule) = each($study_submodules);
+				$first_study_submodule->active = true;
+				$study_submodules[$first_study_submodule->id] = $first_study_submodule;
+			}
+			
 			return $study_submodules;
 		}			
 		else {
 			return false;
 		}
+	}
+
+	private function _check_if_at_least_one_study_submodule_is_active($study_submodules) {
+
+		//check at least one study submodule is active!
+		foreach ($study_submodules as $key => $study_submodule) {
+			if ( $study_submodule->active ) {
+				return true;
+			}
+		}		
+
+		return false;
 	}
 
 	private function check_in_range($start_date, $end_date, $date_from_user) {
@@ -1870,27 +1891,30 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT `lesson_teacher_id`, `person_givenName`, `person_sn1`, `person_sn2`
-		FROM `lesson` 
-		INNER JOIN teacher 
-		ON lesson.lesson_teacher_id = teacher.`teacher_id`
-		INNER JOIN person
-		ON teacher.teacher_id = person.`person_id`
-		WHERE `lesson_classroom_group_id`=25
+		SELECT DISTINCT `lesson_teacher_id`, `person_givenName`, `person_sn1`, `person_sn2` 
+		FROM (`lesson`) 
+		JOIN `teacher` ON `teacher`.`teacher_id` = `lesson`.`lesson_teacher_id` 
+		JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
+		JOIN `person` ON `teacher`.`teacher_person_id` = `person`.`person_id` 
+		WHERE `lesson`.`lesson_classroom_group_id` = '3' AND `lesson_academic_period_id` = '5' AND `teacher_academic_periods_academic_period_id` = '5'
 		*/
 
 		$this->db->select('lesson_teacher_id, person_givenName, person_sn1, person_sn2');
+		$this->db->distinct();
 		$this->db->from('lesson');
 		$this->db->join('teacher', 'teacher.teacher_id = lesson.lesson_teacher_id');
-		$this->db->join('person', 'teacher.teacher_id = person.person_id');
+		$this->db->join('teacher_academic_periods', 'teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id');
+		$this->db->join('person', 'teacher.teacher_person_id = person.person_id');
 		
 		//$this->db->order_by('time_slot_order', $orderby);
 		
 		$this->db->where("lesson.lesson_classroom_group_id", $class_group_id);
 		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+		$this->db->where('teacher_academic_periods_academic_period_id', $current_academic_period_id);
 		
 		$query = $this->db->get();
-		
+		//echo $this->db->last_query() ."<br/>";
+
 		if ($query->num_rows() > 0)	{
 			
 			$group_teachers = array();
@@ -1938,7 +1962,7 @@ function get_current_academic_period() {
 		$this->db->where("classroom_group_academic_periods.classroom_group_academic_periods_academic_period_id", $current_academic_period_id);
 
 		$query = $this->db->get();
-		//echo $this->db->last_query() ."<br/>";
+		//ºecho $this->db->last_query() ."<br/>";
 		if ($query->num_rows() == 1) {
 			$row = $query->row(); 
 			return $row->teacher_id;

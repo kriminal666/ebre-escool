@@ -938,6 +938,7 @@ class attendance extends skeleton_main {
 				$studentObject->sn1 = $student->sn1;
 				$studentObject->sn2 = $student->sn2;
 				$studentObject->username = $student->username;
+				$studentObject->userid = $student->userid;
 				$studentObject->email = $student->email;
 			
 				//TODO: get incident notes!
