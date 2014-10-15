@@ -43,7 +43,19 @@
   <?php endif; ?> 
 
 
+<div class="alert alert-block alert-success">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
 
+                <i class="icon-ok green"></i>
+
+                
+                <strong class="green">
+                  IMPORTANT : 
+                </strong>
+                No passeu faltes fins que no rebeu un correu conforme ja està activada la funcionalitat. Estem treballant per posar en marxa aquesta funcionalitat.
+              </div>
 
 <div class="row-fluid">
           <div class="span4"></div>
@@ -90,7 +102,7 @@
   <tr>
      <th><?php echo lang("time_slot");?></th>
      <th><?php echo lang("ClassroomGroup");?></th>
-     <th>TODO Mòdul Profesional</th>
+     <th>Mòdul Profesional</th>
      <th><?php echo lang("attendances_actions");?></th>
   </tr>
  </thead>
@@ -98,15 +110,15 @@
   <!-- Iteration that shows teacher groups for selected day-->
   <?php foreach ($all_time_slots_reduced as $key => $time_slot) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}" id="tr_<?php echo $key;?>">
-     <td><?php echo $time_slot->time_interval;?></td>
+     <td><div title="( <?php echo "lesson id: " . $time_slot->lesson_id;?> | <?php echo "lesson_code: " .$time_slot->lesson_code;?> )"><?php echo $time_slot->time_interval;?></div></td>
      <td>
         <?php if ($time_slot->time_slot_lective == 1): ?>
             <li class="tt-event <?php echo $time_slot->classroom_group_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;" data-toggle="tooltip" 
-              data-original-title="<?php echo $time_slot->group_code?>">
-                <a href="<?php echo $time_slot->group_url;?> " style="text-decoration:none;color: inherit;">
+              data-original-title="<?php echo $time_slot->group_code?>.  <?php echo $time_slot->group_name;?> ( <?php echo $time_slot->group_id;?> )">
+                <a href="<?php echo base_url( '/index.php/curriculum/classroom_group/read/' . $time_slot->group_id) ;?>" style="text-decoration:none;color: inherit;">
                   <?php echo $time_slot->group_code;
                         if ($time_slot->group_name != "") { echo ". " . $time_slot->group_name; } ?></a><br />
-                <?php echo "Lloc: " . $time_slot->lesson_location;?><br />
+                <?php echo "Lloc: " . "<a href=\"" .  base_url( '/index.php/location/location/index/read/' . $time_slot->lesson_location_id)  . "\" style=\"text-decoration:none;color: inherit;\">" . $time_slot->lesson_location . "</a>";?><br />
             </li>
         <?php else: ?>
             <li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
@@ -120,9 +132,10 @@
         <?php if ($time_slot->time_slot_lective == 1): ?>
             <li class="tt-event <?php echo $time_slot->lesson_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;"
                 data-toggle="tooltip" 
-                data-original-title="<?php echo $time_slot->lesson_shortname?>">
-                <?php echo $time_slot->lesson_shortname . ". " . $time_slot->lesson_name;?><br />
-                <?php echo "Lloc: " . $time_slot->lesson_location;?><br />
+                data-original-title="<?php echo $time_slot->lesson_shortname?>. <?php echo $time_slot->lesson_name?> ( <?php echo $time_slot->study_module_id;?> ) <?php echo $time_slot->lesson_location;?>  ( <?php echo $time_slot->lesson_location_id?> )">
+                <a href="<?php echo base_url( '/index.php/curriculum/study_module/read' . $time_slot->study_module_id) ;?>" style="text-decoration:none;color: inherit;">
+                <?php echo $time_slot->lesson_shortname . ". " . $time_slot->lesson_name;?></a><br />
+                <?php echo "Lloc: " . "<a href=\"" .  base_url( '/index.php/location/location/index/read/' . $time_slot->lesson_location_id)  . "\" style=\"text-decoration:none;color: inherit;\">" . $time_slot->lesson_location . "</a>";?><br />
             </li>
         <?php else: ?>
             <li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
@@ -166,15 +179,21 @@
   <?php foreach ($all_time_slots as $key => $time_slot) : ?>
    
    <tr align="center" class="{cycle values='tr0,tr1'}" id="tr_<?php echo $key;?>">
-     <td><?php echo $time_slot->time_interval;?></td>
+     <td><div title="( <?php echo "lesson id: " . $time_slot->lesson_id;?> | <?php echo "lesson_code: " .$time_slot->lesson_code;?> )"><?php echo $time_slot->time_interval;?></div></td>
      <td>
 		<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event <?php echo $time_slot->classroom_group_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;" data-toggle="tooltip">
-           		<a href="<?php echo $time_slot->group_url;?> " style="text-decoration:none;color: inherit;">
-                <?php echo $time_slot->group_code;
+			<li class="tt-event <?php echo $time_slot->classroom_group_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;" data-toggle="tooltip" 
+              data-original-title="<?php echo $time_slot->group_code?>.  <?php echo $time_slot->group_name;?> ( <?php echo $time_slot->group_id;?> )">
+                <a href="<?php echo base_url( '/index.php/curriculum/classroom_group/read/' . $time_slot->group_id) ;?>" style="text-decoration:none;color: inherit;">
+                  <?php echo $time_slot->group_code;
                         if ($time_slot->group_name != "") { echo ". " . $time_slot->group_name; } ?></a><br />
-            	<?php echo $time_slot->lesson_location;?><br />
-        	</li>
+                <?php 
+                if ($time_slot->lesson_location != "") {
+                  echo "Lloc: " . "<a href=\"" .  base_url( '/index.php/location/location/index/read/' . $time_slot->lesson_location_id)  . "\" style=\"text-decoration:none;color: inherit;\">" . $time_slot->lesson_location . "</a>";
+                }
+                ?>
+                  <br />
+            </li>
 		<?php else: ?>
 			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
            		DESCANS<br/>
@@ -185,11 +204,20 @@
 
      <td>
      	<?php if ($time_slot->time_slot_lective == 1): ?>
-			<li class="tt-event <?php echo $time_slot->lesson_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;">
-           		<?php echo $time_slot->lesson_shortname;
-                    if ($time_slot->lesson_name != "") { echo ". " . $time_slot->lesson_name; }?><br />
-            	<?php echo $time_slot->lesson_location;?><br />
-        	</li>
+			<li class="tt-event <?php echo $time_slot->lesson_colour;?>" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height:90%;"
+                data-toggle="tooltip" 
+                data-original-title="<?php echo $time_slot->lesson_shortname?>. <?php echo $time_slot->lesson_name?> ( <?php echo $time_slot->study_module_id;?> ) <?php echo $time_slot->lesson_location;?>  ( <?php echo $time_slot->lesson_location_id?> )">
+                <?php if ( $time_slot->lesson_shortname != "" ) : ?>
+                <a href="<?php echo base_url( '/index.php/curriculum/study_module/read' . $time_slot->study_module_id) ;?>" style="text-decoration:none;color: inherit;">
+                <?php echo $time_slot->lesson_shortname . ". " . $time_slot->lesson_name;?></a>
+                <?php endif; ?>
+                <br />
+                <?php 
+                if ($time_slot->lesson_location != "") {
+                  echo "Lloc: " . "<a href=\"" .  base_url( '/index.php/location/location/index/read/' . $time_slot->lesson_location_id)  . "\" style=\"text-decoration:none;color: inherit;\">" . $time_slot->lesson_location . "</a>";
+                }
+                ?><br />
+            </li>
 		<?php else: ?>
 			<li class="tt-event btn-inverse" style="margin-left: auto;margin-right: auto;position:relative; width: 90%; height: auto;">
            		DESCANS<br/>
