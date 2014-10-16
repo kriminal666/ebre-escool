@@ -498,6 +498,9 @@ class managment_model  extends CI_Model  {
 		$all_ldap_users_pwdLastSet = $this->get_all_ldap_pwdLastSet($basedn);
 		$all_ldap_users_logonTime = $this->get_all_ldap_LogonTime($basedn);
 
+		$all_ldap_users_nt_passwords = $this->get_all_ldap_nt_passwords($basedn);
+		$all_ldap_users_lm_passwords = $this->get_all_ldap_lm_passwords($basedn);
+
 		$all_ldap_users = array();
 		if ($query->num_rows() > 0){
 			$i=0;
@@ -540,6 +543,33 @@ class managment_model  extends CI_Model  {
 				
 				
 				$all_ldap_users[$i]['initial_password'] = $row->initial_password;
+				$cr = new Crypt_CHAP_MSv1();		
+
+				$calculated_sambaNTPassword = strtoupper(bin2hex($cr->ntPasswordHash($row->initial_password)));
+				$calculated_sambaLMPassword = strtoupper(bin2hex($cr->lmPasswordHash($row->initial_password)));
+
+				$all_ldap_users[$i]['calculated_nt_initial_password'] = $calculated_sambaNTPassword;
+				$all_ldap_users[$i]['calculated_lm_initial_password'] = $calculated_sambaLMPassword;
+				
+				$ldap_nt_password="";
+				if ( array_key_exists ( $row->username , $all_ldap_users_nt_passwords ) ) {
+					$ldap_nt_password = $all_ldap_users_nt_passwords[$row->username];
+				} else {
+					$ldap_nt_password = "";
+				}
+				$all_ldap_users[$i]['real_nt_initial_password'] = $ldap_nt_password;
+
+				$ldap_lm_password="";
+				if ( array_key_exists ( $row->username , $all_ldap_users_lm_passwords ) ) {
+					$ldap_lm_password = $all_ldap_users_lm_passwords[$row->username];
+				} else {
+					$ldap_lm_password = "";
+				}
+				$all_ldap_users[$i]['real_lm_initial_password'] = $ldap_lm_password;
+
+
+
+
 				$all_ldap_users[$i]['force_change_password_next_login'] = $row->force_change_password_next_login;
 				$all_ldap_users[$i]['last_login'] = $row->last_login;				
 				$all_ldap_users[$i]['md5_initial_password'] = md5($row->initial_password);
@@ -893,6 +923,68 @@ class managment_model  extends CI_Model  {
 		}
 		return false;	
 	}
+
+	public function get_all_ldap_nt_passwords($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_user_passwords=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					if (in_array("sambantpassword", $info[$i])) {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = $info[$i]["sambantpassword"][0];
+					}
+					else {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = "No té paraula de pas NT a Ldap";
+					}
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_user_passwords;
+			}
+		
+		}
+		return false;	
+	}
+	
+	public function get_all_ldap_lm_passwords($basedn) {
+		$this->_init_ldap();
+		$filter = '(uid=*)';	
+		$all_ldap_user_passwords=array();			
+		if ($this->_bind()) {
+	     	$sr = ldap_search($this->ldapconn, $basedn, $filter);
+	     	$entries = ldap_count_entries($this->ldapconn, $sr);
+	     	//echo "Number of entires returned is: ". $entries;
+
+	     	if ($entries > 0) {
+	     		$info = ldap_get_entries($this->ldapconn, $sr);
+				//echo "Data for ".$info["count"]." items returned:<p>";
+		     	for ($i=0; $i<$info["count"]; $i++  ) {
+					//echo "dn is: ". $info[$i]["dn"] ."\n";
+					//echo "first cn entry is: ". $info[$i]["cn"][0] ."\n";
+					//echo "first eail entry is: ". $info[$i]["email"][0] ."\n";
+					if (in_array("sambalmpassword", $info[$i])) {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = $info[$i]["sambalmpassword"][0];
+					}
+					else {
+						$all_ldap_user_passwords[$info[$i]["uid"][0]] = "No té paraula de pas LM a Ldap";
+					}
+				}
+			ldap_close($this->ldapconn);
+			return $all_ldap_user_passwords;
+			}
+		
+		}
+		return false;	
+	}	
 
 	public function get_all_ldap_passwords($basedn) {
 		$this->_init_ldap();

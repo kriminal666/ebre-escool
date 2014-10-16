@@ -125,6 +125,18 @@
                         { "mData": function(data, type, full) {
                                     return '<span title="'+ data.md5_initial_password +'">' + data.initial_password + '</span>';
                                   }},
+                        { "mData": "calculated_lm_initial_password" },
+                        { "mData": "real_lm_initial_password" },
+                        { "mData": "calculated_nt_initial_password" },
+                        { "mData": "real_nt_initial_password" },
+                        { "mData": function(data, type, full) {
+                                    if (  (data.calculated_lm_initial_password == data.real_lm_initial_password ) && (data.calculated_nt_initial_password == data.real_nt_initial_password) ) {
+                                       return "Yes";
+                                    } else {
+                                      return "No";
+                                    }
+
+                                  }},
                         { "mData": "last_login" },          
                         { "mData": function(data, type, full) {
                                     return data.force_change_password_next_login;
@@ -658,7 +670,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_ldap_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="31" style="text-align: center;"> <h4>
+    <td colspan="36" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
         <?php echo $user_ldap_table_title?>. Període acadèmic: <span id="academic_period_text">
       </a>
@@ -685,6 +697,11 @@
      <th><?php echo lang('user_ldap_mainOrganizationaUnitId')?></th>
      <th><?php echo lang('user_ldap_user_type')?></th>
      <th><?php echo lang('user_ldap_initial_password')?></th>
+     <th><?php echo "NT password calculated"?></th>
+     <th><?php echo "Real NT password"?></th>
+     <th><?php echo "LM password calculated"?></th>     
+     <th><?php echo "Real LM password"?></th>
+     <th><?php echo "Windows Passwords Ok?"?></th>
      <th><?php echo lang('user_ldap_last_login')?></th>
      <th><?php echo lang('user_ldap_force_change_password_next_login')?></th>     
      <th><?php echo lang('user_ldap_changed_initial_password')?></th>
