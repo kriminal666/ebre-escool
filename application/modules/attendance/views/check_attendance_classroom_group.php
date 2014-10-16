@@ -305,13 +305,10 @@
                                <?php if (is_array ($time_slot->study_submodules)): ?>  
                                 <?php foreach ( $time_slot->study_submodules as $study_submodule_key => $study_submodule): ?>
                                  <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>"
-                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" 
+                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>');"
                                   title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") <br/>( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
                                   <?php echo $study_submodule->shortname;?> 
-                                    <?php if($study_submodule->active):?> 
-                                      <i class="icon-check bigger-120"></i>
-                                    <?php endif;?>
-                                    
+                                    <i class="icon-check bigger-120" id="btn_group_icon_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" style="display:<?php if($study_submodule->active) { echo 'inline'; } else { echo 'none'; } ;?>"></i>
                                  </button> 
                                 <?php endforeach; ?>
                                <?php endif; ?> 
@@ -366,14 +363,29 @@
 
                           <?php if (isset ($time_slot->study_module_id)): ?>
                             <center>
-                             <select id="form-field-select-1" width="50" style="width: 50px">
-                              <option value="">&nbsp;</option>
+
+                              <?php 
+                              $active_study_submodule = null;
+                              if (is_array($time_slot->study_submodules)) {
+                                foreach ($time_slot->study_submodules as $study_submodules_key => $study_submodule) {
+                                  if ($study_submodule->active) {
+                                    $active_study_submodule = $study_submodule;
+                                  }
+                                }
+                                
+                              }
+                                 
+                              ?>
+                             
+                             <select altdata="<?php echo $active_study_submodule->id;?>" id="check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $time_slot->id  ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>)">
+                              <option value="0">--</option>
                               <option value="1">F</option>
                               <option value="2">FJ</option>
                               <option value="3">R</option>
                               <option value="4">RJ</option>
                               <option value="5">E</option>                              
                              </select>
+
                             <?php if ( $selected_time_slot_id == $time_slot->id ):?>
                               <i class="icon-star red smaller-80"></i>      
                             <?php endif; ?>
@@ -448,7 +460,93 @@
 </div>
 </div>
 <script type="text/javascript">
+
+function check_attendance_select_on_click(element,person_id,time_slot_id,day){
+  id = element.id;
+  study_submodule_id = $("#"+id).attr("altdata");
+  selected_value = $("#"+id).val();
+  previous_selected_value = $("#"+id).val();
+
+  //DEBUG INFO:
+  console.debug("check_attendance_select_on_click!!!");
+  console.debug("id: " + id);
+  console.debug("person_id: " + person_id);
+  console.debug("time_slot_id: " + time_slot_id);
+  console.debug("day: " + day);  
+  console.debug("study_submodule_id: " + study_submodule_id);
+  console.debug("selected_value: " + selected_value);
+
+  //AJAX
+  $.ajax({
+    url:'<?php echo base_url("/index.php/attendance/crud_absence");?>',
+    type: 'post',
+    data: {
+        person_id : person_id,
+        time_slot_id : time_slot_id,
+        day : day,
+        study_submodule_id: study_submodule_id,
+        absence_type : selected_value  
+    },
+    datatype: 'json',
+    statusCode: {
+      404: function() {
+        $.gritter.add({
+          title: 'Error connectant amb el servidor!',
+          text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/attendance/crud_absence ' ,
+          class_name: 'gritter-error gritter-center'
+        });
+      },
+      500: function() {
+        $("#response").html('A server-side error has occurred.');
+        $.gritter.add({
+          title: 'Error connectant amb el servidor!',
+          text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/attendance/crud_absence ' ,
+          class_name: 'gritter-error gritter-center'
+        });
+      }
+    },
+    error: function() {
+      $.gritter.add({
+          title: 'Error!',
+          text: 'Ha succeït un error!' ,
+          class_name: 'gritter-error gritter-center'
+        });
+    },
+  }).done(function(data){
+    
+    //TODO
+
+  });
+
+
+
+
+}
+
+function study_submodule_on_click(study_submodule_button,study_module_button_id) {
+  id = study_submodule_button.id;
+  console.debug("click on study_submodule_on_click: " + id + " group: " + study_module_button_id);
+
+  $('#' + study_module_button_id).children('button').each(function () {
+    console.debug(this.id); // "this" is the current element in the loop
+    button_id = this.id;
+    if ( button_id == id ) {
+      $('#' + button_id).removeClass('btn-grey');
+      $('#' + button_id).addClass('btn-inverse');
+      $('#' + button_id).children('i').show();
+    } else {
+      $('#' + button_id).removeClass('btn-inverse');
+      $('#' + button_id).addClass('btn-grey');
+      $('#' + button_id).children('i').hide();
+    }
+    
+
+});
+
+}
       jQuery(function($) {
+
+        //$(".check_attendance_select2").select2({placeholder: "Select report type", allowClear: true});
         
         var oTable1 = $('#sample-table-2').dataTable( {
           "oLanguage": {

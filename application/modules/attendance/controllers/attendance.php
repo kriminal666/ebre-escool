@@ -85,6 +85,9 @@ class attendance extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/ace-skins.min.css'));
+        $header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));
 
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -194,6 +197,9 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/grocery_crud/js/jquery_plugins/jquery.fancybox-1.3.4.js'));
+		$header_data= $this->add_javascript_to_html_header_data(
+        			$header_data,
+        			base_url('assets/js/jquery.gritter.min.js')); 
 
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
