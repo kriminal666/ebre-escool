@@ -133,10 +133,10 @@
                                     if (  (data.calculated_lm_initial_password == data.real_lm_initial_password ) && (data.calculated_nt_initial_password == data.real_nt_initial_password) ) {
                                        return "Yes";
                                     } else {
-                                      if (data.md5_initial_password == "") {
+                                      if (data.initial_password == "") {
                                         return "---";
                                       } else {
-                                        return "No";
+                                        return "ERROR WINDOWS PASSWORD";
                                       }
                                       
                                     }
