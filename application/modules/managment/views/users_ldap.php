@@ -133,7 +133,12 @@
                                     if (  (data.calculated_lm_initial_password == data.real_lm_initial_password ) && (data.calculated_nt_initial_password == data.real_nt_initial_password) ) {
                                        return "Yes";
                                     } else {
-                                      return "No";
+                                      if (data.md5_initial_password == "") {
+                                        return "---";
+                                      } else {
+                                        return "No";
+                                      }
+                                      
                                     }
 
                                   }},
