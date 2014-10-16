@@ -148,8 +148,8 @@ class managment_model  extends CI_Model  {
 
 			// first check if username is already in group:
 			$entry["userPassword"]=$ldap_password;
-			$entry["sambaLMPassword"]=$sambaNTPassword;
-			$entry["sambaNTPassword"]=$sambaLMPassword;
+			$entry["sambaLMPassword"]=$sambaLMPassword;
+			$entry["sambaNTPassword"]=$sambaNTPassword;
 			$entry["sambaLogonTime"]=$CI->config->item('samba_logonTime');
             $entry["sambaPwdLastSet"]=$CI->config->item('samba_pwdLastSet');
 
