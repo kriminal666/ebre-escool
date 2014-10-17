@@ -103,5 +103,6 @@ $lang['name']="Nom";
 $lang['shortName']="Nom curt";
 $lang['description']="Descripció";
 $lang['code']="Codi";
+$lang['order']="Ordre";
 
 

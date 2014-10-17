@@ -293,7 +293,74 @@ class attendance extends skeleton_main {
 		print_r(json_encode($data));
 	}
 
-	fi proves ajax json */	
+	fi proves ajax json */	 
+
+
+
+	public function crud_incidence () {
+
+		/*
+		person_id : person_id,
+        time_slot_id : time_slot_id,
+        day : day,
+        study_submodule_id: study_submodule_id,
+        absence_type : selected_value 
+		*/
+
+        $result = new stdClass();
+        $result->result = false;
+        $result->message = "No enough values especified!";
+
+		$error = false;
+		$person_id = "";
+	    if(isset($_POST['person_id'])) {
+        	$person_id = $_POST['person_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $time_slot_id = "";
+	    if(isset($_POST['time_slot_id'])) {
+        	$time_slot_id = $_POST['time_slot_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $day = "";
+	    if(isset($_POST['day'])) {
+        	$day = $_POST['day'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $study_submodule_id = "";
+	    if(isset($_POST['study_submodule_id'])) {
+        	$study_submodule_id = $_POST['study_submodule_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $absence_type = "";
+	    if(isset($_POST['absence_type'])) {
+        	$absence_type = $_POST['absence_type'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    if (!$error) {
+	    	if ( ($person_id != "") && ($time_slot_id != "") && ($day != "") && ($study_submodule_id != "") && ($absence_type != "") )
+	    	$result = $this->attendance_model->crud_incidence($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);	
+	    }
+
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
 
 	public function read_test_incidents_managment_by_ajax () {	
 
@@ -414,6 +481,13 @@ class attendance extends skeleton_main {
 
 	    $this->common_callbacks($this->current_table);
 
+	    $this->grocery_crud->columns($this->current_table."_id",$this->current_table.'_student_id', $this->current_table.'_day', 
+	    	$this->current_table.'_time_slot_id', $this->current_table.'_study_submodule_id', $this->current_table.'_type',
+	    	$this->current_table.'_notes',
+	    	$this->current_table.'_entryDate',$this->current_table.'_last_update',
+	    	$this->current_table."_creationUserId",$this->current_table."_lastupdateUserId", $this->current_table.'_markedForDeletion',
+	    	$this->current_table.'_markedForDeletionDate');
+
 	    //ESPECIFIC COLUMNS  
 	    $this->grocery_crud->display_as($this->current_table.'_student_id',lang('student'));
 	    $this->grocery_crud->display_as($this->current_table.'_day',lang('day'));
@@ -423,7 +497,7 @@ class attendance extends skeleton_main {
 	    $this->grocery_crud->display_as($this->current_table.'_notes',lang('incident_notes'));
 	    
 	    //Relations
-    	$this->grocery_crud->set_relation($this->current_table.'_student_id','student','{student_person_id} - {student_code}',array('student_markedForDeletion' => 'n'));
+    	$this->grocery_crud->set_relation($this->current_table.'_student_id','person','{person_id} - {person_sn1} {person_sn2}, {person_givenName} - {person_official_id}',array('student_markedForDeletion' => 'n'));
     	$this->grocery_crud->set_relation($this->current_table.'_time_slot_id','time_slot','{time_slot_start_time} - {time_slot_end_time}',array('time_slot_markedForDeletion' => 'n'));
 		$this->grocery_crud->set_relation($this->current_table.'_study_submodule_id','study_submodules','{study_submodules_id} - {study_submodules_name}',array('study_submodules_markedForDeletion' => 'n'));
     	$this->grocery_crud->set_relation($this->current_table.'_type','incident_type','{incident_type_id} - {incident_type_shortName}',array('incident_type_markedForDeletion' => 'n'));
@@ -449,7 +523,7 @@ class attendance extends skeleton_main {
 		$active_menu = array();
 		$active_menu['menu']='#maintenances';
 		$active_menu['submenu1']='#attendance_maintainance';
-		$active_menu['submenu2']='#attendance_incident_ype';
+		$active_menu['submenu2']='#attendance_incident_type';
 
 	    $this->check_logged_user();
 
@@ -475,6 +549,7 @@ class attendance extends skeleton_main {
 	    $this->grocery_crud->display_as($this->current_table.'_shortName',lang('shortName'));
 	    $this->grocery_crud->display_as($this->current_table.'_description',lang('description'));
 	    $this->grocery_crud->display_as($this->current_table.'_code',lang('code'));
+	    $this->grocery_crud->display_as($this->current_table.'_order',lang('order'));
 	    
 	    //UPDATE AUTOMATIC FIELDS
 		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
@@ -958,6 +1033,10 @@ class attendance extends skeleton_main {
 				$data['classroom_group_students'][]=$student;
 			}	
 		}
+
+		$incident_types = $this->attendance_model->getAllIncident_types();
+
+		$data['incident_types'] = $incident_types;
 		
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 
@@ -1498,6 +1577,9 @@ function load_ace_files($active_menu){
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
                 base_url('assets/js/ace.min.js'));    
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/ebre-escool.js'));
 
         $header_data['menu']= $active_menu;
         return $header_data;

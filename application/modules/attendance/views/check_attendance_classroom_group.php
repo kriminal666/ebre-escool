@@ -379,12 +379,10 @@
                              
                              <select altdata="<?php echo $active_study_submodule->id;?>" id="check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $time_slot->id  ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>)">
                               <option value="0">--</option>
-                              <option value="1">F</option>
-                              <option value="2">FJ</option>
-                              <option value="3">R</option>
-                              <option value="4">RJ</option>
-                              <option value="5">E</option>                              
-                             </select>
+                              <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
+                                <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
+                              <?php endforeach;?> 
+                            </select>
 
                             <?php if ( $selected_time_slot_id == $time_slot->id ):?>
                               <i class="icon-star red smaller-80"></i>      
@@ -478,7 +476,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
 
   //AJAX
   $.ajax({
-    url:'<?php echo base_url("/index.php/attendance/crud_absence");?>',
+    url:'<?php echo base_url("/index.php/attendance/crud_incidence");?>',
     type: 'post',
     data: {
         person_id : person_id,
@@ -492,7 +490,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
       404: function() {
         $.gritter.add({
           title: 'Error connectant amb el servidor!',
-          text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/attendance/crud_absence ' ,
+          text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/attendance/crud_incidence ' ,
           class_name: 'gritter-error gritter-center'
         });
       },
@@ -500,7 +498,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
         $("#response").html('A server-side error has occurred.');
         $.gritter.add({
           title: 'Error connectant amb el servidor!',
-          text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/attendance/crud_absence ' ,
+          text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/attendance/crud_incidence ' ,
           class_name: 'gritter-error gritter-center'
         });
       }
@@ -514,7 +512,19 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
     },
   }).done(function(data){
     
-    //TODO
+    var all_data = $.parseJSON(data);
+    result = all_data.result;
+    result_message = all_data.message;
+
+    if (result) {
+      console.debug(result_message);
+    } else {
+      $.gritter.add({
+        title: 'Error guardant la incidència a la base de dades!',
+        text: 'No s\'ha pogut guardar la incidència. Missatge d\'error:  ' + result_message ,
+        class_name: 'gritter-error gritter-center'
+      });
+    }
 
   });
 
@@ -525,10 +535,10 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
 
 function study_submodule_on_click(study_submodule_button,study_module_button_id) {
   id = study_submodule_button.id;
-  console.debug("click on study_submodule_on_click: " + id + " group: " + study_module_button_id);
+  //console.debug("click on study_submodule_on_click: " + id + " group: " + study_module_button_id);
 
   $('#' + study_module_button_id).children('button').each(function () {
-    console.debug(this.id); // "this" is the current element in the loop
+    //console.debug(this.id); // "this" is the current element in the loop
     button_id = this.id;
     if ( button_id == id ) {
       $('#' + button_id).removeClass('btn-grey');

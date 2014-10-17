@@ -27,11 +27,6 @@ class attendance_model  extends CI_Model  {
 		return false;
 	}
 
-	function insert_incidence($data_incident_array){
-		$this->db->insert('incident', $data_incident_array); 
-		echo $this->db->last_query();
-	}
-
 	function is_user_a_teacher ($person_id) {
 
 		$this->db->select('teacher_id');
@@ -50,11 +45,11 @@ class attendance_model  extends CI_Model  {
 
 		$get_current_academic_period = $this->get_current_academic_period_id();
 		/*
-		SELECT `teacher_academic_periods_code`
-		FROM `teacher_academic_periods` 
-		INNER JOIN teacher ON teacher.`teacher_id` =  teacher_academic_periods.`teacher_academic_periods_teacher_id`
-		INNER JOIN person ON person.person_id = teacher.`teacher_person_id`
-		WHERE `teacher_academic_periods_academic_period_id`=5 AND `person_id`= 56
+		SELECT teacher_academic_periods_code
+		FROM teacher_academic_periods 
+		INNER JOIN teacher ON teacher.teacher_id =  teacher_academic_periods.teacher_academic_periods_teacher_id
+		INNER JOIN person ON person.person_id = teacher.teacher_person_id
+		WHERE teacher_academic_periods_academic_period_id=5 AND person_id= 56
 		*/
 		
 		$this->db->select('teacher_academic_periods_code');
@@ -126,10 +121,10 @@ class attendance_model  extends CI_Model  {
 		/*
 		EXAMPLE
 		SELECT person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.username, person.person_secondary_email
-		FROM `person`
-		INNER JOIN users ON person.`person_id` = users.person_id
+		FROM person
+		INNER JOIN users ON person.person_id = users.person_id
 		INNER JOIN enrollment ON users.person_id = enrollment.enrollment_personid
-		WHERE enrollment.enrollment_group_id =26 AND `enrollment_periodid`="2014-15"
+		WHERE enrollment.enrollment_group_id =26 AND enrollment_periodid="2014-15"
 		*/
 
 
@@ -362,11 +357,11 @@ class attendance_model  extends CI_Model  {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT `study_module_academic_periods_study_module_id`, `study_module_academic_periods_external_code`, `study_module`.`study_module_shortname`, 
-		`study_module`.`study_module_name` 
-		FROM (`study_module`) 
-		JOIN `study_module_academic_periods` ON `study_module_academic_periods_study_module_id` = `study_module_id` 
-		WHERE `study_module_academic_periods`.`study_module_academic_periods_study_module_id` = '244' AND `study_module_academic_periods`.`study_module_academic_periods_academic_period_id` = '5'
+		SELECT study_module_academic_periods_study_module_id, study_module_academic_periods_external_code, study_module.study_module_shortname, 
+		study_module.study_module_name 
+		FROM (study_module) 
+		JOIN study_module_academic_periods ON study_module_academic_periods_study_module_id = study_module_id 
+		WHERE study_module_academic_periods.study_module_academic_periods_study_module_id = '244' AND study_module_academic_periods.study_module_academic_periods_academic_period_id = '5'
 		*/
 
 		$this->db->select('study_module_academic_periods_study_module_id,study_module_academic_periods_external_code,study_module.study_module_shortname,study_module.study_module_name');
@@ -392,15 +387,15 @@ class attendance_model  extends CI_Model  {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-			SELECT `lesson_study_module_id`, `study_module_shortname`, `study_module_name`, `lesson_teacher_id`, `teacher_academic_periods_code`, 
-			`person_givenName`, `person_sn1`, `person_sn2` 
-			FROM (`lesson`) 
-			JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
-			JOIN `study_module_academic_periods` ON `study_module_academic_periods`.`study_module_academic_periods_study_module_id` = `study_module`.`study_module_id` 
-			JOIN `teacher` ON `lesson`.`lesson_teacher_id` = `teacher`.`teacher_id` 
-			JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
-			JOIN `person` ON `teacher`.`teacher_person_id` = `person`.`person_id` 
-			WHERE `lesson`.`lesson_day` = '3' AND `lesson`.`lesson_time_slot_id` = '1' AND `lesson`.`lesson_classroom_group_id` = '39' AND `teacher_academic_periods_academic_period_id` = '5' AND `study_module_academic_periods_academic_period_id` = '5' AND `lesson_academic_period_id` = '5' 
+			SELECT lesson_study_module_id, study_module_shortname, study_module_name, lesson_teacher_id, teacher_academic_periods_code, 
+			person_givenName, person_sn1, person_sn2 
+			FROM (lesson) 
+			JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id 
+			JOIN study_module_academic_periods ON study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id 
+			JOIN teacher ON lesson.lesson_teacher_id = teacher.teacher_id 
+			JOIN teacher_academic_periods ON teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id 
+			JOIN person ON teacher.teacher_person_id = person.person_id 
+			WHERE lesson.lesson_day = '3' AND lesson.lesson_time_slot_id = '1' AND lesson.lesson_classroom_group_id = '39' AND teacher_academic_periods_academic_period_id = '5' AND study_module_academic_periods_academic_period_id = '5' AND lesson_academic_period_id = '5' 
 
 		*/
 
@@ -448,11 +443,11 @@ class attendance_model  extends CI_Model  {
 
 	public function getTimeSlotsByClassgroupId($classgroup_id,$day) {
 		/*
-		SELECT DISTINCT `time_slot_id` , `time_slot_start_time` , `time_slot_end_time` , `time_slot_lective`, time_slot_order
-		FROM `time_slot`
-		INNER JOIN lesson ON time_slot.`time_slot_id` = lesson.`lesson_time_slot_id`
-		WHERE `time_slot_lective` =1
-		AND lesson.`lesson_classroom_group_id` = 25
+		SELECT DISTINCT time_slot_id , time_slot_start_time , time_slot_end_time , time_slot_lective, time_slot_order
+		FROM time_slot
+		INNER JOIN lesson ON time_slot.time_slot_id = lesson.lesson_time_slot_id
+		WHERE time_slot_lective =1
+		AND lesson.lesson_classroom_group_id = 25
 		ORDER BY time_slot_order
 		*/
 
@@ -515,11 +510,11 @@ class attendance_model  extends CI_Model  {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT `study_submodules_id`, `study_submodules_shortname`, `study_submodules_name`, `study_submodules_initialDate`, `study_submodules_endDate`, `study_submodules_totalHours`
-		FROM `study_submodules` 
+		SELECT study_submodules_id, study_submodules_shortname, study_submodules_name, study_submodules_initialDate, study_submodules_endDate, study_submodules_totalHours
+		FROM study_submodules 
 		INNER JOIN study_module
-		ON `study_module_id` = `study_submodules_study_module_id`
-		WHERE `study_module_id`=273
+		ON study_module_id = study_submodules_study_module_id
+		WHERE study_module_id=273
 		*/
 
 		$this->db->select("study_submodules_id, study_submodules_shortname, study_submodules_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours");
@@ -602,17 +597,17 @@ class attendance_model  extends CI_Model  {
 
 	public function getTimeSlotsByStudyModuleId($classgroup_id) {
 		/*
-		SELECT DISTINCT `time_slot_id` , `time_slot_start_time` , `time_slot_end_time` , `time_slot_lective`, time_slot_order
-		FROM `time_slot`
-		INNER JOIN lesson ON time_slot.`time_slot_id` = lesson.`lesson_time_slot_id`
-		WHERE `time_slot_lective` =1
-		AND lesson.`lesson_classroom_group_id` = 25
+		SELECT DISTINCT time_slot_id , time_slot_start_time , time_slot_end_time , time_slot_lective, time_slot_order
+		FROM time_slot
+		INNER JOIN lesson ON time_slot.time_slot_id = lesson.lesson_time_slot_id
+		WHERE time_slot_lective =1
+		AND lesson.lesson_classroom_group_id = 25
 		ORDER BY time_slot_order
 		*/
 
 		// ******* TODO 
 
-		$this->db->select(`time_slot_id` , `time_slot_start_time` , `time_slot_end_time` , `time_slot_lective` , `time_slot_order`);
+		$this->db->select('time_slot_id, time_slot_start_time , time_slot_end_time , time_slot_lective , time_slot_order');
 		$this->db->from('time_slot');
 		$this->db->join('lesson','time_slot.time_slot_id = lesson.lesson_time_slot_id');
 		$this->db->where('time_slot.time_slot_lective',1);
@@ -771,7 +766,7 @@ ORDER BY person.person_sn1
 		FROM classroom_group_academic_periods 
 		INNER JOIN classroom_group ON classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id
 		WHERE classroom_group_academic_periods_academic_period_id=5
-		ORDER BY `classroom_group_code` asc 
+		ORDER BY classroom_group_code asc 
 		*/
         $this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
 
@@ -911,11 +906,11 @@ function get_current_academic_period() {
 		$academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT `department_id`, `department_shortName`, `department_name` 
-		FROM (`department`) 
-		JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_department_id` = `department`.`department_id` 
-		WHERE `teacher_academic_periods_teacher_id` = '17' AND `teacher_academic_periods_academic_period_id` = '5' 
-		ORDER BY `department_shortName` asc
+		SELECT department_id, department_shortName, department_name 
+		FROM (department) 
+		JOIN teacher_academic_periods ON teacher_academic_periods.teacher_academic_periods_department_id = department.department_id 
+		WHERE teacher_academic_periods_teacher_id = '17' AND teacher_academic_periods_academic_period_id = '5' 
+		ORDER BY department_shortName asc
 		*/
 		$this->db->select('department_id,department_shortName,department_name');
 		$this->db->from('department');        
@@ -1050,17 +1045,17 @@ function get_current_academic_period() {
 
 	function get_all_groupscodenameByDeparment($departmentId,$orderby="asc") {
 		/*
-		SELECT DISTINCT `classroom_group_code`,`studies_shortname`,`department_name`,department.`department_id`
-		FROM `classroom_group` 
+		SELECT DISTINCT classroom_group_code,studies_shortname,department_name,department.department_id
+		FROM classroom_group 
 		INNER JOIN course
-		ON classroom_group.`classroom_group_course_id` = course.course_id
+		ON classroom_group.classroom_group_course_id = course.course_id
 		INNER JOIN studies
-		ON course.`course_estudies_id` = studies.`studies_id`
+		ON course.course_estudies_id = studies.studies_id
 		INNER JOIN study_department
 		ON studies.studies_id = study_department.study_id
 		INNER JOIN department
-		ON study_department.`study_id` = department.`department_id`
-		WHERE department.`department_id` = 2
+		ON study_department.study_id = department.department_id
+		WHERE department.department_id = 2
 		*/
 		$this->db->select('classroom_group_id,classroom_group_code, studies_shortname, department_name, department.department_id');
 		$this->db->from('classroom_group');        
@@ -1145,9 +1140,9 @@ function get_current_academic_period() {
 		/*
 		SELECT teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id
 		FROM teacher_academic_periods
-		INNER JOIN teacher ON teacher.teacher_id = teacher_academic_periods.`teacher_academic_periods_teacher_id`
+		INNER JOIN teacher ON teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id
 		INNER JOIN person ON person.person_id = teacher.teacher_person_id
-		WHERE `teacher_academic_periods_academic_period_id`=5
+		WHERE teacher_academic_periods_academic_period_id=5
 
 		*/
 		$this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id');
@@ -1201,9 +1196,9 @@ function get_current_academic_period() {
 
 		/*
 		SELECT min( time_slot_order )
-		FROM `lesson`
-		INNER JOIN classroom_group ON classroom_group.classroom_group_id = `lesson`.lesson_classroom_group_id
-		INNER JOIN time_slot ON time_slot.time_slot_id = `lesson`.lesson_time_slot_id
+		FROM lesson
+		INNER JOIN classroom_group ON classroom_group.classroom_group_id = lesson.lesson_classroom_group_id
+		INNER JOIN time_slot ON time_slot.time_slot_id = lesson.lesson_time_slot_id
 		WHERE classroom_group.classroom_group_id =25
 		*/
 	
@@ -1293,7 +1288,7 @@ function get_current_academic_period() {
 
 	function getAllTimeSlots($orderby="asc") {
 		/*
-		SELECT `time_slot_id`, `time_slot_start_time`, `time_slot_end_time`, `time_slot_lective` FROM (`time_slot`) ORDER BY `time_slot_order` asc
+		SELECT time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective FROM (time_slot) ORDER BY time_slot_order asc
 		*/
 		$this->db->select('time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective');
 		$this->db->from('time_slot');
@@ -1327,7 +1322,7 @@ function get_current_academic_period() {
 
 	function get_all_time_slots_with_all_lessons_by_teacherid_and_day($all_lessons_by_teacherid_and_day,$orderby="asc") {
 		/*
-		SELECT `time_slot_id`, `time_slot_start_time`, `time_slot_end_time`, `time_slot_lective` FROM (`time_slot`) ORDER BY `time_slot_order` asc
+		SELECT time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective FROM (time_slot) ORDER BY time_slot_order asc
 		*/
 		$this->db->select('time_slot_order,time_slot_id, time_slot_start_time, time_slot_end_time, time_slot_lective');
 		$this->db->from('time_slot');
@@ -1417,7 +1412,7 @@ function get_current_academic_period() {
 		FROM teacher_academic_periods
 		INNER JOIN teacher ON teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id
 		INNER JOIN person ON person.person_id = teacher.teacher_person_id
-		WHERE `teacher_academic_periods_academic_period_id` = 5 AND `teacher_academic_periods_code`=40
+		WHERE teacher_academic_periods_academic_period_id = 5 AND teacher_academic_periods_code=40
 		*/
 
 		$this->db->select('teacher_id, teacher_person_id, teacher_academic_periods_code , person_givenName, person_sn1, person_sn2');
@@ -1477,15 +1472,15 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT `time_slot_order`, `time_slot_id`, `lesson_id`, `lesson_code`, `classroom_group_id`, `classroom_group_code`, `classroom_group_shortName`, 
-		`classroom_group_name`, `study_module_id`, `study_module_shortname`, `study_module_name`, `location_shortName`, `lesson_classroom_group_id` 
-		FROM (`lesson`) 
-		JOIN `time_slot` ON `lesson`.`lesson_time_slot_id` = `time_slot`.`time_slot_id` 
-		JOIN `classroom_group` ON `lesson`.`lesson_classroom_group_id` = `classroom_group`.`classroom_group_id` 
-		JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
-		LEFT JOIN `location` ON `lesson`.`lesson_location_id` = `location`.`location_id` 
-		WHERE `lesson_day` = '3' AND `lesson_teacher_id` = '9' AND `lesson_academic_period_id` = '5' 
-		ORDER BY `time_slot_order` asc
+		SELECT time_slot_order, time_slot_id, lesson_id, lesson_code, classroom_group_id, classroom_group_code, classroom_group_shortName, 
+		classroom_group_name, study_module_id, study_module_shortname, study_module_name, location_shortName, lesson_classroom_group_id 
+		FROM (lesson) 
+		JOIN time_slot ON lesson.lesson_time_slot_id = time_slot.time_slot_id 
+		JOIN classroom_group ON lesson.lesson_classroom_group_id = classroom_group.classroom_group_id 
+		JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id 
+		LEFT JOIN location ON lesson.lesson_location_id = location.location_id 
+		WHERE lesson_day = '3' AND lesson_teacher_id = '9' AND lesson_academic_period_id = '5' 
+		ORDER BY time_slot_order asc
 		*/
 		$this->db->select('');
 		$this->db->select('time_slot_order,time_slot_id,time_slot_start_time,time_slot_end_time,time_slot_lective,lesson_id,lesson_code,classroom_group_id,classroom_group_code,classroom_group_shortName,
@@ -1542,7 +1537,7 @@ function get_current_academic_period() {
 	function getTimeSlotKeyFromLessonId ( $lesson_id) {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
-		//SELECT `lesson_time_slot_id` FROM `lesson` WHERE `lesson_id`=971
+		//SELECT lesson_time_slot_id FROM lesson WHERE lesson_id=971
 		$this->db->select('lesson_time_slot_id');
 		$this->db->from('lesson');
 		$this->db->where('lesson_id', $lesson_id);
@@ -1693,10 +1688,10 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT `lesson_id`,`lesson_code`,classroom_group_code,classroom_group_shortName,classroom_group_name
+		SELECT lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,classroom_group_name
 		FROM lesson
-		INNER JOIN classroom_group ON lesson.`lesson_classroom_group_id`= classroom_group.classroom_group_id
-		WHERE `lesson_day`=1 AND `lesson_teacher_id`=38
+		INNER JOIN classroom_group ON lesson.lesson_classroom_group_id= classroom_group.classroom_group_id
+		WHERE lesson_day=1 AND lesson_teacher_id=38
 		*/
 		$this->db->select('time_slot_order,time_slot_id,lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,
 						  classroom_group_name,study_module_id,study_module_shortname,study_module_name,location_shortName,lesson_location_id');
@@ -1891,12 +1886,12 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT `lesson_teacher_id`, `person_givenName`, `person_sn1`, `person_sn2` 
-		FROM (`lesson`) 
-		JOIN `teacher` ON `teacher`.`teacher_id` = `lesson`.`lesson_teacher_id` 
-		JOIN `teacher_academic_periods` ON `teacher_academic_periods`.`teacher_academic_periods_teacher_id` = `teacher`.`teacher_id` 
-		JOIN `person` ON `teacher`.`teacher_person_id` = `person`.`person_id` 
-		WHERE `lesson`.`lesson_classroom_group_id` = '3' AND `lesson_academic_period_id` = '5' AND `teacher_academic_periods_academic_period_id` = '5'
+		SELECT DISTINCT lesson_teacher_id, person_givenName, person_sn1, person_sn2 
+		FROM (lesson) 
+		JOIN teacher ON teacher.teacher_id = lesson.lesson_teacher_id 
+		JOIN teacher_academic_periods ON teacher_academic_periods.teacher_academic_periods_teacher_id = teacher.teacher_id 
+		JOIN person ON teacher.teacher_person_id = person.person_id 
+		WHERE lesson.lesson_classroom_group_id = '3' AND lesson_academic_period_id = '5' AND teacher_academic_periods_academic_period_id = '5'
 		*/
 
 		$this->db->select('lesson_teacher_id, person_givenName, person_sn1, person_sn2');
@@ -1941,12 +1936,12 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT `teacher`.`teacher_id`, `classroom_group_academic_periods_mentorId`, `person_givenName`, `person_sn1`, `person_sn2` 
-		FROM (`classroom_group`) 
-		JOIN `classroom_group_academic_periods` ON `classroom_group_academic_periods`.`classroom_group_academic_periods_classroom_group_id` = `classroom_group`.`classroom_group_id` 
-		JOIN `teacher` ON `teacher`.`teacher_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_mentorId` 
-		JOIN `person` ON `teacher`.`teacher_id` = `person`.`person_id` 
-		WHERE `classroom_group`.`classroom_group_id` = '39' AND `classroom_group_academic_periods`.`classroom_group_academic_periods_academic_period_id` = '5'
+		SELECT DISTINCT teacher.teacher_id, classroom_group_academic_periods_mentorId, person_givenName, person_sn1, person_sn2 
+		FROM (classroom_group) 
+		JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id 
+		JOIN teacher ON teacher.teacher_id = classroom_group_academic_periods.classroom_group_academic_periods_mentorId 
+		JOIN person ON teacher.teacher_id = person.person_id 
+		WHERE classroom_group.classroom_group_id = '39' AND classroom_group_academic_periods.classroom_group_academic_periods_academic_period_id = '5'
 		*/
 
 		$this->db->select('teacher.teacher_id,classroom_group_academic_periods_mentorId, person_givenName, person_sn1, person_sn2');
@@ -1976,12 +1971,12 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT `lesson_study_module_id`, `study_module_id`, `study_module_academic_periods`.`study_module_academic_periods_external_code`, 
-		`study_module_shortname`, `study_module_name` FROM (`lesson`) 
-		JOIN `study_module` ON `lesson`.`lesson_study_module_id` = `study_module`.`study_module_id` 
-		JOIN `study_module_academic_periods` ON `study_module_academic_periods_study_module_id` = `study_module_id` 
-		WHERE `lesson`.`lesson_classroom_group_id` = '39' AND `lesson_academic_period_id` = '5' AND `study_module_academic_periods`.`study_module_academic_periods_academic_period_id` = '5' 
-		ORDER BY `study_module_shortname` ASC
+		SELECT DISTINCT lesson_study_module_id, study_module_id, study_module_academic_periods.study_module_academic_periods_external_code, 
+		study_module_shortname, study_module_name FROM (lesson) 
+		JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id 
+		JOIN study_module_academic_periods ON study_module_academic_periods_study_module_id = study_module_id 
+		WHERE lesson.lesson_classroom_group_id = '39' AND lesson_academic_period_id = '5' AND study_module_academic_periods.study_module_academic_periods_academic_period_id = '5' 
+		ORDER BY study_module_shortname ASC
 		*/
 
 		$this->db->select('lesson_study_module_id,study_module_id, study_module_academic_periods.study_module_academic_periods_external_code ,study_module_shortname,study_module_name');
@@ -2021,16 +2016,65 @@ function get_current_academic_period() {
 
 	}
 
+	function getAllIncident_types($orderby="ASC"){
+		/*
+		SELECT incident_type_id, incident_type_name, incident_type_shortName, incident_type_description, incident_type_code, 
+		incident_type_order, incident_type_entryDate, incident_type_last_update, incident_type_creationUserId, 
+		incident_type_lastupdateUserId, incident_type_markedForDeletion, incident_type_markedForDeletionDate 
+		FROM incident_type 
+		*/
+
+		$this->db->select('incident_type_id, incident_type_name, incident_type_shortName, incident_type_description, 
+				incident_type_code, incident_type_order, incident_type_entryDate, incident_type_last_update, 
+				incident_type_creationUserId, incident_type_lastupdateUserId, incident_type_markedForDeletion, 
+				incident_type_markedForDeletionDate');
+		$this->db->from('incident_type');
+		$this->db->order_by('incident_type_order', $orderby);
+
+		$this->db->distinct();		
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0)	{			
+			$incident_types = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				$incident_type = new stdClass();
+
+				$incident_type->id = $row['incident_type_id'];
+				$incident_type->shortname = $row['incident_type_shortName'];				
+				$incident_type->name = $row['incident_type_name'];
+				$incident_type->description = $row['incident_type_description'];
+				$incident_type->code = $row['incident_type_code'];
+				$incident_type->order = $row['incident_type_order'];
+				$incident_type->entryDate = $row['incident_type_entryDate'];
+				$incident_type->last_update = $row['incident_type_last_update'];
+				$incident_type->creationUserId = $row['incident_type_creationUserId'];
+				$incident_type->lastupdateUserId = $row['incident_type_lastupdateUserId'];
+				$incident_type->markedForDeletion = $row['incident_type_markedForDeletion'];
+				$incident_type->markedForDeletionDate = $row['incident_type_markedForDeletionDate'];
+				
+   				$incident_types[$row['incident_type_id']] = $incident_type;
+
+			}
+			return $incident_types;
+		}
+		else
+			return false;		
+
+	}
+
 	function getAllTeacherStudymodules ( $teacher_id , $orderby = "ASC") {
 		
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT `lesson_study_module_id` , `study_module_external_code` , `study_module_shortname` , `study_module_name`
-		FROM `lesson`
-		INNER JOIN study_module ON `lesson`.`lesson_study_module_id` = study_module.`study_module_id`
-		WHERE `lesson_teacher_id` = 39
-		ORDER BY study_module_order,`study_module_shortname`
+		SELECT DISTINCT lesson_study_module_id , study_module_external_code , study_module_shortname , study_module_name
+		FROM lesson
+		INNER JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id
+		WHERE lesson_teacher_id = 39
+		ORDER BY study_module_order,study_module_shortname
 		*/
 
 		$this->db->select('lesson_study_module_id,study_module_id,study_module_external_code,study_module_shortname,study_module_name');
@@ -2068,6 +2112,214 @@ function get_current_academic_period() {
 		else
 			return false;
 
+	}
+
+	//$result = $this->attendance_model->crud_absence($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);	
+
+	/*
+	CREATE TABLE incident (
+	  incident_id int(11) NOT NULL AUTO_INCREMENT,
+	  incident_student_id int(11) NOT NULL,
+	  incident_time_slot_id int(11) NOT NULL,
+	  incident_day int(11) NOT NULL,
+	  incident_study_submodule_id int(11) NOT NULL,
+	  incident_type int(11) NOT NULL,
+	  incident_notes text NOT NULL,
+	  incident_last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  incident_creationUserId int(11) DEFAULT NULL,
+	  incident_lastupdateUserId int(11) DEFAULT NULL,
+	  incident_markedForDeletion enum('n','y') NOT NULL DEFAULT 'n',
+	  incident_markedForDeletionDate datetime NOT NULL,
+	  PRIMARY KEY (incident_id),
+	  UNIQUE KEY incident_student_id (incident_student_id,incident_time_slot_id,incident_day,incident_date)
+	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+	*/
+
+	function incidence_exists ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+		/*
+		SELECT incident_id,incident_type FROM incident 
+		WHERE incident_student_id= AND incident_time_slot_id= AND incident_day AND incident_study_submodule_id = 
+		*/
+
+		$this->db->select('incident_id,incident_type');
+		$this->db->from('incident');				
+		$this->db->where('incident_student_id', $person_id);
+		$this->db->where('incident_time_slot_id', $time_slot_id);
+		$this->db->where('incident_day', $day);
+		$this->db->where('incident_study_submodule_id', $study_submodule_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		$result = new stdClass();
+		
+		if ($query->num_rows() > 0)	{
+			//Incident already exists
+			$row = $query->row();
+
+			if ($absence_type == $row->incident_type) {
+				$result->code = 3;
+				$result->incident_id = $row->incident_id;
+				return $result;
+			} else {
+				$result->code = 2;
+				$result->incident_id = $row->incident_id;
+				return $result;
+			}
+		} else {
+			//Incident does not exist
+			$result->code = 1;
+			return $result;
+		}		
+	}
+
+	function delete_incidence ($incidence_id) {
+
+		$this->db->delete('incident', array('incident_id' => $incidence_id)); 
+
+		if ($this->db->affected_rows() == 1) {
+			return true;
+		} else {
+			return false;
+		}		
+
+	}
+
+	function update_incidence($incident_id, $absence_type) {
+
+		$incident_type_id = $this->get_incident_type_id_by_incident_type_code($absence_type);
+
+		if ($incident_type_id == false ) {
+			return false;
+		}
+
+		/*
+		UPDATE incident 
+		incident_type= 2
+		WHERE incident_id = 5
+		*/
+		$data = array(
+		   'incident_type' => $incident_type_id ,
+		);
+
+		$this->db->where('incident_id', $incident_id);
+		$this->db->update('incident', $data); 
+		echo $this->db->last_query();
+
+		if ($this->db->affected_rows() == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function get_incident_type_id_by_incident_type_code ($incident_type_code) {
+		/*
+		SELECT `incident_type_id` FROM incident_type WHERE `incident_type_code`=1
+		*/
+
+		$this->db->select('incident_type_id');
+		$this->db->from('incident_type');				
+		$this->db->where('incident_type_code', $incident_type_code);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0)	{
+			$row = $query->row();
+			return $row->incident_type_id;
+		} else {
+			return false;
+		}
+	}
+
+	function insert_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+
+		$incident_type_id = $this->get_incident_type_id_by_incident_type_code($absence_type);
+
+		if ($incident_type_id == false ) {
+			return false;
+		}
+
+		/*
+		INSERT INTO incident(incident_student_id, incident_time_slot_id, incident_day, incident_study_submodule_id, 
+		incident_type, incident_notes, incident_entryDate, incident_creationUserId, incident_lastupdateUserId, 
+		) VALUES (4,9,1,45,4)
+		*/
+		$data = array(
+		   'incident_student_id' => $person_id ,
+		   'incident_time_slot_id' => $time_slot_id ,
+		   'incident_day' => $day,
+		   'incident_study_submodule_id' => $study_submodule_id,
+		   'incident_type' => $incident_type_id,
+		   'incident_notes' => '',
+		   'incident_entryDate' => date('Y-m-d H:i:s'),
+           'incident_creationUserId' => $this->session->userdata("user_id"),
+           'incident_lastupdateUserId' => $this->session->userdata("user_id"),
+		);
+
+		$this->db->insert('incident', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			return $this->db->insert_id();
+		} else {
+			return false;
+		}
+
+	}
+
+	function crud_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+
+		$final_result = new stdClass();
+
+		$result_incident_exists = $this->incidence_exists($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
+		if ($result_incident_exists->code == 1) {
+			//Not exists. INSERT INCIDENT
+			$result = $this->insert_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
+			if ($result) {
+				$final_result->result = true;
+				$final_result->message = "Inserted new incidence with incidence_id " . $result;
+				return $final_result;
+			} else {
+				$final_result->result = false;
+				$final_result->message = "Error inserting new incidence";
+				return $final_result;
+			}
+			
+		} else if ($result_incident_exists->code == 2) {
+			//Already exists but different absence_type. 
+			if ($absence_type = 0) {
+				//DELETE INCIDENT
+				$result = $this->delete_incidence($result_incident_exists->incident_id);
+				if ($result) {
+					$final_result->result = true;
+					$final_result->message = "Deleted incidence with incidence_id " . $result_incident_exists->incident_id;
+					return $final_result;
+				} else {
+					$final_result->result = false;
+					$final_result->message = "Error deleting incidence with incidence_id " . $result_incident_exists->incident_id;
+					return $final_result;
+				}
+			} else {
+				//UPDATE INCIDENT
+				$result = $this->update_incidence($result_incident_exists->incident_id,$absence_type);
+				if ($result) {
+					$final_result->result = true;
+					$final_result->message = "Updated incidence with incidence_id " . $result_incident_exists->incident_id . " to incidence_type: " . $absence_type;
+					return $final_result;
+				} else {
+					$final_result->result = false;
+					$final_result->message = "Error updating incidence with incidence_id " . $result_incident_exists->incident_id  . " to incidence_type: " . $absence_type;
+					return $final_result;
+				}
+			}
+
+		} else { //Tipically 3: Incident already exists exactctly the same: Do nothing!
+			//Nothig TODO: Maybe in future logging?
+			$final_result->result = true;
+			$final_result->message = "Nothing to do. The same exactly incident already exists on database!";
+			return $final_result;
+		}
 	}
 
 }
