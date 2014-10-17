@@ -765,10 +765,10 @@
      <th><?php echo lang('user_ldap_mainOrganizationaUnitId')?></th>
      <th><?php echo lang('user_ldap_user_type')?></th>
      <th><?php echo lang('user_ldap_initial_password')?></th>
-     <th><?php echo "NT password calculated"?></th>
-     <th><?php echo "Real NT password"?></th>
-     <th><?php echo "LM password calculated"?></th>     
+     <th><?php echo "LM password calculated"?></th>
      <th><?php echo "Real LM password"?></th>
+     <th><?php echo "NT password calculated"?></th>     
+     <th><?php echo "Real NT password"?></th>
      <th><?php echo "Windows Passwords Ok?"?></th>
      <th><?php echo lang('user_ldap_last_login')?></th>
      <th><?php echo lang('user_ldap_force_change_password_next_login')?></th>     
