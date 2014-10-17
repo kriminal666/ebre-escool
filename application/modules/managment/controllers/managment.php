@@ -716,6 +716,24 @@ class managment extends skeleton_main {
 
 	}
 
+	public function interchange_windows_passwords () {
+
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->interchange_windows_passwords($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
+
 	public function avoid_change_of_password_on_windows () {
 
 

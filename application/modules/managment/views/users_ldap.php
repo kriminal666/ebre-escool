@@ -315,6 +315,62 @@
 
         });
 
+
+
+        $("#interchange_windows_passwords").click(function() {
+              var txt;
+              var r = confirm("Esteu segurs que voleu fer aquesta operació de intercanviar paraules de pas Windows de forma massiva?");
+              if (r == true) {
+
+                  var values = $('input:checkbox:checked.ace').map(function () {
+                    return this.id;
+                  }).get(); 
+                  
+                  //AJAX
+                  $.ajax({
+                  url:'<?php echo base_url("index.php/managment/interchange_windows_passwords");?>',
+                  type: 'post',
+                  data: {
+                      values: values,
+                  },
+                  datatype: 'json',
+                  statusCode: {
+                    404: function() {
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/interchange_windows_passwords' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    },
+                    500: function() {
+                      $("#response").html('A server-side error has occurred.');
+                      $.gritter.add({
+                        title: 'Error connectant amb el servidor!',
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/interchange_windows_passwords ' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                    }
+                  },
+                  error: function() {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Ha succeït un error!' ,
+                        class_name: 'gritter-error gritter-center'
+                      });
+                  },
+                  success: function(data) {
+                    //console.debug("data:" + JSON.stringify(data));
+                    //console.debug(JSON.stringify(all_ldap_users_table));
+                    all_ldap_users_table.ajax.reload();
+                  }
+                }).done(function(data){
+                    //TODO: Something to check?
+                
+                });
+              }
+
+        });
+
       $("#avoid_change_of_password_on_windows").click(function() {
               var txt;
               var r = confirm("Esteu segurs que voleu fer aquesta operació de forma massiva?");
@@ -613,7 +669,7 @@
  <table  class="table table-striped table-bordered table-hover table-condensed" id="actions"> 
   <thead style="background-color: #d9edf7;">
     <tr>
-      <td colspan="7" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
+      <td colspan="8" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
         </strong></td>
     </tr>
     <tr> 
@@ -663,6 +719,13 @@
         <button class="btn btn-mini btn-danger" id="avoid_change_of_password_on_windows">
           <i class="icon-bolt"></i>
           Impedir canvi de password a Windows
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td>
+        <button class="btn btn-mini btn-danger" id="interchange_windows_passwords">
+          <i class="icon-bolt"></i>
+          Canviar hash NT per LM i viceversa
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>

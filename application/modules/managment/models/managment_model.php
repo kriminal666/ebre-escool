@@ -70,6 +70,52 @@ class managment_model  extends CI_Model  {
 		return $pw;
 	}
 
+	function replace_ldap_info_to_interchange_windows_passwords($user_data) {
+		$CI =& get_instance();
+        $CI->load->config('samba');
+
+        //Get Ldap base DN for active users. It could be different from basedn
+		$active_users_basedn = $this->config->item('active_users_basedn');
+
+        $user_exists=$this->managment_model->user_exists($user_data->username,$active_users_basedn);
+		$user_dn="";
+		if (!$user_exists) {
+			//Anything TODO: skip this cases
+			return;
+		} else {
+			$user_dn = $user_exists;
+		}
+
+		//GET CURRENT sambaNTPassword AND sambaLMPassword
+
+		$ldap_passwords = $this->managment_model->get_ldap_passwords($user_data->username);
+		
+		$ldap_nt_password = $ldap_passwords->sambaNTPassword;
+		$ldap_lm_password = $ldap_passwords->sambaLMPassword;
+
+		echo "ldap_nt_password: " . $ldap_nt_password . " ";
+		echo "ldap_lm_password: " . $ldap_lm_password . " ";
+
+        //IMPORTANT: Replace unix password and Windows passwords!
+        if (($ldap_nt_password != "" ) && ($ldap_lm_password != "" ) )  {
+        	$this->_init_ldap();
+			if ($this->_bind()) {
+
+				// first check if username is already in group:
+				$entry["sambaLMPassword"] = $ldap_nt_password;
+	            $entry["sambaNTPassword"] = $ldap_lm_password;
+
+				$result = ldap_mod_replace ( $this->ldapconn , $user_dn , $entry );
+				return $result;
+			}	
+        }
+		
+
+		return false;
+
+	}
+
+
 
 	function replace_ldap_info_to_avoid_change_of_password_on_windows($user_data) {
 		$CI =& get_instance();
@@ -171,6 +217,22 @@ class managment_model  extends CI_Model  {
 
 				//var_export($user_data);
 				$this->replace_ldap_password($user_data);
+			}
+		}		
+		return true;
+	}
+
+	function interchange_windows_passwords($values) {
+		
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				$user_data = new stdClass();
+				$user_data = $this->get_user_data($value);
+
+				//$this->syncUserToLdap($user_data);
+				$this->replace_ldap_info_to_interchange_windows_passwords($user_data);
+
 			}
 		}		
 		return true;
@@ -1383,8 +1445,6 @@ class managment_model  extends CI_Model  {
 	     		$userPassword=$userPasswordValues[0];
 				$sambaNTPassword=$sambaNTPasswordValues[0];
 				$sambaLMPassword=$sambaLMPasswordValues[0];
-	     		ldap_close($this->ldapconn);
-	     		return $dn;
 	     	} else if ($entries > 1) {
 	     		echo "Error. Multiple uids found in Ldap!";
 	     		die();
