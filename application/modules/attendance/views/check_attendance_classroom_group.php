@@ -41,15 +41,15 @@
  </h1>
 </div>
 
-<div class="alert alert-block alert-success">
+<div class="alert alert-block alert-error">
                 <button type="button" class="close" data-dismiss="alert">
                   <i class="icon-remove"></i>
                 </button>
 
-                <i class="icon-ok green"></i>
+                <i class="icon-ok red"></i>
 
                 
-                <strong class="green">
+                <strong class="red">
                   IMPORTANT : 
                 </strong>
                 No passeu faltes fins que no rebeu un correu conforme ja està activada la funcionalitat. Estem treballant per posar en marxa aquesta funcionalitat.
