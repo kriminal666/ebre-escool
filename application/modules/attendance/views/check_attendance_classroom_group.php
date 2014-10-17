@@ -304,8 +304,8 @@
 
                                <?php if (is_array ($time_slot->study_submodules)): ?>  
                                 <?php foreach ( $time_slot->study_submodules as $study_submodule_key => $study_submodule): ?>
-                                 <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>"
-                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>');"
+                                 <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" 
+                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>',<?php echo $study_submodule_key;?>,<?php echo $time_slot->id;?>);"
                                   title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") <br/>( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
                                   <?php echo $study_submodule->shortname;?> 
                                     <i class="icon-check bigger-120" id="btn_group_icon_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" style="display:<?php if($study_submodule->active) { echo 'inline'; } else { echo 'none'; } ;?>"></i>
@@ -377,7 +377,7 @@
                                  
                               ?>
                              
-                             <select altdata="<?php echo $active_study_submodule->id;?>" id="check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $time_slot->id  ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>)">
+                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $time_slot->id;?>_check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>)">
                               <option value="0">--</option>
                               <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
                                 <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
@@ -461,7 +461,7 @@
 
 function check_attendance_select_on_click(element,person_id,time_slot_id,day){
   id = element.id;
-  study_submodule_id = $("#"+id).attr("altdata");
+  study_submodule_id = $("#"+id).attr("studysubmoduleid");
   selected_value = $("#"+id).val();
   previous_selected_value = $("#"+id).val();
 
@@ -513,6 +513,9 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
   }).done(function(data){
     
     var all_data = $.parseJSON(data);
+
+    console.debug (all_data);
+
     result = all_data.result;
     result_message = all_data.message;
 
@@ -522,7 +525,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
       $.gritter.add({
         title: 'Error guardant la incidència a la base de dades!',
         text: 'No s\'ha pogut guardar la incidència. Missatge d\'error:  ' + result_message ,
-        class_name: 'gritter-error gritter-center'
+        class_name: 'gritter-error'
       });
     }
 
@@ -533,9 +536,12 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
 
 }
 
-function study_submodule_on_click(study_submodule_button,study_module_button_id) {
-  id = study_submodule_button.id;
+
+function study_submodule_on_click(study_submodule_button, study_module_button_id, study_submodule_id, time_slot_id) {
   //console.debug("click on study_submodule_on_click: " + id + " group: " + study_module_button_id);
+  id = study_submodule_button.id;
+  
+  //console.debug("study_submodule_id: " + study_submodule_id);
 
   $('#' + study_module_button_id).children('button').each(function () {
     //console.debug(this.id); // "this" is the current element in the loop
@@ -549,11 +555,17 @@ function study_submodule_on_click(study_submodule_button,study_module_button_id)
       $('#' + button_id).addClass('btn-grey');
       $('#' + button_id).children('i').hide();
     }
-    
+  });
 
-});
+  //TRAVERSE ALL SELECTS IN SELECTED COLUMN/TIME SLOT ID to change studysubmoduleid attribute with selected study_submodule_id
+  $("select[id^=" + time_slot_id + "]").each(function (i,select) {
+    select_id = select.id;
+    $('#' + select_id).attr("studysubmoduleid",study_submodule_id);
+  });
+
 
 }
+
       jQuery(function($) {
 
         //$(".check_attendance_select2").select2({placeholder: "Select report type", allowClear: true});

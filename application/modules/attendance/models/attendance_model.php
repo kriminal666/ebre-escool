@@ -2204,7 +2204,6 @@ function get_current_academic_period() {
 
 		$this->db->where('incident_id', $incident_id);
 		$this->db->update('incident', $data); 
-		echo $this->db->last_query();
 
 		if ($this->db->affected_rows() == 1) {
 			return true;
@@ -2273,12 +2272,13 @@ function get_current_academic_period() {
 		$final_result = new stdClass();
 
 		$result_incident_exists = $this->incidence_exists($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
+
 		if ($result_incident_exists->code == 1) {
 			//Not exists. INSERT INCIDENT
 			$result = $this->insert_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
 			if ($result) {
 				$final_result->result = true;
-				$final_result->message = "Inserted new incidence with incidence_id " . $result;
+				$final_result->message = "Inserted new incidence (person_id: " . $person_id . ", time_slot_id: " . $time_slot_id . ", day: " . $day .", study_submodule_id: " . $study_submodule_id . " ,  absence_type: " . $absence_type ."  ) with incidence_id " . $result;
 				return $final_result;
 			} else {
 				$final_result->result = false;
@@ -2288,7 +2288,7 @@ function get_current_academic_period() {
 			
 		} else if ($result_incident_exists->code == 2) {
 			//Already exists but different absence_type. 
-			if ($absence_type = 0) {
+			if ($absence_type == 0) {
 				//DELETE INCIDENT
 				$result = $this->delete_incidence($result_incident_exists->incident_id);
 				if ($result) {
@@ -2305,11 +2305,11 @@ function get_current_academic_period() {
 				$result = $this->update_incidence($result_incident_exists->incident_id,$absence_type);
 				if ($result) {
 					$final_result->result = true;
-					$final_result->message = "Updated incidence with incidence_id " . $result_incident_exists->incident_id . " to incidence_type: " . $absence_type;
+					$final_result->message = "Updated incidence with incidence_id " . $result_incident_exists->incident_id . " to absence_type: " . $absence_type;
 					return $final_result;
 				} else {
 					$final_result->result = false;
-					$final_result->message = "Error updating incidence with incidence_id " . $result_incident_exists->incident_id  . " to incidence_type: " . $absence_type;
+					$final_result->message = "Error updating incidence with incidence_id " . $result_incident_exists->incident_id  . " to absence_type: " . $absence_type;
 					return $final_result;
 				}
 			}

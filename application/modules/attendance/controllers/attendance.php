@@ -352,13 +352,7 @@ class attendance extends skeleton_main {
 	    	$result = $this->attendance_model->crud_incidence($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);	
 	    }
 
-	    echo '{
-	    "aaData": ';
-
 	    print_r(json_encode($result));
-
-	    echo '}';
-
 
 	}
 
