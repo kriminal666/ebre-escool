@@ -268,6 +268,8 @@
   </div>
 
 
+<?php //var_export($incidents); ?>
+
  <table id="sample-table-2" class="table table-striped table-bordered table-hover">
                   <thead> 
                     <tr>
@@ -377,10 +379,29 @@
                                  
                               ?>
                              
-                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $time_slot->id;?>_check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')                 ">
+                             <?php 
+                              $select_id = $time_slot->id . "_check_attendance_select_" . $student->person_id . "_" . $active_study_submodule->id;
+                              $select_have_incident = false; 
+                              $current_incident_type = 0 ; 
+                              if (is_array($incidents)) {
+                                if ( array_key_exists ( $select_id, $incidents ) ){
+                                  //echo "TEST: " . $incidents[$select_id]->type;
+                                  $select_have_incident = true; 
+                                  $current_incident_type = $incidents[$select_id]->type_code; 
+                                }  
+                              }
+                              
+                             ?>
+                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $select_id;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')                 ">
                               <option value="0">--</option>
                               <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
-                                <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
+
+                                <?php if ($select_have_incident && ( $current_incident_type == $incident_type->code)) : ?>
+                                  <option value="<?php echo $incident_type->code; ?>" selected="selected"><?php echo $incident_type->shortname; ?></option>
+                                <?php else: ?>
+                                  <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
+                                <?php endif; ?>                                
+                                
                               <?php endforeach;?> 
                             </select>
 

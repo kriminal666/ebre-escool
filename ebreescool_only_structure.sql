@@ -2221,7 +2221,7 @@ CREATE TABLE `incident` (
   `incident_markedForDeletion` enum('n','y') NOT NULL DEFAULT 'n',
   `incident_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`incident_id`),
-  UNIQUE KEY `incident_student_id` (`incident_student_id`,`incident_time_slot_id`,`incident_day`,`incident_date`)
+  UNIQUE KEY `incident_student_id` (`incident_student_id`,`incident_time_slot_id`,`incident_day`,`incident_date`,`incident_study_submodule_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

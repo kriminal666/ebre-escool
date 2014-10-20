@@ -1014,13 +1014,14 @@ class attendance extends skeleton_main {
 		$data['classroom_group_students'] = array ();
 		$base_photo_url = "uploads/person_photos";
 		
-		
+		$array_student_person_ids = array ();
 		if ( $data['total_number_of_students'] != 0 ) {
 			foreach($all_students_in_group as $student)	{
 
 				$studentObject = new stdClass;
 			
 				$studentObject->person_id = $student->person_id;
+				$array_student_person_ids[] = $student->person_id;
 				$studentObject->givenName = $student->givenName;
 				$studentObject->sn1 = $student->sn1;
 				$studentObject->sn2 = $student->sn2;
@@ -1039,6 +1040,10 @@ class attendance extends skeleton_main {
 				$data['classroom_group_students'][]=$student;
 			}	
 		}
+
+		$incidents = $this->attendance_model->getAllIncidentsByDateAndPersonIdArray($array_student_person_ids,$iso_date_alt);
+
+		$data['incidents'] = $incidents;
 
 		$incident_types = $this->attendance_model->getAllIncident_types();
 
