@@ -2135,7 +2135,7 @@ function get_current_academic_period() {
 	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 	*/
 
-	function incidence_exists ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+	function incidence_exists ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
 		/*
 		SELECT incident_id,incident_type FROM incident 
 		WHERE incident_student_id= AND incident_time_slot_id= AND incident_day AND incident_study_submodule_id = 
@@ -2146,6 +2146,7 @@ function get_current_academic_period() {
 		$this->db->where('incident_student_id', $person_id);
 		$this->db->where('incident_time_slot_id', $time_slot_id);
 		$this->db->where('incident_day', $day);
+		$this->db->where('incident_date', $date);
 		$this->db->where('incident_study_submodule_id', $study_submodule_id);
 
 		$query = $this->db->get();
@@ -2232,7 +2233,7 @@ function get_current_academic_period() {
 		}
 	}
 
-	function insert_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+	function insert_incidence ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
 
 		$incident_type_id = $this->get_incident_type_id_by_incident_type_code($absence_type);
 
@@ -2241,14 +2242,15 @@ function get_current_academic_period() {
 		}
 
 		/*
-		INSERT INTO incident(incident_student_id, incident_time_slot_id, incident_day, incident_study_submodule_id, 
+		INSERT INTO incident(incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id, 
 		incident_type, incident_notes, incident_entryDate, incident_creationUserId, incident_lastupdateUserId, 
-		) VALUES (4,9,1,45,4)
+		) VALUES (4,9,1,'DATE_FORMAT',45,4)
 		*/
 		$data = array(
 		   'incident_student_id' => $person_id ,
 		   'incident_time_slot_id' => $time_slot_id ,
 		   'incident_day' => $day,
+		   'incident_date' => $date,
 		   'incident_study_submodule_id' => $study_submodule_id,
 		   'incident_type' => $incident_type_id,
 		   'incident_notes' => '',
@@ -2258,6 +2260,8 @@ function get_current_academic_period() {
 		);
 
 		$this->db->insert('incident', $data);
+		//echo $this->db->last_query()."<br/>";
+
 
 		if ($this->db->affected_rows() == 1) {
 			return $this->db->insert_id();
@@ -2267,18 +2271,18 @@ function get_current_academic_period() {
 
 	}
 
-	function crud_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type) {
+	function crud_incidence ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
 
 		$final_result = new stdClass();
 
-		$result_incident_exists = $this->incidence_exists($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
+		$result_incident_exists = $this->incidence_exists($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type);
 
 		if ($result_incident_exists->code == 1) {
 			//Not exists. INSERT INCIDENT
-			$result = $this->insert_incidence ($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);
+			$result = $this->insert_incidence ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type);
 			if ($result) {
 				$final_result->result = true;
-				$final_result->message = "Inserted new incidence (person_id: " . $person_id . ", time_slot_id: " . $time_slot_id . ", day: " . $day .", study_submodule_id: " . $study_submodule_id . " ,  absence_type: " . $absence_type ."  ) with incidence_id " . $result;
+				$final_result->message = "Inserted new incidence (person_id: " . $person_id . ", time_slot_id: " . $time_slot_id . ", day: " . $day . ", date: " . $date . ", study_submodule_id: " . $study_submodule_id . " ,  absence_type: " . $absence_type ."  ) with incidence_id " . $result;
 				return $final_result;
 			} else {
 				$final_result->result = false;
@@ -2314,7 +2318,7 @@ function get_current_academic_period() {
 				}
 			}
 
-		} else { //Tipically 3: Incident already exists exactctly the same: Do nothing!
+		} else { //Tipically 3: Incident already exists exacttly the same: Do nothing!
 			//Nothig TODO: Maybe in future logging?
 			$final_result->result = true;
 			$final_result->message = "Nothing to do. The same exactly incident already exists on database!";

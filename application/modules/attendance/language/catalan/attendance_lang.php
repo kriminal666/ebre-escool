@@ -96,6 +96,7 @@ $lang['student']="Estudiant";
 $lang['time_slot']="Franja horària";
 $lang['study_submodule']="Unitat Formativa";
 $lang['day']="Dia";
+$lang['date']="Data";
 $lang['incident_type']="Tipus d'incidència";
 $lang['incident_notes']="Notes";
 

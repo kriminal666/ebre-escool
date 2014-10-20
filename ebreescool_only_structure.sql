@@ -2210,6 +2210,7 @@ CREATE TABLE `incident` (
   `incident_student_id` int(11) NOT NULL,
   `incident_time_slot_id` int(11) NOT NULL,
   `incident_day` int(11) NOT NULL,
+  `incident_date` date,
   `incident_study_submodule_id` int(11) NOT NULL,
   `incident_type` int(11) NOT NULL,
   `incident_notes` text NOT NULL,

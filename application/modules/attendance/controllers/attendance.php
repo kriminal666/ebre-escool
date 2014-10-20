@@ -303,6 +303,7 @@ class attendance extends skeleton_main {
 		person_id : person_id,
         time_slot_id : time_slot_id,
         day : day,
+        date: date,
         study_submodule_id: study_submodule_id,
         absence_type : selected_value 
 		*/
@@ -333,6 +334,13 @@ class attendance extends skeleton_main {
 	    	$error = true;
 	    }
 
+	    $date = "";
+	    if(isset($_POST['date'])) {
+        	$date = $_POST['date'];
+	    } else {
+	    	$error = true;
+	    }
+
 	    $study_submodule_id = "";
 	    if(isset($_POST['study_submodule_id'])) {
         	$study_submodule_id = $_POST['study_submodule_id'];
@@ -348,8 +356,8 @@ class attendance extends skeleton_main {
 	    }
 
 	    if (!$error) {
-	    	if ( ($person_id != "") && ($time_slot_id != "") && ($day != "") && ($study_submodule_id != "") && ($absence_type != "") )
-	    	$result = $this->attendance_model->crud_incidence($person_id,$time_slot_id,$day,$study_submodule_id,$absence_type);	
+	    	if ( ($person_id != "") && ($time_slot_id != "") && ($day != "") && ($date != "") && ($study_submodule_id != "") && ($absence_type != "") )
+	    	$result = $this->attendance_model->crud_incidence($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type);	
 	    }
 
 	    print_r(json_encode($result));
@@ -475,7 +483,7 @@ class attendance extends skeleton_main {
 
 	    $this->common_callbacks($this->current_table);
 
-	    $this->grocery_crud->columns($this->current_table."_id",$this->current_table.'_student_id', $this->current_table.'_day', 
+	    $this->grocery_crud->columns($this->current_table."_id",$this->current_table.'_student_id', $this->current_table.'_day', $this->current_table.'_date',
 	    	$this->current_table.'_time_slot_id', $this->current_table.'_study_submodule_id', $this->current_table.'_type',
 	    	$this->current_table.'_notes',
 	    	$this->current_table.'_entryDate',$this->current_table.'_last_update',
@@ -485,6 +493,7 @@ class attendance extends skeleton_main {
 	    //ESPECIFIC COLUMNS  
 	    $this->grocery_crud->display_as($this->current_table.'_student_id',lang('student'));
 	    $this->grocery_crud->display_as($this->current_table.'_day',lang('day'));
+	    $this->grocery_crud->display_as($this->current_table.'_day',lang('date'));
 	    $this->grocery_crud->display_as($this->current_table.'_time_slot_id',lang('time_slot'));
 	    $this->grocery_crud->display_as($this->current_table.'_study_submodule_id',lang('study_submodule'));
 	    $this->grocery_crud->display_as($this->current_table.'_type',lang('incident_type'));
@@ -838,6 +847,7 @@ class attendance extends skeleton_main {
 	    if ($year == 0 ) {
 	    	//obtain year from current date
 			$year = date("y");
+			$year_alt = date("Y");
 	    }
 
 	    //isodate format: YYYY-MM-DD
@@ -847,11 +857,13 @@ class attendance extends skeleton_main {
 	    if ( ($day != null) && ($month != null) && ($year != null) ) {
 	    	$data['check_attendance_date'] = $day . "/" . $month . "/" .$year;
 	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
+	    	$iso_date_alt = $year_alt . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    } else {
 	    	$data['check_attendance_date'] = date('d/m/Y');	
-	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
+	    	$iso_date_alt = $year_alt . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    }
 
+		$data['check_attendance_date_mysql_format'] = $iso_date_alt;
 	    
 	    $day_of_week_number = date('N', strtotime($iso_date));
 

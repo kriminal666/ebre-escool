@@ -377,7 +377,7 @@
                                  
                               ?>
                              
-                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $time_slot->id;?>_check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>)">
+                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $time_slot->id;?>_check_attendance_select_<?php echo $student->person_id ;?>_<?php echo $active_study_submodule->id ;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')                 ">
                               <option value="0">--</option>
                               <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
                                 <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
@@ -459,7 +459,7 @@
 </div>
 <script type="text/javascript">
 
-function check_attendance_select_on_click(element,person_id,time_slot_id,day){
+function check_attendance_select_on_click(element,person_id,time_slot_id,day,date){
   id = element.id;
   study_submodule_id = $("#"+id).attr("studysubmoduleid");
   selected_value = $("#"+id).val();
@@ -471,6 +471,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
   console.debug("person_id: " + person_id);
   console.debug("time_slot_id: " + time_slot_id);
   console.debug("day: " + day);  
+  console.debug("date: " + date);  
   console.debug("study_submodule_id: " + study_submodule_id);
   console.debug("selected_value: " + selected_value);
 
@@ -482,6 +483,7 @@ function check_attendance_select_on_click(element,person_id,time_slot_id,day){
         person_id : person_id,
         time_slot_id : time_slot_id,
         day : day,
+        date : date,
         study_submodule_id: study_submodule_id,
         absence_type : selected_value  
     },
