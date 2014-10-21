@@ -428,7 +428,7 @@
             </a>
 
             <ul class="submenu">
-              <?php if ( $this->session->userdata('is_student')) : ?>
+              <?php if ( $this->session->userdata('is_student') || ($this->session->userdata('is_admin'))) : ?>
 
                 <li id="mentoring_groups">
                     <a href="#">
@@ -436,8 +436,9 @@
                       <?php echo "Consulta faltes. Pendent.";?>
                     </a>
                 </li>
+              <?php endif ?>  
 
-              <?php else : ?>
+              <?php if ( $this->session->userdata('is_teacher') || ($this->session->userdata('is_admin'))) : ?>
                   
                   <!-- Llistes de classe -->
                   <li id="mentoring_groups">

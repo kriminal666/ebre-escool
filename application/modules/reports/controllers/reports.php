@@ -329,6 +329,11 @@ class reports extends skeleton_main {
 
     	$this->check_logged_user();
 
+        //check if user is teacher or admin. IF not doesn't allow to show this view!
+        if (! (($this->session->userdata('is_admin') || ($this->session->userdata('is_teacher'))) ) ) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
 		$header_data = $this->load_header_data($active_menu);
 
         $this->_load_html_header($header_data);
@@ -364,6 +369,23 @@ class reports extends skeleton_main {
 
         $mentors = $this->reports_model->get_mentors($academic_period_id);
 
+        //Check if user is a teacher-> Then if is a mentor. Use this mentor as selected mentor in mentors list
+        $default_classroom_group_id = null;
+        if ($mentor_id == false) {
+            if ($this->session->userdata('is_teacher')) {
+                //IS MENTOR?
+                if ( $this->reports_model->is_mentor($this->session->userdata('teacher_id'),$academic_period_id) ) {
+                    $mentor_id = $this->session->userdata('teacher_id');
+                } else {
+                    //GET FIRST CLASSROOM GROUP TEACHER IMPARTS. Use as default classroomgroup show at classromgroups list
+                    $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
+                }
+            }
+        } elseif ($mentor_id == "void") {
+            $mentor_id = false;
+            $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
+        }
+        
         $all_classgroups = array();
         if ($mentor_id == false) {
         	$all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
@@ -373,6 +395,9 @@ class reports extends skeleton_main {
         
 
 		$data['all_classgroups'] = $all_classgroups;
+
+        $data['default_classroom_group_id'] = $default_classroom_group_id;    
+       
         $data['academic_periods'] = $academic_periods;
         $data['selected_academic_period_id'] = $selected_academic_period_id;
         $data['academic_period_id'] = $academic_period_id;

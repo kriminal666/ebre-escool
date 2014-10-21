@@ -952,13 +952,21 @@ function get_current_academic_period() {
 	
 
 	function get_teacher_departments($teacherId,$orderby="asc") {
-		$this->db->from('department');
-        $this->db->select('department_id,department_shortName,department_name');
-   		$this->db->join('teacher', 'department.department_id = teacher.teacher_department_id');
 
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT department_id,department_shortName,department_name
+		FROM teacher_academic_periods
+		INNER JOIN department ON department.department_id =  teacher_academic_periods.teacher_academic_periods_teacher_id
+		WHERE `teacher_academic_periods_academic_period_id`=5 AND `teacher_academic_periods_teacher_id`=4
+		*/
+		$this->db->select('department_id,department_shortName,department_name');
+		$this->db->from('teacher_academic_periods');
+   		$this->db->join('department', 'department.department_id =  teacher_academic_periods.teacher_academic_periods_teacher_id');
+		$this->db->where('teacher_academic_periods_teacher_id', $teacherId);			
+		$this->db->where('teacher_academic_periods_academic_period_id', $current_academic_period_id);			
 		$this->db->order_by('department_shortName', $orderby);
-
-		$this->db->where('teacher_id', $teacherId);			
 		       
         $query = $this->db->get();
 		
@@ -1682,7 +1690,63 @@ function get_current_academic_period() {
 
 
 
-//OSCAR: Obtenir les lliçons d'un dia
+	//OSCAR: Obtenir les lliçons d'un dia
+	function getAllLessonsByDay($day,$classroom_group_id,$orderby = "asc") {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		/*
+		SELECT lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,classroom_group_name
+		FROM lesson
+		INNER JOIN classroom_group ON lesson.lesson_classroom_group_id= classroom_group.classroom_group_id
+		WHERE lesson_day=1 AND lesson_teacher_id=38
+		*/
+		$this->db->select('time_slot_order,time_slot_id,lesson_id,lesson_code,classroom_group_code,classroom_group_shortName,
+						  classroom_group_name,study_module_id,study_module_shortname,study_module_name,location_shortName,lesson_location_id');
+		$this->db->from('lesson');
+		$this->db->join('time_slot', 'lesson.lesson_time_slot_id = time_slot.time_slot_id');
+		$this->db->join('classroom_group', 'lesson.lesson_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->join('study_module', 'lesson.lesson_study_module_id = study_module.study_module_id');
+		$this->db->join('location', 'lesson.lesson_location_id = location.location_id','left');
+		$this->db->order_by('time_slot_order', $orderby);
+		$this->db->where('lesson_day', $day);
+		$where = "classroom_group_id = '$classroom_group_id'";
+		
+		$this->db->where($where);
+
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		if ($query->num_rows() > 0)	{
+			
+			$lessons_array = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				$lesson = new stdClass();
+				$lesson->group_code = $row['classroom_group_code'];
+				$lesson->group_shortname = $row['classroom_group_shortName'];
+				$lesson->group_name = $row['classroom_group_name'];
+				$lesson->study_module_id = $row['study_module_id'];
+				$lesson->classroom_group_code = $row['classroom_group_code'];				
+				$lesson->lesson_code = $row['lesson_code'];
+				$lesson->lesson_shortname = $row['study_module_shortname'];
+				$lesson->lesson_name = $row['study_module_name'];
+				$lesson->lesson_location = $row['location_shortName'];
+				$lesson->lesson_location_id = $row['lesson_location_id'];
+
+   				$lessons_array[$row['time_slot_id']] = $lesson;
+
+			}
+			return $lessons_array;
+		}
+		else
+			return false;
+	}
+
+
+	//OSCAR: Obtenir les lliçons d'un dia
 	function getAllLessonsByDay($day,$classroom_group_id,$orderby = "asc") {
 
 		$current_academic_period_id = $this->get_current_academic_period_id();
@@ -2158,7 +2222,7 @@ function get_current_academic_period() {
 				$incident->markedForDeletion = $row->incident_markedForDeletion;
 				$incident->markedForDeletionDate = $row->incident_markedForDeletionDate;
 
-				$key = $row->incident_time_slot_id . "_check_attendance_select_" . $row->incident_student_id . "_". $row->incident_study_submodule_id;
+				$key = $row->incident_time_slot_id . "_". $row->incident_study_submodule_id . "_check_attendance_select_" . $row->incident_student_id;
 				$incidents[$key] = $incident;
 			}
 			return $incidents;

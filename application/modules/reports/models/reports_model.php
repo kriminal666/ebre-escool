@@ -275,6 +275,67 @@ class reports_model  extends CI_Model  {
 
 	}
 
+	public function get_first_classroom_group_id ($teacher_id,$academic_period=null ) {
+
+		if ($academic_period == null) {
+			$current_academic_period_id = $this->get_current_academic_period_id();
+		} else {
+			$current_academic_period_id = $academic_period;
+		}
+
+		/*
+		SELECT `lesson_classroom_group_id` FROM `lesson` WHERE `lesson_academic_period_id`=5 AND `lesson_teacher_id`=45 LIMIT 1
+		*/
+
+		$get_current_academic_period_id = $this->get_current_academic_period_id();
+
+		$this->db->select('lesson_classroom_group_id');
+		$this->db->from('lesson');
+		$this->db->where('lesson_teacher_id', $teacher_id);	
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);	
+		$this->db->limit(1);	
+
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->lesson_classroom_group_id;
+		}
+
+		return false;	
+	}
+
+	public function is_mentor($teacher_id,$academic_period=null) {
+
+		if ($academic_period == null) {
+			$current_academic_period_id = $this->get_current_academic_period_id();
+		} else {
+			$current_academic_period_id = $academic_period;
+		}
+		
+
+		/*
+		SELECT classroom_group_academic_periods_mentorId
+		FROM `classroom_group_academic_periods` 
+		WHERE `classroom_group_academic_periods_mentorId`=71 AND `classroom_group_academic_periods_academic_period_id`=5
+		*/
+
+		$this->db->select('classroom_group_academic_periods_mentorId');
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->where('classroom_group_academic_periods_mentorId',$teacher_id);	
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);	
+
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			return true;
+		}
+
+		return false;
+	}
+
 
 	function get_mentors($academic_period_id,$orderby="asc") {
 		/*

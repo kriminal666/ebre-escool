@@ -28,6 +28,21 @@
  </h1>
 </div>
 
+<div class="alert alert-block alert-warning">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <i class="icon-ok green"></i>
+
+                
+                <strong class="green">
+                  ATENCIÓ : 
+                </strong>
+                Per mostrar tots els grups a la llista de grups elimineu el filtre de tutor (no seleccioneu cap tutor).
+              </div>
+
+
 <div style='height:10px;'></div>
   <div style="margin:10px;">
     <div class="container">
@@ -68,12 +83,12 @@
                 <?php foreach ($mentors as $mentor_key => $mentor_value) : ?>
                  <?php if ( $mentor_id ) : ?>
                   <?php if ( $mentor_key == $mentor_id) : ?>
-                     <option selected="selected" value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                     <option selected="selected" value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " ) (" . $mentor_value->id  . ")" ;?></option>
                   <?php else: ?>   
-                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )  (" . $mentor_value->id  . ")";?></option>
                   <?php endif; ?>   
                   <?php else: ?> 
-                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )" ;?></option>
+                     <option value="<?php echo $mentor_key ;?>"><?php echo $mentor_value->code . " - " .  $mentor_value->sn1 . " " . $mentor_value->sn2 . ", " . $mentor_value->givenName . " ( càrrec:" . $mentor_value->charge_full . " )  (" . $mentor_value->id  . ")" ;?></option>
                  <?php endif; ?>
                 <?php endforeach; ?>
                 </select> 
@@ -87,7 +102,11 @@
                  <option value=""></option>
                 <?php endif; ?>   
                 <?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
-                  <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
+                  <?php if ( $classgroup_key == $default_classroom_group_id) : ?>
+                    <option selected="selected" value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
+                  <?php else : ?>
+                    <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
+                  <?php endif;?>
                 <?php endforeach; ?>
                 </select> 
 
@@ -146,11 +165,13 @@ var mentor_names = [];
 var group_codes = [];
 var group_names = [];
 
-<?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
-mentor_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->mentor_code . ' - ' . $classgroup_value->mentor_sn1 . ' ' . $classgroup_value->mentor_sn2 . ', ' . $classgroup_value->mentor_givenname ;?>";
-group_codes[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->code;?>";
-group_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->course_name;?>";
-<?php endforeach; ?>
+<?php if(is_array ($all_classgroups)) : ?>
+  <?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
+  mentor_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->mentor_code . ' - ' . $classgroup_value->mentor_sn1 . ' ' . $classgroup_value->mentor_sn2 . ', ' . $classgroup_value->mentor_givenname ;?>";
+  group_codes[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->code;?>";
+  group_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->course_name;?>";
+  <?php endforeach; ?>
+<?php endif; ?>  
 
 
 
@@ -186,6 +207,13 @@ $(function() {
 
     $('#select_class_list_mentor_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_mentor_filter").select2("val");
+
+        //console.debug("selectedValue: " + selectedValue);
+
+        if (selectedValue == "") {
+          selectedValue = "void";
+        }
+        
         var pathArray = window.location.pathname.split( '/' );
         var secondLevelLocation = pathArray[1];
         var academic_period_id = $("#select_class_list_academic_period_filter").select2("val");
@@ -197,7 +225,7 @@ $(function() {
         $("#selected_classgroup_name").text(group_names[selectedValue]);
         $("#selected_classgroup_code").text(group_codes[selectedValue]);
         $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
-
+      
     });
     
     //classroom_group_id = 3;

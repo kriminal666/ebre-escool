@@ -307,7 +307,8 @@
                                <?php if (is_array ($time_slot->study_submodules)): ?>  
                                 <?php foreach ( $time_slot->study_submodules as $study_submodule_key => $study_submodule): ?>
                                  <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" 
-                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>',<?php echo $study_submodule_key;?>,<?php echo $time_slot->id;?>);"
+                                  class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" 
+                                  onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>',<?php echo $study_submodule_key;?>,<?php echo $time_slot->id;?>);"
                                   title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") <br/>( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
                                   <?php echo $study_submodule->shortname;?> 
                                     <i class="icon-check bigger-120" id="btn_group_icon_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" style="display:<?php if($study_submodule->active) { echo 'inline'; } else { echo 'none'; } ;?>"></i>
@@ -366,45 +367,44 @@
                           <?php if (isset ($time_slot->study_module_id)): ?>
                             <center>
 
-                              <?php 
-                              $active_study_submodule = null;
-                              if (is_array($time_slot->study_submodules)) {
-                                foreach ($time_slot->study_submodules as $study_submodules_key => $study_submodule) {
-                                  if ($study_submodule->active) {
-                                    $active_study_submodule = $study_submodule;
+                              <?php if (is_array($time_slot->study_submodules)): ?>
+                                <?php foreach ($time_slot->study_submodules as $study_submodules_key => $study_submodule): ?>
+                                  <?php 
+                                  $select_id = $time_slot->id . "_" . $study_submodule->id . "_check_attendance_select_" . $student->person_id;
+                                  $select_have_incident = false; 
+                                  $current_incident_type = 0 ; 
+                                  if (is_array($incidents)) {
+                                    if ( array_key_exists ( $select_id, $incidents ) ){
+                                    //echo "TEST: " . $incidents[$select_id]->type_code;
+                                    $select_have_incident = true; 
+                                    $current_incident_type = $incidents[$select_id]->type_code; 
+                                    } 
                                   }
-                                }
-                                
-                              }
-                                 
-                              ?>
-                             
-                             <?php 
-                              $select_id = $time_slot->id . "_check_attendance_select_" . $student->person_id . "_" . $active_study_submodule->id;
-                              $select_have_incident = false; 
-                              $current_incident_type = 0 ; 
-                              if (is_array($incidents)) {
-                                if ( array_key_exists ( $select_id, $incidents ) ){
-                                  //echo "TEST: " . $incidents[$select_id]->type;
-                                  $select_have_incident = true; 
-                                  $current_incident_type = $incidents[$select_id]->type_code; 
-                                }  
-                              }
-                              
-                             ?>
-                             <select studysubmoduleid="<?php echo $active_study_submodule->id;?>" id="<?php echo $select_id;?>" width="50" style="width: 50px" onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')                 ">
-                              <option value="0">--</option>
-                              <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
+                                  ?>
 
-                                <?php if ($select_have_incident && ( $current_incident_type == $incident_type->code)) : ?>
-                                  <option value="<?php echo $incident_type->code; ?>" selected="selected"><?php echo $incident_type->shortname; ?></option>
-                                <?php else: ?>
-                                  <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
-                                <?php endif; ?>                                
-                                
-                              <?php endforeach;?> 
-                            </select>
+                                  <select studysubmoduleid="<?php echo $study_submodule->id;?>" id="<?php echo $select_id;?>" width="50" 
+                                    onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')" 
 
+                                    <?php if ($study_submodule->active): ?> 
+                                      style="width: 50px;display:inline;"
+                                    <?php else: ?>
+                                      style="width: 50px;display:none;"
+                                    <?php endif; ?>
+                                    >
+
+                                    <option value="0">--</option>
+                                    <?php foreach ($incident_types as $incident_type_key => $incident_type): ?>
+
+                                      <?php if ($select_have_incident && ( $current_incident_type == $incident_type->code)) : ?>
+                                        <option value="<?php echo $incident_type->code; ?>" selected="selected"><?php echo $incident_type->shortname; ?></option>
+                                      <?php else: ?>
+                                        <option value="<?php echo $incident_type->code; ?>"><?php echo $incident_type->shortname; ?></option>
+                                      <?php endif; ?>                                
+                                      
+                                    <?php endforeach;?> 
+                                  </select>
+                                <?php endforeach; ?>
+                              <?php endif; ?>
                             <?php if ( $selected_time_slot_id == $time_slot->id ):?>
                               <i class="icon-star red smaller-80"></i>      
                             <?php endif; ?>
@@ -580,11 +580,23 @@ function study_submodule_on_click(study_submodule_button, study_module_button_id
     }
   });
 
-  //TRAVERSE ALL SELECTS IN SELECTED COLUMN/TIME SLOT ID to change studysubmoduleid attribute with selected study_submodule_id
-  $("select[id^=" + time_slot_id + "]").each(function (i,select) {
+  //Hide all current visible selects
+  $("select[id^=" + time_slot_id +"]:visible").each(function (i,select) {
     select_id = select.id;
-    $('#' + select_id).attr("studysubmoduleid",study_submodule_id);
+    console.debug("select_id previous: " + select_id);
+    //Hide all current selects
+    $('#' + select_id).toggle();
   });
+
+  //SHOW ALL NEW STUDY_SUBMODULE SELECTS:
+  $("select[id^=" + time_slot_id + "_" + study_submodule_id +"]").each(function (i,select) {
+    select_id = select.id;
+    console.debug("New select_id: " + select_id);
+    //Hide all current selects
+    $('#' + select_id).toggle();
+  });
+
+  
 
 
 }
