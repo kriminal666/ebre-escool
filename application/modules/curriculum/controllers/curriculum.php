@@ -1085,7 +1085,7 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({nom_grup} - {study_module_name})');
+        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_shortname} - {study_module_name})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname})');
         //$this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_id} - {study_module_name})');
 

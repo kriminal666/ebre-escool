@@ -762,17 +762,15 @@ class attendance extends skeleton_main {
 		/*******************/
 		$this->_load_body_header($data);
 
+		$user_is_admin = $this->ebre_escool->user_is_admin();
 
-		if ( !$user_is_a_teacher ) {
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
 			//TODO: Return not allowed page!
-			return null;
+			echo "Access Not Allowed!";
+			return false;
 		}		
 
 		$user_teacher_code = $this->attendance_model->get_teacher_code_by_personid($person_id);
-		
-		$user_is_admin = $this->ebre_escool->user_is_admin();
-		//TODO: Test. DELETE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	    //$user_is_admin=false;
 
 		if ($teacher_code == null) {
 	    	$teacher_code = $user_teacher_code;
@@ -801,14 +799,8 @@ class attendance extends skeleton_main {
 	    $data['teacher_sn1']= $teacher_sn1;
 	    $data['teacher_sn2']= $teacher_sn2;
 
-	    // Obtenir el departament al que pertany un professor (Oscar)
-	    //$teacher_departments = $this->attendance_model->get_teacher_departments($teacher_id);
-	    //$data['department_id'] = $teacher_departments[1];
-
 	    //echo "teacher_id: $teacher_id<br/>";       
 	    //echo "teacher_code: $teacher_code<br/>";   
-
-	    $user_is_teacher=true;
 
 	    //Departaments
 	    $data['departments'] = array();
@@ -830,10 +822,9 @@ class attendance extends skeleton_main {
 	    	$data['classroom_groups']= $this->attendance_model->get_all_groupscodenameByDeparment($teacher_department_id);
 	    } else {
 	    	//IF TEACHER
-	    	if($user_is_teacher) {
+	    	if($user_is_a_teacher) {
 	    		$data['classroom_groups']=$this->attendance_model->get_all_groupscodenameByTeacher($teacher_id);
 	    	}
-			//$data['classroom_groups']=array(); //OSCAR
 	    }
 
 	    if ($day == 0 ) {
@@ -844,10 +835,13 @@ class attendance extends skeleton_main {
 	    	//obtain month from current date
 			$month = date("m");
 	    }
+
 	    if ($year == 0 ) {
 	    	//obtain year from current date
 			$year = date("y");
 			$year_alt = date("Y");
+	    } else {
+	    	$year_alt = $year;
 	    }
 
 	    //isodate format: YYYY-MM-DD
@@ -882,32 +876,20 @@ class attendance extends skeleton_main {
 		$data['year'] = $year;
 
 		if ($selected_group_id == 0) {
-			//TODO: Get default group id
 			$selected_group_id = 25; //2ASIX	
 		}	else {
-			//Check if teacher could use this group
+			//Check if teacher could use this group. Necessary?
 			//TODO
 		}
 
-	    $data['selected_classroom_group_key']=$selected_group_id; //2ASIX
+	    $data['selected_classroom_group_key']=$selected_group_id;
 	    
 	    $data['all_lessons'] =array();
-	    
-	    if ($user_is_admin){
-	    	$all_lessons = $this->attendance_model->getAllLessonsByDay($day_of_week_number,$data['selected_classroom_group_key']);
-	    	$data['all_lessons'] = $all_lessons;	    	
-	    } else {
-	    	$all_lessons = $this->attendance_model->getAllLessonsByTeacherCodeAndDay($teacher_id,$day_of_week_number);
-	    	$data['all_lessons'] = $all_lessons;	    	
-	    }
 
-	    //OSCAR: Time Slots
-		$timeslots = $this->get_time_slots($data['selected_classroom_group_key'],1);	  
+	    $all_lessons = $this->attendance_model->getAllLessonsByDay($day_of_week_number,$data['selected_classroom_group_key']);
+	    $data['all_lessons'] = $all_lessons;
 
-		$data['timeslots'] = $timeslots;
-		$data['time_slots_lective'] = $timeslots['time_slots_lective'];
-
-		$all_students_in_group= $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
+	    $all_students_in_group= $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
 		$selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
 
 		$selected_group_id = $selected_group_info['id'];
@@ -920,12 +902,13 @@ class attendance extends skeleton_main {
 	    $data['selected_classroom_group_shortname'] = $selected_group_code;
 		$data['selected_classroom_group'] = $selected_group_name;
 
-		/*echo "selected_group_name: $selected_group_name<br/>";
+		/* DEBUG:
+		echo "selected_group_name: $selected_group_name<br/>";
 		echo "selected_group_shortname: $selected_group_shortname<br/>";
 		echo "selected_group_code: $selected_group_code<br/>";*/
 
 		if ($selected_study_module_id == 0) {
-			//TODO: Get default group id
+			//TODO: Get default study_module_id
 			$selected_study_module_id = 274;	
 		}	else {
 			//Check if teacher could use this group
@@ -940,7 +923,6 @@ class attendance extends skeleton_main {
 		$selected_study_module_shortname = $selected_study_module_info['shortname'];
 		$selected_study_module_code = $selected_study_module_info['code'];
 
-
 		/*
 		echo "selected_study_module_name: $selected_study_module_name<br/>";
 		echo "selected_study_module_shortname: $selected_study_module_shortname<br/>";
@@ -953,17 +935,10 @@ class attendance extends skeleton_main {
 
 	    $data['study_modules'] = array();
 	    
-	    if ($user_is_admin) {
-	    	//Get all group study modules
-	    	$all_group_study_modules = $this->attendance_model->getAllGroupStudymodules( $selected_group_id);
-	    	$data['study_modules'] = $all_group_study_modules;
-	    } else {
-	    	//Get current teacher study modules
-	    	$current_teacher_study_modules = $this->attendance_model->getAllTeacherStudymodules( $teacher_id );
-			$data['study_modules'] = $current_teacher_study_modules;
-	    }
+	    $all_group_study_modules = $this->attendance_model->getAllGroupStudymodules( $selected_group_id);
+	    $data['study_modules'] = $all_group_study_modules;
 
-	    $data['time_slots']=array();
+	    $data['time_slots'] = array();
 
 	    $time_slots = $this->attendance_model->getTimeSlotsByClassgroupId($selected_group_id,$day_of_week_number);
 
@@ -997,13 +972,16 @@ class attendance extends skeleton_main {
 	    	$selected_group_teacher = "Error. No hi ha tutor del grup";
 	    }
 	    
-	    	
 
 	    $data['selected_group_teacher']= $selected_group_teacher;
 	    
 	    $data['group_teachers_default_teacher_key']= $tutor_teacher_id;
-
-	    
+	    if ($tutor_teacher_id == $teacher_id) {
+	    	$data['teacher_is_mentor'] = true;
+	    } else {
+	    	$data['teacher_is_mentor'] = false;
+	    }
+	    	    
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
 
@@ -1048,6 +1026,8 @@ class attendance extends skeleton_main {
 		$incident_types = $this->attendance_model->getAllIncident_types();
 
 		$data['incident_types'] = $incident_types;
+
+		$data['user_is_admin'] = $user_is_admin;
 		
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 

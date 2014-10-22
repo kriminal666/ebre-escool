@@ -1079,6 +1079,195 @@ class managment_model  extends CI_Model  {
 		return false;	
 	}
 
+	public function update_study_submodule_total_hours($study_submodule_id, $new_total_hours,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*Example SQL
+		UPDATE `study_submodules_academic_periods` 
+		SET study_submodules_academic_periods_totalHours=20
+		WHERE `study_submodules_academic_periods_study_submodules_id` = 1
+		AND `study_submodules_academic_periods_academic_period_id`= 5
+		*/
+
+		$data = array(
+               'study_submodules_academic_periods_totalHours' => $new_total_hours
+            );
+
+		$this->db->where('study_submodules_academic_periods_study_submodules_id', $study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $academic_period_id);
+		$this->db->update('study_submodules_academic_periods', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+			$result->result = true;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to totalHours: " . $new_total_hours;
+			return $result;
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to totalHours: " . $new_total_hours;
+			return $result;
+		}
+	}
+
+
+	public function change_study_submodule_total_hours($study_submodule_id, $new_total_hours,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		if ($this->study_submodule_exists($study_submodule_id,$academic_period_id)) {
+			//UPDATE
+			return $this->update_study_submodule_total_hours($study_submodule_id, $new_total_hours,$academic_period_id);
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to totalHours: " . $new_total_hours . ". Study submodule does not exists!";
+			return $result;
+		}
+	}
+
+	public function update_study_submodule_initial_date($study_submodule_id, $new_initialDate,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*Example SQL
+		UPDATE `study_submodules_academic_periods` 
+		SET study_submodules_academic_periods_initialDate=DATE
+		WHERE `study_submodules_academic_periods_study_submodules_id` = 1
+		AND `study_submodules_academic_periods_academic_period_id`= 5
+		*/
+
+		$database_date = date('Y-m-d', strtotime($new_initialDate));
+
+		$data = array(
+               'study_submodules_academic_periods_initialDate' => $database_date
+            );
+
+		$this->db->where('study_submodules_academic_periods_study_submodules_id', $study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $academic_period_id);
+		$this->db->update('study_submodules_academic_periods', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+			$result->result = true;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_initialDate: " . $new_initialDate . " database date format: " . $database_date;
+			return $result;
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_initialDate: " . $new_initialDate . " database date format: " . $database_date;
+			return $result;
+		}
+	}
+
+
+	public function change_study_submodule_initial_date($study_submodule_id, $new_initialDate,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		if ($this->study_submodule_exists($study_submodule_id,$academic_period_id)) {
+			//UPDATE
+			return $this->update_study_submodule_initial_date($study_submodule_id, $new_initialDate,$academic_period_id);
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_initialDate: " . $new_initialDate . ". Study submodule does not exists!";
+			return $result;
+		}
+	}
+
+	public function update_study_submodule_final_date($study_submodule_id, $new_finalDate,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*Example SQL
+		UPDATE `study_submodules_academic_periods` 
+		SET study_submodules_academic_periods_endDate=DATE
+		WHERE `study_submodules_academic_periods_study_submodules_id` = 1
+		AND `study_submodules_academic_periods_academic_period_id`= 5
+		*/
+
+		$database_date = date('Y-m-d', strtotime($new_finalDate));
+
+		$data = array(
+           'study_submodules_academic_periods_endDate' => $database_date
+        );
+
+		$this->db->where('study_submodules_academic_periods_study_submodules_id', $study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $academic_period_id);
+		$this->db->update('study_submodules_academic_periods', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+			$result->result = true;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . " database date format: " . $database_date;
+			return $result;
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . " database date format: " . $database_date;
+			return $result;
+		}
+	}
+
+
+	public function change_study_submodule_final_date($study_submodule_id, $new_finalDate,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		if ($this->study_submodule_exists($study_submodule_id,$academic_period_id)) {
+			//UPDATE
+			return $this->update_study_submodule_final_date($study_submodule_id, $new_finalDate,$academic_period_id);
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . $new_finalDate . ". Study submodule does not exists!";
+			return $result;
+		}
+	}
+
+	public function study_submodule_exists($study_submodule_id,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/* 
+		SELECT study_submodules_academic_periods_study_submodules_id 
+		FROM study_submodules_academic_periods 
+		WHERE study_submodules_academic_periods_study_submodules_id=1 AND study_submodules_academic_periods_academic_period_id=5
+		*/
+
+		$this->db->select('study_submodules_academic_periods_study_submodules_id');
+		$this->db->from('study_submodules_academic_periods');
+		$this->db->where('study_submodules_academic_periods_study_submodules_id',$study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		$user_data = new stdClass();
+		if ($query->num_rows() == 1){
+			return true;
+		}	
+		else {
+			return false;
+		}
+	}
+
 	public function get_all_ldap_users_uid($basedn) {
 		$this->_init_ldap();
 		$filter = '(uid=*)';	
@@ -2819,6 +3008,7 @@ class managment_model  extends CI_Model  {
 		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
 		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period);
+		$this->db->limit(10);
 		
 		$this->db->order_by('studies_shortname', $orderby);
 		
@@ -2835,6 +3025,10 @@ class managment_model  extends CI_Model  {
 				$study_submodule->shortname = $row->study_submodules_shortname;
 				$study_submodule->name = $row->study_submodules_name;
 				$study_submodule->description = $row->study_submodules_description;
+
+				$study_submodule->module_id = $row->study_submodules_study_module_id;
+				$study_submodule->module_shortname = $row->study_module_shortname;
+				$study_submodule->module_name = $row->study_module_name;
 
 				$study_submodule->course_id = $row->study_submodules_courseid;
 				$study_submodule->course_shortname = $row->course_shortname;

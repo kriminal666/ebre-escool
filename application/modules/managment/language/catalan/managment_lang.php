@@ -297,3 +297,15 @@ $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_ini
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_force_change_password']="Ha de canviar password?";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_ldap_dn']="Ldap DN";
 
+
+$lang['study_submodules_id'] = "Id"; 
+$lang['study_submodules_shortname'] = "Nom curt"; 
+$lang['study_submodules_name'] = "Nom"; 
+$lang['study_submodules_module'] = "Mòdul professional/Crèdit"; 
+$lang['study_submodules_course'] = "Curs"; 
+$lang['study_submodules_study'] = "Estudi"; 
+$lang['study_submodules_order'] = "Ordre"; 
+$lang['study_submodules_initialDate'] = "Data inicial"; 
+$lang['study_submodules_endDate'] = "Data final"; 
+$lang['study_submodules_academic_periods_totalHours'] = "Hores Totals"; 
+$lang['study_submodules_description'] = "Descripció"; 

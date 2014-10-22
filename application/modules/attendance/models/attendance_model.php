@@ -2078,26 +2078,26 @@ function get_current_academic_period() {
 		$current_academic_period_id = $this->get_current_academic_period_id();
 
 		/*
-		SELECT DISTINCT lesson_study_module_id , study_module_external_code , study_module_shortname , study_module_name
+		SELECT DISTINCT lesson_study_module_id , study_module_academic_periods_external_code , study_module_shortname , study_module_name
 		FROM lesson
 		INNER JOIN study_module ON lesson.lesson_study_module_id = study_module.study_module_id
-		WHERE lesson_teacher_id = 39
-		ORDER BY study_module_order,study_module_shortname
+		INNER JOIN  study_module_academic_periods ON  study_module_academic_periods.`study_module_academic_periods_study_module_id` = study_module.study_module_id
+		WHERE lesson_teacher_id = 77 AND lesson_academic_period_id=5
+		ORDER BY study_module_shortname
 		*/
 
-		$this->db->select('lesson_study_module_id,study_module_id,study_module_external_code,study_module_shortname,study_module_name');
+		$this->db->select('lesson_study_module_id,study_module_id,study_module_academic_periods_external_code,study_module_shortname,study_module_name');
+		$this->db->distinct();
 		$this->db->from('lesson');
 		$this->db->join('study_module', "lesson.lesson_study_module_id = study_module.study_module_id");
+		$this->db->join('study_module_academic_periods', "study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id");
+		$this->db->where("lesson.lesson_teacher_id", $teacher_id);
+		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
 		
 	/*	$this->db->order_by('study_module_order', $orderby); */
 		$this->db->order_by('study_module_shortname', $orderby);
-		
-		$this->db->where("lesson.lesson_teacher_id", $teacher_id);
-		$this->db->where('lesson_academic_period_id', $current_academic_period_id);
-
-		$this->db->distinct();		
+				
 		$query = $this->db->get();
-
 		//echo $this->db->last_query();
 		
 		if ($query->num_rows() > 0)	{
@@ -2110,7 +2110,7 @@ function get_current_academic_period() {
 				$study_module->id = $row['study_module_id'];
 				$study_module->shortname = $row['study_module_shortname'];				
 				$study_module->name = $row['study_module_name'];
-				$study_module->code = $row['study_module_external_code'];
+				$study_module->code = $row['study_module_academic_periods_external_code'];
 				
    				$study_modules[$row['study_module_id']] = $study_module;
 
@@ -2135,9 +2135,10 @@ function get_current_academic_period() {
 		*/
 
 		$this->db->select('incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id, 
-			incident_type, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
+			incident_type,incident_type.incident_type_code,incident_type.incident_type_shortName,incident_type.incident_type_name, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
 			incident_markedForDeletion, incident_markedForDeletionDate');
 		$this->db->from('incident');				
+		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');
 		$this->db->where('incident_date', $date);
 		$this->db->where_in('incident_student_id', $array_student_person_ids);
 
@@ -2157,7 +2158,9 @@ function get_current_academic_period() {
 				$incident->date = $row->incident_date;
 				$incident->study_submodule_id = $row->incident_study_submodule_id;
 				$incident->type_id = $row->incident_type;
-				$incident->type_code = $incident_type_codes_by_incident_type_ids[$row->incident_type];
+				$incident->type_code = $row->incident_type_code;
+				$incident->type_shortName = $row->incident_type_shortName;
+				$incident->type_name = $row->incident_type_name;
 				$incident->notes = $row->incident_notes;
 				$incident->entryDate = $row->incident_entryDate;
 				$incident->last_update = $row->incident_last_update;

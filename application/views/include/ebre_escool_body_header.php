@@ -889,8 +889,64 @@
           </li>
           <?php endif?>
 
+
+
+
+          <!-- MANTENIMENTS professors -->
+          <?php if ( $this->session->userdata('is_admin') || $this->session->userdata('is_teacher') ): ?>
+
+
+           <li id="maintenances_teachers">
+            <a href="#" class="dropdown-toggle">
+              <i class="icon-briefcase"></i>
+              <span class="menu-text">
+                <?php echo lang('maintenances');?>
+              </span>
+              <b class="arrow icon-angle-down"></b>
+            </a>
+
+         
+              
+              <ul class="submenu">
+              <!-- Persones -->
+              <li id="maintenances_teachers_curriculum">
+                <a href="#" class="dropdown-toggle">
+                  <i class="icon-double-angle-right"></i>
+
+                  <?php echo "Curriculum";?>
+
+                  <b class="arrow icon-angle-down"></b>
+                </a>
+
+                <ul class="submenu">
+                  <li id="maintenances_teachers_curriculum_study_submodules_dates">
+                    <a href="<?php echo base_url('/index.php/managment/study_submodules_dates'); ?>">
+                       <?php echo "UFs/UDs dates";?>
+                    </a>
+                  </li>
+
+                  <li id="maintenances_teachers_curriculum_study_submodule_dates">
+                    <a href="<?php echo base_url('/index.php/managment/study_submodule_dates'); ?>">
+                       <?php echo "Dates d'una UF concreta";?>
+                    </a>
+                  </li>
+
+                </ul>
+              </li> 
+
+            </ul>
+          </li>    
+          
+          <?php endif;?>
+           <!-- FI MANTENIMENTS PROFES-->
+
+
+
+          
           <!-- MANTENIMENTS -->
-          <?php if ($this->session->userdata('is_admin')): ?>
+          <?php if ( $this->session->userdata('is_admin') ) : ?>
+
+
           <li id="maintenances">
             <a href="#" class="dropdown-toggle">
               <i class="icon-briefcase"></i>
@@ -900,7 +956,9 @@
               <b class="arrow icon-angle-down"></b>
             </a>
 
-            <ul class="submenu">
+         
+              
+              <ul class="submenu">
               <!-- Persones -->
               <li id="persons">
                 <a href="#" class="dropdown-toggle">
@@ -1102,8 +1160,12 @@
 
 
             </ul>
+
           </li>
+          
+          
           <?php endif?>
+          <!-- END ADMIN MENUS -->
 
           <!-- GESTIÓ -->
           <?php if ($this->session->userdata('is_admin')): ?>
