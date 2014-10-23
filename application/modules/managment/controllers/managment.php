@@ -20,6 +20,7 @@ class managment extends skeleton_main {
         //$this->load->model('attendance_model');
         $this->load->model('managment_model');
         $this->load->library('ebre_escool_ldap');
+        $this->load->library('ebre_escool');
         //$this->config->load('managment');        
         $this->config->load('ebre-escool',true);
         $this->config->load('auth_ldap',true);
@@ -191,14 +192,47 @@ class managment extends skeleton_main {
 
 	
 
-	public function study_submodules_dates($academic_period_id = null) {
+	public function study_submodules_dates($academic_period_id = null,$teacher_code = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
 		}
-		
+
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+		$user_is_teacher = $this->session->userdata('is_teacher');
+
+		if ( !($user_is_admin || $user_is_teacher) ) {
+			echo "Access not allowed!";
+		}
+
+		$selected_academic_period_id = false;
+
+		$current_academic_period_id = null;
+
+		if ($academic_period_id == null) {
+			$database_current_academic_period =  $this->managment_model->get_current_academic_period();
+			
+			if ($database_current_academic_period->id) {
+				$current_academic_period_id = $database_current_academic_period->id;
+			} else {
+				$current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');	
+			}
+			
+			$academic_period_id=$current_academic_period_id ;	
+		} else {
+			$selected_academic_period_id = $academic_period_id;
+		}
+
+		$classroom_group_id = $this->managment_model->is_mentor_return_classroom_group_id($this->session->userdata('person_id'), $academic_period_id);
+		$user_teacher_code = $this->managment_model->get_teacher_code_by_personid($this->session->userdata('person_id'));
+
+		$user_is_mentor=true;
+		if ($classroom_group_id == false) {
+			$user_is_mentor=false;	
+		} 
+
 		$active_menu = array();
 		$active_menu['menu']='#maintenances_teachers';
 		$active_menu['submenu1']='#maintenances_teachers_curriculum';
@@ -261,40 +295,73 @@ class managment extends skeleton_main {
 
 		$data = array();
 
-		$data['lessons_table_title'] = "Unitats formatives / Unitats didàctiques";
+		$data['study_submodules_table_title'] = "Unitats formatives / Unitats didàctiques";
 		
-		$selected_academic_period_id = false;
-
-		$current_academic_period_id = null;
-
-		if ($academic_period_id == null) {
-			$database_current_academic_period =  $this->managment_model->get_current_academic_period();
-			
-			if ($database_current_academic_period->id) {
-				$current_academic_period_id = $database_current_academic_period->id;
-			} else {
-				$current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');	
-			}
-			
-			$academic_period_id=$current_academic_period_id ;	
-		} else {
-			$selected_academic_period_id = $academic_period_id;
-		}
-
 		$academic_periods = $this->managment_model->get_all_academic_periods();	
 
-		$all_study_submodules = array();
-
-		$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
-
-		$data['all_study_submodules'] = $all_study_submodules;
-
 		$data['academic_periods'] = $academic_periods;
+
 		$data['selected_academic_period_id'] = $selected_academic_period_id;
 
-		$this->load->view('study_submodules_dates.php',$data);
+		$dates = $this->managment_model->get_academic_period_dates($academic_period_id);
 		
+		$data['selected_academic_period_initial_date'] = $dates->initial_date;
+		$data['selected_academic_period_final_date'] = $dates->final_date;
+
+		$teachers_array = array();
+		if ($user_is_admin) {
+			//Load teachers from Model
+			$teachers_array = $this->managment_model->get_all_teachers_ids_and_names();
+			//Admin is teacher
+			if ($user_is_teacher) {
+				//TODO
+				if ( ($teacher_code != "void") && ($teacher_code != null) ) {
+					$data['default_teacher'] = $teacher_code;
+				}
+				else {
+					if (($teacher_code == "void")) {
+						$data['default_teacher'] = null;
+					} else {
+						$data['default_teacher'] = $user_teacher_code;		
+					}
+					
+				}
+				
+			}
+			$data['teachers'] = $teachers_array;
+			
+		} else {
+			//Show Only one teacher
+			$teachers_array = $this->managment_model->get_teacher_ids_and_names($this->session->userdata('teacher_id'));
+			$data['teachers'] = $teachers_array;
+			$tmp_array = array_keys($teachers_array);
+			$data['default_teacher'] = $tmp_array[0];
+		}
+
 		
+		$all_study_submodules = array();
+		if ($teacher_code == "void") {
+			if ($user_is_admin) {
+				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
+			} else {
+				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+			}
+		} else {
+			if ($teacher_code != "") {
+				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$teacher_code);	
+			} else {
+				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+			}
+			
+		}
+		$data['all_study_submodules'] = $all_study_submodules;
+		
+
+		
+
+		
+
+		$this->load->view('study_submodules_dates.php',$data);	
 		$this->_load_body_footer();	
 		
 	}

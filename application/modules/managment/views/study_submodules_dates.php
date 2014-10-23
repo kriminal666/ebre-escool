@@ -47,7 +47,6 @@
 
       $(function(){
 
-      		
 
 			  $.editable.addInputType('datepicker', {
 				    element: function(settings, original) {
@@ -157,7 +156,42 @@
      					console.debug(settings);
      					*/
 
-     					new_initialDate = value;
+						var selected_academic_period_initial_date = "<?php echo $selected_academic_period_initial_date;?>";
+						var selected_academic_period_initial_date_array = selected_academic_period_initial_date.split("-"); 
+						var _selected_academic_period_initial_date_object= new Date(selected_academic_period_initial_date_array[0], parseInt(selected_academic_period_initial_date_array[1],10)-1, parseInt(selected_academic_period_initial_date_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_initial_date = selected_academic_period_initial_date_array[2] +  "-" + selected_academic_period_initial_date_array[1] + "-" + selected_academic_period_initial_date_array[0];
+
+						var selected_academic_period_final_date = "<?php echo $selected_academic_period_final_date;?>";
+						var selected_academic_period_final_date_array = selected_academic_period_final_date.split("-"); 
+						var _selected_academic_period_final_date_object= new Date(selected_academic_period_final_date_array[0], parseInt(selected_academic_period_final_date_array[1],10)-1, parseInt(selected_academic_period_final_date_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_final_date = selected_academic_period_final_date_array[2] +  "-" + selected_academic_period_final_date_array[1] + "-" + selected_academic_period_final_date_array[0];
+
+						new_initialDate = value;
+     					var new_initialDate_array = new_initialDate.split("-"); 
+     						/* DEBUG:
+							console.debug("day: " + new_initialDate_array[0]);
+							console.debug("month: " + new_initialDate_array[1]);
+							console.debug("Year: "  + new_initialDate_array[2]);
+							*/
+						var _new_initialDate_object= new Date(new_initialDate_array[2], parseInt(new_initialDate_array[1],10)-1, parseInt(new_initialDate_array[0],10), 0, 0, 0, 0); 	
+
+						/*
+						console.debug("_selected_academic_period_initial_date_object: " + _selected_academic_period_initial_date_object);
+						console.debug("_selected_academic_period_final_date_object: " + _selected_academic_period_final_date_object);
+						console.debug("_new_initialDate_object: " + _new_initialDate_object);
+						*/
+
+
+						if ( ( _new_initialDate_object < _selected_academic_period_initial_date_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+						if ( ( _new_initialDate_object > _selected_academic_period_final_date_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
      					study_submodule_id = this.getAttribute("studysubmoduleid");
 
      					var finalDateValue = $('#final_date_' + study_submodule_id).text().trim();
@@ -166,15 +200,7 @@
      					if (finalDateValue != "") {
      						//console.debug("finalDateValue: " + finalDateValue);
      						//Compare dates
-							var new_initialDate_array = value.split("-"); 
-							
-							/* DEBUG:
-							console.debug("day: " + new_initialDate_array[0]);
-							console.debug("month: " + new_initialDate_array[1]);
-							console.debug("Year: "  + new_initialDate_array[2]);
-							*/
-	     					var _new_initialDate_object= new Date(new_initialDate_array[2], parseInt(new_initialDate_array[1],10)-1, parseInt(new_initialDate_array[0],10), 0, 0, 0, 0); 
-	     					var new_finalDate_array = finalDateValue.split("-"); 
+							var new_finalDate_array = finalDateValue.split("-"); 
 	     					var _new_finalDate_object = new Date(new_finalDate_array[2], parseInt(new_finalDate_array[1],10)-1, parseInt(new_finalDate_array[0],10), 0, 0, 0, 0); 
 
      						//console.debug("_new_initialDate_object:" + _new_initialDate_object.toDateString());
@@ -246,7 +272,7 @@
 				        return value;
 				    }, {
 				        type: 'datepicker',
-				        indicator: '<img src="<?php echo base_url("/assets/img/indicator.gif");?>',
+				        indicator: 'Guardant...',
 				        tooltip: 'Feu click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
 				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
@@ -267,7 +293,26 @@
      					console.debug(settings);
      					*/
 
+						var selected_academic_period_initial_date = "<?php echo $selected_academic_period_initial_date;?>";
+						var selected_academic_period_initial_date_array = selected_academic_period_initial_date.split("-"); 
+						var _selected_academic_period_initial_date_object= new Date(selected_academic_period_initial_date_array[0], parseInt(selected_academic_period_initial_date_array[1],10)-1, parseInt(selected_academic_period_initial_date_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_initial_date = selected_academic_period_initial_date_array[2] +  "-" + selected_academic_period_initial_date_array[1] + "-" + selected_academic_period_initial_date_array[0];
+
+						var selected_academic_period_final_date = "<?php echo $selected_academic_period_final_date;?>";
+						var selected_academic_period_final_date_array = selected_academic_period_final_date.split("-"); 
+						var _selected_academic_period_final_date_object= new Date(selected_academic_period_final_date_array[0], parseInt(selected_academic_period_final_date_array[1],10)-1, parseInt(selected_academic_period_final_date_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_final_date = selected_academic_period_final_date_array[2] +  "-" + selected_academic_period_final_date_array[1] + "-" + selected_academic_period_final_date_array[0];
+
+
      					new_finalDate = value;
+     					var new_finalDate_array = new_finalDate.split("-"); 							
+							/* DEBUG:
+							console.debug("day: " + new_finalDate_array[0]);
+							console.debug("month: " + new_finalDate_array[1]);
+							console.debug("Year: "  + new_finalDate_array[2]);
+							*/
+						var _new_finalDate_object= new Date(new_finalDate_array[2], parseInt(new_finalDate_array[1],10)-1, parseInt(new_finalDate_array[0],10), 0, 0, 0, 0);
+							
      					study_submodule_id = this.getAttribute("studysubmoduleid");
 
      					//console.debug("new_finalDate: " . new_finalDate);
@@ -275,19 +320,21 @@
 
      					var initialDateValue = $('#initial_date_' + study_submodule_id).text().trim();
 
+     					if ( ( _new_finalDate_object < _selected_academic_period_initial_date_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+						if ( ( _new_finalDate_object > _selected_academic_period_final_date_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
      					//console.debug("initialDateValue: " + initialDateValue);
      					if (initialDateValue != "") {
      						//console.debug("initialDateValue: " + initialDateValue);
      						//Compare dates
-							var new_finalDate_array = value.split("-"); 
-							
-							/* DEBUG:
-							console.debug("day: " + new_finalDate_array[0]);
-							console.debug("month: " + new_finalDate_array[1]);
-							console.debug("Year: "  + new_finalDate_array[2]);
-							*/
-	     					var _new_finalDate_object= new Date(new_finalDate_array[2], parseInt(new_finalDate_array[1],10)-1, parseInt(new_finalDate_array[0],10), 0, 0, 0, 0); 
-	     					var new_initialDate_array = initialDateValue.split("-"); 
+							var new_initialDate_array = initialDateValue.split("-"); 
 	     					var _new_initialDate_object = new Date(new_initialDate_array[2], parseInt(new_initialDate_array[1],10)-1, parseInt(new_initialDate_array[0],10), 0, 0, 0, 0); 
 
      						//console.debug("_new_initialDate_object:" + _new_initialDate_object.toDateString());
@@ -356,7 +403,7 @@
 				        return value;
 				    }, {
 				        type: 'datepicker',
-				        indicator: '<img src="<?php echo base_url("/assets/img/indicator.gif");?>',
+				        indicator: 'Guardant...',
 				        tooltip: 'Feu click per editar...',
 				        placeholder: '<span class="muted">Feu click per editar...</span>',
 				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
@@ -365,44 +412,50 @@
 				        width: 'none',
 				    }
 				);
-
-
-              $("#select_all").click(function() {
-
-                $('input:checkbox').map(function () {
-                  this.checked = true;
-                }).get(); 
-                
-              });
-
-              $("#unselect_all").click(function() {
-
-                $('input:checkbox').map(function () {
-                  this.checked = false;
-                }).get(); 
-                
-              });
+              
 
               //Jquery select plugin: http://ivaynberg.github.io/select2/
-              $("#select_lessons_academic_period_filter").select2();
+              $("#select_study_submodules_academic_period_filter").select2();
 
-              $('#select_lessons_academic_period_filter').on("change", function(e) {  
-                  var selectedValue = $("#select_lessons_academic_period_filter").select2("val");
+              $('#select_study_submodules_academic_period_filter').on("change", function(e) {  
+                  var selectedValue = $("#select_study_submodules_academic_period_filter").select2("val");
                   var pathArray = window.location.pathname.split( '/' );
                   var secondLevelLocation = pathArray[1];
-                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/curriculum_reports_lessons";
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/study_submodules_dates";
                   //alert(baseURL + "/" + selectedValue);
                   window.location.href = baseURL + "/" + selectedValue;
 
               });
 
-              var all_lessons_table = $('#all_lessons').DataTable( {
+
+              $("#teacher").select2({width: 'resolve', placeholder: "Seleccioneu un professor", allowClear: true }); 
+
+			  $('#teacher').on("change", function(e) { 
+			    teacher_code = $("#teacher").select2("val");
+			    console.debug("teacher_code:" + teacher_code);
+
+			    //TODO
+			    academic_period_id= 5;
+
+			    if (teacher_code == "") {
+			    	teacher_code="void";
+			    }
+
+			    var pathArray = window.location.pathname.split( '/' );
+			    var secondLevelLocation = pathArray[1];
+			    var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/study_submodules_dates";
+			    //alert(baseURL + "/" + teacher_code);
+			    window.location.href = baseURL + "/" + academic_period_id + "/" + teacher_code;
+
+			  });
+
+              var all_study_submodules_table = $('#all_study_submodules').DataTable( {
                       "columnDefs": [
                                       { "type": "html", "targets": 3 }
                                     ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],                      
                               "oTableTools": {
-                  "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
+                      "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
                                       {
                                               "sExtends": "copy",
@@ -419,7 +472,7 @@
                                       {
                                               "sExtends": "pdf",
                                               "sPdfOrientation": "landscape",
-                                              "sPdfMessage": "<?php echo lang("all_lessons");?>",
+                                              "sPdfMessage": "<?php echo lang("all_study_submodules");?>",
                                               "sTitle": "TODO",
                                               "sButtonText": "PDF"
                                       },
@@ -451,126 +504,21 @@
              
         }); 
 
-        $("#select_all_lessons_study_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un estudi", allowClear: true });
-
-        $("#select_all_lessons_study_code_filter").on( 'change', function () {
-            var val = $(this).val();
-            all_lessons_table.column(3).search( val , false, true ).draw();
-        } );
-
-        all_lessons_table.column(3).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_study_code_filter").append( '<option value="'+ textToSearch  +'">'+ textToSearch +'</option>' )
-        } );
-        
-        $("#select_all_lessons_course_code_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un curs", allowClear: true });
-        $("#select_all_lessons_course_code_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(4).search( val , false, true ).draw();
-        } );
-
-        all_lessons_table.column(4).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_course_code_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-        $("#select_all_lessons_classroomgroup_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un grup de classe", allowClear: true });
-        $("#select_all_lessons_classroomgroup_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(5).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(5).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_classroomgroup_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-
-        $("#select_all_lessons_study_module_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un MP/Crèdit", allowClear: true });
-        $("#select_all_lessons_study_module_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(7).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(7).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_study_module_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-        $("#select_all_lessons_teacher_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un professor", allowClear: true });
-        $("#select_all_lessons_teacher_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(6).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(6).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_teacher_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-        $("#select_all_lessons_location_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un espai", allowClear: true });
-        $("#select_all_lessons_location_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(8).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(8).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_location_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-        $("#select_all_lessons_day_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un dia", allowClear: true });
-        $("#select_all_lessons_day_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(9).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(9).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_day_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
-        $("#select_all_lessons_time_slot_filter").select2({ width: 'resolve', placeholder: "Seleccioneu una franja horària", allowClear: true });
-        $("#select_all_lessons_time_slot_filter").on( 'change', function () {
-            var val = $(this).val();
-
-            all_lessons_table.column(10).search( val, false, true ).draw();
-        } );
-
-        all_lessons_table.column(10).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_lessons_time_slot_filter").append( '<option value="'+textToSearch+'">'+textToSearch+'</option>' )
-        } );
-
 });
 </script>
 
 <div class="container">
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_all_lessonss_filter">
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_submodules_filter">
   <thead style="background-color: #d9edf7;">
     <tr>
       <td colspan="6" style="text-align: center;"> <h4>Filtres
         </h4></td>
     </tr>
     <tr> 
-       <td><?php echo lang('lessons_academic_period')?>: </td>
+       <td><?php echo lang('study_submodules_academic_period')?>: </td>
        <td>
-          <select id="select_lessons_academic_period_filter">
+          <select id="select_study_submodules_academic_period_filter">
           <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
 
             <?php if ( $selected_academic_period_id) : ?>
@@ -593,11 +541,11 @@
        </td>
        <td><?php echo lang('lesson_study_code')?>:</td>
        <td>
-        <select id="select_all_lessons_study_code_filter"><option value=""></option></select>
+        <select id="select_all_study_submodules_study_code_filter"><option value=""></option></select>
       </td>
        <td><?php echo lang('lesson_course_code')?>:</td>
        <td>
-        <select id="select_all_lessons_course_code_filter">
+        <select id="select_all_study_submodules_course_code_filter">
           <option value=""></option>
         </select>
       </td>
@@ -606,30 +554,38 @@
     <tr> 
        <td><?php echo lang('lesson_classroom_group')?>:</td>
        <td>
-        <select id="select_all_lessons_classroomgroup_filter">
+        <select id="select_all_study_submodules_classroomgroup_filter">
           <option value=""></option>
         </select>
        </td>       
       <td><?php echo lang('lesson_study_module')?>:</td>
       <td>
-        <select id="select_all_lessons_study_module_filter"><option value=""></option></select>
+        <select id="select_all_study_submodules_study_module_filter"><option value=""></option></select>
       </td>
        <td><?php echo lang('lesson_teacher')?>:</td>
        <td>
-        <select id="select_all_lessons_teacher_filter">
-          <option value=""></option>
-        </select>
+       	<!-- id="select_all_study_submodules_teacher_filter" -->
+         <select id="teacher" style="width: 400px">
+  		   <option></option>
+		   <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
+				   <?php if( $teacher_id == $default_teacher): ?>
+		            <option value="<?php echo $teacher_id; ?>" selected="selected"><?php echo $teacher_name; ?></option>
+		           <?php else: ?> 
+		            <option value="<?php echo $teacher_id; ?>" ><?php echo $teacher_name; ?></option>
+		           <?php endif; ?> 
+		   <?php endforeach; ?>	
+		  </select> 
       </td>
     </tr>
   </thead>  
 </table> 
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_lessons">
+<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_submodules">
  <thead style="background-color: #d9edf7;">
   <tr>
     <td colspan="11" style="text-align: center;"> <h4>
-      <a href="<?php echo base_url('/index.php/curriculum/lessons') ;?>">
-        <?php echo $lessons_table_title?>
+      <a href="<?php echo base_url('/index.php/managment/study_submodules_dates') ;?>">
+        <?php echo $study_submodules_table_title?>
       </a>
       </h4></td>
   </tr>

@@ -280,7 +280,7 @@ class teachers_model  extends CI_Model  {
 
 		$this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_course_id, classroom_group_academic_periods_description, classroom_group_academic_periods_mentorId, classroom_group_academic_periods_shift, 
 		classroom_group_academic_periods_location, course_shortname, course_name, course_study_id, studies_shortname, studies_name, studies_studies_organizational_unit_id, studies_studies_law_id, studies_law_shortname, 
-		studies_law_name, teacher_person_id, teacher_academic_periods_code,teacher_academic_periods_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName');
+		studies_law_name, teacher_person_id, teacher_academic_periods_code,teacher_academic_periods_department_id, person_givenName, person_sn1, person_sn2,shift_name,location_name, location_shortName, teacher_id');
 		$this->db->from('classroom_group_academic_periods');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id', 'left');
 		$this->db->join('course','course.course_id = classroom_group.classroom_group_course_id', 'left');
@@ -325,6 +325,8 @@ class teachers_model  extends CI_Model  {
 				
 				$classroom_group->mentor_id = $row->classroom_group_academic_periods_mentorId;
 				$classroom_group->mentor_person_id = $row->teacher_person_id;
+				$classroom_group->teacher_id = $row->teacher_id;
+				
 				$classroom_group->mentor_code = $row->teacher_academic_periods_code;
 				$classroom_group->mentor_department_id = $row->teacher_academic_periods_department_id;
 				$classroom_group->mentor_givenname = $row->person_givenName;

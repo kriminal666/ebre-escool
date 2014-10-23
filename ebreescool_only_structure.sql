@@ -490,6 +490,8 @@ CREATE TABLE IF NOT EXISTS `academic_periods` (
   `academic_periods_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `academic_periods_alt_name` varchar(50) NOT NULL,
   `academic_periods_current` tinyint(1) NOT NULL,
+  `academic_periods_initial_date` date,
+  `academic_periods_final_date` date,
   `academic_periods_entryDate` datetime NOT NULL,
   `academic_periods_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `academic_periods_creationUserId` int(11) DEFAULT NULL,

@@ -187,7 +187,7 @@
           <?php echo $mentor_fullname;?>
       ( person id: <a href="<?php echo base_url('/index.php/persons/index/edit/' . $classroom_group->mentor_id ) ;?>">
           <?php echo $classroom_group->mentor_person_id ;?>
-      </a> )    
+      </a> )   
       </a>
      </td>
    </tr>

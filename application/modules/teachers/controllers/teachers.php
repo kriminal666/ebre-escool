@@ -517,6 +517,10 @@ class teachers extends skeleton_main {
 
     }
 
+    function mentor_reports($academic_period_id = null){
+        $this->tutors_report($academic_period_id);
+    }
+
     function tutors_report($academic_period_id = null) { // Tutors de Grup
 
         if (!$this->skeleton_auth->logged_in())
