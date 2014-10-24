@@ -412,18 +412,54 @@
 				        width: 'none',
 				    }
 				);
+
+			
               
+
+              $("#select_class_list_classgroup_filter").select2( { width: "100%", placeholder: "Seleccioneu un grup de classe", allowClear: true });
+
+              $('#select_class_list_classgroup_filter').on("change", function(e) {  
+                  
+                  academic_period_id = $("#select_study_submodules_academic_period_filter").select2("val");
+                  teacher_code = $("#teacher").select2("val");
+                  classroom_group_id = $("#select_class_list_classgroup_filter").select2("val");
+
+                  if (teacher_code == "") {
+			    	teacher_code="void";
+				    }
+				    if (classroom_group_id == "") {
+				    	classroom_group_id="void";
+				    }
+
+                  var pathArray = window.location.pathname.split( '/' );
+                  var secondLevelLocation = pathArray[1];
+                  var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/study_submodules_dates";
+                  //alert(baseURL + "/" + classroom_group_id);
+                  window.location.href = baseURL + "/" + academic_period_id + "/" + teacher_code + "/" + classroom_group_id;
+
+              });
+
 
               //Jquery select plugin: http://ivaynberg.github.io/select2/
               $("#select_study_submodules_academic_period_filter").select2();
 
               $('#select_study_submodules_academic_period_filter').on("change", function(e) {  
-                  var selectedValue = $("#select_study_submodules_academic_period_filter").select2("val");
+                  academic_period_id = $("#select_study_submodules_academic_period_filter").select2("val");
+                  teacher_code = $("#teacher").select2("val");
+                  classroom_group_id = $("#select_class_list_classgroup_filter").select2("val");
+
+                  if (teacher_code == "") {
+			    	teacher_code="void";
+				    }
+				    if (classroom_group_id == "") {
+				    	classroom_group_id="void";
+				    }
+
                   var pathArray = window.location.pathname.split( '/' );
                   var secondLevelLocation = pathArray[1];
                   var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/study_submodules_dates";
-                  //alert(baseURL + "/" + selectedValue);
-                  window.location.href = baseURL + "/" + selectedValue;
+                  //alert(baseURL + "/" + academic_period_id);
+                  window.location.href = baseURL + "/" + academic_period_id  + "/" + teacher_code + "/" + classroom_group_id;
 
               });
 
@@ -431,25 +467,27 @@
               $("#teacher").select2({width: 'resolve', placeholder: "Seleccioneu un professor", allowClear: true }); 
 
 			  $('#teacher').on("change", function(e) { 
-			    teacher_code = $("#teacher").select2("val");
-			    console.debug("teacher_code:" + teacher_code);
 
-			    //TODO
-			    academic_period_id= 5;
+			  	academic_period_id = $("#select_study_submodules_academic_period_filter").select2("val");
+                teacher_code = $("#teacher").select2("val");
+                classroom_group_id = $("#select_class_list_classgroup_filter").select2("val");
 
 			    if (teacher_code == "") {
 			    	teacher_code="void";
+			    }
+			    if (classroom_group_id == "") {
+			    	classroom_group_id="void";
 			    }
 
 			    var pathArray = window.location.pathname.split( '/' );
 			    var secondLevelLocation = pathArray[1];
 			    var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/managment/study_submodules_dates";
 			    //alert(baseURL + "/" + teacher_code);
-			    window.location.href = baseURL + "/" + academic_period_id + "/" + teacher_code;
+			    window.location.href = baseURL + "/" + academic_period_id  + "/" + teacher_code + "/" + classroom_group_id;
 
 			  });
 
-              var all_study_submodules_table = $('#all_study_submodules').DataTable( {
+              var study_submodules_table = $('#study_submodules_table').DataTable( {
                       "columnDefs": [
                                       { "type": "html", "targets": 3 }
                                     ],
@@ -472,7 +510,7 @@
                                       {
                                               "sExtends": "pdf",
                                               "sPdfOrientation": "landscape",
-                                              "sPdfMessage": "<?php echo lang("all_study_submodules");?>",
+                                              "sPdfMessage": "<?php echo lang("study_submodules");?>",
                                               "sTitle": "TODO",
                                               "sButtonText": "PDF"
                                       },
@@ -509,14 +547,32 @@
 
 <div class="container">
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_submodules_filter">
+	<div class="alert alert-block alert-warning">
+                <button type="button" class="close" data-dismiss="alert">
+                  <i class="icon-remove"></i>
+                </button>
+
+                <i class="icon-ok red"></i>
+
+                
+                <strong class="red">
+                  ATENCIÓ : 
+                </strong>
+                 Podeu consultar totes les unitats formatives/unitats didàctiques del centre però només podreu modificar les unitats formatives que pertanyin a un Mòdul professional o Crèdit que impartiu. 
+                 En el cas dels tutors, podeu modificar totes les unitats formatives del vostre grup. Els administradors poden modificar totes les UFs/UDs
+                 <strong class="green">
+                  FILTRES :
+                </strong> TODO 
+              </div>
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_filter">
   <thead style="background-color: #d9edf7;">
     <tr>
-      <td colspan="6" style="text-align: center;"> <h4>Filtres
+      <td colspan=4 style="text-align: center;"> <h4>Filtres
         </h4></td>
     </tr>
     <tr> 
-       <td><?php echo lang('study_submodules_academic_period')?>: </td>
+       <td ><?php echo lang('study_submodules_academic_period')?>: </td>
        <td>
           <select id="select_study_submodules_academic_period_filter">
           <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
@@ -539,32 +595,9 @@
           <?php endforeach; ?>
           </select>
        </td>
-       <td><?php echo lang('lesson_study_code')?>:</td>
+        <td><?php echo lang('lesson_teacher')?>:</td>
        <td>
-        <select id="select_all_study_submodules_study_code_filter"><option value=""></option></select>
-      </td>
-       <td><?php echo lang('lesson_course_code')?>:</td>
-       <td>
-        <select id="select_all_study_submodules_course_code_filter">
-          <option value=""></option>
-        </select>
-      </td>
-    </tr>
-
-    <tr> 
-       <td><?php echo lang('lesson_classroom_group')?>:</td>
-       <td>
-        <select id="select_all_study_submodules_classroomgroup_filter">
-          <option value=""></option>
-        </select>
-       </td>       
-      <td><?php echo lang('lesson_study_module')?>:</td>
-      <td>
-        <select id="select_all_study_submodules_study_module_filter"><option value=""></option></select>
-      </td>
-       <td><?php echo lang('lesson_teacher')?>:</td>
-       <td>
-       	<!-- id="select_all_study_submodules_teacher_filter" -->
+       	<!-- id="select_study_submodules_teacher_filter" -->
          <select id="teacher" style="width: 400px">
   		   <option></option>
 		   <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
@@ -576,11 +609,51 @@
 		   <?php endforeach; ?>	
 		  </select> 
       </td>
+   	</tr>
+
+    <tr> 
+       <td><?php echo lang('lesson_classroom_group')?>:</td>
+       <td>
+        <select id="select_class_list_classgroup_filter">
+        	    <option></option>
+                <?php foreach ($classroom_groups as $classgroup_key => $classgroup_value) : ?>
+                  <?php if ( $classgroup_key == $default_classroom_group_id) : ?>
+                    <option selected="selected" value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name . " (" . $classgroup_value->id. ")";?> </option>
+                  <?php else : ?>
+                    <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name . " (" . $classgroup_value->id. ")";?></option>
+                  <?php endif;?>
+                <?php endforeach; ?>
+        </select> 
+       </td>       
+       <td><?php echo lang('lesson_course_code')?>:</td>
+       <td>
+       	Pendent d'implementar
+        <!--<select id="select_study_submodules_course_code_filter">
+          <option value=""></option>
+        </select>-->
+      </td>      	
+      
+    </tr>
+    <tr>
+     
+       <td><?php echo lang('lesson_study_code')?>:</td>
+       
+       <td>
+       	Pendent d'implementar
+        <!--<select id="select_study_submodules_study_code_filter"><option value=""></option></select>-->
+      </td>
+
+      <td><?php echo lang('lesson_study_module')?>:</td>
+      <td>
+      	Pendent d'implementar
+        <!--<select id="select_study_submodules_study_module_filter"><option value=""></option></select>-->
+      </td>
+
     </tr>
   </thead>  
 </table> 
 
-<table class="table table-striped table-bordered table-hover table-condensed" id="all_study_submodules">
+<table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_table">
  <thead style="background-color: #d9edf7;">
   <tr>
     <td colspan="11" style="text-align: center;"> <h4>
@@ -607,8 +680,8 @@
 
   <!-- Iteration that shows study_submodules-->
 
-  <?php if (is_array($all_study_submodules) ) : ?>
-  <?php foreach ($all_study_submodules as $study_submodule_key => $study_submodule) : ?>
+  <?php if (is_array($study_submodules) ) : ?>
+  <?php foreach ($study_submodules as $study_submodule_key => $study_submodule) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
      <td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $study_submodule->id;?>"><span class="lbl">&nbsp;</span></label></td>
      <td>

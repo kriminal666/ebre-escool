@@ -192,7 +192,7 @@ class managment extends skeleton_main {
 
 	
 
-	public function study_submodules_dates($academic_period_id = null,$teacher_code = null) {
+	public function study_submodules_dates($academic_period_id = null,$teacher_code = null, $classroom_group_id = null) {
 
 		if (!$this->skeleton_auth->logged_in())
 		{
@@ -225,11 +225,11 @@ class managment extends skeleton_main {
 			$selected_academic_period_id = $academic_period_id;
 		}
 
-		$classroom_group_id = $this->managment_model->is_mentor_return_classroom_group_id($this->session->userdata('person_id'), $academic_period_id);
+		$mentor_classroom_group_ids = $this->managment_model->is_mentor_return_classroom_group_id($this->session->userdata('person_id'), $academic_period_id);
 		$user_teacher_code = $this->managment_model->get_teacher_code_by_personid($this->session->userdata('person_id'));
 
 		$user_is_mentor=true;
-		if ($classroom_group_id == false) {
+		if ($mentor_classroom_group_ids == false) {
 			$user_is_mentor=false;	
 		} 
 
@@ -309,57 +309,103 @@ class managment extends skeleton_main {
 		$data['selected_academic_period_final_date'] = $dates->final_date;
 
 		$teachers_array = array();
-		if ($user_is_admin) {
-			//Load teachers from Model
-			$teachers_array = $this->managment_model->get_all_teachers_ids_and_names();
-			//Admin is teacher
-			if ($user_is_teacher) {
-				//TODO
-				if ( ($teacher_code != "void") && ($teacher_code != null) ) {
-					$data['default_teacher'] = $teacher_code;
-				}
-				else {
-					if (($teacher_code == "void")) {
-						$data['default_teacher'] = null;
-					} else {
-						$data['default_teacher'] = $user_teacher_code;		
-					}
-					
-				}
-				
+		//Load teachers from Model
+		$teachers_array = $this->managment_model->get_all_teachers_ids_and_names();
+		$data['teachers'] = $teachers_array;
+
+		$data['default_teacher'] = null;
+		if ($teacher_code != null ) {
+			if ($teacher_code == "void") {
+				$data['default_teacher'] = null;
+			} else {
+				$data['default_teacher'] = $teacher_code;	
 			}
-			$data['teachers'] = $teachers_array;
-			
 		} else {
-			//Show Only one teacher
-			$teachers_array = $this->managment_model->get_teacher_ids_and_names($this->session->userdata('teacher_id'));
-			$data['teachers'] = $teachers_array;
-			$tmp_array = array_keys($teachers_array);
-			$data['default_teacher'] = $tmp_array[0];
+			if ($user_teacher_code != false) {
+				$data['default_teacher'] = $user_teacher_code;	
+			} else {
+				$data['default_teacher'] = null;
+			}
 		}
 
+		$all_classroom_groups = array();
+		$all_classroom_groups = $this->managment_model->get_all_classroomgroups($academic_period_id);
+		$data['classroom_groups'] = $all_classroom_groups;
+
+		$data['default_classroom_group_id'] = null;
+		if ( ($classroom_group_id != null) && ($classroom_group_id != "void") ) {
+			$data['default_classroom_group_id'] = $classroom_group_id;
+		}
+
+		//GET STUDY SUBMODULES. TAKE IN ACCOUNT CURRENT SELECTED FILTERS
+		//FILTERS $teacher_code = null, $classroom_group_id = null
+		$study_submodules = array();	
+		$editable_study_submodules_ids = array();
+
+		$teacher_filter_exists = false;
+		if ( $teacher_code == null ) {
+			if ($user_teacher_code != false) {
+				$teacher_filter_exists = true;
+			} else {
+				$teacher_filter_exists = false;
+			}
+			
+		} else {
+			if ( $teacher_code ==  "void") {
+				$teacher_filter_exists = false;
+			} else {
+				$teacher_filter_exists = true;
+			}
+		}
+
+		$classroom_group_id_filter_exists = false;
+		if ( $classroom_group_id == null ) {
+			$classroom_group_id_filter_exists = false;
+		} else {
+			if ( $classroom_group_id ==  "void") {
+				$classroom_group_id_filter_exists = false;
+			} else {
+				$classroom_group_id_filter_exists = true;
+			}
+		}
 		
-		$all_study_submodules = array();
-		if ($teacher_code == "void") {
+		if ( ($teacher_filter_exists == false) && ($classroom_group_id_filter_exists == false) ) {
+			//NO FILTERS APPLY
+			$study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
 			if ($user_is_admin) {
-				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
+				$editable_study_submodules_ids=array_keys($study_submodules);
 			} else {
-				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+				if ($user_is_teacher) {
+					if ($user_is_mentor) {
+						//GET LISTS OF STUDY_MODULES IDS OF GROUPS TEACHERS IS MENTOR
+						$editable_study_submodules_ids = array(); 
+					} else {
+						//GET LIST OF STUDYMOUDLES IDS OF TEACHER
+						$editable_study_submodules_ids = array();
+					}	
+				}
 			}
 		} else {
-			if ($teacher_code != "") {
-				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$teacher_code);	
-			} else {
-				$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+			//FILTERS ARE SET
+			if ( ($teacher_filter_exists == true) && ($classroom_group_id_filter_exists == false) ) {
+				//ONLY FILTER BY TEACHER
+				$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$teacher_code);
 			}
-			
+
+			if ( ($teacher_filter_exists == false) && ($classroom_group_id_filter_exists == true) ) {
+				//ONLY FILTER BY CLASSROOMGROUPID
+				$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_classroomgroupid($academic_period_id,$classroom_group_id);
+			}
+
+			if ( ($teacher_filter_exists == true) && ($classroom_group_id_filter_exists == true) ) {
+				//FILTER BY TEACHER AND CLASSROOMGROUPID
+				//$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_classroomgroupid_and_teacher_code($academic_period_id,,$classroom_group_id);
+			}
+
 		}
-		$data['all_study_submodules'] = $all_study_submodules;
-		
 
-		
-
-		
+		$data['study_submodules'] = $study_submodules;
+		$data['editable_study_submodules_ids'] = $editable_study_submodules_ids;
 
 		$this->load->view('study_submodules_dates.php',$data);	
 		$this->_load_body_footer();	
@@ -1061,6 +1107,23 @@ class managment extends skeleton_main {
 
 	}
 
+	public function create_multiple_study_submodules_logse () {
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->create_multiple_study_submodules_logse($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
+
 	public function create_multiple_initial_passwords () {
 
 
@@ -1585,6 +1648,92 @@ class managment extends skeleton_main {
 		$data['selected_academic_period_id'] = $selected_academic_period_id;
 
 		$this->load->view('curriculum_reports_studymodules.php',$data);
+		
+		$this->_load_body_footer();	
+		
+	}
+
+	public function curriculum_reports_studymodules_admin($academic_period_id = null) {
+
+		if (!$this->skeleton_auth->logged_in())
+		{
+			//redirect them to the login page
+			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+		
+		$active_menu = array();
+		$active_menu['menu']='#reports';
+		$active_menu['submenu1']='#curriculum_reports';
+		$active_menu['submenu2']='#curriculum_reports_studymodules_admin';
+
+		$header_data = $this->load_ace_files($active_menu);
+
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/css/jquery_plugins/chosen/chosen.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			'http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css');		
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+			$header_data,
+			base_url('assets/css/tooltipster.css'));	
+		$header_data= $this->add_css_to_html_header_data(
+                $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.css");
+		//JS
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/js/jquery_plugins/jquery.chosen.min.js"));
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			"http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js");					
+			
+		$header_data= $this->add_javascript_to_html_header_data(
+			$header_data,
+			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));	
+		$header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    "http://cdn.jsdelivr.net/select2/3.4.5/select2.js");
+
+			
+		$this->_load_html_header($header_data); 
+		
+		$this->_load_body_header();
+
+		$data = array();
+
+		$data['study_modules_table_title'] = "Mòduls professionals / Crèdits";
+		$selected_academic_period_id = false;
+
+		$current_academic_period_id = null;
+
+		if ($academic_period_id == null) {
+			$database_current_academic_period =  $this->managment_model->get_current_academic_period();
+			
+			if ($database_current_academic_period->id) {
+				$current_academic_period_id = $database_current_academic_period->id;
+			} else {
+				$current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');	
+			}
+			
+			$academic_period_id=$current_academic_period_id ;	
+		} else {
+			$selected_academic_period_id = $academic_period_id;
+		}
+
+		$academic_periods = $this->managment_model->get_all_academic_periods();	
+		$all_studymodules = $this->managment_model->get_all_studymodules_report_info($academic_period_id);
+
+
+		$data['all_studymodules'] = $all_studymodules;
+		$data['academic_periods'] = $academic_periods;
+		$data['selected_academic_period_id'] = $selected_academic_period_id;
+
+		$this->load->view('curriculum_reports_studymodules_admin.php',$data);
 		
 		$this->_load_body_footer();	
 		
