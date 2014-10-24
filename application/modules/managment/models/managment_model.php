@@ -579,7 +579,7 @@ class managment_model  extends CI_Model  {
 			);
 
 			$this->db->insert('study_submodules_academic_periods', $data);
-			echo $this->db->last_query()."<br/>";
+			//echo $this->db->last_query()."<br/>";
 
 			if ($this->db->affected_rows() == 1) {
 
@@ -1316,6 +1316,42 @@ class managment_model  extends CI_Model  {
 		}
 	}
 
+	public function update_study_submodule_initial_date_planned($study_submodule_id, $new_initialDate_planned,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*Example SQL
+		UPDATE `study_submodules_academic_periods` 
+		SET study_submodules_academic_periods_initialDate=DATE
+		WHERE `study_submodules_academic_periods_study_submodules_id` = 1
+		AND `study_submodules_academic_periods_academic_period_id`= 5
+		*/
+
+		$database_date = date('Y-m-d', strtotime($new_initialDate_planned));
+
+		$data = array(
+               'study_submodules_academic_periods_initialDate_planned' => $database_date
+            );
+
+		$this->db->where('study_submodules_academic_periods_study_submodules_id', $study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $academic_period_id);
+		$this->db->update('study_submodules_academic_periods', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+			$result->result = true;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_initialDate_planned: " . $new_initialDate_planned . " database date format: " . $database_date;
+			return $result;
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_initialDate_planned: " . $new_initialDate_planned . " database date format: " . $database_date;
+			return $result;
+		}
+	}
+
 
 	public function change_study_submodule_initial_date($study_submodule_id, $new_initialDate,$academic_period_id = null) {
 
@@ -1330,6 +1366,23 @@ class managment_model  extends CI_Model  {
 			$result = new stdClass();
 			$result->result = false;
 			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_initialDate: " . $new_initialDate . ". Study submodule does not exists!";
+			return $result;
+		}
+	}
+
+	public function change_study_submodule_initial_date_planned($study_submodule_id, $new_initialDate_planned,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		if ($this->study_submodule_exists($study_submodule_id,$academic_period_id)) {
+			//UPDATE
+			return $this->update_study_submodule_initial_date_planned($study_submodule_id, $new_initialDate_planned,$academic_period_id);
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_initialDate_planned: " . $new_initialDate_planned . ". Study submodule does not exists!";
 			return $result;
 		}
 	}
@@ -1360,16 +1413,51 @@ class managment_model  extends CI_Model  {
 		if ($this->db->affected_rows() == 1) {
 			$result = new stdClass();
 			$result->result = true;
-			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . " database date format: " . $database_date;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . $new_finalDate . " database date format: " . $database_date;
 			return $result;
 		} else {
 			$result = new stdClass();
 			$result->result = false;
-			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . " database date format: " . $database_date;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . $new_finalDate . " database date format: " . $database_date;
 			return $result;
 		}
 	}
 
+	public function update_study_submodule_final_date_planned($study_submodule_id, $new_finalDate_planned,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*Example SQL
+		UPDATE `study_submodules_academic_periods` 
+		SET study_submodules_academic_periods_endDate=DATE
+		WHERE `study_submodules_academic_periods_study_submodules_id` = 1
+		AND `study_submodules_academic_periods_academic_period_id`= 5
+		*/
+
+		$database_date = date('Y-m-d', strtotime($new_finalDate_planned));
+
+		$data = array(
+           'study_submodules_academic_periods_endDate_planned' => $database_date
+        );
+
+		$this->db->where('study_submodules_academic_periods_study_submodules_id', $study_submodule_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $academic_period_id);
+		$this->db->update('study_submodules_academic_periods', $data);
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+			$result->result = true;
+			$result->message = "Ok updating study_submodule_id: " . $study_submodule_id . " to new_finalDate_planned: " . $new_finalDate_planned .  " database date format: " . $database_date;
+			return $result;
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate_planned: " . $new_finalDate_planned . " database date format: " . $database_date;
+			return $result;
+		}
+	}
 
 	public function change_study_submodule_final_date($study_submodule_id, $new_finalDate,$academic_period_id = null) {
 
@@ -1384,6 +1472,23 @@ class managment_model  extends CI_Model  {
 			$result = new stdClass();
 			$result->result = false;
 			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate: " . $new_finalDate . ". Study submodule does not exists!";
+			return $result;
+		}
+	}
+
+	public function change_study_submodule_final_date_planned($study_submodule_id, $new_finalDate_planned,$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		if ($this->study_submodule_exists($study_submodule_id,$academic_period_id)) {
+			//UPDATE
+			return $this->update_study_submodule_final_date_planned($study_submodule_id, $new_finalDate_planned,$academic_period_id);
+		} else {
+			$result = new stdClass();
+			$result->result = false;
+			$result->message = "Error updating study_submodule_id: " . $study_submodule_id . " to new_finalDate_planned: " . $new_finalDate_planned . ". Study submodule does not exists!";
 			return $result;
 		}
 	}
@@ -3317,7 +3422,7 @@ class managment_model  extends CI_Model  {
 		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period_id);
 
 		$query = $this->db->get();
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 
 		$study_submodules_id = array();
 		if ($query->num_rows() > 0) {
@@ -3328,11 +3433,112 @@ class managment_model  extends CI_Model  {
 		return $study_submodules_id;
 	}
 
+	function get_all_classroomgroupsids_by_mentor_id($academic_period_id,$mentor_id) {
+		/*
+		SELECT `classroom_group_academic_periods_classroom_group_id` 
+		FROM (`classroom_group_academic_periods`) 
+		WHERE `classroom_group_academic_periods_mentorId` = '71' AND `classroom_group_academic_periods_academic_period_id` = '5'
+		*/
+
+		$this->db->select('classroom_group_academic_periods_classroom_group_id');
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->where('classroom_group_academic_periods_mentorId',$mentor_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query() . "<br/>";
+
+		$classroomgroupids = array();
+		if ($query->num_rows() > 0) {
+			foreach($query->result() as $row) {
+				$classroomgroupids[] = $row->classroom_group_academic_periods_classroom_group_id;
+			}
+		}
+		return $classroomgroupids;	
+	}
+
+	function get_all_study_submodules_id_by_mentor_id($academic_period_id,$teacher_code,$orderby = "ASC") {
+
+		$teacher_id = $this->get_teacher_id_from_teacher_code($teacher_code,$academic_period_id);
+
+		//GET CLASSROOM_GROUP_IDs where teacher is mentor
+		$classroomgroupids = $this->get_all_classroomgroupsids_by_mentor_id($academic_period_id,$teacher_id);
+
+		if ( ! (count($classroomgroupids) > 0) ) {
+			return false;
+		}
+
+		/*
+		SELECT DISTINCT `study_submodules_id` 
+		FROM (`lesson`) 
+		JOIN `study_submodules` ON `study_submodules`.`study_submodules_study_module_id` = `lesson`.`lesson_study_module_id` 
+		JOIN `study_submodules_academic_periods` ON `study_submodules_academic_periods`.`study_submodules_academic_periods_study_submodules_id` = `study_submodules`.`study_submodules_id` 
+		WHERE `lesson_classroom_group_id` IN ('25') AND `lesson_academic_period_id` = '5' AND `study_submodules_academic_periods_academic_period_id` = '5'
+		*/
+
+		$this->db->select('study_submodules_id');
+		$this->db->distinct();
+		$this->db->from('lesson');
+		$this->db->join('study_submodules','study_submodules.study_submodules_study_module_id  = lesson.lesson_study_module_id');
+		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id =  study_submodules.study_submodules_id');
+		$this->db->where_in('lesson_classroom_group_id',$classroomgroupids);
+		$this->db->where('lesson_academic_period_id',$academic_period_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->order_by('study_submodules_id',$orderby);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query() . "<br/>";
+
+		$study_submodules_id = array();
+		if ($query->num_rows() > 0) {
+			foreach($query->result() as $row) {
+				$study_submodules_id[] = $row->study_submodules_id;
+			}
+		}
+		return $study_submodules_id;	
+	}
 
 
-	function get_all_study_submodules_ids_byteacher_code($academic_period,$teacher_code) {
-		$teacher_id = $this->get_teacher_id_from_teacher_code($teacher_code,$academic_period) ;
-		return $this->get_all_study_submodules_ids_byteacher_id($academic_period,$teacher_id);
+
+	function get_all_study_submodules_ids_byteacher_code($academic_period_id,$teacher_code) {
+		$teacher_id = $this->get_teacher_id_from_teacher_code($teacher_code,$academic_period_id) ;
+		return $this->get_all_study_submodules_ids_byteacher_id($academic_period_id,$teacher_id);
+	}
+
+	function get_all_study_submodules_ids_classroomgroupid_and_teacher_code($academic_period_id,$teacher_code,$classroomgroupid) {
+		$teacher_id = $this->get_teacher_id_from_teacher_code($teacher_code,$academic_period_id) ;
+		return $this->get_all_study_submodules_ids_classroomgroupid_and_teacher_id($academic_period_id,$teacher_id,$classroomgroupid);
+	}
+
+	function get_all_study_submodules_ids_classroomgroupid_and_teacher_id($academic_period_id,$teacher_id,$classroomgroupid) {
+		/*
+		SELECT DISTINCT `study_submodules_id` 
+		FROM (`lesson`) 
+		JOIN `study_submodules` ON `study_submodules`.`study_submodules_study_module_id` = `lesson`.`lesson_study_module_id` 
+		JOIN `study_submodules_academic_periods` ON `study_submodules_academic_periods`.`study_submodules_academic_periods_study_submodules_id` = `study_submodules`.`study_submodules_id` 
+		WHERE `lesson_classroom_group_id` = '40' AND `lesson_academic_period_id` = '5' AND `study_submodules_academic_periods_academic_period_id` = '5' 
+		*/
+
+		$this->db->select('study_submodules_id');
+		$this->db->distinct();
+		$this->db->from('lesson');
+		$this->db->join('study_submodules','study_submodules.study_submodules_study_module_id  = lesson.lesson_study_module_id');
+		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id =  study_submodules.study_submodules_id');
+		$this->db->where('lesson_classroom_group_id',$classroomgroupid);
+		$this->db->where('lesson_teacher_id',$teacher_id);
+		$this->db->where('lesson_academic_period_id',$academic_period_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		$study_submodules_id = array();
+		if ($query->num_rows() > 0) {
+			foreach($query->result() as $row) {
+				$study_submodules_id[] = $row->study_submodules_id;
+			}
+		}
+		return $study_submodules_id;
 	}
 
 	function get_all_study_submodules_ids_classroomgroupid($academic_period_id,$classroomgroupid) {
@@ -3388,8 +3594,6 @@ class managment_model  extends CI_Model  {
 			return false;
 	}
 
-
-
 	function get_all_study_submodules_report_info_by_teacher_code($academic_period,$teacher_code,$orderby = "DESC") {
 		
 		$study_submodules_id = $this->get_all_study_submodules_ids_byteacher_code($academic_period,$teacher_code);
@@ -3416,7 +3620,9 @@ class managment_model  extends CI_Model  {
 
 		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
 							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
-							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
+							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, 
+							study_submodules_academic_periods_initialDate_planned, study_submodules_academic_periods_endDate_planned, 
+							study_submodules_academic_periods_totalHours,
 							study_submodules_order,study_submodules_description');
 		$this->db->from('study_submodules_academic_periods');
 		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
@@ -3461,6 +3667,8 @@ class managment_model  extends CI_Model  {
 				$study_submodule->study_submodules_order = $row->study_submodules_order;
 				$study_submodule->study_submodule_initialDate = $row->study_submodules_academic_periods_initialDate;
 				$study_submodule->study_submodule_endDate = $row->study_submodules_academic_periods_endDate;
+				$study_submodule->study_submodule_initialDate_planned = $row->study_submodules_academic_periods_initialDate_planned;
+				$study_submodule->study_submodule_endDate_planned = $row->study_submodules_academic_periods_endDate_planned;
 				
 				//get number of teacher Deparments
 				/*
@@ -3481,6 +3689,104 @@ class managment_model  extends CI_Model  {
 			return false;
 
 	}
+
+	function get_all_study_submodules_report_info_by_classroomgroupid_and_teacher_code($academic_period,$teacher_code,$classroom_group_id,$orderby = "DESC") {
+
+		$study_submodules_id = $this->get_all_study_submodules_ids_classroomgroupid_and_teacher_code($academic_period, $teacher_code, $classroom_group_id);
+
+		if (!(count($study_submodules_id)>0)) {
+			return array();
+		}
+
+
+		//classgroups
+		//Example SQL:
+		/*
+		SELECT study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
+		study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
+		studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,study_submodules_order,study_submodules_description
+		FROM study_submodules_academic_periods 
+		LEFT JOIN study_submodules ON study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id
+		LEFT JOIN study_module ON study_module.study_module_id = study_submodules.study_submodules_study_module_id
+		LEFT JOIN course ON  course.course_id = study_submodules.study_submodules_courseid
+		LEFT JOIN studies ON  studies.studies_id = course.course_study_id
+		LEFT JOIN studies_law ON  studies_law.studies_law_id = studies.studies_studies_law_id
+		WHERE study_submodules_academic_periods_academic_period_id = 5
+		*/
+
+		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
+							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
+							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate,
+							study_submodules_academic_periods_initialDate_planned, study_submodules_academic_periods_endDate_planned, study_submodules_academic_periods_totalHours,
+							study_submodules_order,study_submodules_description');
+		$this->db->from('study_submodules_academic_periods');
+		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id', 'left');
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid', 'left');
+		$this->db->join('studies','studies.studies_id = course.course_study_id', 'left');
+		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id', 'left');
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period);
+		$this->db->where_in('study_submodules_id',$study_submodules_id);
+		
+		$this->db->order_by('studies_shortname', $orderby);
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0){
+			$all_study_submodules = array();
+			foreach($query->result() as $row){
+				$study_submodule = new stdClass;
+				
+				$study_submodule->id = $row->study_submodules_id;
+				$study_submodule->shortname = $row->study_submodules_shortname;
+				$study_submodule->name = $row->study_submodules_name;
+				$study_submodule->description = $row->study_submodules_description;
+
+				$study_submodule->module_id = $row->study_submodules_study_module_id;
+				$study_submodule->module_shortname = $row->study_module_shortname;
+				$study_submodule->module_name = $row->study_module_name;
+
+				$study_submodule->course_id = $row->study_submodules_courseid;
+				$study_submodule->course_shortname = $row->course_shortname;
+				$study_submodule->course_name = $row->course_name;
+
+				$study_submodule->study_id = $row->course_study_id;
+				$study_submodule->study_shortname = $row->studies_shortname;
+				$study_submodule->study_name = $row->studies_name;
+				$study_submodule->study_law_id = $row->studies_studies_law_id;
+				$study_submodule->study_law_name = $row->studies_law_shortname;
+				$study_submodule->study_law_shortname = $row->studies_law_name;
+
+				$study_submodule->study_submodules_totalHours = $row->study_submodules_academic_periods_totalHours;
+				$study_submodule->study_submodules_order = $row->study_submodules_order;
+				$study_submodule->study_submodule_initialDate = $row->study_submodules_academic_periods_initialDate;
+				$study_submodule->study_submodule_endDate = $row->study_submodules_academic_periods_endDate;
+				$study_submodule->study_submodule_initialDate_planned = $row->study_submodules_academic_periods_initialDate_planned;
+				$study_submodule->study_submodule_endDate_planned = $row->study_submodules_academic_periods_endDate_planned;
+
+				
+				//get number of teacher Deparments
+				/*
+				if ( array_key_exists ( $row->course_id , $teachers_by_course )) {					
+					$course->numberOfTeachers = $teachers_by_course[$row->course_id]->total;
+					$course->teacher_ids = $teachers_by_course[$row->course_id]->teachers_ids;
+
+				}	else {
+					$course->numberOfTeachers = "";
+					$course->teacher_ids = "";
+				}	*/
+				
+				$all_study_submodules[$row->study_submodules_id] = $study_submodule;
+			}
+			return $all_study_submodules;
+		}	
+		else
+			return false;
+
+	}
+
+
 
 	function get_all_study_submodules_report_info_by_classroomgroupid($academic_period,$classroom_group_id,$orderby = "DESC") {
 		
@@ -3508,7 +3814,9 @@ class managment_model  extends CI_Model  {
 
 		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
 							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
-							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
+							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, 
+							study_submodules_academic_periods_initialDate_planned, study_submodules_academic_periods_endDate_planned,
+							study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
 							study_submodules_order,study_submodules_description');
 		$this->db->from('study_submodules_academic_periods');
 		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
@@ -3553,6 +3861,8 @@ class managment_model  extends CI_Model  {
 				$study_submodule->study_submodules_order = $row->study_submodules_order;
 				$study_submodule->study_submodule_initialDate = $row->study_submodules_academic_periods_initialDate;
 				$study_submodule->study_submodule_endDate = $row->study_submodules_academic_periods_endDate;
+				$study_submodule->study_submodule_initialDate_planned = $row->study_submodules_academic_periods_initialDate_planned;
+				$study_submodule->study_submodule_endDate_planned = $row->study_submodules_academic_periods_endDate_planned;
 				
 				//get number of teacher Deparments
 				/*
@@ -3595,7 +3905,9 @@ class managment_model  extends CI_Model  {
 
 		$this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_submodules_study_module_id, study_module_shortname, 
 							study_module_name, study_submodules_courseid, course_shortname, course_name , course.course_study_id, studies_shortname, studies_name,studies_studies_law_id, 
-							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
+							studies_law_shortname, studies_law_name, study_submodules_academic_periods_initialDate, 
+							study_submodules_academic_periods_initialDate_planned, study_submodules_academic_periods_endDate_planned,
+							study_submodules_academic_periods_endDate, study_submodules_academic_periods_totalHours,
 							study_submodules_order,study_submodules_description');
 		$this->db->from('study_submodules_academic_periods');
 		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id', 'left');
@@ -3640,6 +3952,8 @@ class managment_model  extends CI_Model  {
 				$study_submodule->study_submodules_order = $row->study_submodules_order;
 				$study_submodule->study_submodule_initialDate = $row->study_submodules_academic_periods_initialDate;
 				$study_submodule->study_submodule_endDate = $row->study_submodules_academic_periods_endDate;
+				$study_submodule->study_submodule_initialDate_planned = $row->study_submodules_academic_periods_initialDate_planned;
+				$study_submodule->study_submodule_endDate_planned = $row->study_submodules_academic_periods_endDate_planned;
 				
 				//get number of teacher Deparments
 				/*
@@ -3704,6 +4018,7 @@ class managment_model  extends CI_Model  {
 			$dates = new stdClass();
 			$dates->initial_date = $row->academic_periods_initial_date;
 			$dates->final_date = $row->academic_periods_final_date;
+
 			return $dates;
 		}	
 		else {

@@ -140,6 +140,30 @@ class managment extends skeleton_main {
 
 	}
 
+	public function change_study_submodule_final_date_planned() {
+
+		$study_submodule_id = null;
+	    if(isset($_POST['study_submodule_id'])) {
+        	$study_submodule_id = $_POST['study_submodule_id'];
+	        
+	    }
+		$new_finalDate_planned = null;
+	    if(isset($_POST['new_finalDate_planned'])) {
+        	$new_finalDate_planned = $_POST['new_finalDate_planned'];
+	    }
+	    
+
+	    $result = new stdClass();
+		$result->result = false;
+		$result->message = "Not all mandatory parameters exists. study_submodule_id: " . $study_submodule_id . " new_finalDate_planned: " . $new_finalDate_planned;
+	    if ( ($study_submodule_id != null) &&  ($new_finalDate_planned != null) ) {
+	    	$result = $this->managment_model->change_study_submodule_final_date_planned($study_submodule_id,$new_finalDate_planned);
+	    } 
+
+	    print_r(json_encode($result));
+
+	}
+
 
 	public function change_study_submodule_initial_date() {
 
@@ -159,6 +183,30 @@ class managment extends skeleton_main {
 		$result->message = "Not all mandatory parameters exists. study_submodule_id: " . $study_submodule_id . " new_initialDate: " . $new_initialDate;
 	    if ( ($study_submodule_id != null) &&  ($new_initialDate != null) ) {
 	    	$result = $this->managment_model->change_study_submodule_initial_date($study_submodule_id,$new_initialDate);
+	    } 
+
+	    print_r(json_encode($result));
+
+	}
+
+	public function change_study_submodule_initial_date_planned() {
+
+		$study_submodule_id = null;
+	    if(isset($_POST['study_submodule_id'])) {
+        	$study_submodule_id = $_POST['study_submodule_id'];
+	        
+	    }
+		$new_initialDate_planned = null;
+	    if(isset($_POST['new_initialDate_planned'])) {
+        	$new_initialDate_planned = $_POST['new_initialDate_planned'];
+	    }
+	    
+
+	    $result = new stdClass();
+		$result->result = false;
+		$result->message = "Not all mandatory parameters exists. study_submodule_id: " . $study_submodule_id . " new_initialDate_planned: " . $new_initialDate_planned;
+	    if ( ($study_submodule_id != null) &&  ($new_initialDate_planned != null) ) {
+	    	$result = $this->managment_model->change_study_submodule_initial_date_planned($study_submodule_id,$new_initialDate_planned);
 	    } 
 
 	    print_r(json_encode($result));
@@ -307,6 +355,8 @@ class managment extends skeleton_main {
 		
 		$data['selected_academic_period_initial_date'] = $dates->initial_date;
 		$data['selected_academic_period_final_date'] = $dates->final_date;
+		$data['selected_academic_period_initial_date_planned'] = $dates->initial_date;
+		$data['selected_academic_period_final_date_planned'] = $dates->final_date;
 
 		$teachers_array = array();
 		//Load teachers from Model
@@ -340,8 +390,7 @@ class managment extends skeleton_main {
 		//GET STUDY SUBMODULES. TAKE IN ACCOUNT CURRENT SELECTED FILTERS
 		//FILTERS $teacher_code = null, $classroom_group_id = null
 		$study_submodules = array();	
-		$editable_study_submodules_ids = array();
-
+		
 		$teacher_filter_exists = false;
 		if ( $teacher_code == null ) {
 			if ($user_teacher_code != false) {
@@ -369,27 +418,25 @@ class managment extends skeleton_main {
 			}
 		}
 		
+		/* DEBUG:
+		echo "teacher_filter_exists: " . $teacher_filter_exists . "<br/>";
+		echo "classroom_group_id_filter_exists: " . $classroom_group_id_filter_exists . "<br/>";
+		*/
 		if ( ($teacher_filter_exists == false) && ($classroom_group_id_filter_exists == false) ) {
 			//NO FILTERS APPLY
 			$study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
-			if ($user_is_admin) {
-				$editable_study_submodules_ids=array_keys($study_submodules);
-			} else {
-				if ($user_is_teacher) {
-					if ($user_is_mentor) {
-						//GET LISTS OF STUDY_MODULES IDS OF GROUPS TEACHERS IS MENTOR
-						$editable_study_submodules_ids = array(); 
-					} else {
-						//GET LIST OF STUDYMOUDLES IDS OF TEACHER
-						$editable_study_submodules_ids = array();
-					}	
-				}
-			}
 		} else {
 			//FILTERS ARE SET
 			if ( ($teacher_filter_exists == true) && ($classroom_group_id_filter_exists == false) ) {
 				//ONLY FILTER BY TEACHER
-				$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$teacher_code);
+				if (($teacher_code != "") && ($teacher_code != null)) {
+					$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$teacher_code);
+				} else {
+					if (($user_teacher_code != "") && ($user_teacher_code != null)) {
+						$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+					}
+				}
+				
 			}
 
 			if ( ($teacher_filter_exists == false) && ($classroom_group_id_filter_exists == true) ) {
@@ -399,12 +446,39 @@ class managment extends skeleton_main {
 
 			if ( ($teacher_filter_exists == true) && ($classroom_group_id_filter_exists == true) ) {
 				//FILTER BY TEACHER AND CLASSROOMGROUPID
-				//$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_classroomgroupid_and_teacher_code($academic_period_id,,$classroom_group_id);
+				if (($teacher_code != "") && ($teacher_code != null)) {
+					$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_classroomgroupid_and_teacher_code($academic_period_id,$teacher_code,$classroom_group_id);
+				} else {
+					if (($user_teacher_code != "") && ($user_teacher_code != null)) {
+						$study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_classroomgroupid_and_teacher_code($academic_period_id,$user_teacher_code,$classroom_group_id);
+					}
+				}
 			}
 
 		}
 
 		$data['study_submodules'] = $study_submodules;
+
+		$editable_study_submodules_ids = array();
+
+		if ($user_is_admin) {
+			$all_study_submodules = $this->managment_model->get_all_study_submodules_report_info($academic_period_id);
+			$editable_study_submodules_ids=array_keys($all_study_submodules);
+		} else {
+			if ($user_is_teacher) {
+				if ($user_is_mentor) {
+					//GET LISTS OF STUDY_MODULES IDS OF GROUPS TEACHERS IS MENTOR
+					$mentor_study_submodules = $this->managment_model->get_all_study_submodules_id_by_mentor_id($academic_period_id,$user_teacher_code); 
+					//GET LIST OF STUDYMOUDLES IDS OF TEACHER
+					$user_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+					$editable_study_submodules_ids = array_merge($mentor_study_submodules, array_keys($user_study_submodules));
+				} else {
+					//GET LIST OF STUDYMOUDLES IDS OF TEACHER
+					$user_study_submodules = $this->managment_model->get_all_study_submodules_report_info_by_teacher_code($academic_period_id,$user_teacher_code);
+					$editable_study_submodules_ids = array_keys($user_study_submodules);
+				}	
+			}
+		}
 		$data['editable_study_submodules_ids'] = $editable_study_submodules_ids;
 
 		$this->load->view('study_submodules_dates.php',$data);	

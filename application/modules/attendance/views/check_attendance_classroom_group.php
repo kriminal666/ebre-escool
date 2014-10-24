@@ -304,7 +304,7 @@
                                  <button style="font-size: x-small;" id="btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" 
                                   class="btn btn-minier <?php if ($study_submodule->active) { echo 'btn-inverse'; } else { echo 'btn-grey'; }?>" data-rel="tooltip" 
                                   onclick="study_submodule_on_click(this,'btn_group_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id;?>',<?php echo $study_submodule_key;?>,<?php echo $time_slot->id;?>);"
-                                  title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") <br/>( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
+                                  title="<?php echo $study_submodule->shortname . ". " . $study_submodule->name . " (" . $study_submodule_key . ") ( " . $study_submodule->startdate . " - " . $study_submodule->finaldate . " )";?>" >
                                   <?php echo $study_submodule->shortname;?> 
                                     <i class="icon-check bigger-120" id="btn_group_icon_<?php echo $time_slot->id;?>_<?php echo $time_slot->study_module_id?>_<?php echo $study_submodule_key;?>" style="display:<?php if($study_submodule->active) { echo 'inline'; } else { echo 'none'; } ;?>"></i>
                                  </button> 

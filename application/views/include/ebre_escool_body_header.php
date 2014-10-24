@@ -921,7 +921,7 @@
                 <ul class="submenu">
                   <li id="maintenances_teachers_curriculum_study_submodules_dates">
                     <a href="<?php echo base_url('/index.php/managment/study_submodules_dates'); ?>">
-                       <?php echo "UFs/UDs dates";?>
+                       <?php echo "Dates UFs/UDs";?>
                     </a>
                   </li>
 

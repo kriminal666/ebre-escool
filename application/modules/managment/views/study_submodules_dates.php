@@ -273,7 +273,7 @@
 				    }, {
 				        type: 'datepicker',
 				        indicator: 'Guardant...',
-				        tooltip: 'Feu click per editar...',
+				        tooltip: 'click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
 				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
 				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
@@ -404,8 +404,275 @@
 				    }, {
 				        type: 'datepicker',
 				        indicator: 'Guardant...',
-				        tooltip: 'Feu click per editar...',
-				        placeholder: '<span class="muted">Feu click per editar...</span>',
+				        tooltip: 'click per editar...',
+				        placeholder: '<span class="muted">click per editar...</span>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        style: 'display: inline;',
+				        width: 'none',
+				    }
+				);
+
+
+				$('.editable_initialDate_planned').editable(
+				    function(value, settings) {
+				        //Debug:
+
+						/*console.debug(this);
+     					console.debug(value);
+     					console.debug(settings);
+     					*/
+
+						var selected_academic_period_initial_date_planned = "<?php echo $selected_academic_period_initial_date_planned;?>";
+						var selected_academic_period_initial_date_planned_array = selected_academic_period_initial_date_planned.split("-"); 
+						var _selected_academic_period_initial_date_planned_object= new Date(selected_academic_period_initial_date_planned_array[0], parseInt(selected_academic_period_initial_date_planned_array[1],10)-1, parseInt(selected_academic_period_initial_date_planned_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_initial_date_planned = selected_academic_period_initial_date_planned_array[2] +  "-" + selected_academic_period_initial_date_planned_array[1] + "-" + selected_academic_period_initial_date_planned_array[0];
+
+						var selected_academic_period_final_date_planned = "<?php echo $selected_academic_period_final_date_planned;?>";
+						var selected_academic_period_final_date_array_planned = selected_academic_period_final_date_planned.split("-"); 
+						var _selected_academic_period_final_date_planned_object= new Date(selected_academic_period_final_date_array_planned[0], parseInt(selected_academic_period_final_date_array_planned[1],10)-1, parseInt(selected_academic_period_final_date_array_planned[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_final_date_planned = selected_academic_period_final_date_array_planned[2] +  "-" + selected_academic_period_final_date_array_planned[1] + "-" + selected_academic_period_final_date_array_planned[0];
+
+						new_initialDate_planned = value;
+     					var new_initialDate_planned_array = new_initialDate_planned.split("-"); 
+     						/* DEBUG:
+							console.debug("day: " + new_initialDate_array[0]);
+							console.debug("month: " + new_initialDate_array[1]);
+							console.debug("Year: "  + new_initialDate_array[2]);
+							*/
+						var _new_initialDate_planned_object= new Date(new_initialDate_planned_array[2], parseInt(new_initialDate_planned_array[1],10)-1, parseInt(new_initialDate_planned_array[0],10), 0, 0, 0, 0); 	
+
+						/*
+						console.debug("_selected_academic_period_initial_date_planned_object: " + _selected_academic_period_initial_date_planned_object);
+						console.debug("_selected_academic_period_final_date_planned_object: " + _selected_academic_period_final_date_planned_object);
+						console.debug("_new_initialDate_planned_object: " + _new_initialDate_planned_object);
+						*/
+
+
+						if ( ( _new_initialDate_planned_object < _selected_academic_period_initial_date_planned_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date_planned + " <-> " + european_format_selected_academic_period_final_date_planned + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+						if ( ( _new_initialDate_planned_object > _selected_academic_period_final_date_planned_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date_planned + " <-> " + european_format_selected_academic_period_final_date_planned + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+     					study_submodule_id = this.getAttribute("studysubmoduleid");
+
+     					var finalDate_planned_Value = $('#final_date_planned_' + study_submodule_id).text().trim();
+
+     					//console.debug("finalDate_planned_Value: " + finalDate_planned_Value);
+     					if (finalDate_planned_Value != "") {
+     						//console.debug("finalDate_planned_Value: " + finalDate_planned_Value);
+     						//Compare dates
+							var new_finalDate_planned_array = finalDate_planned_Value.split("-"); 
+	     					var _new_finalDate_planned_object = new Date(new_finalDate_planned_array[2], parseInt(new_finalDate_planned_array[1],10)-1, parseInt(new_finalDate_planned_array[0],10), 0, 0, 0, 0); 
+
+     						//console.debug("_new_initialDate_object:" + _new_initialDate_object.toDateString());
+     						//console.debug("_new_finalDate_object:" + _new_finalDate_object.toDateString());
+							if (_new_initialDate_planned_object > _new_finalDate_planned_object) {
+				            	alert("La data inicial és posterior a la data final! No podeu fer aquesta modificació");
+				            	return "";
+				            }	
+     					}
+
+     					//console.debug("new_initialDate: " + new_initialDate);
+     					//console.debug("study_submodule_id: " . study_submodule_id);
+
+     					$.ajax({
+				            url:'<?php echo base_url("index.php/managment/change_study_submodule_initial_date_planned");?>',
+				            type: 'post',
+				            data: {
+				                new_initialDate_planned : new_initialDate_planned,
+				                study_submodule_id : study_submodule_id,
+				            },
+				            datatype: 'json',
+				            statusCode: {
+				                  404: function() {
+				                    $.gritter.add({
+				                      title: 'Error connectant amb el servidor!',
+				                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/change_study_submodule_initial_date_planned' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                    skip_forward_step = true;
+				                  },
+				                  500: function() {
+				                    $("#response").html('A server-side error has occurred.');
+				                    $.gritter.add({
+				                      title: 'Error connectant amb el servidor!',
+				                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/change_study_submodule_initial_date_planned' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                    skip_forward_step = true;
+				                  }
+				                },
+				                error: function() {
+				                  $.gritter.add({
+				                      title: 'Error!',
+				                      text: 'Ha succeït un error!' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                },
+				          }).done(function(data){
+				          		var all_data = $.parseJSON(data);
+
+							    //console.debug (all_data);
+
+							    result = all_data.result;
+							    result_message = all_data.message;
+
+							    if (result) {
+							      console.debug(result_message);
+							    } else {
+							      $.gritter.add({
+							        title: 'Error guardant la incidència a la base de dades!',
+							        text: 'No s\'ha pogut guardar la incidència. Missatge d\'error:  ' + result_message ,
+							        class_name: 'gritter-error'
+							      });
+							    }
+				             
+				          });
+
+				        $("#" + this.id).addClass("strong");  
+				        return value;
+				    }, {
+				        type: 'datepicker',
+				        indicator: 'Guardant...',
+				        tooltip: 'click per editar...',
+				        placeholder: '<span class="muted">click per editar...</span>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        style: 'display: inline;',
+				        width: 'none',
+				    }
+				);
+
+				
+
+				$('.editable_finalDate_planned').editable(
+				    function(value, settings) {
+				        //Debug:
+
+						/*console.debug(this);
+     					console.debug(value);
+     					console.debug(settings);
+     					*/
+
+						var selected_academic_period_initial_date_planned = "<?php echo $selected_academic_period_initial_date_planned;?>";
+						var selected_academic_period_initial_date_planned_array = selected_academic_period_initial_date_planned.split("-"); 
+						var _selected_academic_period_initial_date_planned_object= new Date(selected_academic_period_initial_date_planned_array[0], parseInt(selected_academic_period_initial_date_planned_array[1],10)-1, parseInt(selected_academic_period_initial_date_planned_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_initial_date = selected_academic_period_initial_date_planned_array[2] +  "-" + selected_academic_period_initial_date_planned_array[1] + "-" + selected_academic_period_initial_date_planned_array[0];
+
+						var selected_academic_period_final_date_planned = "<?php echo $selected_academic_period_final_date_planned;?>";
+						var selected_academic_period_final_date_planned_array = selected_academic_period_final_date_planned.split("-"); 
+						var _selected_academic_period_final_date_planned_object= new Date(selected_academic_period_final_date_planned_array[0], parseInt(selected_academic_period_final_date_planned_array[1],10)-1, parseInt(selected_academic_period_final_date_planned_array[2],10), 0, 0, 0, 0); 
+						var european_format_selected_academic_period_final_date = selected_academic_period_final_date_planned_array[2] +  "-" + selected_academic_period_final_date_planned_array[1] + "-" + selected_academic_period_final_date_planned_array[0];
+
+
+     					new_finalDate_planned = value;
+     					var new_finalDate_planned_array = new_finalDate_planned.split("-"); 							
+							/* DEBUG:
+							console.debug("day: " + new_finalDate_planned_array[0]);
+							console.debug("month: " + new_finalDate_planned_array[1]);
+							console.debug("Year: "  + new_finalDate_planned_array[2]);
+							*/
+						var _new_finalDate_planned_object= new Date(new_finalDate_planned_array[2], parseInt(new_finalDate_planned_array[1],10)-1, parseInt(new_finalDate_planned_array[0],10), 0, 0, 0, 0);
+							
+     					study_submodule_id = this.getAttribute("studysubmoduleid");
+
+     					//console.debug("new_finalDate: " . new_finalDate);
+     					//console.debug("study_submodule_id: " . study_submodule_id);
+
+     					var initialDate_plannedValue = $('#initial_date_planned_' + study_submodule_id).text().trim();
+
+     					if ( ( _new_finalDate_planned_object < _selected_academic_period_initial_date_planned_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+						if ( ( _new_finalDate_planned_object > _selected_academic_period_final_date_planned_object ) ) {
+							alert("La data inicial proposada no és dins del rang de dates vàlides (" + european_format_selected_academic_period_initial_date + " <-> " + european_format_selected_academic_period_final_date + ") del període acadèmic seleccionat!");
+				            return "";
+						}
+
+     					//console.debug("initialDate_plannedValue: " + initialDate_plannedValue);
+     					if (initialDate_plannedValue != "") {
+     						//console.debug("initialDate_plannedValue: " + initialDate_plannedValue);
+     						//Compare dates
+							var new_initialDate_planned_array = initialDate_plannedValue.split("-"); 
+	     					var _new_initialDate_planned_object = new Date(new_initialDate_planned_array[2], parseInt(new_initialDate_planned_array[1],10)-1, parseInt(new_initialDate_planned_array[0],10), 0, 0, 0, 0); 
+
+     						//console.debug("_new_initialDate_planned_object:" + _new_initialDate_planned_object.toDateString());
+     						//console.debug("_new_finalDate_planned_object:" + _new_finalDate_planned_object.toDateString());
+							if (_new_finalDate_planned_object < _new_initialDate_planned_object) {
+				            	alert("La data final és anterior a la data inicial! No podeu fer aquesta modificació");
+				            	return "";
+				            }	
+     					}
+
+     					$.ajax({
+				            url:'<?php echo base_url("index.php/managment/change_study_submodule_final_date_planned");?>',
+				            type: 'post',
+				            data: {
+				                new_finalDate_planned : new_finalDate_planned,
+				                study_submodule_id : study_submodule_id,
+				            },
+				            datatype: 'json',
+				            statusCode: {
+				                  404: function() {
+				                    $.gritter.add({
+				                      title: 'Error connectant amb el servidor!',
+				                      text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/change_study_submodule_final_date_planned' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                    skip_forward_step = true;
+				                  },
+				                  500: function() {
+				                    $("#response").html('A server-side error has occurred.');
+				                    $.gritter.add({
+				                      title: 'Error connectant amb el servidor!',
+				                      text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/change_study_submodule_final_date_planned' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                    skip_forward_step = true;
+				                  }
+				                },
+				                error: function() {
+				                  $.gritter.add({
+				                      title: 'Error!',
+				                      text: 'Ha succeït un error!' ,
+				                      class_name: 'gritter-error'
+				                    });
+				                },
+				          }).done(function(data){
+				          		var all_data = $.parseJSON(data);
+
+							    //console.debug (all_data);
+
+							    result = all_data.result;
+							    result_message = all_data.message;
+
+							    if (result) {
+							      console.debug(result_message);
+							    } else {
+							      $.gritter.add({
+							        title: 'Error guardant la incidència a la base de dades!',
+							        text: 'No s\'ha pogut guardar la incidència. Missatge d\'error:  ' + result_message ,
+							        class_name: 'gritter-error'
+							      });
+							    }
+				             
+				          });
+
+				        $("#" + this.id).addClass("strong");  
+				        return value;
+				    }, {
+				        type: 'datepicker',
+				        indicator: 'Guardant...',
+				        tooltip: 'click per editar...',
+				        placeholder: '<span class="muted">click per editar...</span>',
 				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
 				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
 				        style: 'display: inline;',
@@ -560,9 +827,6 @@
                 </strong>
                  Podeu consultar totes les unitats formatives/unitats didàctiques del centre però només podreu modificar les unitats formatives que pertanyin a un Mòdul professional o Crèdit que impartiu. 
                  En el cas dels tutors, podeu modificar totes les unitats formatives del vostre grup. Els administradors poden modificar totes les UFs/UDs
-                 <strong class="green">
-                  FILTRES :
-                </strong> TODO 
               </div>
 
 <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_filter">
@@ -653,17 +917,23 @@
   </thead>  
 </table> 
 
+<?php /* DEBUG
+foreach ($editable_study_submodules_ids as $value) {
+	echo $value . " | " ;
+}*/
+?>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_table">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="11" style="text-align: center;"> <h4>
+    <td colspan="12" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/managment/study_submodules_dates') ;?>">
         <?php echo $study_submodules_table_title?>
       </a>
       </h4></td>
   </tr>
   <tr>
-     <th>&nbsp;</th>
+     <!--<th>&nbsp;</th> -->
      <th><?php echo lang('study_submodules_id')?></th>
      <th><?php echo lang('study_submodules_shortname')?></th>
      <th><?php echo lang('study_submodules_name')?></th>
@@ -673,6 +943,8 @@
      <th><?php echo lang('study_submodules_order')?></th>     
      <th><?php echo lang('study_submodules_initialDate')?></th>
      <th><?php echo lang('study_submodules_endDate')?></th>
+     <th><?php echo lang('study_submodules_initialDate_planned')?></th>
+     <th><?php echo lang('study_submodules_endDate_planned')?></th>
      <th><?php echo lang('study_submodules_academic_periods_totalHours')?></th>
   </tr>
  </thead>
@@ -683,7 +955,7 @@
   <?php if (is_array($study_submodules) ) : ?>
   <?php foreach ($study_submodules as $study_submodule_key => $study_submodule) : ?>
    <tr align="center" class="{cycle values='tr0,tr1'}">   
-     <td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $study_submodule->id;?>"><span class="lbl">&nbsp;</span></label></td>
+     <!--<td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $study_submodule->id;?>"><span class="lbl">&nbsp;</span></label></td>-->
      <td>
       <a href="<?php echo base_url('/index.php/curriculum/study_submodules/read/' . $study_submodule->id ) ;?>">
           <?php echo $study_submodule->id;?>
@@ -734,49 +1006,133 @@
      </td> 
 
      <td>
-        <span id="initial_date_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_initialDate" title="Feu click per editar la data">
-        	<?php 
-        	if ($study_submodule->study_submodule_initialDate == "0000-00-00") {
-        		echo "";
-        	} else {
-        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_initialDate));
-        	}
-        	?>        	
-        </span>
-        	<?php 
-        	if ($study_submodule->study_submodule_initialDate == "0000-00-00") {
-        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
-        	} else {
-        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
-        	}
-        	?>      
+     	<?php if ( in_array( $study_submodule->id ,$editable_study_submodules_ids) ) : ?>
+     		<span id="initial_date_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_initialDate" title="Feu click per editar la data">
+	        	<?php 
+	        	if ($study_submodule->study_submodule_initialDate == "0000-00-00") {
+	        		echo "";
+	        	} else {
+	        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_initialDate));
+	        	}
+	        	?>        	
+	        </span>
+	        	<?php 
+	        	if ($study_submodule->study_submodule_initialDate == "0000-00-00") {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
+	        	} else {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
+	        	}
+	        	?>      
+     	<?php else: ?>
+		   	<?php 
+	       	if ($study_submodule->study_submodule_initialDate == "0000-00-00") {
+	       		echo "";
+	       	} else {
+	       		echo date('d-m-Y', strtotime($study_submodule->study_submodule_initialDate));
+	       	}
+	       	?>        	
+     	<?php endif; ?>
+     	 
+        
      </td>
 
      <td>
-     	<span id="final_date_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_finalDate" title="Feu click per editar la data">
-        	<?php 
-        	if ($study_submodule->study_submodule_endDate == "0000-00-00") {
-        		echo "";
-        	} else {
-        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_endDate));
-        	}
-        	?>        	
-        </span>
-        	<?php 
-        	if ($study_submodule->study_submodule_endDate == "0000-00-00") {
-        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
-        	} else {
-        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
-        	}
-        	?>
+     	<?php if ( in_array( $study_submodule->id ,$editable_study_submodules_ids) ) : ?>
+	     	<span id="final_date_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_finalDate" title="Feu click per editar la data">
+	        	<?php 
+	        	if ($study_submodule->study_submodule_endDate == "0000-00-00") {
+	        		echo "";
+	        	} else {
+	        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_endDate));
+	        	}
+	        	?>        	
+	        </span>
+	        	<?php 
+	        	if ($study_submodule->study_submodule_endDate == "0000-00-00") {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
+	        	} else {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
+	        	}
+	        	?>
+	    <?php else: ?>
+		   	<?php 
+	       	if ($study_submodule->study_submodule_endDate == "0000-00-00") {
+	       		echo "";
+	       	} else {
+	       		echo date('d-m-Y', strtotime($study_submodule->study_submodule_endDate));
+	       	}
+	       	?>        	
+     	<?php endif; ?>    	
      </td>
 
      <td>
-        <span id="total_hours_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>" class="editable_num" title="Feu click per editar la data"><?php echo $study_submodule->study_submodules_totalHours;?></span>
-        <br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data">Editable</span>
+     	<?php if ( in_array( $study_submodule->id ,$editable_study_submodules_ids) ) : ?>
+     		<span id="initial_date_planned_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_initialDate_planned" title="Feu click per editar la data">
+	        	<?php 
+	        	if ($study_submodule->study_submodule_initialDate_planned == "0000-00-00") {
+	        		echo "";
+	        	} else {
+	        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_initialDate_planned));
+	        	}
+	        	?>        	
+	        </span>
+	        	<?php 
+	        	if ($study_submodule->study_submodule_initialDate_planned == "0000-00-00") {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
+	        	} else {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
+	        	}
+	        	?>      
+     	<?php else: ?>
+		   	<?php 
+	       	if ($study_submodule->study_submodule_initialDate_planned == "0000-00-00") {
+	       		echo "";
+	       	} else {
+	       		echo date('d-m-Y', strtotime($study_submodule->study_submodule_initialDate));
+	       	}
+	       	?>        	
+     	<?php endif; ?>
+     	 
+        
      </td>
 
+     <td>
+     	<?php if ( in_array( $study_submodule->id ,$editable_study_submodules_ids) ) : ?>
+	     	<span id="final_date_planned_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>"class="editable_finalDate_planned" title="Feu click per editar la data">
+	        	<?php 
+	        	if ($study_submodule->study_submodule_endDate_planned == "0000-00-00") {
+	        		echo "";
+	        	} else {
+	        		echo date('d-m-Y', strtotime($study_submodule->study_submodule_endDate_planned));
+	        	}
+	        	?>        	
+	        </span>
+	        	<?php 
+	        	if ($study_submodule->study_submodule_endDate_planned == "0000-00-00") {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i>';
+	        	} else {
+	        		echo '<br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data"> Editable</span>';
+	        	}
+	        	?>
+	    <?php else: ?>
+		   	<?php 
+	       	if ($study_submodule->study_submodule_endDate_planned == "0000-00-00") {
+	       		echo "";
+	       	} else {
+	       		echo date('d-m-Y', strtotime($study_submodule->study_submodule_endDate_planned));
+	       	}
+	       	?>        	
+     	<?php endif; ?>    	
+     </td>
 
+     <td>
+     	<?php if ( in_array( $study_submodule->id ,$editable_study_submodules_ids) ) : ?>
+	     	<span id="total_hours_<?php echo $study_submodule->id;?>" studysubmoduleid="<?php echo $study_submodule->id;?>" class="editable_num" title="Feu click per editar la data"><?php echo $study_submodule->study_submodules_totalHours;?></span>
+	        <br/><i class="icon-warning-sign red bigger-130" title="Feu click per editar la data!"></i><span title="Feu click per editar la data">Editable</span>
+	    <?php else: ?> 
+	        <?php echo $study_submodule->study_submodules_totalHours;?>
+	    <?php endif; ?>
+     </td>
    </tr>
   <?php endforeach; ?>
   <?php endif; ?>

@@ -307,5 +307,8 @@ $lang['study_submodules_study'] = "Estudi";
 $lang['study_submodules_order'] = "Ordre"; 
 $lang['study_submodules_initialDate'] = "Data inicial"; 
 $lang['study_submodules_endDate'] = "Data final"; 
+$lang['study_submodules_initialDate_planned'] = "Data inicial programació"; 
+$lang['study_submodules_endDate_planned'] = "Data final programació"; 
 $lang['study_submodules_academic_periods_totalHours'] = "Hores Totals"; 
-$lang['study_submodules_description'] = "Descripció"; 
+$lang['study_submodules_description'] = "Descripció
+"; 
