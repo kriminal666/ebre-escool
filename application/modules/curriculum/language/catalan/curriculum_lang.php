@@ -75,6 +75,7 @@ $lang['study_submodules_endDate']="Data fi";
 $lang['study_submodules_totalHours']="Hores totals";
 $lang['study_submodules_order']="Ordre";
 $lang['study_submodules_description']="Descripció";
+$lang['study_submodules_academic_periods']="Períodes acadèmics";
 
 $lang['study_submodules_academic_periods_id']="Id";
 $lang['study_submodules_academic_periods_study_submodules_id']="Unitats Formativa/ Didàctica";

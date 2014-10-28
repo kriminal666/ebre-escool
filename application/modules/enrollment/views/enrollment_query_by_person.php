@@ -543,10 +543,162 @@ function refresh_enrollment_info(person_id, periode, enrollment_id) {
   return current_enrollment_id;
 }
 
+function student_official_id_change() {
+  student = $("#student_official_id").val();
 
+  //console.debug("student:" + student);
+
+    //Check if is a valid DNI
+
+        $.ajax({
+          url:'<?php echo base_url("index.php/enrollment/check_student");?>',
+          type: 'post',
+          data: {
+              student_official_id : student
+          },
+          datatype: 'json',
+          statusCode: {
+            404: function() {
+              $.gritter.add({
+                title: 'Error connectant amb el servidor!',
+                text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_student ' ,
+                class_name: 'gritter-error gritter-center'
+              });
+            },
+            500: function() {
+              $("#response").html('A server-side error has occurred.');
+              $.gritter.add({
+                title: 'Error connectant amb el servidor!',
+                text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_student ' ,
+                class_name: 'gritter-error gritter-center'
+              });
+            }
+          },
+          error: function() {
+            $.gritter.add({
+                title: 'Error!',
+                text: 'Ha succeït un error!' ,
+                class_name: 'gritter-error gritter-center'
+              });
+          },
+        }).done(function(data){
+
+          /* Student Exists */
+          if(data != false) {
+   
+            $.gritter.add({
+              // (string | mandatory) the heading of the notification
+              title: 'S\'ha trobat la persona!',
+              // (string | mandatory) the text inside the notification
+              text: "<i class='icon-exclamation-sign'></i> Us hem omplert tots els camps amb les dades de la persona. <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>",
+            });
+          
+            var all_data = $.parseJSON(data);
+            //console.debug(JSON.stringify(all_data));
+            $.each(all_data, function(idx,obj) {
+              
+              /* Fill form with student data from Database */
+              //console.debug("idx:" + idx);
+              //console.debug("set value to:" + obj);
+              $("input[name$="+idx+"]").val(obj);
+              
+              if(idx=='person_locality_id') {
+                  //console.debug("test");
+                  $('#person_locality_id').val(obj);
+                  $('#person_locality_id').select2();
+              }
+
+              student_full_name = $('#student_full_name').find("span.white");
+              if(idx=='person_photo'){
+                var student_photo = $('#student_photo');
+
+                //Sergi Tur: change only img source not all span!!
+                //student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
+                $('#avatar').attr("src","<?php echo base_url('uploads/person_photos');?>/"+obj);
+              }
+              if(idx=='person_gender'){
+                if(obj == 'M'){
+                  $('input:radio[name=sexe]').val(['M']);  
+                } else if(obj == 'F'){
+                  $('input:radio[name=sexe]').val(['F']);  
+                }
+                
+              }
+
+              if(idx=='person_official_id_type'){
+                if(obj == 1){
+                   $('input:radio[name=official_id_type]').val(['1']);
+                } else if(obj == 2){
+                   $('input:radio[name=official_id_type]').val(['2']);
+                } else if(obj == 3){
+                  $('input:radio[name=official_id_type]').val(['3']);
+                }
+              }
+              
+              student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
+
+            });
+            
+            //RELOAD PREVIOUS ENROLLMENTS:
+            get_previous_enrollments_url = "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>/";
+            //console.debug(previous_enrollments_table);
+            //console.debug(JSON.stringify(previous_enrollments_table));
+            previous_enrollments_table.api().ajax.url(get_previous_enrollments_url + all_data['person_official_id']);
+            previous_enrollments_table.api().ajax.reload();
+
+            //GET/REFRESH ENROLLMENT_INFO AND STUDY MODULES ANS SUBMODULES TABLES
+            enrollment_id = refresh_enrollment_info(all_data['person_id'],periode,false);
+
+          /* Student doesn't exists, clear form data */
+          } else {
+              $.gritter.add({
+                // (string | mandatory) the heading of the notification
+                title: 'NO s\'ha trobat la persona!',
+                // (string | mandatory) the text inside the notification
+                text: "<i class='icon-exclamation-sign'></i> No s'ha trobat cap persona amb el DNI/NIF/Passaport indicat!. <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>",
+                class_name: 'gritter-error gritter-center'
+              });
+              empty_student = {"person_id":"",
+              "person_photo":"","person_secondary_official_id":"","person_givenName":"",
+              "person_sn1":"","person_sn2":"","person_email":"","person_secondary_email":"","person_date_of_birth":"",
+              "person_gender":"","person_homePostalAddress":"","postalcode_code":"","person_locality_id":"","username":"",
+              "person_telephoneNumber":"","person_mobile":""}
+
+              /*value_to_select= $('#locality_postal_code_' + postalcode).val(); 
+              $('#person_locality_id').val(value_to_select);
+              $('#person_locality_id').select2();*/
+
+              
+              student_photo = $('#student_photo');
+              student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
+              student_full_name = $('#student_full_name').find("span.white");
+              student_full_name.text('Alumne');
+
+              $('input:radio[name=official_id_type]').val(['1']);
+
+              $.each(empty_student, function(idx,obj) {
+                $("input[name$="+idx+"]").val(obj);
+              });
+          }
+
+        });
+}
 
 
 jQuery(function($) {
+
+  <?php if ($student_official_id != false):?>
+    var student_official_id_filter = "<?php echo $student_official_id;?>";
+  <?php else:?>
+    var student_official_id_filter = false;
+  <?php endif;?>
+
+
+  if (student_official_id_filter != false) {
+    console.debug("DNI value: " + student_official_id_filter);
+    $("#student_official_id").val(student_official_id_filter);    
+    student_official_id_change();
+  }
 
   $('input:radio[name=official_id_type]').val(['1']);
 
@@ -717,150 +869,10 @@ study_submodules_table = $('#study_submodules_table').dataTable( {
 
 //END SHOW PREVIOUS ENROLLMENTS
 
-
-
   $("#student_official_id").change(function(){
     //console.debug("change event");
-    student = $(this).val();
-
-    //Check if is a valid DNI
-
-        $.ajax({
-          url:'<?php echo base_url("index.php/enrollment/check_student");?>',
-          type: 'post',
-          data: {
-              student_official_id : student
-          },
-          datatype: 'json',
-          statusCode: {
-            404: function() {
-              $.gritter.add({
-                title: 'Error connectant amb el servidor!',
-                text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/check_student ' ,
-                class_name: 'gritter-error gritter-center'
-              });
-            },
-            500: function() {
-              $("#response").html('A server-side error has occurred.');
-              $.gritter.add({
-                title: 'Error connectant amb el servidor!',
-                text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/check_student ' ,
-                class_name: 'gritter-error gritter-center'
-              });
-            }
-          },
-          error: function() {
-            $.gritter.add({
-                title: 'Error!',
-                text: 'Ha succeït un error!' ,
-                class_name: 'gritter-error gritter-center'
-              });
-          },
-        }).done(function(data){
-
-          /* Student Exists */
-          if(data != false) {
-   
-            $.gritter.add({
-              // (string | mandatory) the heading of the notification
-              title: 'S\'ha trobat la persona!',
-              // (string | mandatory) the text inside the notification
-              text: "<i class='icon-exclamation-sign'></i> Us hem omplert tots els camps amb les dades de la persona. <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>",
-            });
-          
-            var all_data = $.parseJSON(data);
-            //console.debug(JSON.stringify(all_data));
-            $.each(all_data, function(idx,obj) {
-              
-              /* Fill form with student data from Database */
-              //console.debug("idx:" + idx);
-              //console.debug("set value to:" + obj);
-              $("input[name$="+idx+"]").val(obj);
-              
-              if(idx=='person_locality_id') {
-                  //console.debug("test");
-                  $('#person_locality_id').val(obj);
-                  $('#person_locality_id').select2();
-              }
-
-              student_full_name = $('#student_full_name').find("span.white");
-              if(idx=='person_photo'){
-                var student_photo = $('#student_photo');
-
-                //Sergi Tur: change only img source not all span!!
-                //student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click" src="<?php echo base_url('uploads/person_photos'); ?>/'+obj+'" alt="'+ obj +'"/></span>');
-                $('#avatar').attr("src","<?php echo base_url('uploads/person_photos');?>/"+obj);
-              }
-              if(idx=='person_gender'){
-                if(obj == 'M'){
-                  $('input:radio[name=sexe]').val(['M']);  
-                } else if(obj == 'F'){
-                  $('input:radio[name=sexe]').val(['F']);  
-                }
-                
-              }
-
-              if(idx=='person_official_id_type'){
-                if(obj == 1){
-                   $('input:radio[name=official_id_type]').val(['1']);
-                } else if(obj == 2){
-                   $('input:radio[name=official_id_type]').val(['2']);
-                } else if(obj == 3){
-                  $('input:radio[name=official_id_type]').val(['3']);
-                }
-              }
-              
-              student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
-
-            });
-            
-            //RELOAD PREVIOUS ENROLLMENTS:
-            get_previous_enrollments_url = "<?php echo base_url('index.php/enrollment/get_previous_enrollments');?>/";
-            //console.debug(previous_enrollments_table);
-            //console.debug(JSON.stringify(previous_enrollments_table));
-            previous_enrollments_table.api().ajax.url(get_previous_enrollments_url + all_data['person_official_id']);
-            previous_enrollments_table.api().ajax.reload();
-
-            //GET/REFRESH ENROLLMENT_INFO AND STUDY MODULES ANS SUBMODULES TABLES
-            enrollment_id = refresh_enrollment_info(all_data['person_id'],periode,false);
-
-          /* Student doesn't exists, clear form data */
-          } else {
-              $.gritter.add({
-                // (string | mandatory) the heading of the notification
-                title: 'NO s\'ha trobat la persona!',
-                // (string | mandatory) the text inside the notification
-                text: "<i class='icon-exclamation-sign'></i> No s'ha trobat cap persona amb el DNI/NIF/Passaport indicat!. <button class='close' data-dismiss='alert' type='button'><i class='icon-remove'></i></button>",
-                class_name: 'gritter-error gritter-center'
-              });
-              empty_student = {"person_id":"",
-              "person_photo":"","person_secondary_official_id":"","person_givenName":"",
-              "person_sn1":"","person_sn2":"","person_email":"","person_secondary_email":"","person_date_of_birth":"",
-              "person_gender":"","person_homePostalAddress":"","postalcode_code":"","person_locality_id":"","username":"",
-              "person_telephoneNumber":"","person_mobile":""}
-
-              /*value_to_select= $('#locality_postal_code_' + postalcode).val(); 
-              $('#person_locality_id').val(value_to_select);
-              $('#person_locality_id').select2();*/
-
-              
-              student_photo = $('#student_photo');
-              student_photo.html('<span class="profile-picture"><img id="avatar" style="height: 150px;" class="editable img-responsive editable-click editable-empty" src="<?php echo base_url('assets/img/alumnes/foto.png'); ?>" alt="photo"/></span>');                  
-              student_full_name = $('#student_full_name').find("span.white");
-              student_full_name.text('Alumne');
-
-              $('input:radio[name=official_id_type]').val(['1']);
-
-              $.each(empty_student, function(idx,obj) {
-                $("input[name$="+idx+"]").val(obj);
-              });
-          }
-
-        });
-
-  //editableAvatar();          
-
-  });
+    student_official_id_change();
+  });  
 
 });
 

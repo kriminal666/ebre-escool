@@ -1083,11 +1083,15 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         $this->grocery_crud->display_as($this->current_table.'_courseid',lang($this->current_table.'_courseid'));
         $this->grocery_crud->display_as($this->current_table.'_order',lang($this->current_table.'_order'));
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
+        $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));
 
         //RELACIONS
         $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_shortname} - {study_module_name})');
         $this->grocery_crud->set_relation($this->current_table.'_courseid','course','({course_id} - {course_shortname})');
         //$this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','({study_module_id} - {study_module_name})');
+
+        $this->grocery_crud->set_relation_n_n($this->current_table.'_academic_periods', $this->current_table."_academic_periods", "academic_periods", $this->current_table."_academic_periods_" . $this->current_table . "_id", $this->current_table."_academic_periods_academic_period_id", 'academic_periods_shortname');
+                                                                                                                                                                                                                                                                                                                
 
         //UPDATE AUTOMATIC FIELDS
         $this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));

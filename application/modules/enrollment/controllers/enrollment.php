@@ -1218,8 +1218,9 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $this->_load_body_footer(); 
     }
 
-    public function enrollment_query_by_person($only_person_data = false) {
+    public function enrollment_query_by_person($only_person_data = false, $student_official_id = null) {
 
+        $data = array();
         $active_menu = array();
         if ($only_person_data == false) {
             $active_menu['menu']='#enrollment_wizard';
@@ -1228,6 +1229,12 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
             $active_menu['menu']='#maintenances';
             $active_menu['submenu1']='#persons';
             $active_menu['submenu2']='#person_alt';
+        }
+
+        $data["student_official_id"] = false;
+
+        if ($student_official_id != null ) {
+            $data["student_official_id"] = $student_official_id;
         }
         
 
@@ -1238,7 +1245,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $this->_load_html_header($header_data); 
 
 
-        $data = array();
+        
 
         $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
         $localities = $this->enrollment_model->get_localities();

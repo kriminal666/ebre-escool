@@ -110,6 +110,179 @@ class attendance_model  extends CI_Model  {
 			return false;
 	}
 
+	function getAllGroupStudentsIds($class_group_id,$academic_period_id=null) {
+		
+		if ($academic_period_id==null) {
+			$academic_period_id = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period_id = $this->get_academic_period_name_by_period_id($academic_period_id);
+		}
+
+		/*
+		EXAMPLE
+		SELECT person.person_id
+		FROM person
+			INNER JOIN users ON person.person_id = users.person_id
+		INNER JOIN enrollment ON users.person_id = enrollment.enrollment_personid
+		WHERE enrollment.enrollment_group_id =26 AND enrollment_periodid="2014-15"
+		*/
+
+
+		$this->db->select('person.person_id');
+		$this->db->from('person');
+		$this->db->join('users','person.person_id = users.person_id');
+		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
+		$this->db->where('enrollment.enrollment_group_id',$class_group_id);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period_id);
+		
+		$this->db->order_by('person.person_sn1');
+		$this->db->order_by('person.person_sn2');
+		$this->db->order_by('person.person_givenName');
+		$this->db->distinct();
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			$student_info_array = array();
+
+			foreach ($query->result_array() as $row)	{
+				$student_info_array[] = $row['person_id'];
+			}
+
+			return $student_info_array;
+		}			
+		else {
+			return array();
+		}
+			
+
+	}
+
+
+	function getAllStudySubmodulesByClassroomGroupId($classroom_group_id,$academic_period_id=null) {
+
+		if ($academic_period_id==null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		} 
+
+		/*
+		SELECT DISTINCT study_submodules_academic_periods_study_submodules_id
+		FROM study_submodules_academic_periods 
+		INNER JOIN study_submodules ON study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id
+		INNER JOIN courses_academic_periods ON courses_academic_periods.courses_academic_periods_course_id  = study_submodules.study_submodules_courseid
+		INNER JOIN classroom_group ON classroom_group.classroom_group_course_id = courses_academic_periods.courses_academic_periods_course_id
+		INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id =  classroom_group.classroom_group_id
+		WHERE study_submodules_academic_periods_academic_period_id=5 AND courses_academic_periods_academic_period_id=5 AND classroom_group_academic_periods_academic_period_id=5 
+		AND classroom_group_id=1
+		*/
+
+		$this->db->select('study_submodules_academic_periods_study_submodules_id');
+		$this->db->distinct();
+		$this->db->from('study_submodules_academic_periods');
+		$this->db->join('study_submodules','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id');
+		$this->db->join('courses_academic_periods','courses_academic_periods.courses_academic_periods_course_id  = study_submodules.study_submodules_courseid');		
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = courses_academic_periods.courses_academic_periods_course_id');	
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id =  classroom_group.classroom_group_id');	
+			
+		$this->db->where('study_submodules_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('courses_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('classroom_group_id',$classroom_group_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			$study_submodules_array = array();
+
+			foreach ($query->result() as $row)	{
+				$study_submodules_array[] = $row->study_submodules_academic_periods_study_submodules_id;
+			}
+
+			return $study_submodules_array;
+		}			
+		else {
+			return array();
+		}
+
+
+	}
+
+
+	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$academic_period_id=null) {
+		
+		if ($academic_period_id==null) {
+			$academic_period = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period = $this->get_academic_period_name_by_period_id($academic_period_id);
+		}
+
+		$study_submodules_array = $this->getAllStudySubmodulesByClassroomGroupId($class_group_id,$academic_period_id);
+
+		if ( !(count($study_submodules_array) > 0) ) {
+			return false;
+		}
+
+		/*
+		SELECT DISTINCT `person`.`person_id`, `person`.`person_sn1`, `person`.`person_sn2`, `person`.`person_givenName`, `users`.`id`, `users`.`username`, `person`.`person_secondary_email`, `person`.`person_photo`, `person`.`person_official_id` 
+		FROM (`person`) 
+		INNER JOIN `users` ON `person`.`person_id` = `users`.`person_id` 
+		JOIN `enrollment` ON `users`.`person_id` = `enrollment`.`enrollment_personid` 
+		INNER JOIN enrollment_submodules ON enrollment_submodules.`enrollment_submodules_enrollment_id` = enrollment.enrollment_id
+		WHERE `enrollment_submodules_submoduleid` IN (1,2,3) AND `enrollment`.`enrollment_periodid` = '2014-15' 
+		ORDER BY `person`.`person_sn1`, `person`.`person_sn2`, `person`.`person_givenName`
+		*/
+
+
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
+		$this->db->distinct();
+		$this->db->from('person');
+		$this->db->join('users','person.person_id = users.person_id');
+		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');	
+		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id');	
+		$this->db->where_in('enrollment_submodules_submoduleid',$study_submodules_array);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period);
+		
+		$this->db->order_by('person.person_sn1');
+		$this->db->order_by('person.person_sn2');
+		$this->db->order_by('person.person_givenName');
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			$student_info_array = array();
+
+			foreach ($query->result_array() as $row)	{
+
+				//$student_info_array[] = $row;
+   				$student = new stdClass();
+				
+				$student->person_id = $row['person_id'];
+				$student->sn1 = $row['person_sn1'];
+				$student->sn2 = $row['person_sn2'];
+				$student->givenName = $row['person_givenName'];
+				$student->username = $row['username'];
+				$student->userid = $row['id'];
+				$student->email = $row['person_secondary_email'];
+				$student->photo_url = $row['person_photo'];
+				$student->person_official_id = $row['person_official_id'];
+				
+				//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
+				
+				$student_info_array[$student->person_id] = $student;
+
+			}
+
+			return $student_info_array;
+		}			
+		else {
+			return array();
+		}
+			
+
+	}
+
 	function getAllGroupStudentsInfo($class_group_id,$academic_period_id=null) {
 		
 		if ($academic_period_id==null) {
@@ -2149,6 +2322,10 @@ function get_current_academic_period() {
 
 	function getAllIncidentsByDateAndPersonIdArray($array_student_person_ids,$date) {
 
+		if ( ! (is_array($array_student_person_ids) && ( count($array_student_person_ids) > 0 ) )) {
+			return false;
+		}
+
 		$incident_type_codes_by_incident_type_ids = $this->get_incident_type_codes_by_incident_type_ids();
 
 		/*
@@ -2160,7 +2337,8 @@ function get_current_academic_period() {
 		*/
 
 		$this->db->select('incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id, 
-			incident_type,incident_type.incident_type_code,incident_type.incident_type_shortName,incident_type.incident_type_name, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
+			incident_type,incident_type.incident_type_code,incident_type.incident_type_shortName,incident_type.incident_type_name, incident_notes, 
+			incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
 			incident_markedForDeletion, incident_markedForDeletionDate');
 		$this->db->from('incident');				
 		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');

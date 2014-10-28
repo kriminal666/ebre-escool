@@ -54,9 +54,56 @@
 <div class="space-3"></div>
 
               <div class="row-fluid">
-                <div class="span1"></div>
 
-                <div class="widget-box span5 collapsed">
+                <div class="widget-box span4 collapsed">
+                        <div class="widget-header widget-header-small header-color-green">
+                          <h6>Filtres</h6>
+
+                          <span class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                              <i class="icon-chevron-down"></i>
+                            </a>
+
+                            <a href="#" data-action="close">
+                              <i class="icon-remove"></i>
+                            </a>
+                          </span>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            
+                            <ol class="dd-list">
+                      <li class="dd-item dd2-item" data-id="21">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_students" checked="true"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="#">Mostrar els estudiants amb UFS soltes</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="13">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students" checked="true"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Mostrar els alumnes matrículats al grup</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="15">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor (pendent)</a></div>
+
+                      </li>
+
+
+                    </ol>
+
+                          </div>
+                        </div>
+                      </div>
+
+                <div class="widget-box span4 collapsed">
                         <div class="widget-header widget-header-small header-color-green">
                           <h6>Data i franja horaria: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date . " " . $selected_time_slot;?></h6>
 
@@ -126,32 +173,41 @@
                       <div class="widget-main">                        
 
                     <ol class="dd-list">
+                      <li class="dd-item dd2-item" data-id="21">
+                        <div class="dd-handle dd2-handle">
+                          <i class="normal-icon icon-download-alt blue bigger-130"></i>
+ 
+                          <i class="drag-icon icon-move bigger-125"></i>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/reports/mentoring_classlists'); ?>">Llista dels estudiants del grup ( apartat tutoria)</a></div>
+                      </li>
+
                       <li class="dd-item dd2-item" data-id="13">
+                        <div class="dd-handle dd2-handle">
+                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
+ 
+                          <i class="drag-icon icon-move bigger-125"></i>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="15">
                         <div class="dd-handle dd2-handle">
                           <i class="normal-icon icon-download-alt blue bigger-130"></i>
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Llista dels estudiants del grup (amb foto)</a></div>
-                      </li>
-
-                      <li class="dd-item dd2-item" data-id="15">
-                        <div class="dd-handle dd2-handle">
-                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
-
-                          <i class="drag-icon icon-move bigger-125"></i>
-                        </div>
-                        <div class="dd2-content"><a href="#">Llista dels estudiants del grup (sense foto)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
 
                       </li>
 
                       <li class="dd-item dd2-item" data-id="19">
                         <div class="dd-handle dd2-handle">
-                          <i class="normal-icon icon-download-alt blue bigger-130"></i>
+                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Llençol amb les fotos dels estudiants</a></div>
+                        <div class="dd2-content"><a href="#">Llençol amb les fotos dels estudiants (PDF)</a></div>
                       </li>
                     </ol>
 
@@ -171,10 +227,89 @@
               <div class="span2"></div>
             </div>
 
-<div class="space-8"></div>
 
+<?php if ($students_with_errors_num > 0 ) :?>
+<?php else:?>
+  <div class="space-8"></div>
+<?php endif;?>
 
 <div class="row-fluid">
+
+  <?php if ($students_with_errors_num > 0 ) :?>
+
+                  <div class="table-header" style="background-color: red;">
+                    <i class="icon-group"></i> 
+                    <div class="inline position-relative">
+                      Alumnes amb errors!!                           
+                    </div>
+                  </div>
+
+                  <table id="students_with_errors" class="table table-striped table-bordered table-hover">
+                    <thead> 
+                      <tr>
+                        <th>Foto</th>
+                        <th>#</th>
+                        <th>Primer cognom</th>
+                        <th>Segon cognom</th>
+                        <th>Nom</th>
+                        <th>
+                          <i class="icon-user"></i> User 
+                        </th>  
+                        <th>
+                          <i>@</i> Email 
+                        </th>  
+                        <th>Accions&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                      </tr>  
+                    </thead>    
+                    <tbody>
+                      <?php foreach ($students_with_errors as $student_with_error_key => $student_with_error): ?>
+
+                        <?php $student_witherror_fullname = $student_with_error->givenName . " " . $student_with_error->sn1 . " " . $student_with_error->sn2;?>
+                             
+                           <td>
+                            <a class="image-thumbnail" href="<?php echo base_url($student_with_error->photo_url)?>">
+                             <img data-rel="tooltip" style="max-width:35px;";
+                              title="<?php echo $student_witherror_fullname . "( " . $student_with_error->person_official_id . ")";?>" class="msg-photo" alt="<?php echo $student_witherror_fullname . "( " . $student_with_error->person_official_id . ")";?>" 
+                              src="<?php echo base_url("/uploads/person_photos/" . $student_with_error->photo_url)?>"/>
+                            </a>
+                          </td>
+                          <td>
+                            <a href="<?php echo base_url('/index.php/persons/index/read/' . $student_with_error->person_id );?>"><?php echo $student_with_error->person_id;?></a>
+                          </td>
+                          <td>
+                            <?php echo $student_with_error->sn1;?>
+                          </td>
+                          <td>
+                            <?php echo $student_with_error->sn2;?>
+                          </td>
+                          <td>
+                            <?php echo $student_with_error->givenName;?>
+                          </td>
+                          <td>
+                            <div title="<?php echo $student_with_error->username . " ( " . $student_with_error->userid . ")";?>"><a href="<?php echo base_url('/index.php/users/index/read/' . $student_with_error->userid ) ;?>"><?php echo $student_with_error->username;?></a></div>
+                          </td>
+                          <td>
+                            <?php echo $student_with_error->email;?>
+                          </td>
+
+                          <td>
+                            <div class="hidden-phone visible-desktop action-buttons">
+                              <a class="blue" href="#">
+                                <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student_with_error->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
+                              </a>
+                            </div>
+                          </td>
+
+                        </tr>  
+
+                      <?php endforeach; ?>  
+                   
+                    </tbody>  
+
+                  </table>     
+
+  <?php endif;?>
+
 
   <div class="table-header">
     <i class="icon-group"></i> 
@@ -235,7 +370,7 @@
                           </ul>
     </div>
 
-    <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <?php echo " " . $total_number_of_students;?> 
+    <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <span title="Alumnes totals de tots els tipus"><?php echo " " . $total_number_of_students;?></span>  | <span title="Alumnes matrículats al grup"><?php echo " " . $official_students_in_group_num;?></span> | <span title="Alumnes marcats per ocultar"><?php echo " " . $hidden_students_in_group_num;?></span>
 
     <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?>
     <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables/' . $selected_classroom_group_key) ?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar" style="margin-left:50px;"></i> Horari de grup</a>
@@ -265,11 +400,12 @@
 
 <?php //var_export($incidents); ?>
 
- <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+ <table id="students_table" class="table table-striped table-bordered table-hover">
                   <thead> 
                     <tr>
                       <th>Foto</th>
                       <th>#</th>
+                      <th title="Tipus">T</th>
                       <th>Primer cognom</th>
                       <th>Segon cognom</th>
                       <th>Nom</th>
@@ -293,7 +429,8 @@
                              <?php if (isset ($time_slot->study_module_id)): ?>
                               <p>
                                <span class="label <?php if ( $time_slot->teacher_id == $teacher_id ) { echo 'label-purple';};?>" data-rel="tooltip" 
-                                title="<?php echo $time_slot->study_module_name . " ( " . $time_slot->study_module_id . " ). " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>">
+                                title="<?php echo $time_slot->study_module_name . " ( " . $time_slot->study_module_id . " ). " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>"
+                                studymoduleid="<?php echo  $time_slot->study_module_id;?>" id="span_study_module_<?php echo  $time_slot->study_module_id;?>" ondblclick="study_module_onclick(this);">
                                 <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
                                </span>
                               </p>
@@ -327,16 +464,24 @@
                     <?php foreach ($classroom_group_students as $student_key => $student): ?>
 
                     <?php $student_fullname = $student->givenName . " " . $student->sn1 . " " . $student->sn2;?>
-                    <tr>
-                      <td>
+
+                    <?php if ($student->official == true ) : ?>
+                        <tr id = "student_tr_<?php echo $student->person_id;?>" official="true">        
+                    <?php else : ?>            
+                        <tr id = "student_tr_<?php echo $student->person_id;?>" official="false">
+                    <?php endif; ?>                                
+                       <td>
                         <a class="image-thumbnail" href="<?php echo base_url($student->photo_url)?>">
                          <img data-rel="tooltip" style="max-width:35px;";
-                          title="<?php echo $student_fullname;?>" class="msg-photo" alt="<?php echo $student_fullname;?>" 
+                          title="<?php echo $student_fullname;?>" class="msg-photo" alt="<?php echo $student_fullname . "( " . $student->person_official_id . ")";?>" 
                           src="<?php echo base_url($student->photo_url)?>"/>
                         </a>
                       </td>
                       <td>
                         <a href="<?php echo base_url('/index.php/persons/index/read/' . $student->person_id );?>"><?php echo $student->person_id;?></a>
+                      </td>
+                      <td>
+                        <?php if ($student->official == true ) : ?><span title="Alumne matrículat oficialment al grup">*</span><?php else: ?><span title="Alumne matrículat de UFs/UDs soltes o MPs/Crèdits solts">#</span><?php endif; ?>
                       </td>
                       <td>
                         <?php echo $student->sn1;?>
@@ -458,7 +603,7 @@
                       <td>
                         <div class="hidden-phone visible-desktop action-buttons">
                           <a class="blue" href="#">
-                            <i class="icon-zoom-in bigger-130"></i>
+                            <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
                           </a>
 
                           <a class="green" href="#">
@@ -513,6 +658,19 @@
 </div>
 </div>
 <script type="text/javascript">
+
+
+
+function study_module_onclick(element) {
+    id = element.id;
+    //console.debug("id:" + id);
+    studymoduleid = $("#"+id).attr("studymoduleid");  
+    //console.debug("studymoduleid:" + studymoduleid);
+    window.open(
+      '<?php echo base_url();?>index.php/managment/study_submodule_dates/' + studymoduleid ,
+      '_blank' // <- This is what makes it open in a new window.
+    );
+}
 
 function check_attendance_select_on_click(element,person_id,time_slot_id,day,date){
   id = element.id;
@@ -688,11 +846,77 @@ function study_submodule_on_click(study_submodule_button, study_module_button_id
   }
 }
 
-      jQuery(function($) {
+$.fn.dataTableExt.afnFiltering.push(
+    function( oSettings, aData, iDataIndex ) {
+
+        var checkbox_show_all_group_enrolled_students_selected = $("#checkbox_show_all_group_enrolled_students").prop('checked');
+        var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
+        
+        //TODO
+        var checkbox_hide_students_selected = $("#checkbox_hide_students").prop('checked');
+        
+        //GET COLUMN TYPE
+        
+        var student_type = aData[2];
+
+        student_type_text = jQuery(student_type).text();
+
+        //console.debug("student_type: " + student_type_text);
+        
+        if (checkbox_show_all_group_enrolled_students_selected) {
+          if (student_type_text == "*") {
+            return true;
+          }
+        }
+
+        if (checkbox_show_all_students_selected) {
+          if (student_type_text == "#") {
+            return true;
+          }
+        }
+
+        return false;
+       
+    }
+);
+
+jQuery(function($) {
+
+        var students_with_errors_num = <?php echo $students_with_errors_num;?>;
+
+        if (students_with_errors_num > 0 ) {
+          alert ("Atenció! Hi ha alumnes amb dades inconsistents o errors de matrícula. Consulteu la llista d'alumnes amb errors i informeu al administrador del sistema!");
+        }
+
+
+        //Check filters an show only students according to filters
+
+        var checkbox_show_all_group_enrolled_students_selected = $("#checkbox_show_all_group_enrolled_students").prop('checked');
+        var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
+        var checkbox_hide_students_selected = $("#checkbox_hide_students").prop('checked');
+
+        if (checkbox_show_all_students_selected) {
+          if (checkbox_show_all_group_enrolled_students_selected) {
+
+          } else {
+
+          }
+
+        } else { 
+          if (checkbox_show_all_group_enrolled_students_selected) {
+
+          }
+        }
+        
+        //TODO: hidden students
+
+        if (checkbox_hide_students_selected) {
+
+        }
 
         //$(".check_attendance_select2").select2({placeholder: "Select report type", allowClear: true});
         
-        var oTable1 = $('#sample-table-2').dataTable( {
+        var oTable1 = $('#students_table').DataTable( {
           "oLanguage": {
                         "sProcessing":   "Processant...",
                         "sLengthMenu":   "Mostra _MENU_ registres",
@@ -712,9 +936,27 @@ function study_submodule_on_click(study_submodule_button, study_module_button_id
             },
         "bPaginate": false,
         "aoColumns": [
-            { "bSortable": false },null,null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
+            { "bSortable": false },null,{ "sType": "html","type": "html"},null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
           { "bSortable": false }
         ] } );
+
+        
+        
+
+        $("#checkbox_show_all_group_enrolled_students").change(function() {
+          oTable1.fnDraw();
+        });
+
+        $("#checkbox_show_all_students").change(function() {
+          oTable1.fnDraw();
+        });
+
+        $("#checkbox_hide_students").change(function() {
+          oTable1.fnDraw();
+        });
+
+        var checkbox_show_all_students_selected = $("#").prop('checked');
+        var checkbox_hide_students_selected = $("#").prop('checked');
 
   $('.date-picker').datepicker({
           format: "dd/mm/yyyy",

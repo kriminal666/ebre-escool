@@ -2769,11 +2769,36 @@ class managment extends skeleton_main {
 
 /* FI GRUP */
 
-	public function study_submodule_dates() {
+	public function study_submodule_dates($study_module_id = null , $academic_period_id = null) {
 		if (!$this->skeleton_auth->logged_in())
 		{
 			//redirect them to the login page
 			redirect($this->skeleton_auth->login_page, 'refresh');
+		}
+
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+		$user_is_teacher = $this->session->userdata('is_teacher');
+
+		if ( !($user_is_admin || $user_is_teacher) ) {
+			echo "Access not allowed!";
+		}
+
+		$selected_academic_period_id = false;
+
+		$current_academic_period_id = null;
+
+		if ($academic_period_id == null) {
+			$database_current_academic_period =  $this->managment_model->get_current_academic_period();
+			
+			if ($database_current_academic_period->id) {
+				$current_academic_period_id = $database_current_academic_period->id;
+			} else {
+				$current_academic_period_id = $this->config->item('current_academic_period_id','ebre-escool');	
+			}
+			
+			$academic_period_id=$current_academic_period_id ;	
+		} else {
+			$selected_academic_period_id = $academic_period_id;
 		}
 
 		$active_menu = array();
@@ -2816,6 +2841,19 @@ class managment extends skeleton_main {
 	   $this->_load_body_header();
 	   
 	   $data = array();
+
+	   $academic_periods = $this->managment_model->get_all_academic_periods();	
+
+		$data['academic_periods'] = $academic_periods;
+
+		$data['selected_academic_period_id'] = $selected_academic_period_id;
+
+		$dates = $this->managment_model->get_academic_period_dates($academic_period_id);
+		
+		$data['selected_academic_period_initial_date'] = $dates->initial_date;
+		$data['selected_academic_period_final_date'] = $dates->final_date;
+		$data['selected_academic_period_initial_date_planned'] = $dates->initial_date;
+		$data['selected_academic_period_final_date_planned'] = $dates->final_date;
 		
 	   $this->load->view('managment/study_submodule_dates.php',$data);     
        

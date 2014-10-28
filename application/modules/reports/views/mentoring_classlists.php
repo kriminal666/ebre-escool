@@ -46,6 +46,7 @@
 <div style='height:10px;'></div>
   <div style="margin:10px;">
     <div class="container">
+
       <table class="table table-striped table-bordered table-hover table-condensed" id="TODO_filter">
           <thead style="background-color: #d9edf7;">
             <tr>
@@ -117,6 +118,65 @@
             </tr>
           </thead>  
         </table> 
+
+        <div class="span3"></div>
+
+        <div class="widget-box span5 collapsed">
+                        <div class="widget-header widget-header-small header-color-green">
+                          <h6>Filtres alumnes a mostra a la llista</h6>
+
+                          <span class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                              <i class="icon-chevron-down"></i>
+                            </a>
+
+                            <a href="#" data-action="close">
+                              <i class="icon-remove"></i>
+                            </a>
+                          </span>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            
+                            <ol class="dd-list">
+                      <li class="dd-item dd2-item" data-id="21">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_ustudents"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="#">Mostrar TOTS els estudiants (UFS soltes)</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="13">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Mostrar els alumnes matrículats al grup</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="15">
+                        <div class="dd-handle dd2-handle">
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
+                        </div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor</a></div>
+
+                      </li>
+
+
+                    </ol>
+
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+
+
+
+
 
       </div>  
 

@@ -889,7 +889,26 @@ class attendance extends skeleton_main {
 	    $all_lessons = $this->attendance_model->getAllLessonsByDay($day_of_week_number,$data['selected_classroom_group_key']);
 	    $data['all_lessons'] = $all_lessons;
 
-	    $all_students_in_group= $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
+
+	    //OBTAIN ABSOLUTELY ALL STUDENTS:
+	    $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfoIncludedStudySubmodules($selected_group_id);
+
+	    //GET ARRAYS OF STUDENTS BY FILTER --> ALLOW FILTER STUDENTS LIST
+
+	    // OFFICIAL GROUP STUDENTS: STUDENTS ENROLLED TO GROUP:
+	    $official_students_in_group = $this->attendance_model->getAllGroupStudentsInfo($selected_group_id);
+	    
+	    //$official_students_in_group = $this->attendance_model->getAllGroupStudentsIds($selected_group_id);
+	    
+	    
+	   	$data['official_students_in_group'] = $official_students_in_group;
+	    $data['official_students_in_group_num'] = count($official_students_in_group);
+
+	    $hidden_students_in_group= array();
+	    //$hidden_students_in_group= $this->attendance_model->getAllGroupHiddenStudentsInfo($selected_group_id,teacher_id);
+	    $data['hidden_students_in_group'] = $hidden_students_in_group;
+	    $data['hidden_students_in_group_num'] = count($hidden_students_in_group);
+
 		$selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
 
 		$selected_group_id = $selected_group_info['id'];
@@ -992,31 +1011,64 @@ class attendance extends skeleton_main {
 		$data['classroom_group_students'] = array ();
 		$base_photo_url = "uploads/person_photos";
 		
+
+		//Look for incosistent/ error estudents
+		$students_with_errors = array();
+		foreach ($official_students_in_group as $official_student_key => $official_student) {
+			# code...
+			if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
+				$students_with_errors[$official_student_key]= $official_student;
+			} 			
+		}
+
+		foreach ($official_students_in_group as $official_student_key => $official_student) {
+			# code...
+			if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
+				$students_with_errors[$official_student_key]= $official_student;
+			} 			
+		}
+
+		//getAllGroupStudentsInfoIncludedStudySubmodules
+
+		$data['students_with_errors'] = $students_with_errors;
+		$data['students_with_errors_num'] = count($students_with_errors);
+
 		$array_student_person_ids = array ();
 		if ( $data['total_number_of_students'] != 0 ) {
-			foreach($all_students_in_group as $student)	{
+			if ( is_array($all_students_in_group) && ( count($all_students_in_group) > 0  ) ) {
+				foreach($all_students_in_group as $student)	{
 
-				$studentObject = new stdClass;
-			
-				$studentObject->person_id = $student->person_id;
-				$array_student_person_ids[] = $student->person_id;
-				$studentObject->givenName = $student->givenName;
-				$studentObject->sn1 = $student->sn1;
-				$studentObject->sn2 = $student->sn2;
-				$studentObject->username = $student->username;
-				$studentObject->userid = $student->userid;
-				$studentObject->email = $student->email;
-			
-				//TODO: get incident notes!
-				$studentObject->notes = "nota";
+					$studentObject = new stdClass;
+				
+					$studentObject->person_id = $student->person_id;
+					$array_student_person_ids[] = $student->person_id;
+					$studentObject->givenName = $student->givenName;
+					$studentObject->sn1 = $student->sn1;
+					$studentObject->sn2 = $student->sn2;
+					$studentObject->username = $student->username;
+					$studentObject->userid = $student->userid;
+					$studentObject->email = $student->email;
+				
+					//TODO: get incident notes!
+					$studentObject->notes = "nota";
 
-				if ($student->photo_url != "") {
-					$student->photo_url = $base_photo_url."/".$student->photo_url;	
-				}	else {
-					$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
-				}
-				$data['classroom_group_students'][]=$student;
-			}	
+					if ($student->photo_url != "") {
+						$student->photo_url = $base_photo_url."/".$student->photo_url;	
+					}	else {
+						$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
+					}
+
+					if ( array_key_exists($student->person_id, $official_students_in_group) ) {
+						$student->official = true;
+					} else {
+						$student->official = false;
+					}
+					
+
+					$data['classroom_group_students'][]=$student;
+				}	
+			}
+				
 		}
 
 		$incidents = $this->attendance_model->getAllIncidentsByDateAndPersonIdArray($array_student_person_ids,$iso_date_alt);
