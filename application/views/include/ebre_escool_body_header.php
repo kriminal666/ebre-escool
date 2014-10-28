@@ -1069,7 +1069,7 @@
               <li id="classroom_group"><a href='<?=base_url()?>index.php/curriculum/classroom_group'><?php echo lang('classroom_group') . " (tots)";?></a></li>
               <li id="classroom_group_by_academic_period"><a href='<?=base_url()?>index.php/curriculum/classroom_group_by_academic_period'><?php echo lang('classroom_group') . " (anys)";?></a></li>
               <li id="study_module"><a href='<?=base_url()?>index.php/curriculum/study_module'><?php echo lang('study_module');?></a></li><!-- Assignatura -->
-              <li id="study_module_academic_periods"><a href='<?=base_url()?>index.php/curriculum/study_module_academic_periods'><?php echo lang('study_module_academic_periods');?></a></li><!-- Assignatura -->
+              <li id="study_module_academic_periods"><a href='<?=base_url()?>index.php/curriculum/study_module_academic_periods'><?php echo lang('study_module_academic_periods_alt');?></a></li><!-- Assignatura -->
               <li id="study_submodules"><a href='<?=base_url()?>index.php/curriculum/study_submodules'><?php echo lang('study_submodules');?></a></li><!-- Unitat Formativa -->
               <li id="study_submodules_academic_periods"><a href='<?=base_url()?>index.php/curriculum/study_submodules_academic_periods'><?php echo lang('study_submodules_academic_periods');?></a></li><!-- Unitat Formativa -->
               <li id="lessons"><a href='<?=base_url()?>index.php/curriculum/lessons'><?php echo lang('lessons');?></a></li><!-- Lliçons -->              
