@@ -409,6 +409,72 @@ class attendance extends skeleton_main {
 
 	}
 
+	public function hidden_students() {
+		$active_menu = array();
+		$active_menu['menu']='#maintenances';
+		$active_menu['submenu1']='#attendance_maintainance';
+		$active_menu['submenu2']='#hidden_students';
+
+	    $this->check_logged_user();
+
+		/* Ace */
+	    $header_data = $this->load_ace_files($active_menu);  
+
+	    // Grocery Crud 
+	    $this->current_table="hidden_student";
+	    $this->grocery_crud->set_table($this->current_table);
+	        
+	    $this->session->set_flashdata('table_name', $this->current_table);     
+			
+		//Establish subject:
+	    $this->grocery_crud->set_subject(lang("hidden_students"));
+
+	    //COMMON_COLUMNS               
+	    $this->set_common_columns_name($this->current_table);       
+
+	    $this->common_callbacks($this->current_table);
+
+	    $this->grocery_crud->display_as($this->current_table.'_id',lang($this->current_table . '_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_person_id',lang($this->current_table . '_person_id'));     
+	    $this->grocery_crud->display_as($this->current_table.'_teacher_id',lang($this->current_table . '_teacher_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_academic_period_id',lang($this->current_table . '_academic_period_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table . '_classroom_group_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_study_module_id',lang($this->current_table . '_study_module_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_study_submodule_id',lang($this->current_table . '_study_submodule_id'));
+	    $this->grocery_crud->display_as($this->current_table.'_day_id',lang($this->current_table . '_day_id'));
+
+
+	    $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table . '_entryDate'));
+	    $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table . '_last_update'));
+	    $this->grocery_crud->display_as($this->current_table.'_lastupdateUserId',lang($this->current_table . '_lastupdateUserId'));
+	    $this->grocery_crud->display_as($this->current_table.'_markedForDeletion',lang($this->current_table . '_markedForDeletion'));
+	    $this->grocery_crud->display_as($this->current_table.'_markedForDeletionDate',lang($this->current_table . '_markedForDeletionDate'));
+
+	    //RELATIONS
+	    $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_shortname}'); 
+	    $this->grocery_crud->set_relation($this->current_table.'_person_id','person','{person_sn1} {person_sn2}, {person_givenName} ({person_official_id}) - {person_id}');
+	    $this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','id: {teacher_id} - person_id: {teacher_person_id} - user_id: {teacher_user_id}');
+	    $this->grocery_crud->set_relation($this->current_table.'_classroom_group_id','classroom_group','{classroom_group_code} - {classroom_group_shortName}. {classroom_group_name} ({classroom_group_id})');
+	    $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_shortname}. {study_module_name} ({study_module_id})');
+	    $this->grocery_crud->set_relation($this->current_table.'_study_submodule_id','study_submodules','{study_submodules_shortname}. {study_submodules_name} ({study_submodules_id})');
+	    //$this->grocery_crud->set_relation($this->current_table.'_day_id','teacher','id: {teacher_id} - person_id: {teacher_person_id} - user_id: {teacher_user_id}');
+
+
+	    //UPDATE AUTOMATIC FIELDS
+		$this->grocery_crud->callback_before_insert(array($this,'before_insert_object_callback'));
+		$this->grocery_crud->callback_before_update(array($this,'before_update_object_callback'));
+	    
+	    $this->grocery_crud->unset_add_fields($this->current_table.'_last_update');
+			
+	    $this->userCreation_userModification($this->current_table);
+
+	    $this->grocery_crud->unset_dropdowndetails($this->current_table."_creationUserId",$this->current_table."_lastupdateUserId");
+
+	    $this->grocery_crud->set_default_value($this->current_table,$this->current_table.'_markedForDeletion','n');
+
+		$this->renderitzar($this->current_table,$header_data);			
+	}
+
 	public function time_slots () {
 
 		$active_menu = array();

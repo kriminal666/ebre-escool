@@ -7807,3 +7807,27 @@ INSERT INTO `postalcode` (`postalcode_id`, `postalcode_code`, `postalcode_name`,
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `hidden_student`
+--
+
+CREATE TABLE IF NOT EXISTS `hidden_student` (
+  `hidden_student_id` int(11) NOT NULL AUTO_INCREMENT,
+  `hidden_student_person_id` int(11) NOT NULL,
+  `hidden_student_teacher_id` int(11) NOT NULL,
+  `hidden_student_academic_period_id` int(11) NOT NULL,
+  `hidden_student_classroom_group_id` int(11) NOT NULL,
+  `hidden_student_study_module_id` int(11) NOT NULL,
+  `hidden_student_study_submodule_id` int(11) NOT NULL,
+  `hidden_student_day_id` int(11) NOT NULL,
+  `hidden_student_entryDate` datetime NOT NULL,
+  `hidden_student_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `hidden_student_creationUserId` int(11) DEFAULT NULL,
+  `hidden_student_lastupdateUserId` int(11) DEFAULT NULL,
+  `hidden_student_markedForDeletion` enum('n','y') NOT NULL,
+  `hidden_student_markedForDeletionDate` datetime NOT NULL,
+   PRIMARY KEY (`hidden_student_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

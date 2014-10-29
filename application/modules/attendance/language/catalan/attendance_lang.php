@@ -107,3 +107,17 @@ $lang['code']="Codi";
 $lang['order']="Ordre";
 
 
+$lang['hidden_student_id'] = "Id";
+$lang['hidden_student_person_id'] = "Estudiant";
+$lang['hidden_student_teacher_id'] = "Professor";
+$lang['hidden_student_academic_period_id'] = "Període acadèmic";
+$lang['hidden_student_classroom_group_id'] = "Grup de classe";
+$lang['hidden_student_study_module_id'] = "Mòdul professional / crèdit";
+$lang['hidden_student_study_submodule_id'] = "Unitat Formativa / Unitat didàctica";
+$lang['hidden_student_day_id'] = "Dia";
+$lang['hidden_student_entryDate'] = "Data creació";
+$lang['hidden_student_last_update'] = "Data última modificació";
+$lang['hidden_student_creationUserId'] = "Usuari de creació";
+$lang['hidden_student_lastupdateUserId'] = "Usuari última modificació";
+$lang['hidden_student_markedForDeletion'] = "Baixa?";
+$lang['hidden_student_markedForDeletionDate'] = "Data baixa";

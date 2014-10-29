@@ -161,3 +161,5 @@ $lang['modification_user']="Usuari de Modificació";
 $lang['attendance_incidents']="Incidènces assistència";
 $lang['attendance_incident_types']="Tipus d'incidències d'assistència";
 
+
+$lang['hidden_students'] = "Estudiants ocults";
