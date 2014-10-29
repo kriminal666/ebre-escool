@@ -106,7 +106,7 @@
                   <?php if ( $classgroup_key == $default_classroom_group_id) : ?>
                     <option selected="selected" value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
                   <?php else : ?>
-                    <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
+                    <option value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?> (<?php echo $classgroup_value->id;?>)</option>
                   <?php endif;?>
                 <?php endforeach; ?>
                 </select> 

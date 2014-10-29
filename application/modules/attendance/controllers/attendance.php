@@ -1116,16 +1116,17 @@ class attendance extends skeleton_main {
 		$data['is_teacher']=$user_is_a_teacher;
 		$this->_load_body_header($data);
 
-		if ( !$user_is_a_teacher ) {
-			//TODO: Return not allowed page!
-			return null;
-		}		
-
 		$user_teacher_code = $this->attendance_model->get_teacher_code_by_personid($person_id);
 		
 		//TODO:
-		$user_is_admin = true;
+		$user_is_admin = $this->ebre_escool->user_is_admin();
 
+		if (!$user_is_admin) {
+			if ( !$user_is_a_teacher  ) {
+				//TODO: Return not allowed page!
+				return null;
+			}		
+		}			
 
 		if ($teacher_code == null) {
 	    	$teacher_code = $user_teacher_code;

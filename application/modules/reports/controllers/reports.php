@@ -322,7 +322,7 @@ class reports extends skeleton_main {
 	    
 	}
 
-	function mentoring_classlists($academic_period_id = null,$mentor_id = false){
+	function mentoring_classlists($academic_period_id = null,$mentor_id = null, $classroom_group_id = null){
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
 		$active_menu['submenu1']='#mentoring_classlists';
@@ -371,23 +371,30 @@ class reports extends skeleton_main {
 
         //Check if user is a teacher-> Then if is a mentor. Use this mentor as selected mentor in mentors list
         $default_classroom_group_id = null;
-        if ($mentor_id == false) {
-            if ($this->session->userdata('is_teacher')) {
-                //IS MENTOR?
-                if ( $this->reports_model->is_mentor($this->session->userdata('teacher_id'),$academic_period_id) ) {
-                    $mentor_id = $this->session->userdata('teacher_id');
-                } else {
-                    //GET FIRST CLASSROOM GROUP TEACHER IMPARTS. Use as default classroomgroup show at classromgroups list
-                    $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
+
+        if ($classroom_group_id != null) {
+            $default_classroom_group_id = $classroom_group_id;
+        } else {
+            if ($mentor_id == null) {
+                if ($this->session->userdata('is_teacher')) {
+                    //IS MENTOR?
+                    if ( $this->reports_model->is_mentor($this->session->userdata('teacher_id'),$academic_period_id) ) {
+                        $mentor_id = $this->session->userdata('teacher_id');
+                    } else {
+                        //GET FIRST CLASSROOM GROUP TEACHER IMPARTS. Use as default classroomgroup show at classromgroups list
+                        $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
+                    }
                 }
+            } elseif ($mentor_id == "void") {
+                $mentor_id = false;
+                $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
             }
-        } elseif ($mentor_id == "void") {
-            $mentor_id = false;
-            $default_classroom_group_id = $this->reports_model->get_first_classroom_group_id($this->session->userdata('teacher_id'),$academic_period_id);
         }
+
+        
         
         $all_classgroups = array();
-        if ($mentor_id == false) {
+        if ($mentor_id == null) {
         	$all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
         } else {
         	$all_classgroups = $this->reports_model->get_all_classgroups_report_info_by_mentor_id($academic_period_id,$mentor_id);

@@ -125,8 +125,8 @@
                                   </span>Escolliu la data:</label>
 
                                 <div class="input-group">                                  
-                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $check_attendance_date;?>" />                                  
-                                </div>
+                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $check_attendance_date;?>" /> (Pendent implementar)                                 
+                                </div> 
                             
 
                             <label for="timepicker1"><span class="input-group-addon">
@@ -141,7 +141,7 @@
                                     <?php echo $time_slot->range;?>
                                   </option>
                                 <?php endforeach;?>
-                              </select>  
+                              </select>  (Pendent implementar)
 
                               
                             </div>
@@ -179,7 +179,7 @@
  
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/reports/mentoring_classlists'); ?>">Llista dels estudiants del grup ( apartat tutoria)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/reports/mentoring_classlists/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup ( apartat tutoria)</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
@@ -188,7 +188,7 @@
  
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/true/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="15">
@@ -197,7 +197,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/false/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
 
                       </li>
 
@@ -207,7 +207,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="#">Llençol amb les fotos dels estudiants (PDF)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report/' . $selected_classroom_group_key);?>">Llençol amb les fotos dels estudiants (PDF)</a></div>
                       </li>
                     </ol>
 
