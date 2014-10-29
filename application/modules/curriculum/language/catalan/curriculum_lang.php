@@ -68,6 +68,7 @@ $lang['study_module_subtype']="Subtipus";
 $lang['study_module_academic_periods']="Períodes acadèmics";   
 
 
+$lang['study_modules_id']="Id";
 $lang['study_submodules_study_module_id']="Mòdul Professional";   
 $lang['study_submodules_courseid']="Curs";   
 $lang['study_submodules_initialDate']="Data inici";
