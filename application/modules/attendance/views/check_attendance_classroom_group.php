@@ -179,7 +179,7 @@
  
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/reports/mentoring_classlists/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup ( apartat tutoria)</a></div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/reports/mentoring_classlists/' . $academic_period_id . "/void/" . $selected_classroom_group_key); ?>">Llista dels estudiants del grup ( apartat tutoria)</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
@@ -188,7 +188,7 @@
  
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/true/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/' . $academic_period_id . '/' . $selected_classroom_group_key . '/true' ); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="15">
@@ -197,7 +197,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/false/' . $selected_classroom_group_key); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/' . $academic_period_id . '/' . $selected_classroom_group_key . '/false'); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
 
                       </li>
 
@@ -207,7 +207,7 @@
 
                           <i class="drag-icon icon-move bigger-125"></i>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report/' . $selected_classroom_group_key);?>">Llençol amb les fotos dels estudiants (PDF)</a></div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report/' . $academic_period_id . '/' . $selected_classroom_group_key);?>">Llençol amb les fotos dels estudiants (PDF)</a></div>
                       </li>
                     </ol>
 
@@ -658,8 +658,6 @@
 </div>
 </div>
 <script type="text/javascript">
-
-
 
 function study_module_onclick(element) {
     id = element.id;

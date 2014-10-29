@@ -331,7 +331,7 @@ class attendance_reports extends skeleton_main {
 
     /* ASSISTÈNCIA - INFORMES DE GRUP */
 
-    function class_list_report($academic_period_id=null) {
+    function class_list_report($academic_period_id=null, $classroom_group_code = null, $with_photo = null ) {
         
         $selected_academic_period_id = false;
         $current_academic_period_id = null;
@@ -396,7 +396,17 @@ class attendance_reports extends skeleton_main {
                 $photo= true;
             }
         }   else {
-            $data['selected_group']=$default_group_id;
+            if ( ($classroom_group_code != null) && ( $with_photo != null)) {
+                $data['selected_group'] = $classroom_group_code;
+                if ($with_photo == "true") {
+                    $photo = true;
+                } else {
+                    $photo = false;
+                }
+            } else {
+                $data['selected_group'] = $default_group_id;    
+            }
+            
         }
 /*
         if ($data['selected_group']!="ALL_GROUPS")
@@ -454,8 +464,18 @@ class attendance_reports extends skeleton_main {
 
 //      $this->load_header();  
 
-        if(!$_POST){
+        $show_pdf = false;
+        if ($_POST) {
+            $show_pdf = true;
+        } else {
+            if ( ($classroom_group_code != null) && ( $with_photo != null)) {
+                $show_pdf = true;
+            }
+        }
+
+        if(!$show_pdf){
             $this->load->view('attendance_reports/class_list_report.php', $data); 
+
         } else {
             //$this->load->view('attendance_reports/class_list_report.php', $data); 
             //$this->load->view('attendance_reports/class_list_report_pdf.php', $data); 
@@ -568,7 +588,7 @@ class attendance_reports extends skeleton_main {
         $this->load_footer();      
     }
 
-    function class_sheet_report($academic_period_id=null) {
+    function class_sheet_report($academic_period_id = null, $classroom_group_id = null) {
 
         $selected_academic_period_id = false;
         $current_academic_period_id = null;
@@ -633,7 +653,11 @@ class attendance_reports extends skeleton_main {
         if ($_POST) {
             $data['selected_group']= urldecode($_POST['grup']);
         }   else {
-            $data['selected_group']=$default_group_id;
+            if ($classroom_group_id != null) {
+                $data['selected_group']=$classroom_group_id;
+            } else {
+                $data['selected_group']=$default_group_id;
+            }
         }
 
 //echo $data['selected_group'];
@@ -691,8 +715,17 @@ class attendance_reports extends skeleton_main {
         //Total d'alumnes
         $count_alumnes = count($all_students_in_group);
 
+        $show_pdf = false;
+        if ($_POST) {
+            $show_pdf = true;
+        } else {
+            if ($classroom_group_id != null) {
+                $show_pdf = true;
+            }    
+        }
+
         //$this->load_header();
-        if(!$_POST){
+        if(!$show_pdf){
             $this->load->view('attendance_reports/class_sheet_report.php', $data); 
         } else {
 

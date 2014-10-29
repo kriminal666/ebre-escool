@@ -1080,6 +1080,8 @@ class attendance extends skeleton_main {
 		$data['incident_types'] = $incident_types;
 
 		$data['user_is_admin'] = $user_is_admin;
+
+		$data['academic_period_id'] = $this->attendance_model->get_current_academic_period_id();
 		
 		$this->load->view('attendance/check_attendance_classroom_group',$data);
 		 

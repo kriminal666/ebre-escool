@@ -397,7 +397,11 @@ class reports extends skeleton_main {
         if ($mentor_id == null) {
         	$all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
         } else {
-        	$all_classgroups = $this->reports_model->get_all_classgroups_report_info_by_mentor_id($academic_period_id,$mentor_id);
+            if ($mentor_id == "void") {
+                $all_classgroups = $this->reports_model->get_all_classgroups_report_info($academic_period_id);
+            } else {
+                $all_classgroups = $this->reports_model->get_all_classgroups_report_info_by_mentor_id($academic_period_id,$mentor_id);    
+            }
         }
         
 

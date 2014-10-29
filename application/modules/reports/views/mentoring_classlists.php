@@ -97,7 +97,6 @@
                </td>
                <td><?php echo "Grup de classe"?>:</td>
                <td>
-                
                 <select id="select_class_list_classgroup_filter">
                 <?php if ( !$mentor_id ) : ?>  
                  <option value=""></option>
@@ -111,9 +110,6 @@
                 <?php endforeach; ?>
                 </select> 
 
-
-
-
               </td>
             </tr>
           </thead>  
@@ -121,9 +117,9 @@
 
         <div class="span3"></div>
 
-        <div class="widget-box span5 collapsed">
+        <div class="widget-box span4 collapsed">
                         <div class="widget-header widget-header-small header-color-green">
-                          <h6>Filtres alumnes a mostra a la llista</h6>
+                          <h6>Filtres alumnes</h6>
 
                           <span class="widget-toolbar">
                             <a href="#" data-action="collapse">
@@ -142,14 +138,14 @@
                             <ol class="dd-list">
                       <li class="dd-item dd2-item" data-id="21">
                         <div class="dd-handle dd2-handle">
-                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_ustudents"><span class="lbl">&nbsp;</span></label>
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="#">Mostrar TOTS els estudiants (UFS soltes)</a></div>
+                        <div class="dd2-content"><a href="#">Mostrar els estudiants amb UFS soltes</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
                         <div class="dd-handle dd2-handle">
-                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students"><span class="lbl">&nbsp;</span></label>
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
                         <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Mostrar els alumnes matrículats al grup</a></div>
                       </li>
@@ -158,7 +154,7 @@
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor (pendent)</a></div>
 
                       </li>
 
