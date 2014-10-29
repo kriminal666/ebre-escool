@@ -145,6 +145,15 @@
 
 						$("#" + this.id).addClass("strong");
 				        return value;
+				    },
+				     {
+				        indicator: 'Guardant...',
+				        tooltip: 'click per editar...',
+				        placeholder: '<span class="muted">click per editar...</span>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel·lar</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Guardar</button>',
+				        style: 'display: inline;',
+				        width: 'none',
 				    });
 
 				$('.editable_initialDate').editable(
@@ -275,8 +284,8 @@
 				        indicator: 'Guardant...',
 				        tooltip: 'click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
-				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
-				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel·lar</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Guardar</button>',
 				        style: 'display: inline;',
 				        width: 'none',
 				    }
@@ -406,8 +415,8 @@
 				        indicator: 'Guardant...',
 				        tooltip: 'click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
-				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
-				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel·lar</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Guardar</button>',
 				        style: 'display: inline;',
 				        width: 'none',
 				    }
@@ -542,8 +551,8 @@
 				        indicator: 'Guardant...',
 				        tooltip: 'click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
-				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
-				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel·lar</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Guardar</button>',
 				        style: 'display: inline;',
 				        width: 'none',
 				    }
@@ -673,8 +682,8 @@
 				        indicator: 'Guardant...',
 				        tooltip: 'click per editar...',
 				        placeholder: '<span class="muted">click per editar...</span>',
-				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel</button>',
-				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Save</button>',
+				        cancel: '<button class="btn btn-mini btn-forced-margin" type="cancel" >Cancel·lar</button>',
+				        submit: '<button class="btn btn-mini btn-primary btn-forced-margin" type="submit" >Guardar</button>',
 				        style: 'display: inline;',
 				        width: 'none',
 				    }
