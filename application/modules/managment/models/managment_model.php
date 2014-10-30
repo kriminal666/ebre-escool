@@ -2712,7 +2712,7 @@ class managment_model  extends CI_Model  {
 				if ( array_key_exists($enrollment->enrollment_course_id, $all_courses_study_info) ) {
 					$study_id_by_course = $all_courses_study_info[$enrollment->enrollment_course_id];
 					if ( $study_id_by_course != $enrollment->study_id) {
-						$enrollment->error = "CURS I ESTUDI no quadren!";
+						$enrollment->error = "CURS: " . $enrollment->enrollment_course_id . " I ESTUDI: " . $enrollment->study_id . " no quadren! S'esperava estudi: " . $study_id_by_course;
 					}
 				} else {
 					$enrollment->error = "EL CURS: " . $enrollment->enrollment_course_id . " NO TÉ ESTUDI!";
