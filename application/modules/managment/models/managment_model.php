@@ -2764,9 +2764,6 @@ class managment_model  extends CI_Model  {
 					$enrollment->error = "EL GRUP: " . $enrollment->enrollment_group_id . " NO TÉ CURS!";
 				}
 
-				$all_classrooms_groups_course_info
-
-
 				//$enrollment->enrollment_course_id
 				//$enrollment->enrollment_group_id
 				//$enrollment->study_id
