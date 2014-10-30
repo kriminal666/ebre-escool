@@ -2594,6 +2594,41 @@ class managment_model  extends CI_Model  {
 
 	}
 
+	function get_all_classrooms_groups_course_info ($academic_period_id=null) {
+
+		if ($academic_period_id == null ) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		/*
+		SELECT DISTINCT classroom_group_id,classroom_group_course_id 
+		FROM classroom_group 
+		INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id
+		WHERE classroom_group_academic_periods_academic_period_id = 5	
+		*/
+
+		$this->db->select('classroom_group_id,classroom_group_course_id');
+		$this->db->distinct();
+		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');	
+		$this->db->where('classroom_group_academic_periods_academic_period_id', $academic_period_id);
+
+		$query = $this->db->get();
+        //echo $this->db->last_query() . "<br/>";
+
+		$all_classrooms_groups_course_info = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$all_classrooms_groups_course_info[$row->classroom_group_id] = $row->classroom_group_course_id;
+			}
+		}
+		
+		return $all_classrooms_groups_course_info;
+
+	}
+
+	
+
 	
 	function get_enrollment_reports_all_enrolled_persons_by_academic_period ($academic_period_id=null,$orderby="DESC") {
 
@@ -2605,6 +2640,7 @@ class managment_model  extends CI_Model  {
 		}
 
 		$all_courses_study_info = $this->get_all_courses_study_info($academic_period_id);
+		$all_classrooms_groups_course_info = $this->get_all_classrooms_groups_course_info($academic_period_id);
 
 		//print_r($all_courses_study_info);
 
@@ -2717,6 +2753,18 @@ class managment_model  extends CI_Model  {
 				} else {
 					$enrollment->error = "EL CURS: " . $enrollment->enrollment_course_id . " NO TÉ ESTUDI!";
 				}
+
+				//CHECK IF CLASSROOM AND COURSE ARE CORRECT
+				if ( array_key_exists($enrollment->enrollment_group_id, $all_classrooms_groups_course_info) ) {
+					$course_by_classroom_group = $all_classrooms_groups_course_info[$enrollment->enrollment_group_id];
+					if ( $course_by_classroom_group != $enrollment->enrollment_course_id) {
+						$enrollment->error = "GRUP CLASSE: " . $enrollment->enrollment_group_id . " I CURS: " . $enrollment->enrollment_course_id . " no quadren! S'esperava CURS: " . $course_by_classroom_group;
+					}
+				} else {
+					$enrollment->error = "EL GRUP: " . $enrollment->enrollment_group_id . " NO TÉ CURS!";
+				}
+
+				$all_classrooms_groups_course_info
 
 
 				//$enrollment->enrollment_course_id
