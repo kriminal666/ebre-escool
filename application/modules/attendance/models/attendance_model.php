@@ -208,6 +208,121 @@ class attendance_model  extends CI_Model  {
 
 	}
 
+	public function get_study_id_from_classroom_group_id($classroom_group_id) {
+        /*
+        SELECT `course_study_id`
+        FROM `classroom_group_academic_periods` 
+        INNER JOIN classroom_group ON classroom_group.`classroom_group_id` = `classroom_group_academic_periods`.`classroom_group_academic_periods_classroom_group_id`
+        INNER JOIN course ON course.`course_id` = classroom_group.`classroom_group_course_id`
+        WHERE `classroom_group_academic_periods_academic_period_id`=5 AND `classroom_group_academic_periods_classroom_group_id`=3
+        */
+
+        $current_academic_period_id = $this->get_current_academic_period_id();
+
+        $this->db->select('course_study_id');
+        $this->db->from('classroom_group_academic_periods');
+        $this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
+        $this->db->join('course','course.course_id = classroom_group.classroom_group_course_id');
+        $this->db->where('classroom_group_academic_periods_classroom_group_id',$classroom_group_id);
+        $this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+        $this->db->limit(1);
+
+        $query = $this->db->get();  
+        //echo $this->db->last_query();
+
+        if ($query->num_rows() == 1) {
+
+            $row = $query->row(); 
+            return $row->course_study_id;
+        }           
+        else
+            return false;
+    }
+
+	public function get_courses_id_from_classroom_group_id($classroom_group_id) {
+
+        $study_id = $this->get_study_id_from_classroom_group_id($classroom_group_id);
+        $current_academic_period_id = $this->get_current_academic_period_id();
+        
+        /*
+        SELECT `course_id`
+        FROM `course` 
+        INNER JOIN courses_academic_periods ON courses_academic_periods.`courses_academic_periods_course_id`= course.course_id
+        WHERE `course_study_id`=2 AND `courses_academic_periods_academic_period_id`=5
+        */
+
+        $this->db->select('course_id');
+        $this->db->from('course');
+        $this->db->join('courses_academic_periods','courses_academic_periods.courses_academic_periods_course_id= course.course_id');
+        $this->db->where('course_study_id',$study_id);
+        $this->db->where('courses_academic_periods_academic_period_id',$current_academic_period_id);
+
+        $query = $this->db->get();  
+        //echo $this->db->last_query();
+
+        $sibling_courses = array();
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row)    {
+                $sibling_courses[]= $row->course_id;
+            }
+            return $sibling_courses;
+        }           
+        else {
+            return $sibling_courses;
+        }
+
+    }
+
+
+	public function get_classroom_group_siblings($current_group) {
+
+		//GET COURSE
+		//$course_id = $this->get_course_id_from_classroom_group_id($current_group); <-- PERMIT GROUP CHANGE IN SAME STUDY NOT ONLY SAME COURSE        
+        $sibling_courses_array = $this->get_courses_id_from_classroom_group_id($current_group);
+		/*
+		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id
+		FROM classroom_group
+		INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id
+		WHERE classroom_group_course_id=46 AND classroom_group_academic_periods_academic_period_id=5
+		*/
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+        $this->db->select('classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id');
+		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->where('classroom_group_academic_periods_academic_period_id', $current_academic_period_id );
+
+        $this->db->where_in('classroom_group_course_id',$sibling_courses_array);
+ 
+		
+		$query = $this->db->get();
+	
+		//echo $this->db->last_query();
+
+		$groups_array = array();
+		if ($query->num_rows() > 0) {
+			foreach ($query->result_array() as $row)	{
+				if ($current_group != $row['classroom_group_id']) {
+					$classroom_group_sibling = new stdClass();	
+					$classroom_group_sibling->id = $row['classroom_group_id'];
+					$classroom_group_sibling->code = $row['classroom_group_code'];
+					$classroom_group_sibling->shortName = $row['classroom_group_shortName'];
+					$classroom_group_sibling->name = $row['classroom_group_name'];
+					$classroom_group_sibling->description = $row['classroom_group_description'];
+					$classroom_group_sibling->course_id = $row['classroom_group_course_id'];
+
+					$groups_array[$row['classroom_group_id']] = $classroom_group_sibling;	
+				}
+			}
+			return $groups_array;
+		}			
+		else {
+			return $groups_array;
+		}
+			
+	}
+
 
 	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$academic_period_id=null) {
 		
@@ -233,8 +348,13 @@ class attendance_model  extends CI_Model  {
 		ORDER BY `person`.`person_sn1`, `person`.`person_sn2`, `person`.`person_givenName`
 		*/
 
+		//GET SIBLINGS CLASSROOM GROUPS --> AVOID INCLUDIN STUDENTS OF THIS GROUP
+		$classroom_group_siblings = $this->get_classroom_group_siblings($class_group_id);
 
-		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
+		//DEBUG
+		//print_r($classroom_group_siblings);
+
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id,enrollment_group_id');
 		$this->db->distinct();
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
@@ -254,24 +374,24 @@ class attendance_model  extends CI_Model  {
 			$student_info_array = array();
 
 			foreach ($query->result_array() as $row)	{
-
-				//$student_info_array[] = $row;
-   				$student = new stdClass();
-				
-				$student->person_id = $row['person_id'];
-				$student->sn1 = $row['person_sn1'];
-				$student->sn2 = $row['person_sn2'];
-				$student->givenName = $row['person_givenName'];
-				$student->username = $row['username'];
-				$student->userid = $row['id'];
-				$student->email = $row['person_secondary_email'];
-				$student->photo_url = $row['person_photo'];
-				$student->person_official_id = $row['person_official_id'];
-				
-				//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
-				
-				$student_info_array[$student->person_id] = $student;
-
+				if ( ! ( array_key_exists($row['enrollment_group_id'], $classroom_group_siblings) ) ) {
+					//$student_info_array[] = $row;
+	   				$student = new stdClass();
+					
+					$student->person_id = $row['person_id'];
+					$student->sn1 = $row['person_sn1'];
+					$student->sn2 = $row['person_sn2'];
+					$student->givenName = $row['person_givenName'];
+					$student->username = $row['username'];
+					$student->userid = $row['id'];
+					$student->email = $row['person_secondary_email'];
+					$student->photo_url = $row['person_photo'];
+					$student->person_official_id = $row['person_official_id'];
+					
+					//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
+					
+					$student_info_array[$student->person_id] = $student;
+				}
 			}
 
 			return $student_info_array;

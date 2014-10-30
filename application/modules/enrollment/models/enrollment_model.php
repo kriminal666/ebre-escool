@@ -1461,7 +1461,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 
 	}
 
-	/* Student Data */
+	
 	public function get_classroom_group_siblings($current_group) {
 
 		//GET COURSE
@@ -1503,7 +1503,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			return $groups_array;
 		}			
 		else {
-			return groups_array;
+			return $groups_array;
 		}
 			
 	}	

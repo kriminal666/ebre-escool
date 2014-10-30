@@ -78,7 +78,7 @@
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="#">Mostrar els estudiants amb UFS soltes</a></div>
+                        <div class="dd2-content"><a href="#">Mostrar els estudiants no matrículats al grup però amb UFS/Mòduls soltes del grup</a></div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
