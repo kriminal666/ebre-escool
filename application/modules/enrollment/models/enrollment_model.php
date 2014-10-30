@@ -741,8 +741,8 @@ function update_user_ldap_dn($username, $ldap_dn) {
    				$enrollment_study_submodules[$i]['study_submodules_id'] = $row['study_submodules_id'];
    				$enrollment_study_submodules[$i]['study_submodules_module_name'] = $row['study_module_name'];
    				$enrollment_study_submodules[$i]['study_submodules_module_shortname'] = $row['study_submodules_shortname'];
-   				$enrollment_study_submodules[$i]['study_submodules_module'] = $row['study_submodules_shortname'] . " - " . $row['study_module_name'];
-   				$enrollment_study_submodules[$i]['study_submodules_shortname'] = $row['study_module_shortname'];
+   				$enrollment_study_submodules[$i]['study_submodules_module'] = $row['study_module_shortname'] . " - " . $row['study_module_name'];
+   				$enrollment_study_submodules[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
    				$enrollment_study_submodules[$i]['study_submodules_name'] = $row['study_submodules_name'];
    				$enrollment_study_submodules[$i]['study_submodules_courseid'] = $row['study_submodules_courseid'];
    				$enrollment_study_submodules[$i]['study_submodules_course_shortName'] = $row['course_shortName'];

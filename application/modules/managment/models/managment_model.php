@@ -2510,6 +2510,7 @@ class managment_model  extends CI_Model  {
 
 		$this->db->order_by('enrollment_entryDate', $orderby);
 		$this->db->where('enrollment_periodid', $academic_period_shortname);
+		//$this->db->limit(10);
 
 
 		$query = $this->db->get();

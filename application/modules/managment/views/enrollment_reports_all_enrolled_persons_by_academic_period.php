@@ -34,6 +34,80 @@
       <script>
       $(function(){
 
+                $("#create_multiple_autoenrollments").click(function() {
+
+                var txt;
+                var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva de paraules de pas dels usuaris? Els usuaris ja no podran entrar al sistema fins que no els entregueu la nova paraula de pas!");
+                if (r == true) {
+
+                    var values = $('input:checkbox:checked.ace').map(function () {
+                      return this.id;
+                    }).get(); 
+                    
+                    //AJAX
+                    $.ajax({
+                    url:'<?php echo base_url("index.php/managment/create_multiple_autoenrollments");?>',
+                    type: 'post',
+                    data: {
+                        values: values,
+                    },
+                    datatype: 'json',
+                    statusCode: {
+                      404: function() {
+                        $.gritter.add({
+                          title: 'Error connectant amb el servidor!',
+                          text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/create_multiple_autoenrollments' ,
+                          class_name: 'gritter-error gritter-center'
+                        });
+                      },
+                      500: function() {
+                        $("#response").html('A server-side error has occurred.');
+                        $.gritter.add({
+                          title: 'Error connectant amb el servidor!',
+                          text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/create_multiple_autoenrollments ' ,
+                          class_name: 'gritter-error gritter-center'
+                        });
+                      }
+                    },
+                    error: function() {
+                      $.gritter.add({
+                          title: 'Error!',
+                          text: 'Ha succeït un error!' ,
+                          class_name: 'gritter-error gritter-center'
+                        });
+                    },
+                    success: function(data) {
+                      //console.debug("data:" + JSON.stringify(data));
+                      //console.debug(JSON.stringify(all_ldap_users_table));
+                      all_ldap_users_table.ajax.reload();
+                    }
+                  }).done(function(data){
+                      //TODO: Something to check?
+                  
+                  });
+                }
+
+                
+                
+
+        });
+
+               $("#select_all").click(function() {
+
+                $('input:checkbox').map(function () {
+                  this.checked = true;
+                }).get(); 
+                
+              });
+
+              $("#unselect_all").click(function() {
+
+                $('input:checkbox').map(function () {
+                  this.checked = false;
+                }).get(); 
+                
+              });
+
               $("#select_class_list_academic_period_filter").select2();
 
               $("#academic_period_text").text( $("#select_class_list_academic_period_filter").select2("data").text);
@@ -137,6 +211,40 @@
         </table> 
 </div>
 
+ <table  class="table table-striped table-bordered table-hover table-condensed" id="actions"> 
+  <thead style="background-color: #d9edf7;">
+    <tr>
+      <td colspan="8" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
+        </strong></td>
+    </tr>
+    <tr> 
+       <td>
+        <button class="btn btn-mini btn-info" id="create_multiple_autoenrollments">
+          <i class="icon-bolt"></i>
+          Automatriculació
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td>
+        <button class="btn btn-mini btn-danger" id="select_all">
+          <i class="icon-bolt"></i>
+          Selecionar tots
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       <td>
+        <button class="btn btn-mini btn-danger" id="unselect_all">
+          <i class="icon-bolt"></i>
+          Deselecionar tots
+          <i class="icon-arrow-right icon-on-right"></i>
+        </button>
+       </td>
+       
+    </tr>
+  </thead>  
+</table> 
+
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_enrollments">
  <thead style="background-color: #d9edf7;">
   <tr>
@@ -147,7 +255,8 @@
       </h4></td>
   </tr>
   <tr> 
-
+     <th>&nbsp;</th> 
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_actions')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person_official_id')?></th>
@@ -171,6 +280,26 @@
   <!-- Iteration that shows study-->
   <?php foreach ($all_enrollments as $enrollment_key => $enrollment) : ?>
    <tr>
+    <td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $enrollment->id;?>"><span class="lbl">&nbsp;</span></label></td>
+    <td>
+      <div class="hidden-phone visible-desktop action-buttons">
+        <a class="blue" href="#">
+          <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $enrollment->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
+        </a>
+        <a class="green" href="#" target="_blank" title="Modificació matrícula">
+          <i class="icon-pencil bigger-130"></i>
+        </a>
+        <a class="red" href="#" target="_blank" title="Eliminació matrícula">
+          <i class="icon-minus bigger-130"></i>
+        </a>
+        <a class="purple" href="#" target="_blank" title="Automatriculació">
+          <i class="icon-bolt bigger-130"></i>
+        </a>
+      </div>
+
+
+    </td>  
+    
     <td><a href="<?php echo base_url('/index.php/enrollment/enrollment/index/read/' . $enrollment->id);?>"><?php echo $enrollment->id;?></a> ( <a href="<?php echo base_url('/index.php/enrollment/enrollment/index/edit/' . $enrollment->id);?>">edit</a>)</td>
     <td><a href="<?php echo base_url('/index.php/persons/index/read/' . $enrollment->person_id);?>"> <?php echo $enrollment->person_sn1 . " " . $enrollment->person_sn2 . ", " . $enrollment->person_givenName;?></a> ( <a href="<?php echo base_url('/index.php/persons/index/edit/' . $enrollment->person_id);?>"><?php echo $enrollment->person_id;?></a>) </td>
     <td><?php echo $enrollment->person_official_id;?></td>
@@ -180,7 +309,7 @@
     <td><?php echo $enrollment->force_change_password_next_login;?></td>
     <td><?php echo $enrollment->ldap_dn;?></td>
     <td><?php echo $enrollment->study_id . " " . $enrollment->studies_shortname . " " . $enrollment->studies_name . " " .   $enrollment->studies_studies_law_id . " " .   
-    $enrollment->studies_law_shortname . "" . $enrollment->studies_law_name  ?></td>
+    $enrollment->studies_law_shortname . " " . $enrollment->studies_law_name  ?></td>
     <td><?php echo $enrollment->enrollment_course_id . " " . $enrollment->course_shortname  . " " .  $enrollment->course_name;?></td>
     <td><?php echo $enrollment->enrollment_group_id . " " . $enrollment->classroom_group_code  . " " .  $enrollment->classroom_group_shortName . " " . $enrollment->classroom_group_name;?></td>
     <td><?php echo $enrollment->enrollment_entryDate;?></td>
