@@ -630,8 +630,14 @@ function update_user_ldap_dn($username, $ldap_dn) {
    				$previous_enrollments[$i]['studies_name'] = $row['studies_name'];   				
    				$previous_enrollments[$i]['studies'] = $row['studies_shortname'] . ". " . $row['studies_name'] . " - " . $row['studies_law_shortname'] . " - " . $row['studies_organizational_unit_shortname'] ;
    				$previous_enrollments[$i]['studies_id'] = $row['studies_id'];
-   				$previous_enrollments[$i]['course_shortname'] = $row['course_shortname'] . ". " . $row['course_name'];
-   				$previous_enrollments[$i]['classroomgroup_shortname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
+                $previous_enrollments[$i]['course_id'] = $row['course_id'];
+   				$previous_enrollments[$i]['course_shortname'] = $row['course_shortname'];
+                $previous_enrollments[$i]['course_name'] = $row['course_name'];
+                $previous_enrollments[$i]['course_fullname'] = $row['course_shortname'] . ". " . $row['course_name'];
+                $previous_enrollments[$i]['classroomgroup_shortname'] = $row['classroom_group_shortName'];
+                $previous_enrollments[$i]['classroom_group_id'] = $row['classroom_group_id'];
+                $previous_enrollments[$i]['classroom_group_code'] = $row['classroom_group_code'];
+   				$previous_enrollments[$i]['classroomgroup_fullname'] = $row['classroom_group_code'] . ". " . $row['classroom_group_shortName'];
    				$i++;
 			}
 		}			

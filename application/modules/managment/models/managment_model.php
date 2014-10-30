@@ -607,6 +607,100 @@ class managment_model  extends CI_Model  {
 		return true;
 	}
 
+	function create_multiple_autoenrollments($values) {
+
+		//echo "values: " . print_r($values). "\n";
+		foreach ($values as $value) {
+			if ($value != "") {
+				$this->auto_enrollment($value);
+			}
+		}		
+		return true;
+
+	}
+
+	function auto_enrollment( $enrollment_id ) {
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		//GET ENROLLMENT COURSE
+		/*
+		SELECT enrollment_course_id,enrollment_group_id,enrollment_study_id
+		FROM enrollment 
+		WHERE enrollment_id=500 
+		*/
+
+		$this->db->select('enrollment_course_id,enrollment_group_id,enrollment_study_id');
+		$this->db->from('enrollment');
+		$this->db->where('enrollment_id', $enrollment_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		$enrollment_course_id = null;
+		$enrollment_group_id = null;
+		$enrollment_study_id = null;
+
+		$persons_id_are_teachers = array();
+		if ($query->num_rows() == 1){
+			$row = $query->row();
+			$enrollment_course_id = $row->enrollment_course_id;
+			$enrollment_group_id = $row->enrollment_group_id;
+			$enrollment_study_id = $row->enrollment_study_id;
+		}
+
+		//CHECK FOR ERRORS!
+		if ( $enrollment_course_id == null ) {
+			return false;
+		}
+
+		// GET STUDY_SUBMODULES FOR COURSE
+		/*
+		SELECT study_submodules_id,study_submodules_study_module_id
+		FROM study_submodules 
+		INNER JOIN study_submodules_academic_periods ON study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id
+		WHERE study_submodules_academic_periods_academic_period_id=5 AND study_submodules_courseid= 9
+		*/
+
+		$this->db->select('study_submodules_id,study_submodules_study_module_id');
+		$this->db->from('study_submodules');
+		$this->db->join('study_submodules_academic_periods','study_submodules.study_submodules_id = study_submodules_academic_periods.study_submodules_academic_periods_study_submodules_id');
+		$this->db->where('study_submodules_courseid', $enrollment_course_id);
+		$this->db->where('study_submodules_academic_periods_academic_period_id', $current_academic_period_id);
+		
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){		
+
+				$study_module_id = $row->study_submodules_study_module_id;
+				$study_submodule_id = $row->study_submodules_id;
+
+				/*
+				INSERT INTO `enrollment_submodules`(`enrollment_submodules_enrollment_id`, `enrollment_submodules_moduleid`, `enrollment_submodules_submoduleid`, 
+				`enrollment_submodules_entryDate`, `enrollment_submodules_last_update`, `enrollment_submodules_creationUserId`, 
+				`enrollment_submodules_lastupdateUserId`, `enrollment_submodules_markedForDeletion`, `enrollment_submodules_markedForDeletionDate`) 
+				VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10])
+				*/
+
+				$data = array(
+				   'enrollment_submodules_enrollment_id' => $enrollment_id ,
+				   'enrollment_submodules_moduleid' => $study_module_id ,
+				   'enrollment_submodules_submoduleid' => $study_submodule_id,
+				   'enrollment_submodules_entryDate' => date('Y-m-d H:i:s'),
+				   'enrollment_submodules_creationUserId' => $this->session->userdata("user_id"),
+				   'enrollment_submodules_lastupdateUserId' => $this->session->userdata("user_id")
+				);
+
+				$this->db->insert('enrollment_submodules', $data); 
+			}
+		}
+	}
+
+
+
 	function get_group_to_search_dn($user_data){
 		$group_to_search_dn=null;
 		switch ($user_data->user_type) {
@@ -2499,14 +2593,20 @@ class managment_model  extends CI_Model  {
 		    users.id,users.username, users.password, users.initial_password, users.force_change_password_next_login, users.ldap_dn, enrollment_study_id, studies.studies_shortname,
 			studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
 			classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
-			enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate');
+			enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate,count(enrollment_submodules_id) as num_study_submodules');
 		$this->db->from('enrollment');
+		$this->db->join('enrollment_submodules','enrollment_submodules.enrollment_submodules_enrollment_id = enrollment.enrollment_id','left');	
 		$this->db->join('person','person.person_id = enrollment.enrollment_personid','left');	
 		$this->db->join('users','users.person_id = person.person_id','left');
 		$this->db->join('studies','studies.studies_id = enrollment.enrollment_study_id','left');
 		$this->db->join('studies_law','studies_law.studies_law_id = studies.studies_studies_law_id','left');
 		$this->db->join('course','course.course_id = enrollment.enrollment_course_id','left');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id','left');
+		$this->db->group_by('enrollment_id, enrollment_periodid, enrollment_personid,person_sn1,person_sn2,person_givenName,person_official_id,
+		    users.id,users.username, users.password, users.initial_password, users.force_change_password_next_login, users.ldap_dn, enrollment_study_id, studies.studies_shortname,
+			studies.studies_name, studies_studies_law_id,studies_law_shortname,studies_law_name,enrollment_course_id, course_shortname,course_name, enrollment_group_id,
+			classroom_group_code,classroom_group_shortName,classroom_group_name, enrollment_entryDate, enrollment_last_update, enrollment_creationUserId, 
+			enrollment_lastupdateUserId, enrollment_markedForDeletion, enrollment_markedForDeletionDate');
 
 		$this->db->order_by('enrollment_entryDate', $orderby);
 		$this->db->where('enrollment_periodid', $academic_period_shortname);
@@ -2567,7 +2667,7 @@ class managment_model  extends CI_Model  {
 				$enrollment->enrollment_creationUserId_username = $this->getUserNameByUserId($row->enrollment_creationUserId);
 				$enrollment->enrollment_lastupdateUserId_username = $this->getUserNameByUserId($row->enrollment_lastupdateUserId);
 
-				
+				$enrollment->num_study_submodules = $row->num_study_submodules;
 				
 				$all_enrollments[$row->enrollment_id] = $enrollment;
 			}

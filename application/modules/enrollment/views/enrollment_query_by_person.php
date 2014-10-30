@@ -731,8 +731,18 @@ jQuery(function($) {
 
         
       },
-      { "mData": "course_shortname" },
-      { "mData": "classroomgroup_shortname" }
+      { "mData": function ( source, type, val ) {
+            return "<a href='<?php echo base_url('index.php/curriculum/course/read/');?>/" + source.course_id + "'>" + source.course_fullname + "</a> | <a href='<?php echo base_url('index.php/curriculum/course/edit');?>/" + source.course_id + "'> " + source.course_id + "</a>";
+          }
+
+        
+      },
+      { "mData": function ( source, type, val ) {
+            return "<a href='<?php echo base_url('index.php/curriculum/classroom_group/read/');?>/" + source.classroom_group_id + "'>" + source.classroomgroup_fullname + "</a> | <a href='<?php echo base_url('index.php/curriculum/classroom_group/read/');?>/" + source.classroom_group_id + "'> " + source.classroom_group_id + "</a>";
+          }
+
+        
+      },
     ],
     "bPaginate": false,
     "bFilter": false,

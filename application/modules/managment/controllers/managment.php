@@ -1198,6 +1198,23 @@ class managment extends skeleton_main {
 
 	}
 
+	public function create_multiple_autoenrollments() {
+
+		$result = "No values especified!";
+	    if(isset($_POST['values'])) {
+        	$values = $_POST['values'];
+	        $result = $this->managment_model->create_multiple_autoenrollments($values);
+	    }
+	    echo '{
+	    "aaData": ';
+
+	    print_r(json_encode($result));
+
+	    echo '}';
+
+
+	}
+
 	public function create_multiple_initial_passwords () {
 
 

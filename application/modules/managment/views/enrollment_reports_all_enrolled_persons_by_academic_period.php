@@ -37,7 +37,7 @@
                 $("#create_multiple_autoenrollments").click(function() {
 
                 var txt;
-                var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva de paraules de pas dels usuaris? Els usuaris ja no podran entrar al sistema fins que no els entregueu la nova paraula de pas!");
+                var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva de matrícules?");
                 if (r == true) {
 
                     var values = $('input:checkbox:checked.ace').map(function () {
@@ -79,7 +79,6 @@
                     success: function(data) {
                       //console.debug("data:" + JSON.stringify(data));
                       //console.debug(JSON.stringify(all_ldap_users_table));
-                      all_ldap_users_table.ajax.reload();
                     }
                   }).done(function(data){
                       //TODO: Something to check?
@@ -214,7 +213,7 @@
  <table  class="table table-striped table-bordered table-hover table-condensed" id="actions"> 
   <thead style="background-color: #d9edf7;">
     <tr>
-      <td colspan="8" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
+      <td colspan="3" style="text-align: center;"> <strong>Accions massives (aplica l'acció sobre tots els usuaris seleccionats)
         </strong></td>
     </tr>
     <tr> 
@@ -248,7 +247,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_enrollments">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="15" style="text-align: center;"> <h4>
+    <td colspan="19" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/studies') ;?>">
         <?php echo $enrollment_reports_all_enrolled_persons_by_academic_period_title?> Període acadèmic: <span id="academic_period_text">
       </a>
@@ -259,6 +258,7 @@
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_actions')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person')?></th>
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study_submodules_count')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person_official_id')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_user')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_password')?></th>
@@ -302,6 +302,14 @@
     
     <td><a href="<?php echo base_url('/index.php/enrollment/enrollment/index/read/' . $enrollment->id);?>"><?php echo $enrollment->id;?></a> ( <a href="<?php echo base_url('/index.php/enrollment/enrollment/index/edit/' . $enrollment->id);?>">edit</a>)</td>
     <td><a href="<?php echo base_url('/index.php/persons/index/read/' . $enrollment->person_id);?>"> <?php echo $enrollment->person_sn1 . " " . $enrollment->person_sn2 . ", " . $enrollment->person_givenName;?></a> ( <a href="<?php echo base_url('/index.php/persons/index/edit/' . $enrollment->person_id);?>"><?php echo $enrollment->person_id;?></a>) </td>
+    <td>
+      <?php 
+      if ($enrollment->num_study_submodules > 0 ) { 
+        echo $enrollment->num_study_submodules;
+      } else { 
+        echo 'CAP! <i class="icon-warning-sign red bigger-130" title="Error! L\'estudiant no pot tenir cap UF/UD a la matrícula">';
+      };?>
+    </td>
     <td><?php echo $enrollment->person_official_id;?></td>
     <td><a href="<?php echo base_url('/index.php/users/index/read/' . $enrollment->user_id);?>"><?php echo $enrollment->username;?></a> ( <a href="<?php echo base_url('/index.php/users/index/edit/' . $enrollment->user_id);?>"><?php echo $enrollment->user_id;?></a>)</td>
     <td><?php echo $enrollment->password;?></td>
