@@ -2561,6 +2561,39 @@ class managment_model  extends CI_Model  {
 			return false;
 	}
 
+	function get_all_courses_study_info ($academic_period_id=null) {
+
+		if ($academic_period_id == null ) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		/*
+		SELECT DISTINCT course_id , course_study_id 
+		FROM course
+		INNER JOIN courses_academic_periods ON courses_academic_periods.courses_academic_periods_course_id = course.course_id
+		WHERE courses_academic_periods_academic_period_id= 5
+		*/
+
+		$this->db->select('course_id , course_study_id');
+		$this->db->distinct();
+		$this->db->from('course');
+		$this->db->join('courses_academic_periods','courses_academic_periods.courses_academic_periods_course_id = course.course_id');	
+		$this->db->where('courses_academic_periods_academic_period_id', $academic_period_id);
+
+		$query = $this->db->get();
+        //echo $this->db->last_query() . "<br/>";
+
+		$all_courses_study_info = array();
+		if ($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$all_courses_study_info[$row->course_id] = $row->course_study_id;
+			}
+		}
+		
+		return $all_courses_study_info;
+
+	}
+
 	
 	function get_enrollment_reports_all_enrolled_persons_by_academic_period ($academic_period_id=null,$orderby="DESC") {
 
@@ -2570,6 +2603,10 @@ class managment_model  extends CI_Model  {
 			$academic_period = $this->get_academic_period_by_periodid($academic_period_id);
 			$academic_period_shortname = $academic_period->academic_periods_shortname;
 		}
+
+		$all_courses_study_info = $this->get_all_courses_study_info($academic_period_id);
+
+		//print_r($all_courses_study_info);
 
 		/*
 		SELECT `enrollment_id`, `enrollment_periodid`, `enrollment_personid`, `person_sn1`, `person_sn2`, `person_givenName`, `person_official_id`, 
@@ -2668,6 +2705,23 @@ class managment_model  extends CI_Model  {
 				$enrollment->enrollment_lastupdateUserId_username = $this->getUserNameByUserId($row->enrollment_lastupdateUserId);
 
 				$enrollment->num_study_submodules = $row->num_study_submodules;
+
+				$enrollment->error = "NO";
+
+				//CHECK IF COURSE AN STUDY ARE CORRECT
+				if ( array_key_exists($enrollment->enrollment_course_id, $all_courses_study_info) ) {
+					$study_id_by_course = $all_courses_study_info[$enrollment->enrollment_course_id];
+					if ( $study_id_by_course != $enrollment->study_id) {
+						$enrollment->error = "CURS I ESTUDI no quadren!";
+					}
+				} else {
+					$enrollment->error = "EL CURS: " . $enrollment->enrollment_course_id . " NO TÉ ESTUDI!";
+				}
+
+
+				//$enrollment->enrollment_course_id
+				//$enrollment->enrollment_group_id
+				//$enrollment->study_id
 				
 				$all_enrollments[$row->enrollment_id] = $enrollment;
 			}

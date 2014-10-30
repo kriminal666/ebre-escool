@@ -281,7 +281,8 @@ $lang['user_ldap_enrollment_lastupdateUserId']="Usuari modificació matrícula";
 
 //enrollment_reports_all_enrolled_persons_by_academic_period
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_actions']="Accions";
-$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study_submodules_count']="# UFs/UDs";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study_submodules_count']="# UFs/UD";
+$lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_error']="Error";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id']="Id matrícula";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person']="Persona";
 $lang['enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person_official_id']="Id oficial";

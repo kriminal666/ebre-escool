@@ -1234,7 +1234,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $data["student_official_id"] = false;
 
         if ($student_official_id != null ) {
-            $data["student_official_id"] = $student_official_id;
+            $data["student_official_id"] = $filter_data["student_official_id"];
         }
         
 

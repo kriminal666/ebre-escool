@@ -247,7 +247,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_enrollments">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="19" style="text-align: center;"> <h4>
+    <td colspan="20" style="text-align: center;"> <h4>
       <a href="<?php echo base_url('/index.php/curriculum/studies') ;?>">
         <?php echo $enrollment_reports_all_enrolled_persons_by_academic_period_title?> Període acadèmic: <span id="academic_period_text">
       </a>
@@ -256,6 +256,7 @@
   <tr> 
      <th>&nbsp;</th> 
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_actions')?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
+     <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_error')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_id')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_person')?></th>
      <th><?php echo lang('enrollment_reports_all_enrolled_persons_by_academic_period_enrollment_study_submodules_count')?></th>
@@ -299,7 +300,16 @@
 
 
     </td>  
-    
+    <td>
+      <?php 
+      if ($enrollment->error != "NO") {
+        echo $enrollment->error . '<i class="icon-warning-sign red bigger-130" title="TODO">' ;
+      } else {
+        echo $enrollment->error;
+      }
+
+      ?>
+    </td>
     <td><a href="<?php echo base_url('/index.php/enrollment/enrollment/index/read/' . $enrollment->id);?>"><?php echo $enrollment->id;?></a> ( <a href="<?php echo base_url('/index.php/enrollment/enrollment/index/edit/' . $enrollment->id);?>">edit</a>)</td>
     <td><a href="<?php echo base_url('/index.php/persons/index/read/' . $enrollment->person_id);?>"> <?php echo $enrollment->person_sn1 . " " . $enrollment->person_sn2 . ", " . $enrollment->person_givenName;?></a> ( <a href="<?php echo base_url('/index.php/persons/index/edit/' . $enrollment->person_id);?>"><?php echo $enrollment->person_id;?></a>) </td>
     <td>
