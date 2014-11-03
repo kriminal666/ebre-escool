@@ -709,25 +709,61 @@ class attendance_model  extends CI_Model  {
 		$query = $this->db->get();
 		//echo "query:" . $this->db->last_query();
 
-
 		if ($query->num_rows() > 0) { 
+			//NOTE: LESSONS FOUNDS COULD BE MORE THAN ONE. FOR EXAMPLE 2 teachers DOUBLING GROUP
+			if ($query->num_rows() == 1) {
+				$study_module_info = array();
 
-			$study_module_info = array();
+				$row = $query->row();
 
-			$row = $query->row();
+				$study_module_info['id'] = $row->lesson_study_module_id;
+				$study_module_info['shortname'] = $row->study_module_shortname;
+				$study_module_info['name'] = $row->study_module_name;
 
-			$study_module_info['id'] = $row->lesson_study_module_id;
-			$study_module_info['shortname'] = $row->study_module_shortname;
-			$study_module_info['name'] = $row->study_module_name;
+				$study_module_info['teacher_id'] = $row->lesson_teacher_id;
+				$study_module_info['teacher_code'] = $row->teacher_academic_periods_code;
+				$study_module_info['teacher_givenName'] = $row->person_givenName;
+				$study_module_info['teacher_sn1'] = $row->person_sn1;
+				$study_module_info['teacher_sn2'] = $row->person_sn2;
 
-			$study_module_info['teacher_id'] = $row->lesson_teacher_id;
-			$study_module_info['teacher_code'] = $row->teacher_academic_periods_code;
-			$study_module_info['teacher_givenName'] = $row->person_givenName;
-			$study_module_info['teacher_sn1'] = $row->person_sn1;
-			$study_module_info['teacher_sn2'] = $row->person_sn2;
-				
-			return $study_module_info;
+				$teacher = new stdClass();
 
+				$teacher->teacher_id = $row->lesson_teacher_id;
+				$teacher->teacher_code = $row->teacher_academic_periods_code;
+				$teacher->person_givenName = $row->person_givenName;
+				$teacher->teacher_sn1 = $row->person_sn1;
+				$teacher->teacher_sn2 = $row->person_sn2;
+				$teacher->teacher_name = $row->person_sn1 . " " . $row->person_sn2 . ", " . $row->person_givenName;
+
+				$teachers[$row->lesson_teacher_id] = $teacher;
+
+				$study_module_info['teachers'] = $teachers;
+					
+				return $study_module_info;
+			} else {
+				$study_module_info = array();
+				$teachers = array();
+				foreach ( $query->result() as $row)	{
+					$study_module_info['id'] = $row->lesson_study_module_id;
+					$study_module_info['shortname'] = $row->study_module_shortname;
+					$study_module_info['name'] = $row->study_module_name;
+
+					$teacher = new stdClass();
+
+					$teacher->teacher_id = $row->lesson_teacher_id;
+					$teacher->teacher_code = $row->teacher_academic_periods_code;
+					$teacher->person_givenName = $row->person_givenName;
+					$teacher->teacher_sn1 = $row->person_sn1;
+					$teacher->teacher_sn2 = $row->person_sn2;
+					$teacher->teacher_name = $row->person_sn1. " " . $row->person_sn2 . ", " . $row->person_givenName;
+
+
+					$teachers[$row->lesson_teacher_id] = $teacher;
+
+					$study_module_info['teachers'] = $teachers;
+				}
+				return $study_module_info;
+			} 
 		}			
 		else {
 			return false;
@@ -782,9 +818,17 @@ class attendance_model  extends CI_Model  {
 
 					$time_slot->study_submodules = $study_submodules;
 
-					$time_slot->teacher_id = $study_module_info['teacher_id'];
-					$time_slot->teacher_code = $study_module_info['teacher_code'];
-					$time_slot->teacher_name = $study_module_info['teacher_sn1'] . " " . $study_module_info['teacher_sn2'] . ", " . $study_module_info['teacher_givenName'];
+					if (is_array($study_module_info) && (count($study_module_info) != 0) ) {
+						if (count($study_module_info) == 1) {
+							$time_slot->teacher_id = $study_module_info['teacher_id'];
+							$time_slot->teacher_code = $study_module_info['teacher_code'];
+							$time_slot->teacher_name = $study_module_info['teacher_sn1'] . " " . $study_module_info['teacher_sn2'] . ", " . $study_module_info['teacher_givenName'];
+							$time_slot->teachers = $study_module_info['teachers'];
+						} else {
+							$time_slot->teachers = $study_module_info['teachers'];
+						}
+					}
+					
 
 					$time_slots[$i] = $time_slot;
 					$i++;

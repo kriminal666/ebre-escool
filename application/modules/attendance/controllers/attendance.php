@@ -1083,13 +1083,7 @@ class attendance extends skeleton_main {
 		foreach ($official_students_in_group as $official_student_key => $official_student) {
 			# code...
 			if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
-				$students_with_errors[$official_student_key]= $official_student;
-			} 			
-		}
-
-		foreach ($official_students_in_group as $official_student_key => $official_student) {
-			# code...
-			if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
+				$official_student->errorType = "Matrícula incoherent. Alumne matrículat al grup però sense cap Unitat Formativa del grup matrículada";
 				$students_with_errors[$official_student_key]= $official_student;
 			} 			
 		}

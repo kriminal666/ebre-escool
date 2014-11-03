@@ -249,6 +249,7 @@
                       <tr>
                         <th>Foto</th>
                         <th>#</th>
+                        <th>Típus error</th>
                         <th>Primer cognom</th>
                         <th>Segon cognom</th>
                         <th>Nom</th>
@@ -275,6 +276,9 @@
                           </td>
                           <td>
                             <a href="<?php echo base_url('/index.php/persons/index/read/' . $student_with_error->person_id );?>"><?php echo $student_with_error->person_id;?></a>
+                          </td>
+                          <td>
+                            <?php echo $student_with_error->errorType;?>
                           </td>
                           <td>
                             <?php echo $student_with_error->sn1;?>
@@ -428,8 +432,8 @@
                              </span>
                              <?php if (isset ($time_slot->study_module_id)): ?>
                               <p>
-                               <span class="label <?php if ( $time_slot->teacher_id == $teacher_id ) { echo 'label-purple';};?>" data-rel="tooltip" 
-                                title="<?php echo $time_slot->study_module_name . " ( " . $time_slot->study_module_id . " ). " . $time_slot->teacher_name . " ( " . $time_slot->teacher_code . " )";?>"
+                               <span class="label <?php if ( array_key_exists ( $teacher_id , $time_slot->teachers ) ) { echo 'label-purple';};?>" data-rel="tooltip" 
+                                title="<?php echo $time_slot->study_module_name . " ( " . $time_slot->study_module_id . " ). ";  foreach ($time_slot->teachers as $teacher_key => $teacher) {  echo $teacher->teacher_name . " ( " . $teacher->teacher_code . " ) ";}?>"
                                 studymoduleid="<?php echo  $time_slot->study_module_id;?>" id="span_study_module_<?php echo  $time_slot->study_module_id;?>" ondblclick="study_module_onclick(this);">
                                 <i class="icon-group bigger-120"></i><?php echo $time_slot->study_module_shortname;?>
                                </span>
@@ -534,8 +538,11 @@
 
 
                                   ?>
+                                  <?php //DEBUG //echo "teacher_id: " . $teacher_id . " |||||  time slot teachers: " . var_export($time_slot->teachers) ?>
 
-                                  <?php if($user_is_admin || ($time_slot->teacher_id == $teacher_id) || $teacher_is_mentor): ?>
+                                  <?php 
+                                    $teacher_is_in_time_slot = array_key_exists($teacher_id, $time_slot->teachers);
+                                    if($user_is_admin || $teacher_is_in_time_slot || $teacher_is_mentor): ?>
                                     <select studysubmoduleid="<?php echo $study_submodule->id;?>" id="<?php echo $select_id;?>" width="50" 
                                       onchange="check_attendance_select_on_click(this,<?php echo $student->person_id;?>,<?php echo $time_slot->id;?>,<?php echo $day_of_week_number;?>,'<?php echo $check_attendance_date_mysql_format?>')" 
 
@@ -597,7 +604,7 @@
                       <?php endforeach; ?>
 
                       <td class="hidden-480">
-                        <textarea id="comments" class="autosize-transition span12" rows="1">TODO</textarea>
+                        <textarea id="comments" class="autosize-transition span12" rows="1">Pendent</textarea>
                       </td>
 
                       <td>
@@ -606,9 +613,12 @@
                             <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
                           </a>
 
+                          <?php if ( $user_is_admin ) : ?>
                           <a class="green" href="#">
                             <i class="icon-pencil bigger-130"></i>
                           </a>
+                          <?php endif;?>
+
 
                           <a class="red" href="#">
                             <i class="icon-eye-close bigger-130"></i>
