@@ -301,6 +301,12 @@
                               <a class="blue" href="#">
                                 <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student_with_error->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
                               </a>
+
+                              <?php if ( $user_is_admin ) : ?>
+                              <a class="green" href="#">
+                                <i class="icon-pencil bigger-130" title="Modificació de matrícula"></i>
+                              </a>
+                              <?php endif;?>
                             </div>
                           </td>
 

@@ -2628,7 +2628,62 @@ class managment_model  extends CI_Model  {
 	}
 
 	
+	public function get_all_enrollments_courses_info( $academic_period_id = null) {
 
+		
+		if ($academic_period_id == null) {
+			$academic_period_shortname = $this->get_current_academic_period()->shortname;
+		} else {
+			$academic_period = $this->get_academic_period_by_periodid($academic_period_id);
+			$academic_period_shortname = $academic_period->academic_periods_shortname;
+		}
+
+		/*
+		SELECT DISTINCT `enrollment_id`,`study_submodules_courseid`,`course_study_id`
+		FROM `enrollment` 
+		INNER JOIN enrollment_submodules ON `enrollment_submodules_enrollment_id` = enrollment_id
+		INNER JOIN study_submodules ON `study_submodules_id`  = `enrollment_submodules_submoduleid`
+		INNER JOIN course ON course.course_id = study_submodules.study_submodules_courseid
+		WHERE `enrollment_periodid`="2014-15" 
+		*/	
+
+		$this->db->select('enrollment_id , study_submodules_courseid, course_study_id');
+		$this->db->distinct();
+		$this->db->from('enrollment');
+		$this->db->join('enrollment_submodules','enrollment_submodules_enrollment_id = enrollment.enrollment_id');	
+		$this->db->join('study_submodules','study_submodules.study_submodules_id  = enrollment_submodules.enrollment_submodules_submoduleid');	
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');	
+		$this->db->where('enrollment_periodid', $academic_period_shortname);
+
+		$query = $this->db->get();
+        //echo $this->db->last_query() . "<br/>";
+
+		$all_enrollments_courses_info = array();
+		if ($query->num_rows() > 0) {
+			foreach($query->result() as $row){
+				if (array_key_exists($row->enrollment_id, $all_enrollments_courses_info)) {
+
+					$course = new stdClass();
+					$course->id = $row->study_submodules_courseid;
+					$course->study_id = $row->course_study_id;
+
+					array_push ($all_enrollments_courses_info[$row->enrollment_id],$course);
+					
+				} else {
+					$courses = array();
+
+					$course = new stdClass();
+					$course->id = $row->study_submodules_courseid;
+					$course->study_id = $row->course_study_id;
+
+					$courses[] = $course;
+					$all_enrollments_courses_info[$row->enrollment_id] = $courses;	
+				}
+			}
+		}
+		
+		return $all_enrollments_courses_info;
+	}
 	
 	function get_enrollment_reports_all_enrolled_persons_by_academic_period ($academic_period_id=null,$orderby="DESC") {
 
@@ -2641,8 +2696,19 @@ class managment_model  extends CI_Model  {
 
 		$all_courses_study_info = $this->get_all_courses_study_info($academic_period_id);
 		$all_classrooms_groups_course_info = $this->get_all_classrooms_groups_course_info($academic_period_id);
+		$all_enrollments_courses_info = $this->get_all_enrollments_courses_info($academic_period_id);
 
 		//print_r($all_courses_study_info);
+
+		//DEBUG
+		/*
+		foreach ($all_enrollments_courses_info as $key => $value) {
+					# code...
+				echo "Enrollment id: " . $key;
+				echo "<br/>";
+				echo "Number of courses: " . count($value) . " | courses: " . var_export($value)  . "<br/>";
+				}		
+		*/
 
 		/*
 		SELECT `enrollment_id`, `enrollment_periodid`, `enrollment_personid`, `person_sn1`, `person_sn2`, `person_givenName`, `person_official_id`, 
@@ -2763,6 +2829,30 @@ class managment_model  extends CI_Model  {
 				} else {
 					$enrollment->error = "EL GRUP: " . $enrollment->enrollment_group_id . " NO TÉ CURS!";
 				}
+
+				if (!($row->num_study_submodules > 0 )) {
+					$enrollment->error = "Matrícula sense cap UF/UD matrículada!";	
+				}
+
+				if (array_key_exists($row->enrollment_id, $all_enrollments_courses_info)) {
+					$study_submodules_courses = $all_enrollments_courses_info[$row->enrollment_id];
+
+					if (is_array($study_submodules_courses)) {
+						//CHECK ENROLLMENT COURSE WITH study_submodules_courses. It have to be the same or a course from same study
+						foreach ($study_submodules_courses as $study_submodules_course) {
+							if ( $enrollment->study_id != $study_submodules_course->study_id ) {
+								$enrollment->error = "Hi ha UFs/UDs matrículades que no són del mateix estudi que l'estudi matrículat!";		
+							}
+						}
+
+					} else {
+						$enrollment->error = "ERROR NO ESPERAT!";		
+					}
+
+				} else {
+					$enrollment->error = "La matrícula no té cursos en cap de les UFs/UDs";	
+				}
+				 
 
 				//$enrollment->enrollment_course_id
 				//$enrollment->enrollment_group_id
