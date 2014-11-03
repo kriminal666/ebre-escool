@@ -560,7 +560,7 @@
 
                                   <?php else: ?>
 
-                                      <span studysubmoduleid="<?php echo $study_submodule->id;?>" id="<?php echo $span_select_id;?>" title="<?php echo $current_incident_type_name;?>"
+                                      <span studysubmoduleid="<?php echo $study_submodule->id;?>" id="<?php echo $span_select_id;?>" title="<?php if ( isset($current_incident_type_name) ) { echo $current_incident_type_name; } else { echo "No hi ha cap incidència";}?>"
                                         
                                         <?php if ($study_submodule->active): ?> 
                                           style="width: 50px;display:inline;"
