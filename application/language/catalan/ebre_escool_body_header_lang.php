@@ -124,6 +124,7 @@ $lang['organizational_unit']="Unitat Organitzativa";
 //Matrícules
 $lang['enrollment']="Matrícula";
 $lang['enrollment_query_by_person']="Consulta matrícula";
+$lang['enrollment_modify']="Modificació de matrícula";
 $lang['enrollment_change_classroomgroup']="Canvi de grup";
 $lang['enrollment_delete']="Eliminar matrícula";
 $lang['enrollment_delete_user']="Eliminar persona";

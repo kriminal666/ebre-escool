@@ -1218,6 +1218,46 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         $this->_load_body_footer(); 
     }
 
+    public function enrollment_modify($student_official_id = null) {
+        $data = array();
+        $active_menu = array();
+   
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#enrollment_modify';    
+
+        $data["student_official_id"] = false;
+
+        if ($student_official_id != null ) {
+            $data["student_official_id"] = $student_official_id;
+        }
+        
+
+        $this->check_logged_user();
+        if ( ! $this->session->userdata('is_admin')) {
+            echo "Access not allowed!";
+            return;
+        }
+
+        /* Ace */
+        $header_data= $this->load_wizard_files1($active_menu);
+        $this->_load_html_header($header_data); 
+
+
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        $localities = $this->enrollment_model->get_localities();
+
+        $data['all_person_official_ids'] = $all_person_official_ids;
+        $data['localities'] = $localities;
+       
+        // BODY       
+        $this->_load_body_header();
+
+        $this->load->view('enrollment_modify.php',$data);     
+
+        // FOOTER     
+        $this->_load_body_footer(); 
+    }
+
     public function enrollment_query_by_person($only_person_data = false, $student_official_id = null) {
 
         $data = array();

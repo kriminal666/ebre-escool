@@ -284,10 +284,8 @@
     <td><label><input class="ace" type="checkbox" name="form-field-checkbox" id="<?php echo $enrollment->id;?>"><span class="lbl">&nbsp;</span></label></td>
     <td>
       <div class="hidden-phone visible-desktop action-buttons">
-        <a class="blue" href="#">
-          <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $enrollment->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
-        </a>
-        <a class="green" href="#" target="_blank" title="Modificació matrícula">
+        <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $enrollment->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
+        <a class="green" href="<?php echo base_url('/index.php/enrollment/enrollment_modify/' . $enrollment->person_official_id);?>" target="_blank" title="Modificació matrícula">
           <i class="icon-pencil bigger-130"></i>
         </a>
         <a class="red" href="#" target="_blank" title="Eliminació matrícula">

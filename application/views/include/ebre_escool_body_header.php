@@ -532,6 +532,16 @@
 
               <!-- Change classroom_group -->
               <?php if ($this->session->userdata('is_admin')): ?>
+              <li id="enrollment_modify">
+                <a href="<?php echo base_url('/index.php/enrollment/enrollment_modify'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_modify');?>
+                </a>
+              </li>
+              <?php endif?>
+
+              <!-- Change classroom_group -->
+              <?php if ($this->session->userdata('is_admin')): ?>
               <li id="enrollment_change_classroomgroup">
                 <a href="<?php echo base_url('/index.php/enrollment/change_classroom_group'); ?>">
                   <i class="icon-double-angle-right"></i>
