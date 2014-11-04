@@ -1538,15 +1538,50 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		return true;
 	}
 
+    public function get_course_if_from_classroomgroupid($classroomgroup_id) {
+        /*
+        SELECT `classroom_group_course_id` 
+        FROM `classroom_group` 
+        WHERE `classroom_group_id`=1
+        */
+
+        $this->db->select('classroom_group_course_id');
+        $this->db->from('classroom_group');
+        $this->db->where('classroom_group_id',$classroomgroup_id);
+
+        $query = $this->db->get();    
+        //echo $this->db->last_query();
+
+        if ($query->num_rows() == 1) {
+            $row = $query->row();
+            return $row->classroom_group_course_id;
+        }           
+        else
+            return false;
+    }
+
 	public function change_enrollment_classroom_group($enrollment_id,$current_group,$new_group) {
-		/*
+
+        $new_course = $this->get_course_if_from_classroomgroupid($new_group);
+
+        if ( $new_course == false) {
+            return false;
+        }
+
+        //Obtain course of new group:
+		
+        // IMPORTANT: BE SURE NOT TO USE THIS FUNCTION WITHOUT CHANGING OR VERIFYING OTHER DATA TO BE CONSISTENT!
+        // FOR EXAMPLE: if we change classroom group from classrooom group first course to second course then course have to be changes
+        // or changing classroom group to another study study have to change too
+        /*
 		UPDATE `enrollment` 
-		SET enrollment_group_id= 5
-		WHERE enrollment_group_id= 6
+		SET enrollment_group_id= 5, enrollment_course_id = 6
+		WHERE enrollment_group_id= 6 AND enrollment_id= ID_ENROLLMENT
 		*/
 
 		$data = array(
-           'enrollment_group_id' => $new_group
+           'enrollment_group_id' => $new_group,
+           'enrollment_course_id' => $new_course
         );
 
 		$this->db->where('enrollment_group_id', $current_group);
@@ -1563,6 +1598,38 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		}
 			
 	}
+
+    public function change_enrollment_classroom_group_and_course($enrollment_id,$current_group,$new_group,$current_course,$new_course) {
+        
+        // IMPORTANT: BE SURE NOT TO USE THIS FUNCTION WITHOUT CHANGING OR VERIFYING OTHER DATA TO BE CONSISTENT!
+        // FOR EXAMPLE: if we change classroom group from classrooom group first course to second course then course have to be changes
+        // or changing classroom group to another study study have to change too
+        /*
+        UPDATE `enrollment` 
+        SET enrollment_group_id= 5, enrollment_course_id = 7
+        WHERE enrollment_group_id= 6 AND enrollment_course_id = 4 enrollment_id= ID_ENROLLMENT
+        */
+
+        $data = array(
+           'enrollment_group_id' => $new_group,
+           'enrollment_course_id' => $new_course,
+        );
+
+        $this->db->where('enrollment_group_id', $current_group);
+        $this->db->where('enrollment_course_id', $current_course);
+        $this->db->where('enrollment_id', $enrollment_id);
+        $this->db->update('enrollment', $data);
+
+        //echo $this->db->last_query();
+
+        if ($this->db->affected_rows() == 1) {
+            return true;
+        }           
+        else {
+            return false;
+        }
+            
+    }
 
 	/* Student Data */
 	public function get_student_data_with_enrollment_info($official_id) {
