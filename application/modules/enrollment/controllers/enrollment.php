@@ -1045,6 +1045,75 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
 }
 
+    public function wizard_without_modify_person_and_user_data($study=false,$classroom_group=false,$study_modules=false) {
+
+        $this->check_logged_user(); 
+
+        if (!$this->session->userdata('is_admin')) {
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+
+        $active_menu = array();
+        $active_menu['menu']='#enrollment_wizard';
+        $active_menu['submenu1']='#wizard_without_modify_person_and_user_data';
+
+        /* Wizard */
+        //$header_data = $this->load_wizard_files(); 
+
+        /* Ace */
+        //$header_data= $this->load_ace_files($active_menu,$header_data);  
+
+        $header_data= $this->load_wizard_files($active_menu);
+
+        if($study == false){
+            $study = 2;
+        }    
+        
+        if($classroom_group == false){
+            $classroom_group = 3;  
+        }
+        
+        if($study_modules == false){
+            $study_modules = array();
+            $study_modules[]=282;   //  "M1"
+            $study_modules[]=268;   //  "M2";
+        }    
+
+       $this->_load_html_header($header_data); 
+       
+       $data = array();
+       
+       $enrollment_studies = $this->enrollment_model->get_enrollment_studies();
+       $localities = $this->enrollment_model->get_localities();
+
+       $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+
+       $data['all_person_official_ids'] = $all_person_official_ids;
+       
+       $data['enrollment_studies'] = $enrollment_studies;
+       $data['localities'] = $localities;
+       $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($study);
+       $data['enrollment_classroom_groups'] = $enrollment_classroom_groups;
+       $enrollment_study_modules = $this->enrollment_model->get_enrollment_study_modules($classroom_group);
+       $data['enrollment_study_modules'] = $enrollment_study_modules;
+       $enrollment_study_submodules = $this->enrollment_model->get_enrollment_study_submodules($study_modules);
+       $data['enrollment_study_submodules'] = $enrollment_study_submodules;       
+       $enrollment_students = $this->enrollment_model->get_students();
+       $data['enrollment_students'] = $enrollment_students;              
+
+       // print_r($enrollment_students);
+       
+       // BODY       
+       $this->_load_body_header();
+       $this->load->view('wizard_without_modify_person_and_user_data.php',$data);     
+       
+       // FOOTER     
+       $this->_load_body_footer(); 
+
+
+    }
+
 
 /* Enrollment Wizzard */
 

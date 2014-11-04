@@ -521,6 +521,16 @@
                 </a>
               </li>
               <?php endif?>
+
+              <!-- Enrollment wizard without modifyng user data including not modifying passwords-->
+              <?php if ($this->session->userdata('is_admin')): ?>
+              <li id="wizard">
+                <a href="<?php echo base_url('/index.php/enrollment/wizard_without_modify_person_and_user_data'); ?>">
+                  <i class="icon-double-angle-right"></i>
+                  <?php echo lang('enrollment_without_modify_person_and_user_data');?>
+                </a>
+              </li>
+              <?php endif?>
               
               <!-- Enrollment query by person -->
               <li id="enrollment_query_by_person">

@@ -128,6 +128,7 @@ $lang['wizzard_gender'] = 'Sexe: ';
 
 
 $lang['wizard'] = 'Assistent';
+$lang['wizard_without_modify_person_and_user_data'] = 'Assistent sense modificació de dades personals ni dades d\'usuari (p.ex. no és modifiquen paraules de pas)';
 $lang['enrollment_id'] = 'Id';
 $lang['enrollment_by_academic_period'] = 'Per períodes acadèmics';
 $lang['enrollment_only_current_period'] = 'Matrícula període acadèmic actual';

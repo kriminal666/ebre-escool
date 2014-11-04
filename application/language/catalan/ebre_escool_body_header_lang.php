@@ -123,6 +123,8 @@ $lang['organizational_unit']="Unitat Organitzativa";
 
 //Matrícules
 $lang['enrollment']="Matrícula";
+$lang['enrollment_without_modify_person_and_user_data']="Matrícula sense modificació dades personals ni password";
+
 $lang['enrollment_query_by_person']="Consulta matrícula";
 $lang['enrollment_modify']="Modificació de matrícula";
 $lang['enrollment_change_classroomgroup']="Canvi de grup";
