@@ -863,7 +863,7 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
                                      $this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',$this->current_table.'_markedForDeletionDate'); 
 
         $this->grocery_crud->fields($this->current_table.'_study_module_id',$this->current_table.'_academic_period_id',
-                                     $this->current_table.'_external_code', $this->current_table.'_initialDate', $this->current_table.'_endDate',
+                                     $this->current_table.'_external_code','courses', $this->current_table.'_initialDate', $this->current_table.'_endDate',
                                      $this->current_table.'_entryDate',$this->current_table.'_last_update',$this->current_table.'_creationUserId',
                                      $this->current_table.'_lastupdateUserId',$this->current_table.'_markedForDeletion',$this->current_table.'_markedForDeletionDate'); 
 
@@ -878,7 +878,7 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate')); 
 
         //RELACIONS
-        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_shortname} | {study_module_name}');
+        $this->grocery_crud->set_relation($this->current_table.'_study_module_id','study_module','{study_module_shortname} | {study_module_name} ({study_module_id})');
         $this->grocery_crud->set_relation($this->current_table.'_academic_period_id','academic_periods','{academic_periods_shortname}');
 
         $this->grocery_crud->set_relation_n_n('courses', 'study_module_ap_courses', 'course', 
@@ -971,17 +971,20 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
         $this->grocery_crud->display_as($this->current_table.'_description',lang($this->current_table.'_description'));
         $this->grocery_crud->display_as($this->current_table.'_type',lang($this->current_table.'_type'));   
         $this->grocery_crud->display_as($this->current_table.'_subtype',lang($this->current_table.'_subtype'));        
-        $this->grocery_crud->display_as($this->current_table.'_initialDate',lang($this->current_table.'_initialDate'));
-        $this->grocery_crud->display_as($this->current_table.'_endDate',lang($this->current_table.'_endDate'));          
         $this->grocery_crud->display_as($this->current_table.'_academic_periods',lang($this->current_table.'_academic_periods'));
+        $this->grocery_crud->display_as($this->current_table.'_entryDate',lang($this->current_table.'_entryDate'));
+        $this->grocery_crud->display_as($this->current_table.'_last_update',lang($this->current_table.'_last_update'));
         
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COULD APPLY
         //$this->grocery_crud->display_as($this->current_table.'_classroom_group_id',lang($this->current_table.'_classroom_group_id'));
         
-        /*$this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
-                                     $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
-                                     $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',
-                                     $this->current_table.'_academic_periods');
+        $this->grocery_crud->columns($this->current_table.'_id',$this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
+                                     $this->current_table.'_order', $this->current_table.'_description',  $this->current_table.'_type',
+                                     $this->current_table.'_subtype', $this->current_table.'_academic_periods',
+                                     $this->current_table.'_entryDate', $this->current_table.'_last_update', 
+                                     $this->current_table.'_creationUserId', $this->current_table.'_lastupdateUserId',
+                                     $this->current_table.'_markedForDeletion', $this->current_table.'_markedForDeletionDate');
+        /*
         $this->grocery_crud->add_fields($this->current_table.'_shortname',$this->current_table.'_name',$this->current_table.'_hoursPerWeek',
                                      $this->current_table.'_courseid',$this->current_table.'_order', $this->current_table.'_teacher_id',  $this->current_table.'_description',
                                      $this->current_table.'_type',  $this->current_table.'_subtype',  $this->current_table.'_initialDate',$this->current_table.'_endDate',

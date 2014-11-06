@@ -66,6 +66,8 @@ $lang['study_module_external_code']="Codi extern";
 $lang['study_module_type']="Tipus";   
 $lang['study_module_subtype']="Subtipus";   
 $lang['study_module_academic_periods']="Períodes acadèmics";   
+$lang['study_module_entryDate']   = "Data de creació";
+$lang['study_module_last_update']   = "Data última modificació";
 
 
 $lang['study_modules_id']="Id";
