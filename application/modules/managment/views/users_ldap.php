@@ -69,6 +69,7 @@
                         { "mData": function(data, type, full) {
                                     return '<label><input class="ace" type="checkbox" name="form-field-checkbox" id="' + data.id + '"><span class="lbl">&nbsp;</span></label>';
                                   }},
+                        { "mData": "enrollment_id" },          
                         { "mData": function(data, type, full) {
                                     return data.id;
                                   } },          
@@ -746,6 +747,7 @@
   </tr>
   <tr>
      <th>&nbsp;</th> 
+     <th><?php echo lang('user_ldap_enrollment_id')?></th>
      <th><?php echo lang('user_ldap_id')?></th>
      <th><?php echo lang('user_ldap_id')?></th>
      <th><?php echo lang('user_ldap_person_id')?></th>
