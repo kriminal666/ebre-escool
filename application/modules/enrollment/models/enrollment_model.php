@@ -1177,7 +1177,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
         AND study_module_academic_periods_academic_period_id =5
         */
 
-        $this->db->select('study_module_ap_courses_course_id, study_module_academic_periods_study_module_id, course_shortname, course_name, study_module_shortname, study_module_name');
+        $this->db->select('study_module_ap_courses_course_id, study_module_academic_periods_study_module_id, course_id ,course_shortname, course_name, study_module_shortname, study_module_name');
         $this->db->distinct();
 		$this->db->from('study_module_ap_courses');
 		$this->db->join('study_module_academic_periods','study_module_ap_courses.study_module_ap_courses_study_module_ap_id = study_module_academic_periods.study_module_academic_periods_id');
@@ -1208,6 +1208,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
    				$study_module_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
    				$study_module_array[$i]['study_module_name'] = $row['study_module_name'];
    				$study_module_array[$i]['study_module_ap_courses_course_id'] = $row['study_module_ap_courses_course_id'];
+                $study_module_array[$i]['course_id'] = $row['course_id'];
    				$study_module_array[$i]['course_shortname'] = $row['course_shortname'];
    				$study_module_array[$i]['course_name'] = $row['course_name'];
    				
@@ -1238,7 +1239,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
         $is_study_multiple = $this->is_study_multiple($study_id);        
 
         if (!$is_study_multiple) {
-            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_submodules_courseid,
                            study_module_order,study_submodules_study_module_id');
             $this->db->from('study_submodules');
             $this->db->join('study_module','study_submodules_study_module_id=study_module_id');
@@ -1267,6 +1268,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
                     $study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
                     $study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
                     $study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+                    $study_submodules_array[$i]['study_submodules_courseid'] = $row['study_submodules_courseid'];
                     $study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];                 
                     $i++;
                 }  
@@ -1283,7 +1285,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
             ORDER BY study_module_order asc, study_submodules_order asc
             */
 
-            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,study_submodules_courseid,
                            study_module_order,study_submodules_study_module_id');
             $this->db->from('study_submodules');
             $this->db->join('study_module','study_submodules_study_module_id=study_module_id');
@@ -1309,9 +1311,11 @@ function update_user_ldap_dn($username, $ldap_dn) {
                 $i=0;
                 foreach ($query->result_array() as $row)    {
                     $study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+                    $study_submodules_array[$i]['study_module_id'] = $row['study_submodules_study_module_id'];
                     $study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
                     $study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
                     $study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+                    $study_submodules_array[$i]['study_submodules_courseid'] = $row['study_submodules_courseid'];
                     $study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];                 
                     $i++;
                 }  
@@ -1322,7 +1326,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
     }	
 
 	/* Unitats formatives */
-	public function get_enrollment_all_study_submodules_by_modules($study_modules=false,$orderby="asc",$order_field="") {
+	public function get_enrollment_all_study_submodules_by_modules($study_modules=false,$course_id=false,$orderby="asc",$order_field="") {
 
 		if(!$study_modules){
 			//TODO set default study by config file
@@ -1335,6 +1339,9 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		$this->db->from('study_submodules');
 		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
 		$this->db->where_in('study_submodules_study_module_id',$study_modules);
+        if ($course_id != false) {
+            $this->db->where('study_submodules_courseid',$course_id);
+        }
 		if ( $order_field != "") {
 			if ( $order_field == "order") {
 				$this->db->order_by('study_module_order', $orderby);
@@ -1356,6 +1363,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			$i=0;
 			foreach ($query->result_array() as $row)	{
 				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+                $study_submodules_array[$i]['study_module_id'] = $row['study_submodules_study_module_id'];
    				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
    				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
    				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
@@ -1419,6 +1427,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			foreach ($query->result_array() as $row)	{
 				$study_submodules_array[$i]['study_module_classroom_group_code'] = $row['classroom_group_code'];
 				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+                $study_submodules_array[$i]['study_module_id'] = $row['study_submodules_study_module_id'];
    				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
    				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
    				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];

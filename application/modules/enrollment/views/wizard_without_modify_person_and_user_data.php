@@ -1952,7 +1952,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
         } else if(step == "step2"){
 
-          console.debug("PROVA: processant step3. Es a dir venim del pas 2");
+          //console.debug("PROVA: processant step3. Es a dir venim del pas 2");
         
           study_id = $("#enrollment_study").val();
           study_name = $("#enrollment_study option:selected").text();
@@ -2363,7 +2363,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                                                   "</div><!-- /widget-header -->"+
                                                   "<div class='widget-body'>"+
                                                     "<div class='widget-main'>"+
-                                                      "<div id='step6_submodule_widget_module_id_"+object.study_module_id+"' class='submodule_widget'></div><!-- /submodule-widget -->"+
+                                                      "<div id='step6_submodule_widget_module_id_"+object.study_module_id+"_"+object.course_id +"' class='submodule_widget'></div><!-- /submodule-widget -->"+
                                                     "</div><!-- /widget-main -->"+
                                                   "</div><!-- /widget-body -->"+
                                                 "</div><!-- /widget-box -->");
@@ -2437,7 +2437,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 url:'<?php echo base_url("index.php/enrollment/all_study_submodules_by_modules");?>',
                 type: 'post',
                 data: {
-                    study_module_ids : study_module_ids
+                    study_module_ids : study_module_ids,
+                    course_id : course_id
                 },
                 datatype: 'json',
                 statusCode: {
@@ -2529,8 +2530,8 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   //console.debug("study_submodules_study_module_id: " + obj.study_submodules_study_module_id);
                   //console.debug("study_submodules_id: " + obj.study_submodules_id);
 
-                  var $_study_module_div_for_submodules = $('#step6_submodule_widget_module_id_' + obj.study_submodules_study_module_id);
-                  
+                  var $_study_module_div_for_submodules = $('#step6_submodule_widget_module_id_' + obj.study_submodules_study_module_id + '_' + obj.study_submodules_courseid);
+                           
                   if ( jQuery.inArray( obj.study_submodules_study_module_id , study_module_emptied ) == -1) {
                     $_study_module_div_for_submodules.empty();
                     study_module_emptied.push(obj.study_submodules_study_module_id);

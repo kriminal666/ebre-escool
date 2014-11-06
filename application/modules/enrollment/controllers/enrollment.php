@@ -1811,12 +1811,14 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
         
         $study_module_ids = $_POST['study_module_ids'];
 
+        $course_id = $_POST['course_id'];
+
         $modules = explode("-",$study_module_ids);
         
         $resultat = array();
 
         $enrollment_study_submodules = $this->enrollment_model->get_enrollment_all_study_submodules_by_modules(
-            $modules,"asc","order");
+            $modules,$course_id,"asc","order");
     //    $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups_from_id($classroom_groups);
 
 
