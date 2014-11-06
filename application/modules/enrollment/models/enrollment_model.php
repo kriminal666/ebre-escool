@@ -996,6 +996,30 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			return false;
 	}	
 
+    public function is_study_multiple($study_id) {
+        //SELECT `studies_multiple` FROM `studies` WHERE `studies_id`=2
+        
+        $this->db->select('studies_multiple');
+        $this->db->from('studies');
+        $this->db->where('studies_id',$study_id);
+        
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+
+            if ($row->studies_multiple == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }        
+
+    }
+
 	/* Cursos */
 	public function get_enrollment_courses($study=false,$orderby="asc") {
 
@@ -1003,28 +1027,72 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			$study=2;	//	"ASIX-DAM"
 		}
 
-		$this->db->select('course_id, course_shortname, course_name');
-		$this->db->from('course');
-		$this->db->join('studies','course_study_id=studies_id');
-		$this->db->where('studies_id',$study);
-		
-        $query = $this->db->get();
-		//echo $this->db->last_query();
+        $is_study_multiple = $this->is_study_multiple($study);
 
-		if ($query->num_rows() > 0) {
+        //Check if study is multiple
 
-			$courses_array = array();
-			$i=0;
-			foreach ($query->result_array() as $row)	{
-   				$courses_array[$i]['course_id'] = $row['course_id'];
-   				$courses_array[$i]['course_name'] = $row['course_name'];
-   				$courses_array[$i]['course_shortname'] = $row['course_shortname'];
-   				$i++;
-			}
-			return $courses_array;
-		}			
-		else
-			return false;
+        //TODO: 3x2 ASIX-DAM
+        // Courses: 1ASIX-DAM | 2 DAM i 1ASIX-DAM | 2DAM
+        // STUDIES:
+        // ASIX-DAM: 2
+        // DAM : 31
+        // ASIX: 29
+
+        // COURSE: ASIX-DAM ha de pertanyar a 3 studies: DAM (31) ASIX (29) i ASIX-DAM (2) 
+        // TAULA course_studies relació 1 a n? NO. Camp 3x2 true o false. Si true el codi curs es busqui a un altre taula?
+
+        if ($is_study_multiple) {
+            /*
+            SELECT `course_studies_course_id`,`course_shortname`,`course_name`
+            FROM `course_studies` 
+            INNER JOIN course ON course_studies.`course_studies_course_id` =course.course_id
+            WHERE `course_studies_study_id`=29
+            */
+
+            $this->db->select('course_studies_course_id,course_shortname,course_name');
+            $this->db->from('course_studies');
+            $this->db->join('course','course_studies.course_studies_course_id =course.course_id');
+            $this->db->where('course_studies_study_id',$study);
+            
+            $query = $this->db->get();
+            //echo $this->db->last_query();
+
+            if ($query->num_rows() > 0) { 
+                $courses_array = array();
+                $i=0;
+                foreach ($query->result_array() as $row)    {
+                    $courses_array[$i]['course_id'] = $row['course_studies_course_id'];
+                    $courses_array[$i]['course_name'] = $row['course_name'];
+                    $courses_array[$i]['course_shortname'] = $row['course_shortname'];
+                    $i++;
+                }
+                return $courses_array;
+                }
+        } else {
+            $this->db->select('course_id, course_shortname, course_name');
+            $this->db->from('course');
+            $this->db->join('studies','course_study_id=studies_id');
+            $this->db->where('studies_id',$study);
+            
+            $query = $this->db->get();
+            //echo $this->db->last_query();
+
+            if ($query->num_rows() > 0) {
+
+                $courses_array = array();
+                $i=0;
+                foreach ($query->result_array() as $row)    {
+                    $courses_array[$i]['course_id'] = $row['course_id'];
+                    $courses_array[$i]['course_name'] = $row['course_name'];
+                    $courses_array[$i]['course_shortname'] = $row['course_shortname'];
+                    $i++;
+                }
+                return $courses_array;
+            }           
+            else
+                return false;
+
+        }
 	}	
 
 	/* Grups de classe */
@@ -1091,7 +1159,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 
 
 	/* Mòduls */
-	public function get_enrollment_study_modules($courses=false,$course_id=false,$orderby="asc",$order_field = "") {
+	public function get_enrollment_study_modules($courses=false, $course_id=false, $orderby="asc",$order_field = "") {
 		
         $current_academic_period = $this->get_current_academic_period_id();
 
@@ -1116,7 +1184,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
         $this->db->join('course','course.course_id = study_module_ap_courses_course_id');
         $this->db->join('study_module','study_module.study_module_id = study_module_academic_periods_study_module_id');
 		$this->db->where_in('study_module_ap_courses_course_id', $courses);
-        $this->db->where_in('study_module_academic_periods_academic_period_id', $current_academic_period);
+        $this->db->where('study_module_academic_periods_academic_period_id', $current_academic_period);
 		$this->db->order_by('study_module_ap_courses_course_id', $orderby);
 		if ($order_field != "") {
 			if ($order_field == "order") {
@@ -1161,51 +1229,96 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	/* Unitats formatives */
 	public function get_enrollment_all_study_submodules_by_study($study_id=false,$orderby="asc",$order_field="") {
 
-		if(!$study_id){
+        if(!$study_id){
 			//TODO set default study by config file
 			$study_id=1;
 		}	
 
-        $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
-        				   study_module_order,study_submodules_study_module_id');
-		$this->db->from('study_submodules');
-		$this->db->join('study_module','study_submodules_study_module_id=study_module_id');
-		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
-		$this->db->join('studies','studies.studies_id = course.course_study_id');
-		$this->db->where('studies.studies_id',$study_id);
-		if ( $order_field != "") {
-			if ( $order_field == "order") {
-				$this->db->order_by('study_module_order', $orderby);
-				$this->db->order_by('study_submodules_order', $orderby);				
-			}
-		} else {
-			$this->db->order_by ('study_submodules_id', $orderby);
-		}
+        //Check if study is multiple
+        $is_study_multiple = $this->is_study_multiple($study_id);        
 
-		
-		       
-        $query = $this->db->get();
-		//echo $this->db->last_query();
+        if (!$is_study_multiple) {
+            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+                           study_module_order,study_submodules_study_module_id');
+            $this->db->from('study_submodules');
+            $this->db->join('study_module','study_submodules_study_module_id=study_module_id');
+            $this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
+            $this->db->join('studies','studies.studies_id = course.course_study_id');
+            $this->db->where('studies.studies_id',$study_id);
+            if ( $order_field != "") {
+                if ( $order_field == "order") {
+                    $this->db->order_by('study_module_order', $orderby);
+                    $this->db->order_by('study_submodules_order', $orderby);                
+                }
+            } else {
+                $this->db->order_by ('study_submodules_id', $orderby);
+            }
+           
+            $query = $this->db->get();
+            //echo $this->db->last_query();
 
-        $study_submodules_array = array();
-		
-		if ($query->num_rows() > 0) {
+            $study_submodules_array = array();
+            
+            if ($query->num_rows() > 0) {
+                $i=0;
+                foreach ($query->result_array() as $row)    {
+                    $study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+                    $study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
+                    $study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
+                    $study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+                    $study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];                 
+                    $i++;
+                }  
+            }           
+            return $study_submodules_array;
+        } else {
+            /*
+            SELECT study_submodules_id, study_submodules_shortname, study_submodules_name, study_module_shortname, study_module_order, study_submodules_study_module_id,study_submodules_courseid, studies.studies_id
+            FROM (study_submodules)
+            JOIN study_module ON study_submodules_study_module_id=study_module_id
+            JOIN course_studies ON course_studies.course_studies_course_id   = study_submodules.study_submodules_courseid
+            JOIN studies ON studies.studies_id = course_studies.course_studies_study_id
+            WHERE studies.studies_id =  '2'
+            ORDER BY study_module_order asc, study_submodules_order asc
+            */
 
-			
-			$i=0;
-			foreach ($query->result_array() as $row)	{
-				$study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
-   				$study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
-   				$study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
-   				$study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
-   				$study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];   				
-   				$i++;
-			}
-			
-		}			
-		
-		return $study_submodules_array;
-	}	
+            $this->db->select('study_submodules_id,study_submodules_shortname,study_submodules_name,study_module_shortname,
+                           study_module_order,study_submodules_study_module_id');
+            $this->db->from('study_submodules');
+            $this->db->join('study_module','study_submodules_study_module_id=study_module_id');
+            $this->db->join('course_studies','course_studies.course_studies_course_id = study_submodules.study_submodules_courseid');
+            $this->db->join('studies','studies.studies_id = course_studies.course_studies_study_id');
+            $this->db->where('studies.studies_id',$study_id);
+
+            if ( $order_field != "") {
+                if ( $order_field == "order") {
+                    $this->db->order_by('study_module_order', $orderby);
+                    $this->db->order_by('study_submodules_order', $orderby);                
+                }
+            } else {
+                $this->db->order_by ('study_submodules_id', $orderby);
+            }
+           
+            $query = $this->db->get();
+            //echo $this->db->last_query();
+
+            $study_submodules_array = array();
+            
+            if ($query->num_rows() > 0) {
+                $i=0;
+                foreach ($query->result_array() as $row)    {
+                    $study_submodules_array[$i]['study_module_shortname'] = $row['study_module_shortname'];
+                    $study_submodules_array[$i]['study_submodules_id'] = $row['study_submodules_id'];
+                    $study_submodules_array[$i]['study_submodules_shortname'] = $row['study_submodules_shortname'];
+                    $study_submodules_array[$i]['study_submodules_name'] = $row['study_submodules_name'];
+                    $study_submodules_array[$i]['study_submodules_study_module_id'] = $row['study_submodules_study_module_id'];                 
+                    $i++;
+                }  
+            }           
+            return $study_submodules_array;
+
+        }
+    }	
 
 	/* Unitats formatives */
 	public function get_enrollment_all_study_submodules_by_modules($study_modules=false,$orderby="asc",$order_field="") {
@@ -1680,7 +1793,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	public function get_student_data($official_id) {
 
         $this->db->select('person_official_id,person_official_id_type,person.person_id, person_photo, person_secondary_official_id, person_givenName, person_sn1, person_sn2, person_email,person_secondary_email, person_date_of_birth, person_gender, 
-            				   person_homePostalAddress, person_telephoneNumber, person_mobile, person_locality_id , locality_name, postalcode_code,users.username ');
+            				   person_homePostalAddress, person_telephoneNumber, person_mobile, person_locality_id , locality_name, postalcode_code,users.username, users.id as userid');
 		$this->db->from('person');
 		$this->db->join('locality','locality.locality_id = person.person_locality_id',"left");
 		$this->db->join('postalcode',' postalcode.postalcode_localityid = locality.locality_id',"left");

@@ -180,6 +180,10 @@ STEP 0 - STUDENT DATA
                                         <div class="span4">
                                           <input type="radio" name="official_id_type" value="3"><span><?php echo lang('wizzard_official_passport');?>&nbsp;</span>
                                         </div>
+
+                                        <?php if ( $user_is_admin ) : ?>
+                                          <span id="user_database_info"></span>
+                                        <?php endif; ?>
                                       </div>
                                       <!-- /TIPUS DE DOCUMENT -->                               
                                     <!-- DNI / TIS -->
@@ -1443,6 +1447,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 
                   var all_data = $.parseJSON(data);
 
+                var user_database_info_text = "";
                 $.each(all_data, function(idx,obj) {
                   
                   /* Fill form with student data from Database */
@@ -1454,6 +1459,14 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                       //console.debug("test");
                       $('#person_locality_id').val(obj);
                       $('#person_locality_id').select2();
+                  }
+
+                  if (idx=="person_id") {
+                      user_database_info_text = user_database_info_text + "Person id : " + obj;
+                  }
+
+                  if (idx=="userid") {
+                      user_database_info_text = user_database_info_text + " User id : " + obj;
                   }
 
                   student_full_name = $('#student_full_name').find("span.white");
@@ -1474,6 +1487,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   }
                     student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
                 });
+
+                if (user_database_info_text != "") {
+                   $('#user_database_info').html(user_database_info_text); 
+                }
 
                 /* Student doesn't exists, clear form data */
                 } else {

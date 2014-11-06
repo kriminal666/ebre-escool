@@ -1049,10 +1049,10 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
         $this->check_logged_user(); 
 
-        if (!$this->session->userdata('is_admin')) {
+        $user_is_admin = $this->session->userdata('is_admin');
+        if (!$user_is_admin) {
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
-
 
         $active_menu = array();
         $active_menu['menu']='#enrollment_wizard';
@@ -1089,6 +1089,9 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
 
+       $data['user_is_admin'] = $user_is_admin;       
+
+
        $data['all_person_official_ids'] = $all_person_official_ids;
        
        $data['enrollment_studies'] = $enrollment_studies;
@@ -1121,10 +1124,11 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
         $this->check_logged_user(); 
 
-        if (!$this->session->userdata('is_admin')) {
+        $user_is_admin = $this->session->userdata('is_admin');
+
+        if (!$user_is_admin) {
             redirect($this->skeleton_auth->login_page, 'refresh');
         }
-
 
         $active_menu = array();
         $active_menu['menu']='#enrollment_wizard';
@@ -1160,6 +1164,8 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
        $localities = $this->enrollment_model->get_localities();
 
        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+
+       $data['user_is_admin'] = $user_is_admin;       
 
        $data['all_person_official_ids'] = $all_person_official_ids;
        

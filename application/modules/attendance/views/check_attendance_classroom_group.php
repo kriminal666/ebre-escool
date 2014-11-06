@@ -92,7 +92,7 @@
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor (pendent)</a></div>
+                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Mostrar alumnes amagats</a></div>
 
                       </li>
 

@@ -414,6 +414,8 @@ class reports extends skeleton_main {
         $data['academic_period_id'] = $academic_period_id;
         $data['mentors'] = $mentors;
         $data['mentor_id'] = $mentor_id;
+
+        $data['user_is_admin'] = $this->session->userdata('is_admin');
 		
 		$this->load->view('mentoring_classlists',$data);	
 

@@ -108,9 +108,9 @@ $lang['hour_code']="Codi hora";
 	$lang['moduleid']="Mòdul";
 	$lang['submoduleid']="Submòdul";
 
-$lang['wizzard_official_DNI'] = 'DNI: ';
-$lang['wizzard_official_NIE'] = 'NIE: ';
-$lang['wizzard_official_passport'] = 'Passaport: ';
+$lang['wizzard_official_DNI'] = 'DNI ';
+$lang['wizzard_official_NIE'] = 'NIE ';
+$lang['wizzard_official_passport'] = 'Passaport ';
 $lang['wizzard_official_id_type'] = 'Tipus d\'identificador: ';
 $lang['wizzard_secondary_official_id'] = 'TSI: ';
 $lang['wizzard_givenName'] = 'Nom: ';

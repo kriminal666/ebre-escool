@@ -250,6 +250,7 @@ CREATE TABLE IF NOT EXISTS `course` (
   `course_number` int(11) NOT NULL,
   `course_cycle_id` int(11) NOT NULL,
   `course_study_id` int(11) NOT NULL,
+  `course_have_multiple_studies` tinyint(1) NOT NULL DEFAULT '0',
   `course_entryDate` datetime NOT NULL,
   `course_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `course_creationUserId` int(11) DEFAULT NULL,
@@ -257,6 +258,17 @@ CREATE TABLE IF NOT EXISTS `course` (
   `course_markedForDeletion` enum('n','y') NOT NULL,
   `course_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`course_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Estructura de la taula `courses_studies`
+--
+
+CREATE TABLE IF NOT EXISTS `course_studies` (
+  `course_studies_id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_studies_course_id` int(11) NOT NULL,
+  `course_studies_study_id` int(11) NOT NULL,
+  PRIMARY KEY (`course_studies_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --

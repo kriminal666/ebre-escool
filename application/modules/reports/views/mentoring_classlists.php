@@ -115,7 +115,7 @@
           </thead>  
         </table> 
 
-        <div class="span3"></div>
+        <div class="span2"></div>
 
         <div class="widget-box span4 collapsed">
                         <div class="widget-header widget-header-small header-color-green">
@@ -169,6 +169,72 @@
 
 
 
+      <div class="span4 widget-container-span">
+                  <div class="widget-box collapsed">
+                    <div class="widget-header widget-header-small header-color-orange">
+                      <h6>
+                        <i class="icon-sort"></i>
+                        Llistats de classe
+                      </h6>
+
+                      <div class="widget-toolbar">
+                        <a href="#" data-action="collapse">
+                          <i class="icon-chevron-down"></i>
+                        </a>
+
+                        <a href="#" data-action="close">
+                          <i class="icon-remove"></i>
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">                        
+
+                    <ol class="dd-list">
+
+                      <li class="dd-item dd2-item" data-id="13">
+                        <div class="dd-handle dd2-handle">
+                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
+ 
+                          <i class="drag-icon icon-move bigger-125"></i>
+                        </div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/' . $academic_period_id . '/' . $default_classroom_group_id . '/true' ); ?>">Llista dels estudiants del grup (amb foto | PDF)</a></div>
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="15">
+                        <div class="dd-handle dd2-handle">
+                          <i class="normal-icon icon-download-alt blue bigger-130"></i>
+
+                          <i class="drag-icon icon-move bigger-125"></i>
+                        </div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report/' . $academic_period_id . '/' . $default_classroom_group_id . '/false'); ?>">Llista dels estudiants del grup (sense foto | PDF)</a></div>
+
+                      </li>
+
+                      <li class="dd-item dd2-item" data-id="19">
+                        <div class="dd-handle dd2-handle">
+                          <i class="normal-icon icon-download-alt orange bigger-130"></i>
+
+                          <i class="drag-icon icon-move bigger-125"></i>
+                        </div>
+                        <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report/' . $academic_period_id . '/' . $default_classroom_group_id);?>">Llençol amb les fotos dels estudiants (PDF)</a></div>
+                      </li>
+                    </ol>
+
+
+
+
+
+
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>          
+
+
+
 
 
 
@@ -179,7 +245,7 @@
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
           <tr>
-            <td colspan="13" style="text-align: center;"> <h4>
+            <td colspan="14" style="text-align: center;"> <h4>
               <a href="#">
                 <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
               </a>
@@ -191,7 +257,7 @@
             <td style="text-align: right;">Codi grup:</td>
             <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
             <td style="text-align: right;">Tutor:</td>
-            <td colspan="2" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
+            <td colspan="3" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
@@ -203,6 +269,7 @@
              <th><?php echo lang('mentoring_classlists_last_login')?></th>
              <th><?php echo lang('mentoring_classlists_personal_email')?></th>
              <th><?php echo lang('mentoring_classlists_corporative_email')?></th>
+             <th>Accions&nbsp;&nbsp;&nbsp;&nbsp;</th>
           </tr>
          </thead>
          
@@ -216,6 +283,35 @@
 </div>
 
 <script>
+
+function click_on_hidden_student(element) {
+  var person_id = element.getAttribute("person_id");
+  var classroom_group_id = selected_classroom_group_id();
+
+  console.debug("person_id: " + person_id);
+  console.debug("classroom_group_id: " + classroom_group_id);
+
+  //AJAX: hide student on database:
+
+  //AJAX_CORRECT: Change icon
+  $("#icon_hide_student_id_" + person_id).toggleClass("icon-eye-close icon-eye-open");
+  $("#hide_student_id_" + person_id).toggleClass("purple red");
+
+  if($("#icon_hide_student_id_" + person_id).hasClass('icon-eye-close')){
+        $(this).attr('title',"Amagar alumne");
+    }else{
+        $(this).attr('title','Mostrar alumne');
+    }
+
+  if($("#hide_student_id_" + person_id).hasClass('red')){
+        $(this).attr('title',"Mostrar alumne");
+    }else{
+        $(this).attr('title','Amagar alumne');
+    }  
+
+  
+  
+}
 
 var mentor_names = [];
 var group_codes = [];
@@ -304,14 +400,18 @@ $(function() {
                                     return '<img src="' + photos_base_url + '/' + data.photo_url + '" alt="foto alumne" style="width:75px;"></img>';
                                   }},
                         { "mData": function(data, type, full) {
-                                    return data.sn1 + " " + data.sn2 + ", " + data.givenName;
+                                    return data.sn1 + " " + data.sn2 + ", " + data.givenName + " (" + data.person_id + ")";
                                   }},
                         { "mData": "person_official_id" },
                         { "mData": "username" },
                         { "mData": "initial_password" },
                         { "mData": "last_login" },
                         { "mData": "personal_email" },
-                        { "mData": "corporative_email" }
+                        { "mData": "corporative_email" },
+                        { "mData": function(data, type, full) {
+                            var url1 = "<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/');?>/" + data.person_official_id;
+                            return '<div class="hidden-phone visible-desktop action-buttons"><a class="blue" href="#"><a href="' + url1 + '" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a></a><?php if ( $user_is_admin ) : ?><a class="green" href="#" title="Modificar matrícula"><i class="icon-pencil bigger-130" title="Modificar matrícula"></i></a><?php endif;?><a person_id="' + data.person_id + '" id="hide_student_id_' + data.person_id + '" class="purple" href="#" title="Amagar alumne" onclick="event.preventDefault();click_on_hidden_student(this);"><i class="icon-eye-close bigger-130" id="icon_hide_student_id_' + data.person_id + '" title="Amagar alumne"></i></a></div><div class="hidden-desktop visible-phone"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown"><i class="icon-caret-down icon-only bigger-120"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close"><li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"><i class="icon-zoom-in bigger-120"></i>1</span></a></li><li><a href="#" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="icon-edit bigger-120"></i></span></a></li><li><a href="#" class="tooltip-error" data-rel="tooltip" title="Ocultar"><span class="red" title="Amagar alumne"><i class="icon-eye-close bigger-120" title="Amagar alumne"></i></span></a></li></ul></div></div>'
+                        }},
                       ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]], 
                       "sDom": 'TC<"clear">lfrtip',                    

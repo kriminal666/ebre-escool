@@ -180,6 +180,11 @@ STEP 0 - STUDENT DATA
                                         <div class="span4">
                                           <input type="radio" name="official_id_type" value="3" readonly="true"><span><?php echo lang('wizzard_official_passport');?>&nbsp;</span>
                                         </div>
+                                        
+                                        <?php if ( $user_is_admin ) : ?>
+                                          <span id="user_database_info"></span>
+                                        <?php endif; ?>
+
                                       </div>
                                       <!-- /TIPUS DE DOCUMENT -->                               
                                     <!-- DNI / TIS -->
@@ -1443,6 +1448,9 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 
                   var all_data = $.parseJSON(data);
 
+                //console.debug(all_data);
+
+                var user_database_info_text = "";
                 $.each(all_data, function(idx,obj) {
                   
                   /* Fill form with student data from Database */
@@ -1455,6 +1463,15 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                       $('#person_locality_id').val(obj);
                       $('#person_locality_id').select2();
                   }
+
+                  if (idx=="person_id") {
+                      user_database_info_text = user_database_info_text + "Person id : " + obj;
+                  }
+
+                  if (idx=="userid") {
+                      user_database_info_text = user_database_info_text + " User id : " + obj;
+                  }
+
 
                   student_full_name = $('#student_full_name').find("span.white");
                   if(idx=='person_photo'){
@@ -1474,6 +1491,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                   }
                     student_full_name.text(all_data['person_givenName']+" "+all_data['person_sn1']+" "+all_data['person_sn2']);
                 });
+
+                if (user_database_info_text != "") {
+                   $('#user_database_info').html(user_database_info_text); 
+                }
 
                 /* Student doesn't exists, clear form data */
                 } else {
@@ -2110,10 +2131,10 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
                 first = 1;
                 $.each(JSON.parse(data), function(idx, obj) {
                   if (first == 1) {
-                    $_courses.append($('<option selected="selected"></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name));
+                    $_courses.append($('<option selected="selected"></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name + " ("+obj.course_id+")"));
                     first = 0;
                   } else {
-                    $_courses.append($('<option></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name));
+                    $_courses.append($('<option></option>').attr("value",obj.course_id).text(obj.course_shortname + ". " + obj.course_name + " ("+obj.course_id+")"));
                   }
                   
                   
@@ -2123,7 +2144,7 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                   $_course_widget.append("<div class='widget-box'id='step6_course_" + obj.course_id +  "'>"+
                                             "<div class='widget-header'>"+
-                                              "<h4>"+ obj.course_shortname + " - " +  obj.course_name+"</h4>"+
+                                              "<h4>"+ obj.course_shortname + " - " +  obj.course_name +" (" + obj.course_id + ")</h4>"+
                                               "<div class='widget-toolbar'>"+
                                                 "<a data-action='collapse' href='#'>"+
                                                   "<i class='icon-chevron-up'></i>"+
