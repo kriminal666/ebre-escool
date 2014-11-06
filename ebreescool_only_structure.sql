@@ -526,6 +526,7 @@ CREATE TABLE IF NOT EXISTS `studies` (
   `studies_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `studies_studies_organizational_unit_id` int(11) NOT NULL,
   `studies_studies_law_id` int(11) NOT NULL,
+  `studies_multiple` tinyint(1) NOT NULL DEFAULT '0',
   `studies_entryDate` datetime NOT NULL,
   `studies_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `studies_creationUserId` int(11) DEFAULT NULL,
