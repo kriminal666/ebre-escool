@@ -245,7 +245,7 @@ class ebre_escool_ldap  {
 		
 		$attrs['sambaLMPassword']= $lm;
 		$attrs['sambaNTPassword']= $nt;
-		$attrs['sambaPwdLastSet']= date('U');
+		$attrs['sambaPwdLastSet']= "2147483647";
 		$attrs['sambaBadPasswordCount']= "0";
 		$attrs['sambaBadPasswordTime']= "0";
 		return($attrs);
