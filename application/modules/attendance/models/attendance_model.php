@@ -354,7 +354,7 @@ class attendance_model  extends CI_Model  {
 		//DEBUG
 		//print_r($classroom_group_siblings);
 
-		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id,enrollment_group_id');
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id,enrollment_group_id,enrollment_id');
 		$this->db->distinct();
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
@@ -387,6 +387,8 @@ class attendance_model  extends CI_Model  {
 					$student->email = $row['person_secondary_email'];
 					$student->photo_url = $row['person_photo'];
 					$student->person_official_id = $row['person_official_id'];
+					$student->enrollment_id = $row['enrollment_id'];
+
 					
 					//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
 					
@@ -402,6 +404,55 @@ class attendance_model  extends CI_Model  {
 			
 
 	}
+
+	
+
+	function get_number_of_enrolled_study_submodules($all_students_in_group) {
+
+		$enrollment_ids = array();
+		foreach ($all_students_in_group as $student) {
+		    $enrollment_ids[] = $student->enrollment_id;
+		}
+
+		/*
+		SELECT enrollment_submodules_enrollment_id,count(enrollment_submodules_id) as total 
+		FROM enrollment_submodules 
+		WHERE enrollment_submodules_enrollment_id IN (4326,4327,4329) 
+		GROUP BY enrollment_submodules_enrollment_id
+		*/
+
+
+		//print_r($enrollment_ids);
+		if (count($enrollment_ids) == 0) {
+			return false;
+		}
+
+		$this->db->select('enrollment_submodules_enrollment_id, count(enrollment_submodules_id) as total');
+		$this->db->from('enrollment_submodules');
+		$this->db->where_in('enrollment_submodules_enrollment_id',$enrollment_ids);
+		$this->db->group_by('enrollment_submodules_enrollment_id');
+		
+		$query = $this->db->get();
+		//echo "<br/>".$this->db->last_query()."<br/>";
+
+		$number_of_enrolled_study_submodules = array();
+		if ($query->num_rows() > 0) {			
+			foreach ($query->result_array() as $row)	{
+				$enrollment_id = $row['enrollment_submodules_enrollment_id'];
+				$number_of_enrolled_study_submodules[$enrollment_id] = $row['total'];
+			}
+		}	
+
+		//print_r($number_of_enrolled_study_submodules);
+
+		foreach ($enrollment_ids as $enrollment_id)	{
+			if ( ! array_key_exists($enrollment_id, $number_of_enrolled_study_submodules)) {
+				$number_of_enrolled_study_submodules[$enrollment_id] = 0;	
+			} 
+		}		
+		return $number_of_enrolled_study_submodules;
+	}
+
 
 	function getAllGroupStudentsInfo($class_group_id,$academic_period_id=null) {
 		
@@ -421,7 +472,7 @@ class attendance_model  extends CI_Model  {
 		*/
 
 
-		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id');
+		$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, person.person_secondary_email, person.person_photo, person.person_official_id, enrollment_id');
 		$this->db->from('person');
 		$this->db->join('users','person.person_id = users.person_id');
 		$this->db->join('enrollment','users.person_id = enrollment.enrollment_personid');		
@@ -452,7 +503,8 @@ class attendance_model  extends CI_Model  {
 				$student->email = $row['person_secondary_email'];
 				$student->photo_url = $row['person_photo'];
 				$student->person_official_id = $row['person_official_id'];
-				
+				$student->enrollment_id = $row['enrollment_id'];
+
 				//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
 				
 				$student_info_array[$student->person_id] = $student;

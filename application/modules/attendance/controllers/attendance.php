@@ -1074,24 +1074,51 @@ class attendance extends skeleton_main {
 
 	    $data['total_number_of_students'] = count($all_students_in_group);
 
+	    //echo "<br/> total_number_of_students : " . $data['total_number_of_students'] . "<br/>";
+
 		$data['classroom_group_students'] = array ();
 		$base_photo_url = "uploads/person_photos";
 		
+		/*
+		print_r($all_students_in_group);
+		echo "*********************";
+		*/
 
-		//Look for incosistent/ error estudents
-		$students_with_errors = array();
-		foreach ($official_students_in_group as $official_student_key => $official_student) {
-			# code...
-			if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
-				$official_student->errorType = "Matrícula incoherent. Alumne matrículat al grup però sense cap Unitat Formativa del grup matrículada";
-				$students_with_errors[$official_student_key]= $official_student;
-			} 			
+		$number_of_enrolled_study_submodules = array ();
+		$number_of_enrolled_study_submodules = $this->attendance_model->get_number_of_enrolled_study_submodules( array_merge ($all_students_in_group,$official_students_in_group));
+
+		//print_r($number_of_enrolled_study_submodules);
+		$data['number_of_enrolled_study_submodules'] = $number_of_enrolled_study_submodules;
+
+		//Look for inconsistent/ error estudents
+		$data['students_with_errors'] = array();
+		$data['students_with_errors_num'] = 0;
+		if (count($all_students_in_group) > 0) {
+			$students_with_errors = array();
+			foreach ($official_students_in_group as $official_student_key => $official_student) {
+				if ( ! array_key_exists($official_student_key, $all_students_in_group) ) {
+					if ($number_of_enrolled_study_submodules[$official_student->enrollment_id] == 0 ) { 
+						$official_student->errorType = "L'alumne no té cap UF/UD matrículada";
+					} else {
+						$official_student->errorType = "Matrícula incoherent. Alumne matrículat al grup però sense CAP Unitat Formativa DEL GRUP matrículada";	
+					}
+					$students_with_errors[$official_student_key]= $official_student;
+				} 			
+			}
+			
+			foreach ($all_students_in_group as $student_key => $student) {
+				if ($number_of_enrolled_study_submodules[$student->enrollment_id] == 0 ) {
+					$student->errorType = "L'alumne no té cap UF/UD matrículada";
+					$students_with_errors[$student_key]= $student;
+				}
+			}
+
+			//getAllGroupStudentsInfoIncludedStudySubmodules
+
+			$data['students_with_errors'] = $students_with_errors;
+			$data['students_with_errors_num'] = count($students_with_errors);
 		}
-
-		//getAllGroupStudentsInfoIncludedStudySubmodules
-
-		$data['students_with_errors'] = $students_with_errors;
-		$data['students_with_errors_num'] = count($students_with_errors);
+		
 
 		$array_student_person_ids = array ();
 		if ( $data['total_number_of_students'] != 0 ) {

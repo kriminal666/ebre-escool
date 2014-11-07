@@ -670,6 +670,8 @@
                   </tbody>
   </table>                
 
+  <div class="space-30"></div>
+
 </div>
 </div>
 </div>
