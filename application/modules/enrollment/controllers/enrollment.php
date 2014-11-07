@@ -1711,8 +1711,10 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
             $resultat = array();
 
             $enrollment_classroom_groups = $this->enrollment_model->get_enrollment_classroom_groups($_POST['study_id'],$_POST['course_id']);
-            foreach($enrollment_classroom_groups as $key => $value){
-                $resultat[$key]=$value;
+            if (is_array($enrollment_classroom_groups)) {
+                foreach($enrollment_classroom_groups as $key => $value){
+                    $resultat[$key]=$value;
+                }    
             }
             print_r(json_encode($resultat));
         } else {

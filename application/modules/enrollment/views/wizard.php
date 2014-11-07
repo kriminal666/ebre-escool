@@ -2543,10 +2543,15 @@ STEP 6 - ALL SUB-MODULES FROM SELECTED MODULES
 
                   //$("#"+obj.study_submodules_study_module_id).append($('<input type="checkbox" checked name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname+') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
                   
+                  var input_id = "step6_checkbox_studysudmodule_id_" + obj.study_submodules_id;
                   if ( (jQuery.inArray (parseInt(obj.study_submodules_id) , checked_study_submodules_id)) != -1 ) {
-                      $_study_module_div_for_submodules.append($('<input id="step6_checkbox_studysudmodule_id_' + obj.study_submodules_id + ' " type="checkbox" checked="checked" name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname +' - ' + obj.study_module_id +') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
+                    if (! document.getElementById(input_id)) {
+                      $_study_module_div_for_submodules.append($('<input id="' + input_id + '" type="checkbox" checked="checked" name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname +' - ' + obj.study_module_id + ') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
+                    }
                   } else {
-                      $_study_module_div_for_submodules.append($('<input id="step6_checkbox_studysudmodule_id_' + obj.study_submodules_id + ' " type="checkbox" name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname + ' - ' + obj.study_module_id + ') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));                    
+                    if (! document.getElementById(input_id)) {
+                      $_study_module_div_for_submodules.append($('<input id="' + input_id + '" type="checkbox" name="'+obj.study_submodules_shortname+'" value="'+obj.study_submodules_study_module_id+'#'+obj.study_submodules_id+'"/> ('+obj.study_module_shortname +' - ' + obj.study_module_id +') '+obj.study_submodules_shortname+' - '+obj.study_submodules_name+' ('+obj.study_submodules_id+')<br />'));
+                    }
                   }
                     
 
