@@ -590,6 +590,52 @@ CREATE TABLE IF NOT EXISTS `studies_organizational_unit` (
 
 -- Dump completed on 2013-11-04  9:26:45
 
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module_type`
+--
+
+-- study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
+
+CREATE TABLE IF NOT EXISTS `study_module_type` (
+  `study_module_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_module_type_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_module_type_order` int(11) NOT NULL,
+  `study_module_type_description` text,
+  `study_module_type_entryDate` datetime NOT NULL,
+  `study_module_type_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_type_creationUserId` int(11) DEFAULT NULL,
+  `study_module_type_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_type_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_type_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `study_module_subtype`
+--
+
+-- study_module_subtype` enum('Trimestral','Quadrimestral') NOT NULL,
+
+CREATE TABLE IF NOT EXISTS `study_module_subtype` (
+  `study_module_subtype_id` int(11) NOT NULL AUTO_INCREMENT,
+  `study_module_subtype_name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `study_module_subtype_order` int(11) NOT NULL,
+  `study_module_subtype_description` text,
+  `study_module_subtype_entryDate` datetime NOT NULL,
+  `study_module_subtype_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_module_subtype_creationUserId` int(11) DEFAULT NULL,
+  `study_module_subtype_lastupdateUserId` int(11) DEFAULT NULL,
+  `study_module_subtype_markedForDeletion` enum('n','y') NOT NULL,
+  `study_module_subtype_markedForDeletionDate` datetime NOT NULL,
+  PRIMARY KEY (`study_module_subtype_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 -- --------------------------------------------------------
 
 --
@@ -603,8 +649,8 @@ CREATE TABLE IF NOT EXISTS `study_module` (
   `study_module_hoursPerWeek` int(3) NOT NULL,
   `study_module_order` int(11) NOT NULL,
   `study_module_description` text,
-  `study_module_type` enum('Troncal','Alternativa','Optativa') NOT NULL,
-  `study_module_subtype` enum('Trimestral','Quadrimestral') NOT NULL,
+  `study_module_type` int(11) NOT NULL,
+  `study_module_subtype` int(11) NOT NULL,
   `study_module_entryDate` datetime NOT NULL,
   `study_module_last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `study_module_creationUserId` int(11) DEFAULT NULL,

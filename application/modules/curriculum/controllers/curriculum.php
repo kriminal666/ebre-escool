@@ -924,6 +924,48 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
                    
     }
 
+    public function study_module_type () {
+
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#study_module_type';
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        /* Grocery Crud */
+        $this->current_table="study_module_type";
+        $this->grocery_crud->set_table($this->current_table);
+
+
+        $this->renderitzar($this->current_table,$header_data);
+
+
+    }
+
+    public function study_module_subtype () {
+
+        $active_menu = array();
+        $active_menu['menu']='#maintenances';
+        $active_menu['submenu1']='#curriculum';
+        $active_menu['submenu2']='#study_module_subtype';
+
+        $this->check_logged_user(); 
+
+        /* Ace */
+        $header_data = $this->load_ace_files($active_menu);
+
+        /* Grocery Crud */
+        $this->current_table="study_module_subtype";
+        $this->grocery_crud->set_table($this->current_table);
+
+        $this->renderitzar($this->current_table,$header_data);
+        
+    }
+
 /* FI ASSIGNATURA */
 
 
@@ -995,6 +1037,10 @@ INNER JOIN study_module_academic_periods ON study_module_academic_periods.`study
                                      $this->current_table.'_academic_periods');
         */
 
+        //RELACIONS
+        $this->grocery_crud->set_relation($this->current_table.'_type','study_module_type','{study_module_type_name} ({study_module_type_id})');
+        $this->grocery_crud->set_relation($this->current_table.'_subtype','study_module_subtype','{study_module_subtype_name} ({study_module_subtype_id})');
+        
         //RELACIONS
         //$this->grocery_crud->set_relation($this->current_table.'_teacher_id','teacher','teacher_id)');
         //BE CAREFUL! RELATIONS WITH CLASSROOMGROUPS COULD BE OBTAINED BY COURSE BECAUSE MULTIPLE CLASSROOM GROUPS COUL APPLY
