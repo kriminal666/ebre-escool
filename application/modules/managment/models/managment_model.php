@@ -2850,7 +2850,7 @@ class managment_model  extends CI_Model  {
 					}
 
 				} else {
-					$enrollment->error = "La matrícula no té cursos en cap de les UFs/UDs";	
+					$enrollment->error = "La matrícula no té cap UF/UD matrículada en cap dels cursos relacionats amb l'estudi matrículat";	
 				}
 				 
 

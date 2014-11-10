@@ -2222,12 +2222,12 @@ CREATE TABLE IF NOT EXISTS `time_slot` (
 DROP TABLE IF EXISTS `incident`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `incident` (
+CREATE TABLE IF NOT EXISTS `incident` (
   `incident_id` int(11) NOT NULL AUTO_INCREMENT,
   `incident_student_id` int(11) NOT NULL,
   `incident_time_slot_id` int(11) NOT NULL,
   `incident_day` int(11) NOT NULL,
-  `incident_date` date,
+  `incident_date` date NOT NULL,
   `incident_study_submodule_id` int(11) NOT NULL,
   `incident_type` int(11) NOT NULL,
   `incident_notes` text NOT NULL,
@@ -2239,7 +2239,8 @@ CREATE TABLE `incident` (
   `incident_markedForDeletionDate` datetime NOT NULL,
   PRIMARY KEY (`incident_id`),
   UNIQUE KEY `incident_student_id` (`incident_student_id`,`incident_time_slot_id`,`incident_day`,`incident_date`,`incident_study_submodule_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
