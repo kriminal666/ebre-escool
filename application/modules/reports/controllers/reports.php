@@ -450,7 +450,7 @@ class reports extends skeleton_main {
 
 
 
-	function mentoring_classlists($teacher_id = null,$academic_period_id = null,$mentor_id = null, $classroom_group_id = null){
+	function mentoring_classlists($academic_period_id = null,$mentor_id = null, $classroom_group_id = null,$teacher_id = null){
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
 		$active_menu['submenu1']='#mentoring_classlists';
