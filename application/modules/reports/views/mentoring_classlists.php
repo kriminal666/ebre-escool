@@ -1,3 +1,9 @@
+<style TYPE="text/css"> 
+.row-highlight {
+  background-color: #e4efc9;
+}
+</style>
+
 <div class="main-content">
 
 <div id="breadcrumbs" class="breadcrumbs">
@@ -43,9 +49,30 @@
               </div>
 
 
-<div style='height:10px;'></div>
+<div class="space-5"></div>
   <div style="margin:10px;">
     <div class="container">
+
+      <div class="row-fluid">
+          <div class="span4"></div>
+      <div class="span4">
+
+        <select id="teacher" style="width: 100%">
+               <option></option>
+         <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
+             <?php if( $teacher_id == $default_teacher): ?>
+                  <option value="<?php echo $teacher_id; ?>" selected="selected"><?php echo $teacher_name; ?></option>
+                 <?php else: ?> 
+                  <option value="<?php echo $teacher_id; ?>" ><?php echo $teacher_name; ?></option>
+                 <?php endif; ?> 
+         <?php endforeach; ?> 
+        </select> 
+
+      </div>
+        <div class="span4"><a id="link_to_teacher_timetable" href="<?php echo base_url('/index.php/timetables/allteacherstimetables');?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar"></i> Horari</a></div>
+      </div>
+
+      <div class="space-8"></div>
 
       <table class="table table-striped table-bordered table-hover table-condensed" id="TODO_filter">
           <thead style="background-color: #d9edf7;">
@@ -100,7 +127,7 @@
                 <select id="select_class_list_classgroup_filter">
                 <?php if ( !$mentor_id ) : ?>  
                  <option value=""></option>
-                <?php endif; ?>   
+                <?php endif; ?>    
                 <?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
                   <?php if ( $classgroup_key == $default_classroom_group_id) : ?>
                     <option selected="selected" value="<?php echo $classgroup_key ;?>"><?php echo $classgroup_value->code . " - " .  $classgroup_value->name;?></option>
@@ -140,21 +167,21 @@
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="#">Mostrar els estudiants amb UFS soltes</a></div>
+                        <div class="dd2-content">Mostrar els estudiants amb UFS soltes</div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Mostrar els alumnes matrículats al grup</a></div>
+                        <div class="dd2-content">Mostrar els alumnes matrículats al grup</div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="15">
                         <div class="dd-handle dd2-handle">
-                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_hide_students"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Amagar alumnes amagats pel professor (pendent)</a></div>
+                        <div class="dd2-content">Mostrar els alumnes amagats</div>
 
                       </li>
 
@@ -245,7 +272,7 @@
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
           <tr>
-            <td colspan="14" style="text-align: center;"> <h4>
+            <td colspan="15" style="text-align: center;"> <h4>
               <a href="#">
                 <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
               </a>
@@ -257,10 +284,11 @@
             <td style="text-align: right;">Codi grup:</td>
             <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
             <td style="text-align: right;">Tutor:</td>
-            <td colspan="3" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
+            <td colspan="4" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
+             <th><?php echo lang('mentoring_classlists_hidden')?></th>
              <th><?php echo lang('mentoring_classlists_photo')?></th>
              <th><?php echo lang('mentoring_classlists_student')?></th>
              <th><?php echo lang('mentoring_classlists_officialid')?></th>
@@ -284,32 +312,96 @@
 
 <script>
 
+var class_list_table;
+
 function click_on_hidden_student(element) {
   var person_id = element.getAttribute("person_id");
+  var action = element.getAttribute("action");
   var classroom_group_id = selected_classroom_group_id();
+  var teacher_id = $("#teacher").val();
+  var academic_period_id = $("#select_class_list_academic_period_filter").val();
 
-  console.debug("person_id: " + person_id);
-  console.debug("classroom_group_id: " + classroom_group_id);
+  //DEBUG:
+  //console.debug("person_id: " + person_id);
+  //console.debug("classroom_group_id: " + classroom_group_id);
+  //console.debug("teacher_id: " + teacher_id);
+  //console.debug("academic_period_id: " + academic_period_id);
 
-  //AJAX: hide student on database:
+  console.debug("action: " + action);
 
-  //AJAX_CORRECT: Change icon
-  $("#icon_hide_student_id_" + person_id).toggleClass("icon-eye-close icon-eye-open");
-  $("#hide_student_id_" + person_id).toggleClass("purple red");
+  //AJAX: hide/unhide student on database:
+  //AJAX TO HIDE STUDENT
+  $.ajax({
+      url:'<?php echo base_url("/index.php/reports/hide_unhide_student_on_classroom_group");?>',
+      type: 'post',
+      data: {
+          person_id : person_id,
+          classroom_group_id : classroom_group_id,
+          teacher_id : teacher_id,
+          academic_period_id : academic_period_id,
+          action : action,
+      },
+      datatype: 'json',
+      statusCode: {
+        404: function() {
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/reports/hide_unhide_student_on_classroom_group ' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        },
+        500: function() {
+          $("#response").html('A server-side error has occurred.');
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/reports/hide_unhide_student_on_classroom_group' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        }
+      },
+      error: function() {
+        $.gritter.add({
+            title: 'Error!',
+            text: 'Ha succeït un error!' ,
+            class_name: 'gritter-error gritter-center'
+          });
+      },
+    }).done(function(data){
+      
+      var all_data = $.parseJSON(data);
 
-  if($("#icon_hide_student_id_" + person_id).hasClass('icon-eye-close')){
-        $(this).attr('title',"Amagar alumne");
-    }else{
-        $(this).attr('title','Mostrar alumne');
-    }
+      //console.debug (all_data);
 
-  if($("#hide_student_id_" + person_id).hasClass('red')){
-        $(this).attr('title',"Mostrar alumne");
-    }else{
-        $(this).attr('title','Amagar alumne');
-    }  
+      result = all_data.result;
+      result_message = all_data.message;
 
-  
+      if (result) {
+        console.debug(result_message);
+      } else {
+        $.gritter.add({
+          title: 'Error amagant la persona a la base de dades!',
+          text: 'No s\'ha pogut amagar la persona a la base de dades. Missatge d\'error:  ' + result_message ,
+          class_name: 'gritter-error'
+        });
+      }
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //RELOAD DATATABLES!
+  class_list_table.ajax.reload();
   
 }
 
@@ -329,12 +421,37 @@ var group_names = [];
 
 
 function selected_classroom_group_id(){
+
   selected_group = $("#select_class_list_classgroup_filter").val();
   //console.debug(selected_group);
   return selected_group;
 }
 
+function selectedcheckbox1(){
+  selected_checkbox_show_all_group_enrolled_students = $("#checkbox_show_all_group_enrolled_students").prop('checked');
+  return selected_checkbox_show_all_group_enrolled_students;
+}
+
+function selectedcheckbox2(){
+  selected_checkbox_show_all_students = $("#checkbox_show_all_students").prop('checked');
+  return selected_checkbox_show_all_students;
+}
+
+function selectedcheckbox3(){
+  selected_checkbox_show_hide_students = $("#checkbox_show_hide_students").prop('checked');
+  return selected_checkbox_show_hide_students;
+}
+
+function selectedteacherid(){
+  selected_teacher_id = $("#teacher").val();
+  //console.debug(selected_group);
+  return selected_teacher_id;
+}
+
+
 $(function() {
+
+     $("#teacher").select2(); 
 
     $("#select_class_list_academic_period_filter").select2();
 
@@ -379,22 +496,33 @@ $(function() {
         $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
       
     });
-    
+
     //classroom_group_id = 3;
     //console.debug("selected_classroom_group_id: " + selected_classroom_group_id());
-   
-    var class_list_table = $('#class_list').DataTable( {
+
+    class_list_table = $('#class_list').DataTable( {
                       "bDestroy": true,
                       "sServerMethod": "POST",
                       "sAjaxSource": "<?php echo base_url('index.php/reports/get_class_list');?>", 
                       "fnServerParams": function ( aoData ) {
                           aoData.push( { "name": "classroom_group_id", "value": selected_classroom_group_id() });
                           aoData.push( { "name": "academic_period_id", "value": <?php echo $academic_period_id;?> });
+                          aoData.push( { "name": "checkbox_show_all_group_enrolled_students", "value": selectedcheckbox1() });
+                          aoData.push( { "name": "checkbox_show_all_students", "value": selectedcheckbox2() });
+                          aoData.push( { "name": "checkbox_show_hide_students", "value": selectedcheckbox3() });
+                          aoData.push( { "name": "teacher_id", "value": selectedteacherid() });
                       },
                       "aoColumns": [
                         { "mData": function(data, type, full) {
                                     return data.number;
                                   }},
+                        { "mData": function(data, type, full) {
+                                    if (data.hidden) {
+                                      return "Sí";
+                                    } else {
+                                      return "No";
+                                    }
+                                  }},          
                         { "mData": function(data, type, full) {
                                     photos_base_url = "<?php echo base_url('/uploads/person_photos');?>";
                                     return '<img src="' + photos_base_url + '/' + data.photo_url + '" alt="foto alumne" style="width:75px;"></img>';
@@ -403,14 +531,31 @@ $(function() {
                                     return data.sn1 + " " + data.sn2 + ", " + data.givenName + " (" + data.person_id + ")";
                                   }},
                         { "mData": "person_official_id" },
-                        { "mData": "username" },
+                        { "mData": function(data, type, full) {
+                                    if (data.multiple_usernames == "true") {
+                                      return data.username + " (Atenció: té més d'un usuari!)";
+                                    } else {
+                                      return data.username;
+                                    }
+                                  }},
                         { "mData": "initial_password" },
                         { "mData": "last_login" },
                         { "mData": "personal_email" },
                         { "mData": "corporative_email" },
                         { "mData": function(data, type, full) {
+                            var eyeiconclass = "icon-eye-close";
+                            var color_class = "purple";
+                            var title = "Amagar alumne";
+                            var action = "hide";
+                            
+                            if (data.hidden) {
+                                eyeiconclass = "icon-eye-open";
+                                color_class = "red";
+                                title = "Mostrar alumne";
+                                var action = "unhide";
+                            }
                             var url1 = "<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/');?>/" + data.person_official_id;
-                            return '<div class="hidden-phone visible-desktop action-buttons"><a class="blue" href="#"><a href="' + url1 + '" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a></a><?php if ( $user_is_admin ) : ?><a class="green" href="#" title="Modificar matrícula"><i class="icon-pencil bigger-130" title="Modificar matrícula"></i></a><?php endif;?><a person_id="' + data.person_id + '" id="hide_student_id_' + data.person_id + '" class="purple" href="#" title="Amagar alumne" onclick="event.preventDefault();click_on_hidden_student(this);"><i class="icon-eye-close bigger-130" id="icon_hide_student_id_' + data.person_id + '" title="Amagar alumne"></i></a></div><div class="hidden-desktop visible-phone"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown"><i class="icon-caret-down icon-only bigger-120"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close"><li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"><i class="icon-zoom-in bigger-120"></i>1</span></a></li><li><a href="#" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="icon-edit bigger-120"></i></span></a></li><li><a href="#" class="tooltip-error" data-rel="tooltip" title="Ocultar"><span class="red" title="Amagar alumne"><i class="icon-eye-close bigger-120" title="Amagar alumne"></i></span></a></li></ul></div></div>'
+                            return '<div class="hidden-phone visible-desktop action-buttons"><a class="blue" href="#"><a href="' + url1 + '" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a></a><?php if ( $user_is_admin ) : ?><a class="green" href="#" title="Modificar matrícula"><i class="icon-pencil bigger-130" title="Modificar matrícula"></i></a><?php endif;?><a person_id="' + data.person_id + '" id="hide_student_id_' + data.person_id + '" class="' + color_class + '" href="#"  action="' + action + '" title="' + title + '" onclick="event.preventDefault();click_on_hidden_student(this);"><i class="' + eyeiconclass + ' bigger-130" id="icon_hide_student_id_' + data.person_id + '" title="' + title + '"></i></a></div><div class="hidden-desktop visible-phone"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown"><i class="icon-caret-down icon-only bigger-120"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close"><li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"><i class="icon-zoom-in bigger-120"></i>1</span></a></li><li><a href="#" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="icon-edit bigger-120"></i></span></a></li><li><a href="#" class="tooltip-error" data-rel="tooltip" title="' + title + '"><span class="red" title="' + title + '"><i class="' + eyeiconclass + ' bigger-120" title="Amagar alumne"></i></span></a></li></ul></div></div>'
                         }},
                       ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]], 
@@ -463,6 +608,18 @@ $(function() {
                         }
             }
         }); 
+
+    $("#checkbox_show_all_group_enrolled_students").change(function() {
+      class_list_table.ajax.reload();
+    });
+
+    $("#checkbox_show_all_students").change(function() {
+      class_list_table.ajax.reload();
+    });
+
+    $("#checkbox_show_hide_students").change(function() {
+      class_list_table.ajax.reload();
+    });
 
     $("#select_class_list_classgroup_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un grup de classe", allowClear: true });
 

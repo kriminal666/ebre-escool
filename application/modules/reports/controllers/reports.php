@@ -18,6 +18,8 @@ class reports extends skeleton_main {
         parent::__construct();
         
         $this->load->library('ebre_escool_ldap');
+
+        $this->load->library('ebre_escool');
         
         // Load FPDF        
         $this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
@@ -124,6 +126,10 @@ class reports extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/css/ColVis.css'));
+
+        $header_data = $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/jquery.gritter.css'));
 
 /*        
         $header_data= $this->add_css_to_html_header_data(
@@ -243,6 +249,10 @@ class reports extends skeleton_main {
                     $header_data,
                     base_url('assets/grocery_crud/js/jquery_plugins/jquery.fancybox-1.3.4.js'));
 
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/jquery.gritter.min.js'));
+
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ebre-escool.js'));
@@ -269,10 +279,10 @@ class reports extends skeleton_main {
 	    }
 	}
 
-	function get_class_list($classroom_group_id=null,$academic_period=null) {
+	function get_class_list($classroom_group_id=null, $academic_period=null, $checkbox_show_all_group_enrolled_students=null,
+                            $checkbox_show_all_students=null, $checkbox_show_hide_students=null, $teacher_id=null) {
 
-		if (!$this->skeleton_auth->logged_in())
-	    {
+    	if (!$this->skeleton_auth->logged_in()) {
 	        //redirect them to the login page
 	        redirect($this->skeleton_auth->login_page, 'refresh');
 	    }
@@ -293,11 +303,52 @@ class reports extends skeleton_main {
 			}	
 		} 
 
+        if ($checkbox_show_all_group_enrolled_students == null) {
+            if(isset($_POST['checkbox_show_all_group_enrolled_students'])) {
+                $checkbox_show_all_group_enrolled_students = $_POST['checkbox_show_all_group_enrolled_students'];
+            } elseif (isset($_GET['checkbox_show_all_group_enrolled_students'])) {
+                $checkbox_show_all_group_enrolled_students = $_GET['checkbox_show_all_group_enrolled_students'];
+            }
+        } 
+
+        if ($checkbox_show_all_students == null) {
+            if(isset($_POST['checkbox_show_all_students'])) {
+                $checkbox_show_all_students = $_POST['checkbox_show_all_students'];
+            } elseif (isset($_GET['checkbox_show_all_students'])) {
+                $checkbox_show_all_students = $_GET['checkbox_show_all_students'];
+            }
+        } 
+
+        if ($checkbox_show_hide_students == null) {
+            if(isset($_POST['checkbox_show_hide_students'])) {
+                $checkbox_show_hide_students = $_POST['checkbox_show_hide_students'];
+            } elseif (isset($_GET['checkbox_show_hide_students'])) {
+                $checkbox_show_hide_students = $_GET['checkbox_show_hide_students'];
+            }
+        }
+
+        if ($teacher_id == null) {
+            if(isset($_POST['teacher_id'])) {
+                $teacher_id = $_POST['teacher_id'];
+            } elseif (isset($_GET['teacher_id'])) {
+                $teacher_id = $_GET['teacher_id'];
+            }
+        } 
+
+        //DEBUG
+        //echo "classroom_group_id 2: " . $classroom_group_id . " || ";
+        //echo "academic_period 2: " . $academic_period . " || ";
+        //echo "checkbox_show_all_group_enrolled_students 2: " . $checkbox_show_all_group_enrolled_students . " || ";
+        //echo "checkbox_show_all_students 2: " . $checkbox_show_all_students . " || ";
+        //echo "checkbox_show_hide_students 2: " . $checkbox_show_hide_students . " || ";
+        //echo "teacher_id 2: " . $teacher_id . " || ";
+
 		$this->load->model('reports_model');
 
 		$class_list = array();
 		if ($classroom_group_id != null &&  $academic_period != null) {
-			$class_list = $this->reports_model->get_class_list($classroom_group_id,$academic_period);    	
+			$class_list = $this->reports_model->get_class_list($classroom_group_id,$academic_period,
+                $checkbox_show_all_group_enrolled_students,$checkbox_show_all_students,$checkbox_show_hide_students,$teacher_id);    	
 		}
 	    
 	    if (is_array($class_list)) {
@@ -322,7 +373,84 @@ class reports extends skeleton_main {
 	    
 	}
 
-	function mentoring_classlists($academic_period_id = null,$mentor_id = null, $classroom_group_id = null){
+    function hide_unhide_student_on_classroom_group( $person_id = null, $classroom_group_id = null, $teacher_id = null, $academic_period_id = null, $action = null) {
+
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $result = new stdClass();
+        $result->result = false;
+        $result->message = "No enough values especified!";
+
+        if ($person_id == null) {
+            if(isset($_POST['person_id'])) {
+                $person_id = $_POST['person_id'];
+            } elseif (isset($_GET['person_id'])) {
+                $person_id = $_GET['person_id'];
+            } else {
+                return $result;
+            }
+        } 
+
+        if ($classroom_group_id == null) {
+            if(isset($_POST['classroom_group_id'])) {
+                $classroom_group_id = $_POST['classroom_group_id'];
+            } elseif (isset($_GET['classroom_group_id'])) {
+                $classroom_group_id = $_GET['classroom_group_id'];
+            } else {
+                return $result;
+            }   
+        } 
+
+        if ($teacher_id == null) {
+            if(isset($_POST['teacher_id'])) {
+                $teacher_id = $_POST['teacher_id'];
+            } elseif (isset($_GET['teacher_id'])) {
+                $teacher_id = $_GET['teacher_id'];
+            } else {
+                return $result;
+            }
+        } 
+
+        if ($academic_period_id == null) {
+            if(isset($_POST['academic_period_id'])) {
+                $academic_period_id = $_POST['academic_period_id'];
+            } elseif (isset($_GET['academic_period_id'])) {
+                $academic_period_id = $_GET['academic_period_id'];
+            } else {
+                return $result;
+            }
+        } 
+
+        if ($action == null) {
+            if(isset($_POST['action'])) {
+                $action = $_POST['action'];
+            } elseif (isset($_GET['action'])) {
+                $action = $_GET['action'];
+            } else {
+                return $result;
+            }
+        } 
+
+        $this->load->model('reports_model');
+        if ($action == "hide") {
+            $result = $this->reports_model->hide_student_on_classroom_group($person_id , $classroom_group_id, $teacher_id,$academic_period_id);
+        } elseif ($action == "unhide") {
+            $result = $this->reports_model->unhide_student_on_classroom_group($person_id , $classroom_group_id, $teacher_id,$academic_period_id);
+        } else {
+            $result->result = false;
+            $result->message = "Action incorrect!";
+            return $result;
+        }
+
+        print_r(json_encode($result));
+    }
+
+
+
+	function mentoring_classlists($teacher_id = null,$academic_period_id = null,$mentor_id = null, $classroom_group_id = null){
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
 		$active_menu['submenu1']='#mentoring_classlists';
@@ -415,8 +543,37 @@ class reports extends skeleton_main {
         $data['mentors'] = $mentors;
         $data['mentor_id'] = $mentor_id;
 
-        $data['user_is_admin'] = $this->session->userdata('is_admin');
-		
+        $user_is_admin = $this->ebre_escool->user_is_admin();
+        $data['user_is_admin'] = $user_is_admin;
+
+        if ($user_is_admin) {
+            //Load teachers from Model
+            $teachers_array = $this->reports_model->get_all_teachers_ids_and_names();
+
+            $data['teachers'] = $teachers_array;
+        } else {
+            //Show Only one teacher
+            $teachers_array = $this->reports_model->get_teacher_ids_and_names($teacher_id);
+            $data['teachers'] = $teachers_array;
+        }
+
+        $person_id=$this->session->userdata('person_id');
+        
+        //$user_teacher_code = $this->reports_model->get_teacher_code_by_personid($person_id);
+        
+        $user_teacher_id = $this->reports_model->get_teacher_id_by_personid($person_id);
+
+        if ($teacher_id == null) {
+            $teacher_id = $user_teacher_id;
+        } else {
+            if (!$user_is_admin) { 
+                $teacher_id = $user_teacher_id; 
+            }
+        }
+
+        //$data['default_teacher_code'] = $teacher_code;
+        $data['default_teacher'] = $teacher_id;
+
 		$this->load->view('mentoring_classlists',$data);	
 
 		$this->_load_body_footer();		

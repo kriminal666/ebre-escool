@@ -90,7 +90,7 @@
 
                       <li class="dd-item dd2-item" data-id="15">
                         <div class="dd-handle dd2-handle">
-                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_hide_students"><span class="lbl">&nbsp;</span></label>
+                          <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_hidden_students"><span class="lbl">&nbsp;</span></label>
                         </div>
                         <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Mostrar alumnes amagats</a></div>
 
@@ -869,7 +869,7 @@ $.fn.dataTableExt.afnFiltering.push(
         var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
         
         //TODO
-        var checkbox_hide_students_selected = $("#checkbox_hide_students").prop('checked');
+        var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
         
         //GET COLUMN TYPE
         
@@ -909,7 +909,7 @@ jQuery(function($) {
 
         var checkbox_show_all_group_enrolled_students_selected = $("#checkbox_show_all_group_enrolled_students").prop('checked');
         var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
-        var checkbox_hide_students_selected = $("#checkbox_hide_students").prop('checked');
+        var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
 
         if (checkbox_show_all_students_selected) {
           if (checkbox_show_all_group_enrolled_students_selected) {
@@ -926,7 +926,7 @@ jQuery(function($) {
         
         //TODO: hidden students
 
-        if (checkbox_hide_students_selected) {
+        if (checkbox_show_hidden_students_selected) {
 
         }
 
@@ -967,12 +967,10 @@ jQuery(function($) {
           oTable1.fnDraw();
         });
 
-        $("#checkbox_hide_students").change(function() {
+        $("#checkbox_show_all_students_selected").change(function() {
           oTable1.fnDraw();
         });
 
-        var checkbox_show_all_students_selected = $("#").prop('checked');
-        var checkbox_hide_students_selected = $("#").prop('checked');
 
   $('.date-picker').datepicker({
           format: "dd/mm/yyyy",

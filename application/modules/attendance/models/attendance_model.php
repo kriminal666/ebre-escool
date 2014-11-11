@@ -1518,7 +1518,7 @@ function get_current_academic_period() {
 		WHERE `teacher_academic_periods_teacher_id` = '71' AND `teacher_academic_periods_academic_period_id` = '5' 
 		*/
 		
-        $this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id');
+        $this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id,teacher.teacher_id');
         $this->db->from('teacher_academic_periods');
         $this->db->join('teacher', 'teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id');
         $this->db->join('person', 'person.person_id = teacher.teacher_person_id');
@@ -1533,7 +1533,7 @@ function get_current_academic_period() {
 			$teachers_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
+   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'] . " (" . $row['teacher_id'] . ")";
 			}
 			return $teachers_array;
 		}			
@@ -1553,7 +1553,7 @@ function get_current_academic_period() {
 		WHERE teacher_academic_periods_academic_period_id=5
 
 		*/
-		$this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id');
+		$this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id,teacher.teacher_id');
 		$this->db->from('teacher_academic_periods');        
 		$this->db->join('teacher', 'teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id');
 		$this->db->join('person', 'person.person_id = teacher.teacher_person_id');
@@ -1567,7 +1567,7 @@ function get_current_academic_period() {
 			$teachers_array = array();
 
 			foreach ($query->result_array() as $row)	{
-   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'];
+   				$teachers_array[$row['teacher_academic_periods_code']] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'] . " (". $row['teacher_id'].")";
 			}
 			return $teachers_array;
 		}			

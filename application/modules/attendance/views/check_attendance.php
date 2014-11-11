@@ -75,7 +75,9 @@
 </div>
   <div class="span4"><a id="link_to_teacher_timetable" href="<?php echo base_url('/index.php/timetables/allteacherstimetables');?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar"></i> Horari</a></div>
 </div>
-  <div style="height: 10px;"></div>
+
+<div style="height: 10px;"></div>
+
 <center>
   <div class="input-append date">
     	<input type="text" class="span2" value="<?php echo $check_attendance_date;?>"/><span class="add-on"><i class="icon-calendar"></i></span>
