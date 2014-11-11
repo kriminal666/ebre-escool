@@ -125,7 +125,7 @@ class reports_model  extends CI_Model  {
 		$query = $this->db->get();
 		//echo $this->db->last_query();
 
-		if ($query->num_rows() > 1){
+		if ($query->num_rows() > 0){
 			$hidden_students = array();
 			foreach ($query->result() as $row)    {
                 $hidden_students[]= $row->hidden_student_person_id;
@@ -1023,6 +1023,8 @@ class reports_model  extends CI_Model  {
            'hidden_student_lastupdateUserId' => $this->session->userdata("user_id"),
 		);
 
+		$action = "";
+
 		//ONLY INSERT IF NOT EXISTS. IF EXISTS UPDATE!
 		$hidden_student_already_exists = false;
 		$hidden_student_already_exists = $this->check_if_hidden_student_already_exists($person_id , $classroom_group_id, $teacher_id,$academic_period_id);
@@ -1030,17 +1032,20 @@ class reports_model  extends CI_Model  {
 			//UPDATE
 			$this->db->where('hidden_student_id', $hidden_student_already_exists);
 			$this->db->update('hidden_student', $data);
+			//echo $this->db->last_query()."<br/>";
+			$action = "UPDATE";
 
 		} else {
 			//INSERT
 			$this->db->insert('hidden_student', $data);
 			//echo $this->db->last_query()."<br/>";
+			$action = "INSERT";
 		}
 
 		if ($this->db->affected_rows() == 1) {
 			$result = new stdClass();
 		    $result->result = true;
-		    $result->message = "Person id " . $person_id  . " hidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id;
+		    $result->message = $action . ". Person id " . $person_id  . " hidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id;
 			return $result;
 		} else {
 			$result = new stdClass();

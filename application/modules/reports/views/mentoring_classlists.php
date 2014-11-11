@@ -327,7 +327,7 @@ function click_on_hidden_student(element) {
   //console.debug("teacher_id: " + teacher_id);
   //console.debug("academic_period_id: " + academic_period_id);
 
-  console.debug("action: " + action);
+  //console.debug("action: " + action);
 
   //AJAX: hide/unhide student on database:
   //AJAX TO HIDE STUDENT
@@ -386,19 +386,6 @@ function click_on_hidden_student(element) {
       }
 
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //RELOAD DATATABLES!
   class_list_table.ajax.reload();
