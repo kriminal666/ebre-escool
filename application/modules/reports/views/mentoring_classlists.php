@@ -508,6 +508,8 @@ $(function() {
                           number_of_students_text = " | | (" + students_shown + " )";
 
                           $("#number_of_students").html(number_of_students_text);
+
+                          $('.image-thumbnail').fancybox();
                       },
                       "aoColumns": [
                         { "mData": function(data, type, full) {
@@ -532,7 +534,8 @@ $(function() {
                                   }},          
                         { "mData": function(data, type, full) {
                                     photos_base_url = "<?php echo base_url('/uploads/person_photos');?>";
-                                    return '<img src="' + photos_base_url + '/' + data.photo_url + '" alt="foto alumne" style="width:75px;"></img>';
+                                    student_full_name = data.sn1 + " " + data.sn2 + ", " + data.givenName + " (" + data.person_id + ")";
+                                    return '<a class="image-thumbnail" href="' + photos_base_url + '/' + data.photo_url + '"><img data-rel="tooltip" class="msg-photo" alt="'+ student_full_name +'" title="'+ student_full_name +'" src="' + photos_base_url + '/' + data.photo_url + '" alt="foto alumne" style="width:75px;"></img></a>';
                                   }},
                         { "mData": function(data, type, full) {
                                     return data.sn1 + " " + data.sn2 + ", " + data.givenName + " (" + data.person_id + ")";
