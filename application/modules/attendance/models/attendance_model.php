@@ -2834,10 +2834,14 @@ function get_current_academic_period() {
 	}
 
 	function getAllIncidentsByDateAndPersonIdArray($array_student_person_ids,$date) {
-
+		
+		//DEBUG
+		//echo "array_student_person_ids: " . $array_student_person_ids . "<br/>";
+		//echo "date: " . $date . "<br/>";
 		if ( ! (is_array($array_student_person_ids) && ( count($array_student_person_ids) > 0 ) )) {
 			return false;
 		}
+
 
 		$incident_type_codes_by_incident_type_ids = $this->get_incident_type_codes_by_incident_type_ids();
 

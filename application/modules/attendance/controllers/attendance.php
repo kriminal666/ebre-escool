@@ -1117,6 +1117,8 @@ class attendance extends skeleton_main {
 			if ( is_array($all_students_in_group) && ( count($all_students_in_group) > 0  ) ) {
 				foreach($all_students_in_group as $student)	{
 
+					$array_student_person_ids[] = $student->person_id;
+
 					if ($student->photo_url != "") {
 						$path = "/usr/share/ebre-escool/uploads/person_photos/" . $student->photo_url;
 						if (file_exists ($path)) {
