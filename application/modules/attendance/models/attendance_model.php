@@ -2919,6 +2919,9 @@ function get_current_academic_period() {
 	*/
 
 	function incidence_exists ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
+
+		$incident_type_id = $this->get_incident_type_id_by_incident_type_code($absence_type);
+	
 		/*
 		SELECT incident_id,incident_type FROM incident 
 		WHERE incident_student_id= AND incident_time_slot_id= AND incident_day AND incident_study_submodule_id = 
@@ -2941,7 +2944,7 @@ function get_current_academic_period() {
 			//Incident already exists
 			$row = $query->row();
 
-			if ($absence_type == $row->incident_type) {
+			if ($incident_type_id == $row->incident_type) {
 				$result->code = 3;
 				$result->incident_id = $row->incident_id;
 				return $result;
