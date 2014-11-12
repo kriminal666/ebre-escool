@@ -323,8 +323,99 @@ class attendance_model  extends CI_Model  {
 			
 	}
 
+	function get_classroom_group_hidden_students($classroom_group_id,$teacher_id=null,$academic_period_id=null) {
 
-	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$academic_period_id=null) {
+		$person_id = $this->session->userdata('person_id');
+		$user_is_a_teacher = $this->is_user_a_teacher($person_id);	
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
+			//TODO: Return not allowed page!
+			echo "Access Not Allowed!";
+			return false;
+		}	
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		if ($teacher_id == null) {
+			if ($user_is_a_teacher) {
+				$teacher_id = $this->session->userdata('teacher_id');
+			} else {
+				return false;
+			}
+		}
+
+		//DEBUG
+		//echo "classroom_group_id: " . $classroom_group_id . " || " . "teacher_id: " . $teacher_id . " || " . " academic_period_id: " . $academic_period_id;
+
+		/*
+		SELECT `hidden_student_person_id` 
+		FROM `hidden_student` 
+		WHERE `hidden_student_teacher_id` = 127 AND `hidden_student_academic_period_id` = 5 AND `hidden_student_classroom_group_id` = 26
+		*/
+
+		$this->db->select('hidden_student_person_id');
+		$this->db->from('hidden_student');
+		$this->db->where('hidden_student_teacher_id',$teacher_id);
+		$this->db->where('hidden_student_academic_period_id',$academic_period_id);
+		$this->db->where('hidden_student_classroom_group_id',$classroom_group_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0){
+			$hidden_students = array();
+			foreach ($query->result() as $row)    {
+                $hidden_students[]= $row->hidden_student_person_id;
+            }
+            return $hidden_students;
+		}	
+		else {
+			return array();
+		}
+
+	}
+
+	function get_hidden_students($classroom_group_id,$teacher_id=null,$academic_period_id=null) {
+
+		$person_id = $this->session->userdata('person_id');
+		$user_is_a_teacher = $this->is_user_a_teacher($person_id);	
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
+			//TODO: Return not allowed page!
+			echo "Access Not Allowed!";
+			return false;
+		}	
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		if ($teacher_id == null) {
+			if ($user_is_a_teacher) {
+				$teacher_id = $this->session->userdata('teacher_id');
+			} else {
+				return false;
+			}
+		}
+		
+		$students_hidden_on_group = $this->get_classroom_group_hidden_students($classroom_group_id,$teacher_id,$academic_period_id);
+
+		return $students_hidden_on_group;
+	}
+
+	function hide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day) {
+
+	}
+
+	function unhide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day) {
+
+	}
+
+	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$academic_period_id=null,$checkbox_show_hide_students=null,$teacher_id = null) {
 		
 		if ($academic_period_id==null) {
 			$academic_period = $this->get_current_academic_period()->shortname;
@@ -350,6 +441,14 @@ class attendance_model  extends CI_Model  {
 
 		//GET SIBLINGS CLASSROOM GROUPS --> AVOID INCLUDIN STUDENTS OF THIS GROUP
 		$classroom_group_siblings = $this->get_classroom_group_siblings($class_group_id);
+
+		//GET HIDDEN STUDENTS
+		$hidden_students = array();
+		$hidden_students = $this->get_hidden_students($class_group_id,$teacher_id);	
+
+		//DEBUG
+		//print_r($hidden_students);
+
 
 		//DEBUG
 		//print_r($classroom_group_siblings);
@@ -377,8 +476,25 @@ class attendance_model  extends CI_Model  {
 				if ( ! ( array_key_exists($row['enrollment_group_id'], $classroom_group_siblings) ) ) {
 					//$student_info_array[] = $row;
 	   				$student = new stdClass();
+
+	   				$person_id = $row['person_id'];
+
+	   				$show_hidden_students = false;
+					if ($checkbox_show_hide_students != null) {
+						if ($checkbox_show_hide_students=="false") {
+							if (is_array($hidden_students)) {
+								if (in_array($person_id,$hidden_students)) {
+									continue;
+								}	
+							}		
+						} else {
+							$show_hidden_students = true;
+						} 
+					} else {
+						$show_hidden_students = false;
+					}
 					
-					$student->person_id = $row['person_id'];
+					$student->person_id = $person_id;
 					$student->sn1 = $row['person_sn1'];
 					$student->sn2 = $row['person_sn2'];
 					$student->givenName = $row['person_givenName'];
@@ -389,6 +505,12 @@ class attendance_model  extends CI_Model  {
 					$student->person_official_id = $row['person_official_id'];
 					$student->enrollment_id = $row['enrollment_id'];
 
+					$student->hidden = false;					
+					if (is_array($hidden_students)) {
+						if (in_array($person_id,$hidden_students)) {
+							$student->hidden = true;
+						}	
+					}							
 					
 					//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
 					

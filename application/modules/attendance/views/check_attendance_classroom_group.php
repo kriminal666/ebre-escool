@@ -78,21 +78,21 @@
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="#">Mostrar els estudiants no matrículats al grup però amb UFS/Mòduls soltes del grup</a></div>
+                        <div class="dd2-content">Mostrar els estudiants no matrículats al grup però amb UFS/Mòduls soltes del grup</div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="13">
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_all_group_enrolled_students" checked="true"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_list_report'); ?>">Mostrar els alumnes matrículats al grup</a></div>
+                        <div class="dd2-content">Mostrar els alumnes matrículats al grup</div>
                       </li>
 
                       <li class="dd-item dd2-item" data-id="15">
                         <div class="dd-handle dd2-handle">
                           <label><input class="ace" type="checkbox" name="form-field-checkbox" id="checkbox_show_hidden_students"><span class="lbl">&nbsp;</span></label>
                         </div>
-                        <div class="dd2-content"><a href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report'); ?>">Mostrar alumnes amagats</a></div>
+                        <div class="dd2-content">Mostrar alumnes amagats</div>
 
                       </li>
 
@@ -414,8 +414,9 @@
                   <thead> 
                     <tr>
                       <th>Foto</th>
-                      <th>#</th>
+                      <th title="Person Id">#</th>
                       <th title="Tipus">T</th>
+                      <th title="Ocult">O</th>
                       <th>Primer cognom</th>
                       <th>Segon cognom</th>
                       <th>Nom</th>
@@ -492,6 +493,9 @@
                       </td>
                       <td>
                         <?php if ($student->official == true ) : ?><span title="Alumne matrículat oficialment al grup">*</span><?php else: ?><span title="Alumne matrículat de UFs/UDs soltes o MPs/Crèdits solts">#</span><?php endif; ?>
+                      </td>
+                      <td>
+                        <?php if ($student->hidden == true ) : ?>Sí<?php else: ?>No<?php endif;?>
                       </td>
                       <td>
                         <?php echo $student->sn1;?>
@@ -624,10 +628,16 @@
                             <i class="icon-pencil bigger-130"></i>
                           </a>
                           <?php endif;?>
-
-
-                          <a class="red" href="#">
-                            <i class="icon-eye-close bigger-130"></i>
+                            <?php if ($student->hidden == true ) : ?>
+                              <a class="red" href="#" title="Mostrar alumne" action="unhide" day="<?php echo $day_of_week_number;?>" academic_period_id="<?php echo $academic_period_id;?>" teacher="<?php echo $teacher_id;?>" classroomgroupid="<?php echo $selected_classroom_group_key;?>" person_id="<?php echo $student->person_id;?>" id="hide_student_id_<?php echo $student->person_id;?>" onclick="event.preventDefault();click_on_hidden_student(this);">
+                                <i class="icon-eye-open bigger-130"></i>
+                              </a>  
+                            <?php else: ?>
+                              <a class="purple" href="#" action="hide" day="<?php echo $day_of_week_number;?>" academic_period_id="<?php echo $academic_period_id;?>" teacher="<?php echo $teacher_id;?>" classroomgroupid="<?php echo $selected_classroom_group_key;?>" person_id="<?php echo $student->person_id;?>" id="hide_student_id_<?php echo $student->person_id;?>" onclick="event.preventDefault();click_on_hidden_student(this);">
+                                <i class="icon-eye-close bigger-130" title="Amagar alumne"></i>
+                              </a> 
+                            <?php endif;?>
+                            
                           </a>
                         </div>
 
@@ -656,7 +666,7 @@
 
                               <li>
                                 <a href="#" class="tooltip-error" data-rel="tooltip" title="Ocultar">
-                                  <span class="red">
+                                  <span class="red">BB
                                     <i class="icon-eye-close bigger-120"></i>
                                   </span>
                                 </a>
@@ -676,6 +686,88 @@
 </div>
 </div>
 <script type="text/javascript">
+
+var oTable1;
+
+function click_on_hidden_student(element) {
+  var person_id = element.getAttribute("person_id");
+  var classroom_group_id = element.getAttribute("classroomgroupid");
+  var teacher_id = element.getAttribute("teacher");
+  var academic_period_id = element.getAttribute("academic_period_id");
+  var action = element.getAttribute("action");
+  var day = element.getAttribute("day");
+
+  //DEBUG:
+  console.debug("person_id: " + person_id);
+  console.debug("classroom_group_id: " + classroom_group_id);
+  console.debug("teacher_id: " + teacher_id);
+  console.debug("academic_period_id: " + academic_period_id);
+  console.debug("action: " + action);
+  console.debug("day: " + day);
+
+  //AJAX: hide/unhide student on database:
+  //AJAX TO HIDE STUDENT
+  $.ajax({
+      url:'<?php echo base_url("/index.php/reports/hide_unhide_student_on_classroom_group_and_day");?>',
+      type: 'post',
+      data: {
+          person_id : person_id,
+          classroom_group_id : classroom_group_id,
+          teacher_id : teacher_id,
+          academic_period_id : academic_period_id,
+          action : action,
+          day : day,
+      },
+      datatype: 'json',
+      statusCode: {
+        404: function() {
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/reports/hide_unhide_student_on_classroom_group_and_day ' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        },
+        500: function() {
+          $("#response").html('A server-side error has occurred.');
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/reports/hide_unhide_student_on_classroom_group_and_day' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        }
+      },
+      error: function() {
+        $.gritter.add({
+            title: 'Error!',
+            text: 'Ha succeït un error!' ,
+            class_name: 'gritter-error gritter-center'
+          });
+      },
+    }).done(function(data){
+      
+      var all_data = $.parseJSON(data);
+
+      //console.debug (all_data);
+
+      result = all_data.result;
+      result_message = all_data.message;
+
+      if (result) {
+        console.debug(result_message);
+      } else {
+        $.gritter.add({
+          title: 'Error amagant la persona a la base de dades!',
+          text: 'No s\'ha pogut amagar la persona a la base de dades. Missatge d\'error:  ' + result_message ,
+          class_name: 'gritter-error'
+        });
+      }
+
+    });
+
+  //RELOAD DATATABLES!
+  oTable1.fnDraw();
+  
+}
 
 function study_module_onclick(element) {
     id = element.id;
@@ -867,27 +959,49 @@ $.fn.dataTableExt.afnFiltering.push(
 
         var checkbox_show_all_group_enrolled_students_selected = $("#checkbox_show_all_group_enrolled_students").prop('checked');
         var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
-        
-        //TODO
         var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
+
+        console.debug("checkbox_show_all_group_enrolled_students_selected: " + checkbox_show_all_group_enrolled_students_selected);
+        console.debug("checkbox_show_all_students_selected: " + checkbox_show_all_students_selected);
+        console.debug("checkbox_show_hidden_students_selected: " + checkbox_show_hidden_students_selected);
         
         //GET COLUMN TYPE
         
         var student_type = aData[2];
+        var student_hidden = aData[3];
+        var sn1 = aData[4];
+        var sn2 = aData[5];
+        var givenName = aData[6];
+
+        console.debug("student: " + sn1 + " " + sn2 + ", " + givenName);
+        console.debug("student_type: " + student_type);
+        console.debug("student_hidden: " + student_hidden);
 
         student_type_text = jQuery(student_type).text();
 
-        //console.debug("student_type: " + student_type_text);
+        console.debug("student_type_text: " + student_type_text);
         
         if (checkbox_show_all_group_enrolled_students_selected) {
           if (student_type_text == "*") {
-            return true;
+            if (checkbox_show_hidden_students_selected) {
+              return true;
+            } else {
+              if (student_hidden == "No") {
+                return true;
+              }
+            }
           }
         }
 
         if (checkbox_show_all_students_selected) {
           if (student_type_text == "#") {
-            return true;
+            if (checkbox_show_hidden_students_selected) {
+              return true;
+            } else {
+              if (student_hidden == "No") {
+                return true;
+              }
+            }
           }
         }
 
@@ -909,30 +1023,13 @@ jQuery(function($) {
 
         var checkbox_show_all_group_enrolled_students_selected = $("#checkbox_show_all_group_enrolled_students").prop('checked');
         var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
-        var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
-
-        if (checkbox_show_all_students_selected) {
-          if (checkbox_show_all_group_enrolled_students_selected) {
-
-          } else {
-
-          }
-
-        } else { 
-          if (checkbox_show_all_group_enrolled_students_selected) {
-
-          }
-        }
         
-        //TODO: hidden students
-
-        if (checkbox_show_hidden_students_selected) {
-
-        }
+        //By default not show hidden usersº
+        //var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
 
         //$(".check_attendance_select2").select2({placeholder: "Select report type", allowClear: true});
         
-        var oTable1 = $('#students_table').DataTable( {
+        oTable1 = $('#students_table').DataTable( {
           "oLanguage": {
                         "sProcessing":   "Processant...",
                         "sLengthMenu":   "Mostra _MENU_ registres",
@@ -952,7 +1049,7 @@ jQuery(function($) {
             },
         "bPaginate": false,
         "aoColumns": [
-            { "bSortable": false },null,{ "sType": "html","type": "html"},null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
+            { "bSortable": false },null,{ "sType": "html","type": "html"},null,null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
           { "bSortable": false }
         ] } );
 
@@ -968,6 +1065,10 @@ jQuery(function($) {
         });
 
         $("#checkbox_show_all_students_selected").change(function() {
+          oTable1.fnDraw();
+        });
+
+        $("#checkbox_show_hidden_students").change(function() {
           oTable1.fnDraw();
         });
 

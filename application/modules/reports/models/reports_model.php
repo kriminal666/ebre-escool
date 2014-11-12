@@ -477,8 +477,8 @@ class reports_model  extends CI_Model  {
 					$student_info_array[$i]['corporative_email'] = $row['person_email'];
 					$student_info_array[$i]['photo_url'] = $row['person_photo'];
 					$student_info_array[$i]['person_official_id'] = $row['person_official_id'];	
+					
 					$student_info_array[$i]['hidden'] = false;
-
 					if ($show_hidden_students) {
 						if (is_array($hidden_students)) {
 							if (in_array($id,$hidden_students)) {

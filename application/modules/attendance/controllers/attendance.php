@@ -1623,6 +1623,78 @@ class attendance extends skeleton_main {
 
 
 
+public function hide_unhide_student_on_classroom_group_and_day() {
+
+		/*
+		  person_id : person_id,
+	      classroom_group_id : classroom_group_id,
+	      teacher_id : teacher_id,
+	      academic_period_id : academic_period_id,
+	      action : action,
+	      day : day,
+		*/
+
+        $result = new stdClass();
+        $result->result = false;
+        $result->message = "No enough values especified!";
+
+		$error = false;
+		$person_id = "";
+	    if(isset($_POST['person_id'])) {
+        	$person_id = $_POST['person_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $classroom_group_id = "";
+	    if(isset($_POST['classroom_group_id'])) {
+        	$classroom_group_id = $_POST['classroom_group_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $teacher_id = "";
+	    if(isset($_POST['teacher_id'])) {
+        	$teacher_id = $_POST['teacher_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $academic_period_id = "";
+	    if(isset($_POST['academic_period_id'])) {
+        	$academic_period_id = $_POST['academic_period_id'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $action = "";
+	    if(isset($_POST['action'])) {
+        	$action = $_POST['action'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    $day = "";
+	    if(isset($_POST['day'])) {
+        	$day = $_POST['day'];
+	    } else {
+	    	$error = true;
+	    }
+
+	    if (!$error) {
+	    	if ($action =="hide") {
+	    		$result = $this->attendance_model->hide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day);
+	    	} elseif ($action == "unhide") {
+	    		$result = $this->attendance_model->unhide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day);
+	    	} else {
+	    		$result->result = false;
+        		$result->message = "No valid action specified!";
+	    	}
+	    		
+	    }
+
+	    print_r(json_encode($result));
+}
 
 
 
