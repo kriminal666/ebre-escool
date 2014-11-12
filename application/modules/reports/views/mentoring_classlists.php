@@ -271,7 +271,7 @@
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
           <tr>
-            <td colspan="15" style="text-align: center;"> <h4>
+            <td colspan="12" style="text-align: center;"> <h4>
               <a href="#">
                 <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
               </a>
@@ -282,11 +282,14 @@
             <td colspan="2" style="text-align: left;"> <div id="selected_classgroup_name"></div> </td>
             <td style="text-align: right;">Codi grup:</td>
             <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
+            <td style="text-align: left;"> # alumnes: </div> </td>
+            <td style="text-align: right;"> <div id="number_of_students"></div></div> </td>
             <td style="text-align: right;">Tutor:</td>
-            <td colspan="4" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
+            <td colspan="3" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
           </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
+             <th title="<?php echo lang('mentoring_classlists_type_full');?>"><?php echo lang('mentoring_classlists_type');?></th>
              <th><?php echo lang('mentoring_classlists_hidden')?></th>
              <th><?php echo lang('mentoring_classlists_photo')?></th>
              <th><?php echo lang('mentoring_classlists_student')?></th>
@@ -397,9 +400,9 @@ var group_names = [];
 
 <?php if(is_array ($all_classgroups)) : ?>
   <?php foreach ($all_classgroups as $classgroup_key => $classgroup_value) : ?>
-  mentor_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->mentor_code . ' - ' . $classgroup_value->mentor_sn1 . ' ' . $classgroup_value->mentor_sn2 . ', ' . $classgroup_value->mentor_givenname ;?>";
-  group_codes[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->code;?>";
-  group_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->course_name;?>";
+  mentor_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->mentor_code . ' - ' . $classgroup_value->mentor_sn1 . ' ' . $classgroup_value->mentor_sn2 . ', ' . $classgroup_value->mentor_givenname . ' (' . $classgroup_value->mentor_id . ')' ;?>";
+  group_codes[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->code . ' (' . $classgroup_value->id . ')';?>";
+  group_names[<?php echo $classgroup_key ;?>] = "<?php echo $classgroup_value->course_name . ' (' . $classgroup_value->course_id . ')';?>";
   <?php endforeach; ?>
 <?php endif; ?>  
 
@@ -498,10 +501,28 @@ $(function() {
                           aoData.push( { "name": "checkbox_show_hide_students", "value": selectedcheckbox3() });
                           aoData.push( { "name": "teacher_id", "value": selectedteacherid() });
                       },
+                      "fnDrawCallback": function () {
+                          students_shown = this.fnSettings().fnRecordsTotal();
+                          //console.debug( students_shown);
+
+                          number_of_students_text = " | | (" + students_shown + " )";
+
+                          $("#number_of_students").html(number_of_students_text);
+                      },
                       "aoColumns": [
                         { "mData": function(data, type, full) {
                                     return data.number;
                                   }},
+                        { "mData": function(data, type, full) {
+                                  //DEBUG:
+                                  //console.debug(data.sn1 + " " + data.sn2 + ", " + data.givenName + " (" + data.person_id + ") type:" + data.type);
+                                  if (data.type == "*") {
+                                      return '<span title="Alumne matrículat oficialment al grup">*</span>';
+                                  } else if (data.type == "#")  {
+                                      return '<span title="Alumne matrículat de MPs/Crèdits o UFs/UDs soltes">#</span>';
+                                  }
+                                    
+                                  }},          
                         { "mData": function(data, type, full) {
                                     if (data.hidden) {
                                       return "Sí";

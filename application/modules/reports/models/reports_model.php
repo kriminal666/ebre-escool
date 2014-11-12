@@ -429,8 +429,6 @@ class reports_model  extends CI_Model  {
 			$this->db->order_by('person.person_sn1');
 			$this->db->order_by('person.person_sn2');
 			$this->db->order_by('person.person_givenName');
-			
-
 
 			$query = $this->db->get();
 			//echo $this->db->last_query()."<br/>";
@@ -450,7 +448,7 @@ class reports_model  extends CI_Model  {
 						continue;
 					}
 				}*/
-				
+
 				$id = $row['person_id'];		
 
 
@@ -500,6 +498,11 @@ class reports_model  extends CI_Model  {
 						}							
 					}
 
+					$student_info_array[$i]['type'] = "#";
+					if ($row['enrollment_group_id'] == $classroom_group_id) {
+						$student_info_array[$i]['type'] = "*";
+					}
+					
 					$students_ids_to_i_array[$id]=$i;
 					$i++;
 				}

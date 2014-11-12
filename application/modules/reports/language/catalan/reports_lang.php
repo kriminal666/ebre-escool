@@ -17,6 +17,8 @@ $lang['report']   = 'Informe';
 $lang['reports']   = 'Informes';
 
 $lang['mentoring_classlists_num']   = '#';
+$lang['mentoring_classlists_type']   = 'T';
+$lang['mentoring_classlists_type_full']   = 'Tipus';
 $lang['mentoring_classlists_hidden']   = 'Ocult?';
 $lang['mentoring_classlists_photo']   = 'Foto';
 $lang['mentoring_classlists_student']   = 'Alumne';
