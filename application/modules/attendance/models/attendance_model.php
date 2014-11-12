@@ -14,6 +14,8 @@ class attendance_model  extends CI_Model  {
     {
         parent::__construct();
         $this->load->database();
+
+        $this->load->library('ebre_escool');
     }
 
     function get_primary_key($table_name) {
@@ -323,6 +325,62 @@ class attendance_model  extends CI_Model  {
 			
 	}
 
+	function get_classroom_group_and_day_hidden_students($classroom_group_id, $teacher_id=null, $day, $academic_period_id=null) {
+
+		$person_id = $this->session->userdata('person_id');
+		$user_is_a_teacher = $this->is_user_a_teacher($person_id);	
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
+			//TODO: Return not allowed page!
+			echo "Access Not Allowed!";
+			return false;
+		}	
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		if ($teacher_id == null) {
+			if ($user_is_a_teacher) {
+				$teacher_id = $this->session->userdata('teacher_id');
+			} else {
+				return false;
+			}
+		}
+
+		//DEBUG
+		//echo "classroom_group_id: " . $classroom_group_id . " || " . "teacher_id: " . $teacher_id . " || " . " academic_period_id: " . $academic_period_id;
+
+		/*
+		SELECT `hidden_student_person_id` 
+		FROM `hidden_student` 
+		WHERE `hidden_student_teacher_id` = 127 AND `hidden_student_academic_period_id` = 5 AND `hidden_student_classroom_group_id` = 26
+		*/
+
+		$this->db->select('hidden_student_person_id');
+		$this->db->from('hidden_student');
+		$this->db->where('hidden_student_teacher_id',$teacher_id);
+		$this->db->where('hidden_student_academic_period_id',$academic_period_id);
+		$this->db->where('hidden_student_classroom_group_id',$classroom_group_id);
+		$this->db->where('hidden_student_day_id',$day);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0){
+			$hidden_students = array();
+			foreach ($query->result() as $row)    {
+                $hidden_students[]= $row->hidden_student_person_id;
+            }
+            return $hidden_students;
+		}	
+		else {
+			return array();
+		}
+
+	}
+
 	function get_classroom_group_hidden_students($classroom_group_id,$teacher_id=null,$academic_period_id=null) {
 
 		$person_id = $this->session->userdata('person_id');
@@ -378,7 +436,7 @@ class attendance_model  extends CI_Model  {
 
 	}
 
-	function get_hidden_students($classroom_group_id,$teacher_id=null,$academic_period_id=null) {
+	function get_hidden_students($classroom_group_id,$teacher_id=null,$day,$academic_period_id=null) {
 
 		$person_id = $this->session->userdata('person_id');
 		$user_is_a_teacher = $this->is_user_a_teacher($person_id);	
@@ -402,20 +460,152 @@ class attendance_model  extends CI_Model  {
 			}
 		}
 		
+		//GET STUDENTS HIDDEN ON GROUP AT ALL DAYS, ALL STUDY_MODULES AND STUDY_SUBMODULES
 		$students_hidden_on_group = $this->get_classroom_group_hidden_students($classroom_group_id,$teacher_id,$academic_period_id);
 
-		return $students_hidden_on_group;
+		//GET STUDENTS HIDDEN ON GROUP AND DAY AT ALL STUDY_MODULES AND STUDY_SUBMODULES
+		$students_hidden_on_group_and_day = $this->get_classroom_group_and_day_hidden_students($classroom_group_id,$teacher_id, $day, $academic_period_id);
+			
+		$students_hidden = array();
+
+		$students_hidden = array_merge($students_hidden_on_group, $students_hidden_on_group_and_day);
+
+
+		return $students_hidden;
 	}
 
-	function hide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day) {
+	function check_if_hidden_student_already_exists_by_group_and_day( $person_id , $classroom_group_id, $teacher_id,$academic_period_id,$day) {
 
+		$this->db->select('hidden_student_id');
+		$this->db->from('hidden_student');
+		$this->db->where('hidden_student_person_id',$person_id);
+		$this->db->where('hidden_student_teacher_id',$teacher_id);
+		$this->db->where('hidden_student_classroom_group_id',$classroom_group_id);
+		$this->db->where('hidden_student_academic_period_id',$academic_period_id);
+		$this->db->where('hidden_student_study_module_id',0);
+		$this->db->where('hidden_student_study_submodule_id',0);
+		$this->db->where('hidden_student_day_id',$day);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row->hidden_student_id;
+		}	
+		else {
+			return false;
+		}
 	}
 
-	function unhide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day) {
+	function hide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $day) {
+		$user_person_id = $this->session->userdata('person_id');
 
+		$user_is_a_teacher = $this->is_user_a_teacher($user_person_id);	
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
+			//TODO: Return not allowed page!
+			$result = new stdClass();
+		    $result->result = false;
+		    $result->message = "Access not allowed!";
+			return $result;
+		}	
+
+
+		if ($academic_period_id==null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		$data = array(
+		   'hidden_student_person_id' => $person_id ,
+		   'hidden_student_teacher_id' => $teacher_id ,
+		   'hidden_student_academic_period_id' => $academic_period_id,
+		   'hidden_student_classroom_group_id' => $classroom_group_id,
+		   'hidden_student_day_id' => $day,
+		   'hidden_student_entryDate' => date('Y-m-d H:i:s'),
+           'hidden_student_creationUserId' => $this->session->userdata("user_id"),
+           'hidden_student_lastupdateUserId' => $this->session->userdata("user_id"),
+		);
+
+		$action = "";
+
+		//ONLY INSERT IF NOT EXISTS. IF EXISTS UPDATE!
+		$hidden_student_already_exists = false;
+		$hidden_student_already_exists = $this->check_if_hidden_student_already_exists_by_group_and_day($person_id , $classroom_group_id, $teacher_id,$academic_period_id,$day);
+		if ($hidden_student_already_exists !=false) {
+			//UPDATE
+			$this->db->where('hidden_student_id', $hidden_student_already_exists);
+			$this->db->update('hidden_student', $data);
+			//echo $this->db->last_query()."<br/>";
+			$action = "UPDATE";
+
+		} else {
+			//INSERT
+			$this->db->insert('hidden_student', $data);
+			//echo $this->db->last_query()."<br/>";
+			$action = "INSERT";
+		}
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+		    $result->result = true;
+		    $result->message = $action . ". Person id " . $person_id  . " hidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id  . " and day: " . $day;
+			return $result;
+		} else {
+			$result = new stdClass();
+		    $result->result = false;
+		    $result->message = "Error hidding Person id " . $person_id  . " hidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id  . " and day: " . $day;
+			return $result;
+		}
 	}
 
-	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$academic_period_id=null,$checkbox_show_hide_students=null,$teacher_id = null) {
+	function unhide_student_on_classroom_group_and_day ($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $day) {
+		$user_person_id = $this->session->userdata('person_id');
+
+		$user_is_a_teacher = $this->is_user_a_teacher($user_person_id);	
+		$user_is_admin = $this->ebre_escool->user_is_admin();
+
+		if ( !($user_is_a_teacher || $user_is_admin) ) {
+			//TODO: Return not allowed page!
+			$result = new stdClass();
+		    $result->result = false;
+		    $result->message = "Access not allowed!";
+			return $result;
+		}	
+
+
+		if ($academic_period_id==null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		//ONLY DELETE IF EXISTS. 
+		$hidden_student_already_exists = false;
+		$hidden_student_already_exists = $this->check_if_hidden_student_already_exists_by_group_and_day($person_id , $classroom_group_id, $teacher_id,$academic_period_id,$day);
+		if ($hidden_student_already_exists) {
+			$this->db->where('hidden_student_id', $hidden_student_already_exists);
+			$this->db->delete('hidden_student');
+		} else {
+			$result = new stdClass();
+		    $result->result = true;
+		    $result->message = "NOT EXISTS: Person id " . $person_id  . " unhidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id . " and day: " . $day;
+			return $result;
+		}
+
+		if ($this->db->affected_rows() == 1) {
+			$result = new stdClass();
+		    $result->result = true;
+		    $result->message = "Person id " . $person_id  . " unhidded for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id  . " and day: " . $day;
+			return $result;
+		} else {
+			$result = new stdClass();
+		    $result->result = false;
+		    $result->message = "Error unhidding Person id " . $person_id  . " hidden for classroomgroup " . $classroom_group_id  . " for teacher " . $teacher_id  . " at academic period id " . $academic_period_id  . " and day: " . $day;
+			return $result;
+		}
+	}
+
+	function getAllGroupStudentsInfoIncludedStudySubmodules($class_group_id,$teacher_id, $day, $academic_period_id=null) {
 		
 		if ($academic_period_id==null) {
 			$academic_period = $this->get_current_academic_period()->shortname;
@@ -444,7 +634,7 @@ class attendance_model  extends CI_Model  {
 
 		//GET HIDDEN STUDENTS
 		$hidden_students = array();
-		$hidden_students = $this->get_hidden_students($class_group_id,$teacher_id);	
+		$hidden_students = $this->get_hidden_students($class_group_id,$teacher_id,$day);	
 
 		//DEBUG
 		//print_r($hidden_students);
@@ -477,22 +667,7 @@ class attendance_model  extends CI_Model  {
 					//$student_info_array[] = $row;
 	   				$student = new stdClass();
 
-	   				$person_id = $row['person_id'];
-
-	   				$show_hidden_students = false;
-					if ($checkbox_show_hide_students != null) {
-						if ($checkbox_show_hide_students=="false") {
-							if (is_array($hidden_students)) {
-								if (in_array($person_id,$hidden_students)) {
-									continue;
-								}	
-							}		
-						} else {
-							$show_hidden_students = true;
-						} 
-					} else {
-						$show_hidden_students = false;
-					}
+	   				$person_id = $row['person_id'];	
 					
 					$student->person_id = $person_id;
 					$student->sn1 = $row['person_sn1'];

@@ -380,7 +380,7 @@
                           </ul>
     </div>
 
-    <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <span title="Alumnes totals de tots els tipus"><?php echo " " . $total_number_of_students;?></span>  | <span title="Alumnes matrículats al grup"><?php echo " " . $official_students_in_group_num;?></span> | <span title="Alumnes marcats per ocultar"><?php echo " " . $hidden_students_in_group_num;?></span>
+    <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <span title="Alumnes totals de tots els tipus"><?php echo " " . $total_number_of_students;?></span>  | <span title="Alumnes matrículats al grup"><?php echo " " . $official_students_in_group_num;?></span> | <span title="Alumnes ocultson"><?php echo " " . $hidden_students_in_group_num;?></span>
 
     <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?>
     <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables/' . $selected_classroom_group_key) ?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar" style="margin-left:50px;"></i> Horari de grup</a>
@@ -698,17 +698,17 @@ function click_on_hidden_student(element) {
   var day = element.getAttribute("day");
 
   //DEBUG:
-  console.debug("person_id: " + person_id);
-  console.debug("classroom_group_id: " + classroom_group_id);
-  console.debug("teacher_id: " + teacher_id);
-  console.debug("academic_period_id: " + academic_period_id);
-  console.debug("action: " + action);
-  console.debug("day: " + day);
+  //console.debug("person_id: " + person_id);
+  //console.debug("classroom_group_id: " + classroom_group_id);
+  //console.debug("teacher_id: " + teacher_id);
+  //console.debug("academic_period_id: " + academic_period_id);
+  //console.debug("action: " + action);
+  //console.debug("day: " + day);
 
   //AJAX: hide/unhide student on database:
   //AJAX TO HIDE STUDENT
   $.ajax({
-      url:'<?php echo base_url("/index.php/reports/hide_unhide_student_on_classroom_group_and_day");?>',
+      url:'<?php echo base_url("/index.php/attendance/hide_unhide_student_on_classroom_group_and_day");?>',
       type: 'post',
       data: {
           person_id : person_id,
@@ -723,7 +723,7 @@ function click_on_hidden_student(element) {
         404: function() {
           $.gritter.add({
             title: 'Error connectant amb el servidor!',
-            text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/reports/hide_unhide_student_on_classroom_group_and_day ' ,
+            text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/attendance/hide_unhide_student_on_classroom_group_and_day ' ,
             class_name: 'gritter-error gritter-center'
           });
         },
@@ -731,7 +731,7 @@ function click_on_hidden_student(element) {
           $("#response").html('A server-side error has occurred.');
           $.gritter.add({
             title: 'Error connectant amb el servidor!',
-            text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/reports/hide_unhide_student_on_classroom_group_and_day' ,
+            text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/attendance/hide_unhide_student_on_classroom_group_and_day' ,
             class_name: 'gritter-error gritter-center'
           });
         }
@@ -762,10 +762,12 @@ function click_on_hidden_student(element) {
         });
       }
 
+      //RELOAD PAGE
+       location.reload();       
+
     });
 
-  //RELOAD DATATABLES!
-  oTable1.fnDraw();
+
   
 }
 
@@ -961,25 +963,28 @@ $.fn.dataTableExt.afnFiltering.push(
         var checkbox_show_all_students_selected = $("#checkbox_show_all_students").prop('checked');
         var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
 
-        console.debug("checkbox_show_all_group_enrolled_students_selected: " + checkbox_show_all_group_enrolled_students_selected);
-        console.debug("checkbox_show_all_students_selected: " + checkbox_show_all_students_selected);
-        console.debug("checkbox_show_hidden_students_selected: " + checkbox_show_hidden_students_selected);
+        //DEBUG:
+        //console.debug("checkbox_show_all_group_enrolled_students_selected: " + checkbox_show_all_group_enrolled_students_selected);
+        //console.debug("checkbox_show_all_students_selected: " + checkbox_show_all_students_selected);
+        //console.debug("checkbox_show_hidden_students_selected: " + checkbox_show_hidden_students_selected);
         
         //GET COLUMN TYPE
         
         var student_type = aData[2];
         var student_hidden = aData[3];
-        var sn1 = aData[4];
-        var sn2 = aData[5];
-        var givenName = aData[6];
+        
+        //DEBUG:
+        //var sn1 = aData[4];
+        //var sn2 = aData[5];
+        //var givenName = aData[6];
 
-        console.debug("student: " + sn1 + " " + sn2 + ", " + givenName);
-        console.debug("student_type: " + student_type);
-        console.debug("student_hidden: " + student_hidden);
+        //console.debug("student: " + sn1 + " " + sn2 + ", " + givenName);
+        //console.debug("student_type: " + student_type);
+        //console.debug("student_hidden: " + student_hidden);
 
         student_type_text = jQuery(student_type).text();
 
-        console.debug("student_type_text: " + student_type_text);
+        //console.debug("student_type_text: " + student_type_text);
         
         if (checkbox_show_all_group_enrolled_students_selected) {
           if (student_type_text == "*") {

@@ -932,7 +932,9 @@ class reports_model  extends CI_Model  {
 		$this->db->where('hidden_student_teacher_id',$teacher_id);
 		$this->db->where('hidden_student_classroom_group_id',$classroom_group_id);
 		$this->db->where('hidden_student_academic_period_id',$academic_period_id);
-		$this->db->limit(1);
+		$this->db->where('hidden_student_study_module_id',0);
+		$this->db->where('hidden_student_study_submodule_id',0);
+		$this->db->where('hidden_student_day_id',0);
 
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br/>";
@@ -941,8 +943,9 @@ class reports_model  extends CI_Model  {
 			$row = $query->row(); 
 			return $row->hidden_student_id;
 		}	
-		else
+		else {
 			return false;
+		}
 	}
 
 	function unhide_student_on_classroom_group( $person_id , $classroom_group_id, $teacher_id,$academic_period_id = null) {

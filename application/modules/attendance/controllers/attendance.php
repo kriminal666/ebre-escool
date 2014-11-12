@@ -806,7 +806,7 @@ class attendance extends skeleton_main {
 
 	    	$selected_time_slot_key = */
 
-	public function check_attendance_classroom_group( $selected_group_id = 0, $teacher_code = "" , $selected_study_module_id = 0, 
+	public function check_attendance_classroom_group( $selected_group_id = 0, $teacher_code = null , $selected_study_module_id = 0, 
 		$lesson_id = 0, $day = 0, $month = 0, $year = 0 ) {
 
 		$this->check_logged_user();	
@@ -957,7 +957,7 @@ class attendance extends skeleton_main {
 
 
 	    //OBTAIN ABSOLUTELY ALL STUDENTS:
-	    $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfoIncludedStudySubmodules($selected_group_id);
+	    $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfoIncludedStudySubmodules($selected_group_id,$teacher_id,$day_of_week_number);
 
 	    //GET ARRAYS OF STUDENTS BY FILTER --> ALLOW FILTER STUDENTS LIST
 
@@ -966,16 +966,10 @@ class attendance extends skeleton_main {
 	    
 	    //$official_students_in_group = $this->attendance_model->getAllGroupStudentsIds($selected_group_id);
 	    
-	    
-	   	$data['official_students_in_group'] = $official_students_in_group;
+	    $data['official_students_in_group'] = $official_students_in_group;
 	    $data['official_students_in_group_num'] = count($official_students_in_group);
 
-	    $hidden_students_in_group= array();
-	    //$hidden_students_in_group= $this->attendance_model->getAllGroupHiddenStudentsInfo($selected_group_id,teacher_id);
-	    $data['hidden_students_in_group'] = $hidden_students_in_group;
-	    $data['hidden_students_in_group_num'] = count($hidden_students_in_group);
-
-		$selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
+	    $selected_group_info = $this->attendance_model->getGroupInfoByGroupId($selected_group_id);
 
 		$selected_group_id = $selected_group_info['id'];
 		$selected_group_name = $selected_group_info['name'];
@@ -1113,42 +1107,35 @@ class attendance extends skeleton_main {
 				}
 			}
 
-			//getAllGroupStudentsInfoIncludedStudySubmodules
-
 			$data['students_with_errors'] = $students_with_errors;
 			$data['students_with_errors_num'] = count($students_with_errors);
 		}
 		
-
+		$hidden_students_in_group= array();
 		$array_student_person_ids = array ();
 		if ( $data['total_number_of_students'] != 0 ) {
 			if ( is_array($all_students_in_group) && ( count($all_students_in_group) > 0  ) ) {
 				foreach($all_students_in_group as $student)	{
 
-					$studentObject = new stdClass;
-				
-					$studentObject->person_id = $student->person_id;
-					$array_student_person_ids[] = $student->person_id;
-					$studentObject->givenName = $student->givenName;
-					$studentObject->sn1 = $student->sn1;
-					$studentObject->sn2 = $student->sn2;
-					$studentObject->username = $student->username;
-					$studentObject->userid = $student->userid;
-					$studentObject->email = $student->email;
-				
-					//TODO: get incident notes!
-					$studentObject->notes = "nota";
-
 					if ($student->photo_url != "") {
-						$student->photo_url = $base_photo_url."/".$student->photo_url;	
+						$path = "/usr/share/ebre-escool/uploads/person_photos/" . $student->photo_url;
+						if (file_exists ($path)) {
+							$student->photo_url = $base_photo_url."/".$student->photo_url;	
+						} else {
+							$student->photo_url = '/assets/img/alumnes/foto.png';
+						}	
 					}	else {
-						$studentObject->photo_url = '/assets/img/alumnes/foto.png';				
+						$student->photo_url = '/assets/img/alumnes/foto.png';				
 					}
 
 					if ( array_key_exists($student->person_id, $official_students_in_group) ) {
 						$student->official = true;
 					} else {
 						$student->official = false;
+					}
+
+					if ($student->hidden) {
+						$hidden_students_in_group[] = $student;
 					}
 					
 
@@ -1157,6 +1144,10 @@ class attendance extends skeleton_main {
 			}
 				
 		}
+
+	    //$hidden_students_in_group= $this->attendance_model->getAllGroupHiddenStudentsInfo($selected_group_id,teacher_id);
+	    $data['hidden_students_in_group'] = $hidden_students_in_group;
+	    $data['hidden_students_in_group_num'] = count($hidden_students_in_group);
 
 		$incidents = $this->attendance_model->getAllIncidentsByDateAndPersonIdArray($array_student_person_ids,$iso_date_alt);
 
@@ -1683,9 +1674,9 @@ public function hide_unhide_student_on_classroom_group_and_day() {
 
 	    if (!$error) {
 	    	if ($action =="hide") {
-	    		$result = $this->attendance_model->hide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day);
+	    		$result = $this->attendance_model->hide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $day);
 	    	} elseif ($action == "unhide") {
-	    		$result = $this->attendance_model->unhide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $action, $day);
+	    		$result = $this->attendance_model->unhide_student_on_classroom_group_and_day($person_id, $classroom_group_id, $teacher_id, $academic_period_id, $day);
 	    	} else {
 	    		$result->result = false;
         		$result->message = "No valid action specified!";
