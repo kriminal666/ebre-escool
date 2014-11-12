@@ -373,12 +373,21 @@ class reports_model  extends CI_Model  {
 			ORDER BY `person`.`person_sn1`, `person`.`person_sn2`, `person`.`person_givenName`
 			*/
 
-			//GET SIBLINGS CLASSROOM GROUPS --> AVOID INCLUDIN STUDENTS OF THIS GROUP
+			//GET SIBLINGS CLASSROOM GROUPS --> AVOID INCLUDING STUDENTS OF THIS GROUP
 			$classroom_group_siblings = $this->get_classroom_group_siblings($classroom_group_id);
+
+			//echo "classroom_group_id: " . $classroom_group_id . "<br/>";
+			//echo "academic_period_id: " . $academic_period_id  . "<br/>";
+
 			$study_submodules_array = $this->getAllStudySubmodulesByClassroomGroupId($classroom_group_id,$academic_period_id);
 
 			//DEBUG
-			//print_r($classroom_group_siblings);
+			/*echo "classroom_group_siblings: ";
+			print_r($classroom_group_siblings);
+
+			echo "study_submodules_array: ";
+			print_r($study_submodules_array);
+			*/
 
 			$this->db->select('person.person_id, person.person_sn1, person.person_sn2, person.person_givenName, users.id ,users.username, 
 				users.initial_password, users.last_login, person.person_email,person.person_secondary_email, person.person_photo, 
@@ -433,11 +442,15 @@ class reports_model  extends CI_Model  {
 			$students_ids_to_i_array = array();
 			$i = 0;
 			foreach ($query->result_array() as $row)	{
+				
+				/* ERROR! DELETE PERMANENTLY ON FUTURE
 				if ($checkbox_show_all_students == "true") {
 					if ( ( array_key_exists($row['enrollment_group_id'], $classroom_group_siblings) ) ) {
+						echo "CONTINUE!!!!!!!!!!!!!";
 						continue;
 					}
-				}
+				}*/
+				
 				$id = $row['person_id'];		
 
 
