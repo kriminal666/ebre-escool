@@ -543,6 +543,20 @@ class reports extends skeleton_main {
         $data['mentors'] = $mentors;
         $data['mentor_id'] = $mentor_id;
 
+        $person_id=$this->session->userdata('person_id');
+        
+        //$user_teacher_code = $this->reports_model->get_teacher_code_by_personid($person_id);
+        
+        $user_teacher_id = $this->reports_model->get_teacher_id_by_personid($person_id);
+
+        if ($teacher_id == null) {
+            $teacher_id = $user_teacher_id;
+        } else {
+            if (!$user_is_admin) { 
+                $teacher_id = $user_teacher_id; 
+            }
+        }
+
         $user_is_admin = $this->ebre_escool->user_is_admin();
         $data['user_is_admin'] = $user_is_admin;
 
@@ -557,19 +571,6 @@ class reports extends skeleton_main {
             $data['teachers'] = $teachers_array;
         }
 
-        $person_id=$this->session->userdata('person_id');
-        
-        //$user_teacher_code = $this->reports_model->get_teacher_code_by_personid($person_id);
-        
-        $user_teacher_id = $this->reports_model->get_teacher_id_by_personid($person_id);
-
-        if ($teacher_id == null) {
-            $teacher_id = $user_teacher_id;
-        } else {
-            if (!$user_is_admin) { 
-                $teacher_id = $user_teacher_id; 
-            }
-        }
 
         //$data['default_teacher_code'] = $teacher_code;
         $data['default_teacher'] = $teacher_id;

@@ -56,7 +56,6 @@
       <div class="row-fluid">
           <div class="span4"></div>
       <div class="span4">
-
         <select id="teacher" style="width: 100%">
                <option></option>
          <?php foreach( (array) $teachers as $teacher_id => $teacher_name): ?>
