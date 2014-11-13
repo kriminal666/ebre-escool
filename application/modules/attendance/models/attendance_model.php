@@ -719,9 +719,7 @@ class attendance_model  extends CI_Model  {
 					//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
 					
 					$student_info_array[$student->person_id] = $student;
-				} else {
-					echo "SIBLING!<br/>";
-				}
+				} 
 			}
 
 			return $student_info_array;
