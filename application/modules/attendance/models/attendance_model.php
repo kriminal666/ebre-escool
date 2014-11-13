@@ -712,7 +712,6 @@ class attendance_model  extends CI_Model  {
 					$student->hidden = false;					
 					if (is_array($hidden_students)) {
 						if (in_array($person_id,$hidden_students)) {
-							echo "hidden!";
 							$student->hidden = true;
 						}	
 					}							
