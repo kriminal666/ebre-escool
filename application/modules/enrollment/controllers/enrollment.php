@@ -1191,7 +1191,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
     }
 
-    public function change_classroom_group() {
+    public function change_classroom_group($academic_period_id = null) {
 
         $active_menu = array();
         $active_menu['menu']='#enrollment_wizard';
@@ -1210,7 +1210,13 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
         $data = array();
 
-        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+        //$all_person_official_ids = $this->enrollment_model->get_all_person_official_ids();
+
+        //ONLY WITH ENROLLMENT IN CURRENT PERIOD
+        if ($academic_period_id == null) {
+            $academic_period_id = $this->enrollment_model->get_current_academic_period_id();
+        }
+        $all_person_official_ids = $this->enrollment_model->get_all_person_official_ids_by_enrollment_period($academic_period_id);
         
         $data['all_person_official_ids'] = $all_person_official_ids;
        
@@ -1597,12 +1603,12 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
 
     }
 
-    public function get_classroom_group_siblings($current_group=false){
+    public function get_classroom_groups_from_same_study($current_group=false){
 
         if($current_group==false){
             if(isset($_POST['current_group'])){
                 $current_group = $_POST['current_group'];
-                $group_siblings = $this->enrollment_model->get_classroom_group_siblings($current_group);
+                $group_siblings = $this->enrollment_model->get_classroom_groups_from_same_study($current_group);
                 if($group_siblings){
                     print_r(json_encode($group_siblings));
                 } else {
@@ -1612,7 +1618,7 @@ public function get_enrollment_study_submodules( $enrollment_id = false, $period
                 return false;
             }
         } else {
-            $group_siblings = $this->enrollment_model->get_classroom_group_siblings($current_group);
+            $group_siblings = $this->enrollment_model->get_classroom_groups_from_same_study($current_group);
             if($group_siblings){
                 print_r(json_encode($group_siblings));
             } else {

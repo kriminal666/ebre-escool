@@ -565,6 +565,44 @@ function update_user_ldap_dn($username, $ldap_dn) {
 			return false;
 	}
 
+    public function get_all_person_official_ids_by_enrollment_period($academic_period_id = null ,$orderby = "ASC") {
+
+        if ($academic_period_id == null) {
+            $current_academic_period_shortname = $this->get_current_academic_period()->academic_periods_shortname;
+        } else {
+            $current_academic_period_shortname = $this->get_academic_period_by_period_id($academic_period_id);
+        }
+
+        /*
+        SELECT DISTINCT `person_official_id`
+        FROM `enrollment` 
+        INNER JOIN person ON person.person_id = enrollment.`enrollment_personid`
+        WHERE `enrollment_periodid`="2014-15"
+        */
+
+        $this->db->select('person_official_id');
+        $this->db->distinct();
+        $this->db->from('enrollment');
+        $this->db->join('person','person.person_id = enrollment.enrollment_personid');
+        $this->db->where('enrollment_periodid', $current_academic_period_shortname);
+        $this->db->order_by('person_official_id', $orderby);
+               
+        $query = $this->db->get();
+        $this->db->last_query();
+        
+        if ($query->num_rows() > 0) {
+
+            $person_official_ids = array();
+            foreach ($query->result_array() as $row)    {
+                if ($row['person_official_id']!="")
+                    $person_official_ids[] = trim($row['person_official_id']);
+            }
+            return $person_official_ids;
+        }           
+        else
+            return false;
+    }
+
 	public function get_last_study_id($person_id) {
 
 	    $this->db->select('enrollment_id,enrollment_periodid,enrollment_personid,person_sn1,person_sn2,person_givenName,
@@ -824,6 +862,26 @@ function update_user_ldap_dn($username, $ldap_dn) {
 		else
 			return false;
 	}
+
+    function get_academic_period_by_period_id($period_id) {
+
+        /*
+        SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE academic_periods_current=1
+        */
+        $this->db->select('academic_periods_shortname');
+        $this->db->from('academic_periods');
+        $this->db->where('academic_periods_id',$period_id);
+        $this->db->limit(1);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() == 1){
+            $row = $query->row(); 
+            return $row->academic_periods_shortname;
+        }   
+        else
+            return false;
+    }
 
 
     public function get_courses_study_module($study_module_id,$period=null,$order_by="ASC") {
@@ -1591,7 +1649,7 @@ function update_user_ldap_dn($username, $ldap_dn) {
 	}
 
 	
-	public function get_classroom_group_siblings($current_group) {
+	public function get_classroom_groups_from_same_study($current_group) {
 
 		//GET COURSE
 		//$course_id = $this->get_course_id_from_classroom_group_id($current_group); <-- PERMIT GROUP CHANGE IN SAME STUDY NOT ONLY SAME COURSE        

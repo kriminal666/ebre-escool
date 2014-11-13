@@ -260,7 +260,7 @@ class attendance_model  extends CI_Model  {
         $this->db->where('courses_academic_periods_academic_period_id',$current_academic_period_id);
 
         $query = $this->db->get();  
-        //echo $this->db->last_query();
+        echo $this->db->last_query();
 
         $sibling_courses = array();
         if ($query->num_rows() > 0) {
@@ -281,6 +281,13 @@ class attendance_model  extends CI_Model  {
 		//GET COURSE
 		//$course_id = $this->get_course_id_from_classroom_group_id($current_group); <-- PERMIT GROUP CHANGE IN SAME STUDY NOT ONLY SAME COURSE        
         $sibling_courses_array = $this->get_courses_id_from_classroom_group_id($current_group);
+
+        echo "<br/>***********<br/>";
+        echo "<br/>current_group:" . $current_group . "<br/>";
+        echo "<br/>***********<br/>";
+        echo "<br/>***********<br/>";
+        print_r($sibling_courses_array);
+        echo "<br/>***********<br/>";
 		/*
 		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id
 		FROM classroom_group
@@ -659,10 +666,13 @@ class attendance_model  extends CI_Model  {
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br/>";
 
+		echo "<br/>Rows: " . $query->num_rows() . "<br/>";
+
 		if ($query->num_rows() > 0) {
 			$student_info_array = array();
 
 			foreach ($query->result_array() as $row)	{
+				echo "Person id: " . $row['person_id'] . " " . $row['person_sn1'] . " " . $row['person_sn2'] . ", ". $row['person_givenName'] . " | " . $row['enrollment_group_id']  .  "<br/>";
 				if ( ! ( array_key_exists($row['enrollment_group_id'], $classroom_group_siblings) ) ) {
 					//$student_info_array[] = $row;
 	   				$student = new stdClass();
@@ -683,6 +693,7 @@ class attendance_model  extends CI_Model  {
 					$student->hidden = false;					
 					if (is_array($hidden_students)) {
 						if (in_array($person_id,$hidden_students)) {
+							echo "hidden!";
 							$student->hidden = true;
 						}	
 					}							
@@ -690,6 +701,8 @@ class attendance_model  extends CI_Model  {
 					//echo "person_photo (user: " . $student->sn1 . " " . $student->sn2 . ", " . $student->givenName . "): " . $row['person_photo'] . "<br/>" ;
 					
 					$student_info_array[$student->person_id] = $student;
+				} else {
+					echo "SIBLING!<br/>";
 				}
 			}
 

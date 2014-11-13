@@ -244,7 +244,7 @@ jQuery(function($) {
             current_group= all_data.enrollment_group_id;
             //console.debug("current_group:"  + current_group);
               $.ajax({
-                  url:'<?php echo base_url("index.php/enrollment/get_classroom_group_siblings");?>',
+                  url:'<?php echo base_url("index.php/enrollment/get_classroom_groups_from_same_study");?>',
                   type: 'post',
                   data: {
                       current_group : current_group
@@ -254,7 +254,7 @@ jQuery(function($) {
                     404: function() {
                       $.gritter.add({
                         title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_classroom_group_siblings ' ,
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/enrollment/get_classroom_groups_from_same_study ' ,
                         class_name: 'gritter-error gritter-center'
                       });
                     },
@@ -262,7 +262,7 @@ jQuery(function($) {
                       $("#response").html('A server-side error has occurred.');
                       $.gritter.add({
                         title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_classroom_group_siblings ' ,
+                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/enrollment/get_classroom_groups_from_same_study ' ,
                         class_name: 'gritter-error gritter-center'
                       });
                     }
@@ -280,6 +280,8 @@ jQuery(function($) {
                   if(data != false) {           
                     var all_data = $.parseJSON(data);
                     var j=1;
+
+                    $('#select_class_room_to_change').empty();
                     $.each(all_data, function(idx,obj) {
                       group_full_name = obj.classroom_group_code + " - " + obj.classroom_group_shortName + ". " + obj.classroom_group_name ; 
                       //console.debug ("classroom_group_id: " + obj.classroom_group_id);
