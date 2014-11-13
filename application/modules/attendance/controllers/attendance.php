@@ -959,7 +959,7 @@ class attendance extends skeleton_main {
 	    //OBTAIN ABSOLUTELY ALL STUDENTS:
 	    $all_students_in_group = $this->attendance_model->getAllGroupStudentsInfoIncludedStudySubmodules($selected_group_id,$teacher_id,$day_of_week_number);
 
-	    echo "<br/>all_students_in_group count: " . count($all_students_in_group);
+	    //echo "<br/>all_students_in_group count: " . count($all_students_in_group);
 	    //GET ARRAYS OF STUDENTS BY FILTER --> ALLOW FILTER STUDENTS LIST
 
 	    // OFFICIAL GROUP STUDENTS: STUDENTS ENROLLED TO GROUP:

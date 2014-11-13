@@ -204,11 +204,39 @@ class reports_model  extends CI_Model  {
 
     }
 
+    public function get_course_id_from_classroom_group_id($classroom_group_id) {
+		//SELECT `classroom_group_course_id`
+		//FROM classroom_group
+		//INNER JOIN classroom_group_academic_periods ON classroom_group_academic_periods.`classroom_group_academic_periods_classroom_group_id` = classroom_group.classroom_group_id
+		//WHERE `classroom_group_id`=45 AND `classroom_group_academic_periods_academic_period_id`=5
+
+		$current_academic_period_id = $this->get_current_academic_period_id();
+
+		$this->db->select('classroom_group_course_id');
+		$this->db->from('classroom_group');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
+		$this->db->where('classroom_group_id',$classroom_group_id);
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);
+
+		$query = $this->db->get();	
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() == 1) {
+
+			$row = $query->row(); 
+			return $row->classroom_group_course_id;
+		}			
+		else
+			return false;
+
+
+	}
+
 	public function get_classroom_group_siblings($current_group) {
 
 		//GET COURSE
-		//$course_id = $this->get_course_id_from_classroom_group_id($current_group); <-- PERMIT GROUP CHANGE IN SAME STUDY NOT ONLY SAME COURSE        
-        $sibling_courses_array = $this->get_courses_id_from_classroom_group_id($current_group);
+		$course_id = $this->get_course_id_from_classroom_group_id($current_group); 
+        
 		/*
 		SELECT classroom_group_id, classroom_group_code, classroom_group_shortName, classroom_group_name, classroom_group_description, classroom_group_course_id
 		FROM classroom_group
@@ -223,11 +251,9 @@ class reports_model  extends CI_Model  {
 		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id = classroom_group.classroom_group_id');
 		$this->db->where('classroom_group_academic_periods_academic_period_id', $current_academic_period_id );
 
-        $this->db->where_in('classroom_group_course_id',$sibling_courses_array);
+        $this->db->where('classroom_group_course_id',$course_id);
  
-		
-		$query = $this->db->get();
-	
+		$query = $this->db->get();	
 		//echo $this->db->last_query();
 
 		$groups_array = array();
@@ -373,7 +399,9 @@ class reports_model  extends CI_Model  {
 			ORDER BY `person`.`person_sn1`, `person`.`person_sn2`, `person`.`person_givenName`
 			*/
 
+
 			//GET SIBLINGS CLASSROOM GROUPS --> AVOID INCLUDING STUDENTS OF THIS GROUP
+			$classroom_group_siblings = array();
 			$classroom_group_siblings = $this->get_classroom_group_siblings($classroom_group_id);
 
 			//echo "classroom_group_id: " . $classroom_group_id . "<br/>";
@@ -441,14 +469,12 @@ class reports_model  extends CI_Model  {
 			$i = 0;
 			foreach ($query->result_array() as $row)	{
 				
-				/* ERROR! DELETE PERMANENTLY ON FUTURE
 				if ($checkbox_show_all_students == "true") {
 					if ( ( array_key_exists($row['enrollment_group_id'], $classroom_group_siblings) ) ) {
-						echo "CONTINUE!!!!!!!!!!!!!";
 						continue;
 					}
-				}*/
-
+				}
+			
 				$id = $row['person_id'];		
 
 
