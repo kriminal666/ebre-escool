@@ -260,7 +260,7 @@ class attendance_model  extends CI_Model  {
         $this->db->where('courses_academic_periods_academic_period_id',$current_academic_period_id);
 
         $query = $this->db->get();  
-        echo $this->db->last_query();
+        //echo $this->db->last_query();
 
         $sibling_courses = array();
         if ($query->num_rows() > 0) {
