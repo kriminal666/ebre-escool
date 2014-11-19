@@ -816,41 +816,59 @@
                 </ul>                  
               </li> 
 
-              <!-- Assistència informes del centre -->
-              <li id="reports_educational_center">
+              <!-- ATTENDANCE REPORTS -->
+              <li id="attendance_reports">
                 <a href="#" class="dropdown-toggle">
                   <i class="icon-double-angle-right"></i>
 
-                  <?php echo lang('attendance'). ".<br/>" . lang('reports_educational_center_reports');?>
+                  <?php echo "Assistència";?>
                   <b class="arrow icon-angle-down"></b>
                 </a>
 
                 <ul class="submenu">
-                  <li id="reports_center_by_d_h_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_at_day_and_hour_report'); ?>">
-                      <?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>
+
+                  <?php if ($this->session->userdata('is_admin')): ?>
+                      <li id="attendance_reports_all_incidents">
+                        <!--<a href="http://domini/ebre-escool/index.php/attendance/attendance_reports/attendance_reports_all_incidents">-->
+                        <a href="<?php echo base_url('/index.php/attendance/attendance_reports/attendance_reports_all_incidents'); ?>">
+                          Totes les incidències per període acadèmic 
+                        </a>
+                      </li>
+                  <?php endif?>
+
+                  <!-- Assistència informes del centre -->
+                  <li id="reports_educational_center">
+                    <a href="#" class="dropdown-toggle">
+                      <?php echo lang('attendance'). ".<br/>" . lang('reports_educational_center_reports');?>
+                      <b class="arrow icon-angle-down"></b>
                     </a>
+
+                    <ul class="submenu">
+                      <li id="reports_center_by_d_h_1">
+                        <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_at_day_and_hour_report'); ?>">
+                          <?php echo lang('reports_educational_center_reports_incidents_by_day_and_hour');?>
+                        </a>
+                      </li>
+
+                      <li id="reports_center_by_id_fd_1">
+                        <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_day_range_report'); ?>">
+                          <?php echo lang('reports_educational_center_reports_incidents_by_date');?>
+                        </a>
+                      </li>
+                      
+                      <li id="reports_center_ranking_id_fd_1">
+                        <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_ranking_report'); ?>">
+                          <?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>
+                        </a>
+                      </li>
+                    </ul>
                   </li>
 
-                  <li id="reports_center_by_id_fd_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_day_range_report'); ?>">
-                      <?php echo lang('reports_educational_center_reports_incidents_by_date');?>
-                    </a>
-                  </li>
-                  
-                  <li id="reports_center_ranking_id_fd_1">
-                    <a href="<?php echo base_url('/index.php/attendance/attendance_reports/all_attendance_incidents_ranking_report'); ?>">
-                      <?php echo lang('reports_educational_center_reports_incidents_by_date_ranking');?>
-                    </a>
-                  </li>
-                </ul>
-              </li>
 
-              <!-- Assistència informes de grup -->
+
+                <!-- Assistència informes de grup -->
               <li id="report_group">
                 <a href="#" class="dropdown-toggle">
-                  <i class="icon-double-angle-right"></i>
-
                   <?php echo lang('attendance'). ".<br/> " . lang('reports_group_reports');?>
                   <b class="arrow icon-angle-down"></b>
                 </a>
@@ -872,6 +890,19 @@
                 </ul>
                 
               </li>
+
+
+
+
+
+
+
+                </ul>                  
+              </li> 
+
+              
+
+              
 
 
               <!-- Inventari. Informes -->

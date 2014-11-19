@@ -36,6 +36,53 @@ class attendance_reports extends skeleton_main {
         
 	}
 
+    function get_all_incidents(){
+
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $all_incidents = array();
+        
+        $all_incidents = $this->attendance_model->get_all_incidents();
+       
+        echo '{
+           "aaData": ';
+
+            print_r(json_encode($all_incidents));
+
+        echo '}';
+    
+    }
+
+    function attendance_reports_all_incidents($academic_period_id = null) { 
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $active_menu = array();
+        $active_menu['menu']='#attendance_reports';
+        $active_menu['submenu1']='#attendance_reports_all_incidents';
+
+        $this->load_datatables_data($active_menu);
+
+        if ($academic_period_id == null) {
+            $academic_period_id = $this->attendance_model->get_current_academic_period_id();
+        }
+
+        $academic_periods = $this->attendance_model->get_all_academic_periods();
+
+        $data = array();
+
+        $data['academic_periods'] = $academic_periods;
+        $data['selected_academic_period_id'] = $academic_period_id;
+
+        $this->load->view('attendance_reports/attendance_reports_all_incidents.php',$data);     
+        $this->load_footer(); 
+    }
+
     /* ASSISTÈNCIA - INFORMES DE CENTRE */
 
     function all_attendance_incidents_at_day_and_hour_report() { // Incidències del centre del dia d hora h
