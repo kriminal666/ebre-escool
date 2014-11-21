@@ -105,7 +105,7 @@
 
                 <div class="widget-box span4 collapsed">
                         <div class="widget-header widget-header-small header-color-green">
-                          <h6>Data i franja horaria: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date . " " . $selected_time_slot;?></h6>
+                          <h6>Data i franja: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date_alt . " " . $selected_time_slot;?></h6>
 
                           <span class="widget-toolbar">
                             <a href="#" data-action="collapse">
@@ -120,12 +120,12 @@
 
                         <div class="widget-body">
                           <div class="widget-main">
-                            <label for="id-date-picker-1"><span class="input-group-addon">
+                            <label for="id-date-picker-1_label"><span class="input-group-addon">
                                     <i class="icon-calendar bigger-110"></i>
                                   </span>Escolliu la data:</label>
 
                                 <div class="input-group">                                  
-                                  <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" value="<?php echo $check_attendance_date;?>" /> (Pendent implementar)                                 
+                                  <input class="form-control date-picker" id="datepicker" type="text" data-date-format="dd/mm/yyyy" value="<?php echo $check_attendance_date_alt;?>" /> 
                                 </div> 
                             
 
@@ -343,7 +343,7 @@
     </div>
     <i class="icon-double-angle-right"></i> 
     <div class="inline position-relative">
-              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" id="selected_classroom_group_id" selected_classroom_group_id="<?php echo $selected_classroom_group_key;?>">
                             <?php echo $selected_classroom_group_shortname;?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
@@ -362,7 +362,7 @@
     </div>
     <i class="icon-double-angle-right"></i> 
     <div class="inline position-relative">
-              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+              <button id="current_selected_study_module" study_module_id="<?php echo $selected_study_module_key ;?>" class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_study_module_shortname;?>
                             <i class="icon-angle-down icon-on-right bigger-110"></i>
                           </button>
@@ -379,14 +379,19 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+    <i class="icon-double-angle-right"></i>
+    <button id="current_selected_lesson_id" lesson_id="<?php echo $selected_lesson_id ;?>" class="btn btn-minier btn-primary">
+      <?php echo $selected_lesson_id;?>
+    </button>
+                           
 
     <i class="icon-user" style="margin-left:50px;"></i> Alumnes: <span title="Alumnes totals de tots els tipus"><?php echo " " . $total_number_of_students;?></span>  | <span title="Alumnes matrículats al grup"><?php echo " " . $official_students_in_group_num;?></span> | <span title="Alumnes ocultson"><?php echo " " . $hidden_students_in_group_num;?></span>
 
-    <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date?>
+    <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date_alt;?>
     <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables/' . $selected_classroom_group_key) ?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar" style="margin-left:50px;"></i> Horari de grup</a>
 
     <div class="inline position-relative" style="float:right;color:#555;">
-              Professor/a: <span title="<?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " | " . $teacher_id  . " )";?>"><strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong></span> | 
+              Professor/a: <span id ="current_selected_teacher" teacher_code="<?php echo $teacher_code;?>" title="<?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " | " . $teacher_id  . " )";?>"><strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong></span> | 
               Professors/es del grup: 
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_group_teacher;?>
@@ -1130,6 +1135,34 @@ jQuery(function($) {
     });
         
   })
+
+  $("#datepicker").change(function(){
+    
+    selected_classroom_group_id  = $("#selected_classroom_group_id").attr("selected_classroom_group_id");
+    selected_teacher_code  = $("#current_selected_teacher").attr("teacher_code");
+    selected_study_module_id  = $("#current_selected_study_module").attr("study_module_id");
+    selected_lesson_id  = $("#current_selected_lesson_id").attr("lesson_id");
+    selected_date = $("#datepicker").val();
+
+    //DEBUG:
+    /*
+    console.debug("selected_classroom_group_id: " + selected_classroom_group_id);
+    console.debug("selected_teacher_code: " + selected_teacher_code);
+    console.debug("selected_study_module_id: " + selected_study_module_id);
+    console.debug("selected_lesson_id: " + selected_lesson_id);
+    console.debug("Data changed to: " + selected_date);
+    */
+
+    var pathArray = window.location.pathname.split( '/' );
+    var secondLevelLocation = pathArray[1];
+    var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance_classroom_group";
+    
+    //alert(baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date);
+    
+    window.location.href = baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date;
+
+
+  });
 
   
   $('.image-thumbnail').fancybox(); 

@@ -913,13 +913,16 @@ class attendance extends skeleton_main {
 	    //isodate format: YYYY-MM-DD
 		$iso_date = null;
 		$data['check_attendance_date'] = "";
+		$data['check_attendance_date_alt'] = "";
 
 	    if ( ($day != null) && ($month != null) && ($year != null) ) {
 	    	$data['check_attendance_date'] = $day . "/" . $month . "/" .$year;
+	    	$data['check_attendance_date_alt'] = $day . "/" . $month . "/" .$year_alt;
 	    	$iso_date = $year . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    	$iso_date_alt = $year_alt . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    } else {
 	    	$data['check_attendance_date'] = date('d/m/Y');	
+	    	$data['check_attendance_date_alt'] = $day . "/" . $month . "/" .$year_alt;
 	    	$iso_date_alt = $year_alt . "-" .  sprintf('%02s', $month) . "-" . sprintf('%02s', $day);
 	    }
 
@@ -991,8 +994,9 @@ class attendance extends skeleton_main {
 			//TODO: Get default study_module_id
 			$selected_study_module_id = 274;	
 		}	else {
-			//Check if teacher could use this group
+			//Check if teacher could use this study_module0
 			//TODO
+			//Be careful with tutors that can user all study modules of mentored groups!
 		}
 
 		$data['selected_study_module_key']= $selected_study_module_id;
@@ -1022,7 +1026,13 @@ class attendance extends skeleton_main {
 
 	    $time_slots = $this->attendance_model->getTimeSlotsByClassgroupId($selected_group_id,$day_of_week_number);
 
-	    $selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+	    $data['selected_lesson_id'] = $lesson_id;
+	    
+	    $selected_time_slot_id = 0;
+	    if ($lesson_id != 0) {
+	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+	    } 
+	    
 	    $selected_time_slot_key = $this->getTimeSlotKeyByTimeSlotId($time_slots,$selected_time_slot_id);
 
 		$data['selected_time_slot_key'] = $selected_time_slot_key;		
