@@ -1646,6 +1646,37 @@ function get_current_academic_period() {
 		return false;	
 	}
 
+	public function get_first_classroom_group_id_ismentor ($teacher_id,$academic_period=null ) {
+		if ($academic_period == null) {
+			$current_academic_period_id = $this->get_current_academic_period_id();
+		} else {
+			$current_academic_period_id = $academic_period;
+		}
+		
+
+		/*
+		SELECT classroom_group_academic_periods_mentorId
+		FROM `classroom_group_academic_periods` 
+		WHERE `classroom_group_academic_periods_mentorId`=71 AND `classroom_group_academic_periods_academic_period_id`=5
+		*/
+
+		$this->db->select('classroom_group_academic_periods_classroom_group_id');
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->where('classroom_group_academic_periods_mentorId',$teacher_id);	
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$current_academic_period_id);	
+
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			return $row->classroom_group_academic_periods_classroom_group_id;
+		}
+
+		return false;
+		
+	}
+
 
 	public function is_mentor($teacher_id,$academic_period=null) {
 
@@ -1676,40 +1707,6 @@ function get_current_academic_period() {
 
 		return false;
 	}
-
-
-	function get_all_groups($orderby="asc",$academic_period_id = null) {
-
-		if ($academic_period_id == null) {
-			$academic_period_id = $this->get_current_academic_period_id();
-		}
-
-		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
-
-		$this->db->from('classroom_group_academic_periods');
-		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
-		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
-
-		$this->db->order_by('classroom_group_code', $orderby);
-		       
-        $query = $this->db->get();
-
-    	//echo $this->db->last_query();
-		
-		if ($query->num_rows() > 0) {
-
-			$groups_array = array();
-
-			foreach ($query->result_array() as $row)	{
-   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
-   				//$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
-			}
-			return $groups_array;
-		}			
-		else
-			return false;
-	}	
-
 
 	function get_teacher_departmentInfo($teacherId,$orderby="asc") {
 
@@ -1954,7 +1951,69 @@ function get_current_academic_period() {
 	}
 
 
+	function get_all_groups_by_mentor_id($academic_period_id, $mentor_id,$orderby = "ASC") {
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
 
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('classroom_group_academic_periods_mentorId',$mentor_id);
+
+		$this->db->order_by('classroom_group_code', $orderby);
+		       
+        $query = $this->db->get();
+
+    	//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
+   				//$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}
+
+	function get_all_groups($orderby="asc",$academic_period_id = null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		$this->db->select('classroom_group_id,classroom_group_code,classroom_group_shortName,classroom_group_name');
+
+		$this->db->from('classroom_group_academic_periods');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+
+		$this->db->order_by('classroom_group_code', $orderby);
+		       
+        $query = $this->db->get();
+
+    	//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0) {
+
+			$groups_array = array();
+
+			foreach ($query->result_array() as $row)	{
+   				$groups_array[$row['classroom_group_id']] = $row['classroom_group_code'] . " - " . $row['classroom_group_name'] . "( " . $row['classroom_group_shortName'] . " )";
+   				//$groups_array[$row['classroom_group_code']] = $row['classroom_group_code'] . " - " . $row['classroom_group_shortName'];
+			}
+			return $groups_array;
+		}			
+		else
+			return false;
+	}	
 
 	function get_teacher_ids_and_names($teacher_code,$academic_period_id=null,$orderby="asc", $id_is_teacher_id = false) {
 

@@ -637,7 +637,11 @@ class attendance extends skeleton_main {
 	}
 
 	
-	public function mentoring_groups ( $class_room_group_id = null, $teacher_code = null ) {
+	public function mentoring_groups ( $class_room_group_id = null, $teacher_code = null, $academic_period_id = null ) {
+
+		if ($academic_period_id == null ) {
+			$academic_period_id = $this->attendance_model->get_current_academic_period_id();
+		}
 
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
@@ -702,22 +706,38 @@ class attendance extends skeleton_main {
 		$default_classroom_group_id = 0;
 		if ($is_mentor) {
 			$mentor_id = $this->session->userdata('teacher_id');	
+			$default_classroom_group_id = $this->attendance_model->get_first_classroom_group_id_ismentor($this->session->userdata('teacher_id'));
+		} else {
 			$default_classroom_group_id = $this->attendance_model->get_first_classroom_group_id($this->session->userdata('teacher_id'));
 		}
+
+
 		
 		$data['is_mentor'] = $is_mentor;
 		$data['mentor_id'] = $mentor_id;
 
 		$data['default_classroom_group_id'] = $default_classroom_group_id;
-
-		$data['check_attendance_date'] = date('d/m/Y');
-
 		if ( $class_room_group_id != null ) {
 			$data['default_classroom_group_id'] = $class_room_group_id;			
 		}
+
+		$data['check_attendance_date'] = date('d/m/Y');
+
 		
-		//$data['classroom_groups'] = array ( 1 => "Grup1" , 2 => "Grup 2", 3 => "Grup 3");
-		$data['classroom_groups'] = $this->attendance_model->get_all_groups();
+
+		$all_classgroups = array();
+
+		if ($user_is_admin) { 
+			$all_classgroups = $this->attendance_model->get_all_groups();
+		} else {
+			if ($is_mentor) {
+				$all_classgroups = $this->attendance_model->get_all_groups_by_mentor_id($academic_period_id,$mentor_id); 
+			}
+		}
+
+		$data['classroom_groups'] = $all_classgroups;		
+		
+		$data['classroom_groups'] = 
 
 		$this->load->view('mentoring_groups',$data);	
 
