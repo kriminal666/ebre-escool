@@ -637,13 +637,54 @@ class attendance extends skeleton_main {
 	}
 
 	
-	public function mentoring_groups ( $class_room_group_id = null ) {
+	public function mentoring_groups ( $class_room_group_id = null, $teacher_code = null ) {
 
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
 		$active_menu['submenu1']='#mentoring_groups';
 
     	$this->check_logged_user();
+
+    	$user_is_admin = $this->ebre_escool->user_is_admin();
+    	$data['user_is_admin'] = $user_is_admin;
+
+    	$person_id = $this->session->userdata('person_id');
+
+    	$user_is_a_teacher = $this->attendance_model->is_user_a_teacher($person_id);
+		$data['is_teacher'] = $user_is_a_teacher;
+
+		if ($user_is_a_teacher) {
+			$user_teacher_code = $this->attendance_model->get_teacher_code_by_personid($person_id);        
+        	$user_teacher_id = $this->attendance_model->get_teacher_id_by_personid($person_id);
+		}
+        
+        $teacher_id = null;
+        if ($teacher_code == null) {
+            $teacher_id = $user_teacher_id;
+            $teacher_code = $user_teacher_code;
+        } else {
+            if (!$user_is_admin) { 
+                $teacher_id = $user_teacher_id; 
+                $teacher_code = $user_teacher_code;
+            } 
+        }
+    	
+    	$teachers_array = array();
+    	$data['teachers'] = array();
+    	if ($user_is_admin) {
+            //Load teachers from Model
+            $teachers_array = $this->attendance_model->get_all_teachers_ids_and_names();
+            $data['teachers'] = $teachers_array;
+        } else {
+            //Show Only one teacher
+            $teachers_array = $this->attendance_model->get_teacher_ids_and_names($teacher_code);
+            $data['teachers'] = $teachers_array;
+        }
+
+        //var_export($data['teachers']);
+
+        $data['default_teacher_code'] = $teacher_code;
+        $data['default_teacher_id'] = $teacher_id;
 
 		$header_data = $this->load_header_data($active_menu);
 
@@ -654,9 +695,19 @@ class attendance extends skeleton_main {
 		//Check if user is manager -> Show all groups
 
 		// IF USER IS NOT MANAGER -> IS MENTOR? -> SHOW GROUPS user is mentor
+		$is_mentor = $this->attendance_model->is_mentor($this->session->userdata('teacher_id'));
 
-		$data = array();
-		$data['default_classroom_group_id'] = 2;
+		$mentor_id = 0;
+		$default_classroom_group_id = 0;
+		if ($is_mentor) {
+			$mentor_id = $this->session->userdata('teacher_id');	
+			$default_classroom_group_id = $this->attendance_model->get_first_classroom_group_id($this->session->userdata('teacher_id'));
+		}
+		
+		$data['is_mentor'] = $is_mentor;
+		$data['mentor_id'] = $mentor_id;
+
+		$data['default_classroom_group_id'] = $default_classroom_group_id;
 
 		$data['check_attendance_date'] = date('d/m/Y');
 
@@ -1033,9 +1084,15 @@ class attendance extends skeleton_main {
 	    	$data['selected_time_slot_id'] = $selected_time_slot_id;
 	    	$data['selected_time_slot'] = $time_slots[$selected_time_slot_id]->range;
 	    } else {
-	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
-	    	$data['selected_time_slot_id'] = $selected_time_slot_id;
-	    	$data['selected_time_slot'] = $time_slots[$selected_time_slot_id]->range;
+	    	if ($lesson_id != 0) {
+	    		$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+		    	$data['selected_time_slot_id'] = $selected_time_slot_id;
+		    	$data['selected_time_slot'] = $time_slots[$selected_time_slot_id]->range;	
+	    	} else {
+	    		$data['selected_time_slot_id'] = null;
+		    	$data['selected_time_slot'] = null;	
+	    	}
+	    	
 	    }
 
 		if (is_array($time_slots)) {

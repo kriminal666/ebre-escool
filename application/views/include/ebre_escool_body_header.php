@@ -430,7 +430,7 @@
             <ul class="submenu">
               <?php if ( $this->session->userdata('is_student') || ($this->session->userdata('is_admin'))) : ?>
 
-                <li id="mentoring_groups">
+                <li id="mentoring_check_attendance">
                     <a href="#">
                       <i class="icon-double-angle-right"></i>
                       <?php echo "Consulta faltes. Pendent.";?>
@@ -441,7 +441,7 @@
               <?php if ( $this->session->userdata('is_teacher') || ($this->session->userdata('is_admin'))) : ?>
                   
                   <!-- Llistes de classe -->
-                  <li id="mentoring_groups">
+                  <li id="mentoring_classlists">
                     <a href="<?=base_url()?>index.php/reports/mentoring_classlists">
                       <i class="icon-double-angle-right"></i>
                       <?php echo lang('mentoring_classlists');?>
