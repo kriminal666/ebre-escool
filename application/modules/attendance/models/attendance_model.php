@@ -1176,7 +1176,6 @@ class attendance_model  extends CI_Model  {
 			
 			$time_slots = array();
 
-			$i=1;
 			$results_array = $query->result_array();
 			if ( is_array($results_array) ) {
 				foreach ( $results_array as $row)	{
@@ -1208,8 +1207,7 @@ class attendance_model  extends CI_Model  {
 					}
 					
 
-					$time_slots[$i] = $time_slot;
-					$i++;
+					$time_slots[$time_slot->id] = $time_slot;
 				}	
 			}
 			

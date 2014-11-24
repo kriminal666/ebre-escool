@@ -801,13 +801,8 @@ class attendance extends skeleton_main {
 		return -1;
     }
 
-	/*$selected_time_slot_id
-	    	$time_slots
-
-	    	$selected_time_slot_key = */
-
 	public function check_attendance_classroom_group( $selected_group_id = 0, $teacher_code = null , $selected_study_module_id = 0, 
-		$lesson_id = 0, $day = 0, $month = 0, $year = 0 ) {
+		$lesson_id = 0, $day = 0, $month = 0, $year = 0, $selected_time_slot_id = 0 ) {
 
 		$this->check_logged_user();	
 		$active_menu = array();
@@ -1028,15 +1023,20 @@ class attendance extends skeleton_main {
 
 	    $data['selected_lesson_id'] = $lesson_id;
 	    
-	    $selected_time_slot_id = 0;
-	    if ($lesson_id != 0) {
-	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
-	    } 
-	    
-	    $selected_time_slot_key = $this->getTimeSlotKeyByTimeSlotId($time_slots,$selected_time_slot_id);
+	    if ($selected_time_slot_id == 0) {
+	    	if ($lesson_id != 0) {
+		    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+		    }	
+	    }
 
-		$data['selected_time_slot_key'] = $selected_time_slot_key;		
-		$data['selected_time_slot_id'] = $selected_time_slot_id;
+	    if (array_key_exists($selected_time_slot_id, $time_slots)) {
+	    	$data['selected_time_slot_id'] = $selected_time_slot_id;
+	    	$data['selected_time_slot'] = $time_slots[$selected_time_slot_id]->range;
+	    } else {
+	    	$selected_time_slot_id = $this->attendance_model->getTimeSlotKeyFromLessonId($lesson_id);
+	    	$data['selected_time_slot_id'] = $selected_time_slot_id;
+	    	$data['selected_time_slot'] = $time_slots[$selected_time_slot_id]->range;
+	    }
 
 		if (is_array($time_slots)) {
 	    	$data['time_slots'] = $time_slots;
@@ -1074,8 +1074,6 @@ class attendance extends skeleton_main {
 	    	    
 		//TODO: select current user (sessions user as default teacher)
 	    $data['default_teacher'] = $teacher_code;
-
-	    $data['selected_time_slot'] = $time_slots[$selected_time_slot_key]->range;
 
 	    $data['total_number_of_students'] = count($all_students_in_group);
 

@@ -134,14 +134,14 @@
                               </span>Escolliu la franja horaria</label>
 
                             <div class="input-group bootstrap-timepicker">
-                              <select id="time_slots" data-placeholder="Escolliu la franja horaria">                                
+                              <select id="time_slots_select" data-placeholder="Escolliu la franja horaria">                                
                                 <option value=""> </option>
                                 <?php foreach ($time_slots as $time_slot_key => $time_slot): ?>
-                                  <option value="<?php echo $time_slot_key;?>" <?php if ($selected_time_slot_key == $time_slot_key ) { echo 'selected="selected"';};?>>
+                                  <option value="<?php echo $time_slot_key;?>" <?php if ($selected_time_slot_id == $time_slot_key ) { echo 'selected="selected"';};?>>
                                     <?php echo $time_slot->range;?>
                                   </option>
                                 <?php endforeach;?>
-                              </select>  (Pendent implementar)
+                              </select>
 
                               
                             </div>
@@ -1099,7 +1099,7 @@ jQuery(function($) {
   //$('[data-rel=popover]').popover({html:true});        
 
   //Jquery select plugin: http://ivaynberg.github.io/select2/
-  //$("#time_slots").select2();  
+  //"#time_slots").select2();  
 
   //***********************
   //* Datepicker         **
@@ -1143,6 +1143,7 @@ jQuery(function($) {
     selected_study_module_id  = $("#current_selected_study_module").attr("study_module_id");
     selected_lesson_id  = $("#current_selected_lesson_id").attr("lesson_id");
     selected_date = $("#datepicker").val();
+    selected_time_slot_id = $("#time_slots_select").val();
 
     //DEBUG:
     /*
@@ -1153,13 +1154,45 @@ jQuery(function($) {
     console.debug("Data changed to: " + selected_date);
     */
 
+    console.debug("selected_time_slot_id: " + selected_time_slot_id);
+
+    var pathArray = window.location.pathname.split( '/' );
+    var secondLevelLocation = pathArray[1];
+    var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance_classroom_group";
+    
+    //alert(baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date + "/" + selected_time_slot_id);
+    
+    window.location.href = baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date + "/" + selected_time_slot_id;
+
+
+  });
+
+  $("#time_slots_select").change(function(){
+    
+    selected_classroom_group_id  = $("#selected_classroom_group_id").attr("selected_classroom_group_id");
+    selected_teacher_code  = $("#current_selected_teacher").attr("teacher_code");
+    selected_study_module_id  = $("#current_selected_study_module").attr("study_module_id");
+    selected_lesson_id  = $("#current_selected_lesson_id").attr("lesson_id");
+    selected_date = $("#datepicker").val();
+    selected_time_slot_id = $("#time_slots_select").val();
+
+    //DEBUG:
+    /*
+    console.debug("selected_classroom_group_id: " + selected_classroom_group_id);
+    console.debug("selected_teacher_code: " + selected_teacher_code);
+    console.debug("selected_study_module_id: " + selected_study_module_id);
+    console.debug("selected_lesson_id: " + selected_lesson_id);
+    console.debug("Data changed to: " + selected_date);
+    */
+    console.debug("selected_time_slot_id: " + selected_time_slot_id);
+
     var pathArray = window.location.pathname.split( '/' );
     var secondLevelLocation = pathArray[1];
     var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/check_attendance_classroom_group";
     
     //alert(baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date);
     
-    window.location.href = baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date;
+    window.location.href = baseURL + "/" + selected_classroom_group_id + "/" + selected_teacher_code +  "/" + selected_study_module_id +  "/" + selected_lesson_id +  "/" + selected_date + "/" + selected_time_slot_id
 
 
   });
