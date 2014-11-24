@@ -681,7 +681,7 @@ class attendance extends skeleton_main {
             $data['teachers'] = $teachers_array;
         } else {
             //Show Only one teacher
-            $teachers_array = $this->attendance_model->get_teacher_ids_and_names($teacher_code);
+            $teachers_array = $this->attendance_model->get_teacher_ids_and_names_by_teacher_code($teacher_code);
             $data['teachers'] = $teachers_array;
         }
 

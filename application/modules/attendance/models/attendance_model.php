@@ -2015,7 +2015,7 @@ function get_current_academic_period() {
 			return false;
 	}	
 
-	function get_teacher_ids_and_names($teacher_code,$academic_period_id=null,$orderby="asc", $id_is_teacher_id = false) {
+	function get_teacher_ids_and_names_by_teacher_code($teacher_code,$academic_period_id=null,$orderby="asc", $id_is_teacher_id = false) {
 
 		if ($academic_period_id == null) {
 			$academic_period_id = $this->get_current_academic_period_id();
@@ -2026,6 +2026,39 @@ function get_current_academic_period() {
         $this->db->join('teacher', 'teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id');
         $this->db->join('person', 'person.person_id = teacher.teacher_person_id');
 		$this->db->where('teacher_academic_periods_code', $teacher_code);
+		$this->db->where('teacher_academic_periods_academic_period_id', $academic_period_id);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$teachers_array = array();
+
+			foreach ($query->result_array() as $row)	{
+				$idx = $row['teacher_academic_periods_code']; 
+				if ($id_is_teacher_id) {
+					$idx = $row['teacher_id']; 
+				}
+   				$teachers_array[$idx] = $row['teacher_academic_periods_code'] . " - " . $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName'] . " - " . $row['person_official_id'] . " (" . $row['teacher_id'] . ")";
+			}
+			return $teachers_array;
+		}			
+		else
+			return false;
+	}
+
+	function get_teacher_ids_and_names($teacher_id,$academic_period_id=null,$orderby="asc", $id_is_teacher_id = false) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+		
+        $this->db->select('teacher_academic_periods_code, person_sn1, person_sn2, person_givenName, person_id, person_official_id,teacher.teacher_id');
+        $this->db->from('teacher_academic_periods');
+        $this->db->join('teacher', 'teacher.teacher_id = teacher_academic_periods.teacher_academic_periods_teacher_id');
+        $this->db->join('person', 'person.person_id = teacher.teacher_person_id');
+		$this->db->where('teacher.teacher_id', $teacher_id);
 		$this->db->where('teacher_academic_periods_academic_period_id', $academic_period_id);
 
 		$query = $this->db->get();

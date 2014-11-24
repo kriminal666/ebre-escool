@@ -57,6 +57,9 @@
                 No passeu faltes fins que no rebeu un correu conforme ja està activada la funcionalitat. Estem treballant per posar en marxa aquesta funcionalitat.
               </div>
 
+<!-- DEBUG-->
+<?php //echo "default_teacher: " . $default_teacher . "<br/>";?>
+
 <div class="row-fluid">
           <div class="span4"></div>
 <div class="span4">
