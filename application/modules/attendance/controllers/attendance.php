@@ -684,6 +684,7 @@ class attendance extends skeleton_main {
         //var_export($data['teachers']);
 
         $data['default_teacher_code'] = $teacher_code;
+        $data['default_teacher'] = $teacher_code;
         $data['default_teacher_id'] = $teacher_id;
 
 		$header_data = $this->load_header_data($active_menu);
