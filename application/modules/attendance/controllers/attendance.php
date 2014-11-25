@@ -99,7 +99,7 @@ class attendance extends skeleton_main {
             base_url('assets/css/dataTables.colReorder.css'));
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
-            base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/css/ColVis.css'));
+            base_url('assets/css/dataTables.colVis.css'));
 
 /*        
         $header_data= $this->add_css_to_html_header_data(
@@ -186,7 +186,7 @@ class attendance extends skeleton_main {
                 base_url('assets/js/dataTables.colReorder.js'));
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
-                base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/js/ColVis.min.js'));
+                base_url('assets/js/dataTables.colVis.js'));
 
 
         $header_data= $this->add_javascript_to_html_header_data(
