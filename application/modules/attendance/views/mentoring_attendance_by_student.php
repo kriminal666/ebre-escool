@@ -93,14 +93,12 @@
     <!-- DEBUG --> 
     <?php //var_export($students);?>
 
+    <div class="table-header" style="text-align:center;">
+      Incidències
+    </div>
     <table class="table table-striped table-bordered table-hover table-condensed" id="student_incidents">
 
        <thead style="background-color: #d9edf7;">
-        <tr>
-          <td colspan="12" style="text-align: center;"> <h4>
-              Incidències
-            </h4></td>
-        </tr>
         <tr>      
            <th><?php echo lang('attendance_reports_student_incidents_id')?></th>
            <th><?php echo lang('attendance_reports_student_incidents_date')?></th>
@@ -240,7 +238,7 @@ $(function() {
                                   }},
                       ],
                   "aLengthMenu": [[10, 25, 50,100,200,500,1000,5000,-1], [10, 25, 50,100,200,500,1000,5000,"Totes"]],
-                  "sDom": 'RTC<"clear">lfrtip', 
+                  "sDom": 'TRfC<"clear">lrtip', 
                   "oTableTools": {
                     "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
