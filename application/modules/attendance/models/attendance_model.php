@@ -2119,7 +2119,7 @@ function get_current_academic_period() {
 				$student->sn1 = $row['person_sn1'];
 				$student->sn2 = $row['person_sn2'];
 				$student->fullname = $row['person_givenName'] .' '.$row['person_sn1'].' '.$row['person_sn2'] ;
-				$student->fullname_alt = $row['person_sn1'] .' '.$row['person_sn1'].', '.$row['person_givenName'] . " - " . $row['person_official_id'] . " ( " . $row['person_id'] . " )" ;
+				$student->fullname_alt = $row['person_sn1'] .' '.$row['person_sn2'].', '.$row['person_givenName'] . " - " . $row['person_official_id'] . " ( " . $row['person_id'] . " )" ;
 				$student->person_id = $row['person_id'];
 				$student->official_id = $row['person_official_id'];
 
