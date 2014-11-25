@@ -88,6 +88,89 @@
      </form>
     </div>
 
+
+
+
+
+
+                  <div class="widget-box">
+                    <div class="widget-header widget-header-flat widget-header-small">
+                      <h5>
+                        <i class="icon-signal"></i>
+                        <span class="green">Dades glogals Alumne. </span> <span class="green" id="selected_student_title"></span>
+                      </h5>
+
+                      <div class="widget-toolbar no-border">
+                        <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                          Setmana actual
+                          <i class="icon-angle-down icon-on-right"></i>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-info pull-right dropdown-caret">
+                          <li class="active">
+                            <a href="#">Setmana actual</a>
+                          </li>
+
+                          <li>
+                            <a href="#">Setmana anterior</a>
+                          </li>
+
+                          <li>
+                            <a href="#">Més actual</a>
+                          </li>
+
+                          <li>
+                            <a href="#">Altres mesos...</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <div id="piechart-placeholder"></div>
+
+                        <div class="hr hr8 hr-double"></div>
+
+                        <div class="clearfix">
+                          <div class="grid3">
+                            <span class="grey">
+                              <i class="icon-bell icon-2x red"></i>
+                              &nbsp; Incidències totals
+                            </span>
+                            <h4 class="bigger pull-right"><span title="TODO" id="total_incidents_current_academic_period"></span></h4>
+                          </div>
+
+                          <div class="grid3">
+                            <span class="grey">
+                              <i class="icon-bell icon-2x purple"></i>
+                              &nbsp; Incidències totals per tipus
+                            </span>
+                            <h4 class="bigger pull-right"><span title="TODO" id="total_incidents_current_academic_period_by_type"></span></h4>
+                          </div>
+
+                          <div class="grid3">
+                            <span class="grey">
+                              <i class="icon-bell icon-2x red"></i>
+                              &nbsp; <span title="TODO" id="total_incidents_current_academic_period_2"></span>
+                            </span>
+                            <h4 class="bigger pull-right">1,050</h4>
+                          </div>
+                        </div>
+                      </div><!-- /widget-main -->
+                    </div><!-- /widget-body -->
+                  </div><!-- /widget-box -->
+
+
+
+
+
+
+
+
+
+
+
     <center><i id="spinner" class="icon-spinner icon-spin orange bigger-300" style="display: none;"></i></center>
 
     <!-- DEBUG --> 
@@ -140,6 +223,68 @@ function get_selected_student() {
   return selected_student;
 }
 
+function reload_incidents_statistics_by_student() {
+  var selected_student = $("#selected_student").select2("val");
+  console.debug("selected_student 111: " + selected_student);
+  var student_id = selected_student;
+  //AJAX. get_incidents_statistics_by_student
+    $.ajax({
+      url:'<?php echo base_url("index.php/attendance/get_incidents_statistics_by_student");?>',
+      type: 'post',
+      datatype: 'json',
+      data: {
+          student_id : student_id
+      },
+      statusCode: {
+        404: function() {
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/attendance/get_incidents_statistics_by_student' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        },
+        500: function() {
+          $("#response").html('A server-side error has occurred.');
+          $.gritter.add({
+            title: 'Error connectant amb el servidor!',
+            text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/attendance/get_incidents_statistics_by_student' ,
+            class_name: 'gritter-error gritter-center'
+          });
+        }
+      },
+      error: function() {
+        $.gritter.add({
+            title: 'Error!',
+            text: 'Ha succeït un error!' ,
+            class_name: 'gritter-error gritter-center'
+          });
+      },
+    }).done(function(data){
+      data = $.parseJSON(data);
+      
+      console.debug("Done!");
+      //console.debug("totalIncidents: " + data.totalIncidents  );
+      console.debug("totalIncidents_current_academic_period: " + data.totalIncidents_current_academic_period );
+
+      //$("#total_incidents").html(data.totalIncidents);
+
+      $("#total_incidents_current_academic_period").html(data.totalIncidents_current_academic_period);
+
+      var str_total_incidents_current_academic_period_by_type="";
+      $.each(data.incident_types, function( index, value ) {
+        console.debug( value.shortName + " (" + index + ")" + ": " + value.subtotal );
+        str_total_incidents_current_academic_period_by_type = str_total_incidents_current_academic_period_by_type + value.shortName + ": " + value.subtotal + " ";
+      });
+
+      $("#total_incidents_current_academic_period_by_type").html(str_total_incidents_current_academic_period_by_type);
+
+      //$("#").html(totalIncidents_current_academic_period);
+    });
+
+}
+
+
+
 
 $(function() { 
 
@@ -159,7 +304,12 @@ $(function() {
 
   $('#selected_student').on("change", function(e) {  
         var selected_student = $("#selected_student").select2("val");
+        var selected_student_text = $("#selected_student").select2('data').text;
         console.debug("selected_student onchange: " + selected_student);
+
+        $("#selected_student_title").html(selected_student_text);
+
+        reload_incidents_statistics_by_student();
 
         //Reload datatables
         console.debug(student_incidents_table);

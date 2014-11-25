@@ -582,9 +582,19 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function read_test_incidents_managment_by_ajax () {	
+	public function get_incidents_statistics_by_student($student_id=null) {
+		if  ($student_id==null) {
+			if(isset($_POST['student_id'])) {
+	        	$student_id = $_POST['student_id'];
+			}
+		}
 
-		echo "hola!";
+		$result = new stdClass();
+		if ($student_id != null) {
+			$result = $this->attendance_model->get_incidents_statistics_by_student($student_id);	
+		}
+
+		print_r(json_encode($result));
 	}
 
 	public function create_test_incidents_managment_by_ajax() {
@@ -592,6 +602,9 @@ class attendance extends skeleton_main {
         $this->load->view('create_test_incidents_managment_by_ajax.php',$data); 
 	}
 
+	/*
+	OBSOLET!
+	*/
 	public function insert_incidents() {
 
 		if (!$this->skeleton_auth->logged_in())	{
@@ -991,6 +1004,9 @@ class attendance extends skeleton_main {
 
         $students_array = $this->attendance_model->get_students($academic_period_id);
         $data['students'] = $students_array;
+
+        $incident_types = $this->attendance_model->get_incident_types();
+        $data['incident_types'] = $incident_types;
 		
 		$this->load->view('mentoring_attendance_by_student',$data);	
 

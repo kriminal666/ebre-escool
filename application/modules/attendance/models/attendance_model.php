@@ -121,6 +121,45 @@ class attendance_model  extends CI_Model  {
 			return false;
 	}
 
+	function get_academic_period_by_period_id($academic_period_id) {
+		/*
+		SELECT academic_periods_id, academic_periods_shortname, academic_periods_name, academic_periods_alt_name, 
+		academic_periods_current, academic_periods_initial_date, academic_periods_final_date, academic_periods_entryDate, 
+		academic_periods_last_update, academic_periods_creationUserId, academic_periods_lastupdateUserId, 
+		academic_periods_markedForDeletion, academic_periods_markedForDeletionDate 
+		FROM academic_periods WHERE academic_periods_id = $academic_period_id
+		*/
+		$this->db->select('academic_periods_id, academic_periods_shortname, academic_periods_name, academic_periods_alt_name, 
+		academic_periods_current, academic_periods_initial_date, academic_periods_final_date, academic_periods_entryDate, 
+		academic_periods_last_update, academic_periods_creationUserId, academic_periods_lastupdateUserId, 
+		academic_periods_markedForDeletion, academic_periods_markedForDeletionDate');
+		$this->db->from('academic_periods');
+		$this->db->where('academic_periods_id',$academic_period_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			$academic_period = new stdClass();
+			$academic_period->id = $row->academic_periods_id;
+			$academic_period->shortname = $row->academic_periods_shortname;
+			$academic_period->name = $row->academic_periods_name;
+			$academic_period->current = $row->academic_periods_current;
+			$academic_period->initial_date = $row->academic_periods_initial_date;
+			$academic_period->final_date = $row->academic_periods_final_date;
+			$academic_period->entryDate = $row->academic_periods_entryDate;
+			$academic_period->last_update = $row->academic_periods_last_update;
+			$academic_period->creationUserId = $row->academic_periods_creationUserId;
+			$academic_period->lastupdateUserId = $row->academic_periods_lastupdateUserId;
+			$academic_period->markedForDeletion = $row->academic_periods_markedForDeletion;
+			$academic_period->markedForDeletionDate = $row->academic_periods_markedForDeletionDate;
+
+			return $academic_period;
+		}	
+		else 
+			return false;
+	}
+
 	function get_academic_period_name_by_period_id($academic_period_id) {
 
 		/*
@@ -3399,6 +3438,48 @@ function get_current_academic_period() {
 		}
 	}
 
+	function get_incident_types() {
+		/*
+		SELECT incident_type_id, incident_type_name, incident_type_shortName, incident_type_description, incident_type_code, 
+		incident_type_order, incident_type_entryDate, incident_type_last_update, incident_type_creationUserId, 
+		incident_type_lastupdateUserId, incident_type_markedForDeletion, incident_type_markedForDeletionDate 
+		FROM incident_type WHERE 1
+		*/
+
+		$this->db->select('incident_type_id, incident_type_name, incident_type_shortName, incident_type_description, incident_type_code, incident_type_order, incident_type_entryDate,
+		 incident_type_last_update, incident_type_creationUserId, incident_type_lastupdateUserId, incident_type_markedForDeletion, incident_type_markedForDeletionDate');
+		$this->db->from('incident_type');				
+
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		
+		if ($query->num_rows() > 0)	{
+			$incident_types = array();
+			foreach ($query->result() as $row)	{
+				$incident_type = new stdClass();
+
+				$incident_type->id = $row->incident_type_id;
+				$incident_type->name = $row->incident_type_name;
+				$incident_type->shortName = $row->incident_type_shortName;
+				$incident_type->description = $row->incident_type_description;
+				$incident_type->code = $row->incident_type_code;
+				$incident_type->order = $row->incident_type_order;
+				$incident_type->entryDate = $row->incident_type_entryDate;
+				$incident_type->last_update = $row->incident_type_last_update;
+				$incident_type->creationUserId = $row->incident_type_creationUserId;
+				$incident_type->lastupdateUserId = $row->incident_type_lastupdateUserId;
+				$incident_type->markedForDeletion = $row->incident_type_markedForDeletion;
+				$incident_type->markedForDeletionDate = $row->incident_type_markedForDeletionDate;
+				$incident_type->subtotal=0;
+
+				$incident_types[$row->incident_type_id] = $incident_type;
+			}	
+			return $incident_types;
+		} else {
+			return false;
+		}
+	}
+
 	function insert_incidence ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
 
 		$incident_type_id = $this->get_incident_type_id_by_incident_type_code($absence_type);
@@ -3665,6 +3746,58 @@ function get_current_academic_period() {
 			}
 		}
 		return $all_incidents_array;
+	}
+
+	function get_incidents_statistics_by_student($student_id,$academic_period_id=null) {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);
+
+		$academic_period_initialDate = $academic_period->initial_date;
+		$academic_period_finalDate = $academic_period->final_date;
+
+		$incident_types = $this->get_incident_types();
+
+		$result = new stdClass();
+
+		/*
+		SELECT incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id,
+		 incident_type, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
+		 incident_markedForDeletion, incident_markedForDeletionDate 
+	    FROM incident 
+	    WHERE incident_student_id=5400 AND incident_date BETWEEN '2014-09-01' AND '2015-07-31'
+		*/
+
+		$this->db->select('incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id,
+		 incident_type, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
+		 incident_markedForDeletion, incident_markedForDeletionDate');
+		$this->db->from('incident');
+		$this->db->where('incident.incident_student_id',$student_id);
+		$dateRange = "incident.incident_date BETWEEN '$academic_period_initialDate%' AND '$academic_period_finalDate%'";
+		$this->db->where($dateRange, NULL, FALSE);  
+			
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		$all_incidents_array = array();
+		if ($query->num_rows() > 0) {	
+			//$result->totalIncidents = 50;
+			$result->totalIncidents_current_academic_period = $query->num_rows();
+			foreach ($query->result() as $row)	{
+				$incident_type = $row->incident_type;
+
+				if ( array_key_exists($incident_type, $incident_types)){
+					$incident_types[$incident_type]->subtotal++;
+				}
+			}
+			$result->incident_types = $incident_types;
+		}
+
+		return $result;
+
 	}
 
 	function crud_incidence ($person_id,$time_slot_id,$day,$date,$study_submodule_id,$absence_type) {
