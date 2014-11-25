@@ -22,7 +22,7 @@
   <?php echo lang('mentoring_attendance_by_student');?>
   <small>
    <i class="icon-double-angle-right"></i>
-    <span id="title_teacher_name">TODO</span>
+    <span id="title_teacher_name"></span>
   </small>
  </h1>
 </div>
@@ -240,8 +240,9 @@ $(function() {
                                   }},
                       ],
                   "aLengthMenu": [[10, 25, 50,100,200,500,1000,5000,-1], [10, 25, 50,100,200,500,1000,5000,"Totes"]],
-                              "oTableTools": {
-                  "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
+                  "sDom": 'RTC<"clear">lfrtip', 
+                  "oTableTools": {
+                    "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
                                       {
                                               "sExtends": "copy",

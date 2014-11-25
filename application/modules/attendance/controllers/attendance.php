@@ -91,6 +91,16 @@ class attendance extends skeleton_main {
             $header_data,
             base_url('assets/grocery_crud/css/jquery_plugins/fancybox/jquery.fancybox.css'));
 
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/ColReorder/media/css/ColReorder.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/css/ColVis.css'));
+
 /*        
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
@@ -164,6 +174,19 @@ class attendance extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
             $header_data,
             "http://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js");
+
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/ZeroClipboard.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/ColReorder/media/js/ColReorder.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/grocery_crud/themes/datatables/extras/ColVis/media/js/ColVis.min.js'));
 
 
         $header_data= $this->add_javascript_to_html_header_data(
