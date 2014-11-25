@@ -1,8 +1,119 @@
+<div class="main-content" >
+
+	<div id="breadcrumbs" class="breadcrumbs">
+	 <script type="text/javascript">
+	  try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	 </script>
+	 <ul class="breadcrumb">
+	  <li>
+	   <i class="icon-home home-icon"></i>
+	   <a href="#">Home</a>
+	   <span class="divider">
+	    <i class="icon-angle-right arrow-icon"></i>
+	   </span>
+	  </li>
+	  <li class="active"><?php echo lang('reports');?></li>
+	 </ul>
+	</div>
+
+<div class="page-content">
+
+    <div class="page-header position-relative">
+                    <h1>
+                        <?php echo "Informes assistència";?>
+                        <small>
+                            <i class="icon-double-angle-right"></i>
+                            <?php echo "Totes les incidències";?>
+                        </small>
+                    </h1>
+    </div><!-- /.page-header -->
+
+    <div class="space-10"></div>
+
+    <div class="row-fluid">
+	 <!-- FILTER FORM -->    
+	 <div style="width:60%; margin:0px auto;">
+		
+
+		<form method="post" action="" class="form-horizontal" role="form">
+			<table class="table table-bordered" cellspacing="10" cellpadding="5">
+				<div class="form-group ui-widget">
+					<tr>
+						<td><label for="grup" style="width:150px;">Període acadèmic:</label></td>
+						<td>
+			                <select id="select_class_list_academic_period_filter">
+			                <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+			                  <?php if ( $selected_academic_period_id) : ?>
+			                    <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+			                      <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                    <?php else: ?>
+			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                    <?php endif; ?>
+			                  <?php else: ?>   
+			                      <?php if ( $academic_period_value->current == 1) : ?>
+			                        <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                      <?php else: ?>
+			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+			                      <?php endif; ?> 
+			                  <?php endif; ?> 
+			                <?php endforeach; ?>
+			                </select>    
+			              </td>
+   					</tr>	
+   					<!--
+					<tr>
+						<td><label for="grup">Selecciona el grup:</label></td>
+						<td><select data-place_holder="TODO" style="width:580px;" id="grup" name="grup" data-size="5" data-live-search="true">
+							<?php foreach ($grups as $key => $value) { ?>
+								<option value="<?php echo $key ?>" ><?php echo $value ?></option>
+							<?php } ?>
+							</select>	
+						</td>
+					</tr>	
+					-->
+				</div>
+			</table>
+		 </form>
+		</div>
+
+
+
+
+		<table class="table table-striped table-bordered table-hover table-condensed" id="all_incidents">
+
+			 <thead style="background-color: #d9edf7;">
+			  <tr>
+			    <td colspan="13" style="text-align: center;"> <h4>
+			        Totes les incidències
+			      </h4></td>
+			  </tr>
+			  <tr>      
+			  	 <th><?php echo lang('attendance_reports_all_incidents_id')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_date')?></th>
+           <th><?php echo lang('attendance_reports_all_incidents_student')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_day')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_time_slot')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_incident_type')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_study_submodule')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_study_module')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_classroom_group')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_entryDate')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_last_update')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_creationUserId')?></th>
+			     <th><?php echo lang('attendance_reports_all_incidents_lastupdateUserId')?></th>
+			  </tr>
+			 </thead>        
+		</table>	 
+    <br/><br/><br/><br/><br/>
+  </div>	
+</div>
+
+
 <script>
 $(function() { 
-	//$("#grup").select2(); 
+  //$("#grup").select2(); 
 
-	$("#select_class_list_academic_period_filter").select2();
+  $("#select_class_list_academic_period_filter").select2();
 
     $('#select_class_list_academic_period_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
@@ -16,7 +127,7 @@ $(function() {
 
 
     $('#all_incidents').dataTable( {
-    				  "bDestroy": true,
+              "bDestroy": true,
                       "sServerMethod": "POST",
                       "sAjaxSource": "<?php echo base_url('index.php/attendance/attendance_reports/get_all_incidents');?>", 
                       "fnServerParams": function ( aoData ) {
@@ -141,114 +252,3 @@ $(function() {
 
 });
 </script>
-<div class="main-content" >
-
-	<div id="breadcrumbs" class="breadcrumbs">
-	 <script type="text/javascript">
-	  try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-	 </script>
-	 <ul class="breadcrumb">
-	  <li>
-	   <i class="icon-home home-icon"></i>
-	   <a href="#">Home</a>
-	   <span class="divider">
-	    <i class="icon-angle-right arrow-icon"></i>
-	   </span>
-	  </li>
-	  <li class="active"><?php echo lang('reports');?></li>
-	 </ul>
-	</div>
-
-<div class="page-content">
-
-    <div class="page-header position-relative">
-                    <h1>
-                        <?php echo "Informes assistència";?>
-                        <small>
-                            <i class="icon-double-angle-right"></i>
-                            <?php echo "Totes les incidències";?>
-                        </small>
-                    </h1>
-    </div><!-- /.page-header -->
-
-    <div class="space-10"></div>
-
-    <div class="row-fluid">
-	 <!-- FILTER FORM -->    
-	 <div style="width:60%; margin:0px auto;">
-		
-
-		<form method="post" action="" class="form-horizontal" role="form">
-			<table class="table table-bordered" cellspacing="10" cellpadding="5">
-				<div class="form-group ui-widget">
-					<tr>
-						<td><label for="grup" style="width:150px;">Període acadèmic:</label></td>
-						<td>
-			                <select id="select_class_list_academic_period_filter">
-			                <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
-			                  <?php if ( $selected_academic_period_id) : ?>
-			                    <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
-			                      <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-			                    <?php else: ?>
-			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-			                    <?php endif; ?>
-			                  <?php else: ?>   
-			                      <?php if ( $academic_period_value->current == 1) : ?>
-			                        <option selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-			                      <?php else: ?>
-			                        <option value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-			                      <?php endif; ?> 
-			                  <?php endif; ?> 
-			                <?php endforeach; ?>
-			                </select>    
-			              </td>
-   					</tr>	
-   					<!--
-					<tr>
-						<td><label for="grup">Selecciona el grup:</label></td>
-						<td><select data-place_holder="TODO" style="width:580px;" id="grup" name="grup" data-size="5" data-live-search="true">
-							<?php foreach ($grups as $key => $value) { ?>
-								<option value="<?php echo $key ?>" ><?php echo $value ?></option>
-							<?php } ?>
-							</select>	
-						</td>
-					</tr>	
-					-->
-				</div>
-			</table>
-		 </form>
-		</div>
-
-
-
-
-		<table class="table table-striped table-bordered table-hover table-condensed" id="all_incidents">
-
-			 <thead style="background-color: #d9edf7;">
-			  <tr>
-			    <td colspan="13" style="text-align: center;"> <h4>
-			        Totes les incidències
-			      </h4></td>
-			  </tr>
-			  <tr>      
-			  	 <th><?php echo lang('attendance_reports_all_incidents_id')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_date')?></th>
-           <th><?php echo lang('attendance_reports_all_incidents_student')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_day')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_time_slot')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_incident_type')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_study_submodule')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_study_module')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_classroom_group')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_entryDate')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_last_update')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_creationUserId')?></th>
-			     <th><?php echo lang('attendance_reports_all_incidents_lastupdateUserId')?></th>
-			  </tr>
-			 </thead>        
-		</table>	 
-    <br/><br/><br/><br/><br/>
-  </div>	
-</div>
-
-

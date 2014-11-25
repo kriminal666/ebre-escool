@@ -136,3 +136,17 @@ $lang['attendance_reports_all_incidents_entryDate'] = "Data entrada";
 $lang['attendance_reports_all_incidents_last_update'] = "Data última modificació";
 $lang['attendance_reports_all_incidents_creationUserId'] = "Usuari de creació";
 $lang['attendance_reports_all_incidents_lastupdateUserId'] = "Usuari última modificació";
+
+
+$lang['attendance_reports_student_incidents_id'] = "Id";
+$lang['attendance_reports_student_incidents_date'] = "Data";
+$lang['attendance_reports_student_incidents_day'] = "Dia";
+$lang['attendance_reports_student_incidents_time_slot'] = "Franja horària";
+$lang['attendance_reports_student_incidents_incident_type'] = "Tipus";
+$lang['attendance_reports_student_incidents_study_submodule'] = "Unitat Formativa/Unitat didàctica";
+$lang['attendance_reports_student_incidents_study_module'] = "Mòdul professional/Crèdit";
+$lang['attendance_reports_student_incidents_classroom_group'] = "Grup de classe";
+$lang['attendance_reports_student_incidents_entryDate'] = "Data entrada";
+$lang['attendance_reports_student_incidents_last_update'] = "Data última modificació";
+$lang['attendance_reports_student_incidents_creationUserId'] = "Usuari de creació";
+$lang['attendance_reports_student_incidents_lastupdateUserId'] = "Usuari última modificació";

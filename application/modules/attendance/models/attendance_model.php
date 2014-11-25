@@ -2048,6 +2048,91 @@ function get_current_academic_period() {
 			return false;
 	}
 
+	/*
+	public function get_students_tags($academic_period_id = null, $orderby="asc") {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		$academic_periods_shortname = $this->get_academic_period_name_by_period_id($academic_period_id);
+
+        $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id');
+		$this->db->from('person');
+		$this->db->join('enrollment','person.person_id = enrollment.enrollment_personid');
+		$this->db->where('enrollment_periodid', $academic_periods_shortname);
+		$this->db->order_by('person_sn1', $orderby);
+		$this->db->order_by('person_sn2', $orderby);
+		$this->db->order_by('person_givenName', $orderby);
+		$this->db->order_by('person_official_id', $orderby);
+		       
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$student_tags = array();
+			foreach ($query->result_array() as $row)	{
+				if ($row['person_official_id'] == "") {
+					continue;
+				}
+				$fullname_alt = $row['person_sn1'] .' '.$row['person_sn1'].', '.$row['person_givenName'] . " - " . $row['person_official_id'] . " ( " . $row['person_id'] . " )" ;				
+   				$student_tags[] = $fullname_alt ;
+			}
+			return $student_tags;
+		}			
+		else
+			return array();
+	}	*/
+
+	public function get_students($academic_period_id = null, $orderby="asc") {
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		$academic_periods_shortname = $this->get_academic_period_name_by_period_id($academic_period_id);
+
+        $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id');
+		$this->db->from('person');
+		$this->db->join('enrollment','person.person_id = enrollment.enrollment_personid');
+		$this->db->where('enrollment_periodid', $academic_periods_shortname);
+		$this->db->order_by('person_sn1', $orderby);
+		$this->db->order_by('person_sn2', $orderby);
+		$this->db->order_by('person_givenName', $orderby);
+		$this->db->order_by('person_official_id', $orderby);
+		
+		       
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+
+		if ($query->num_rows() > 0) {
+
+			$student_array = array();
+			foreach ($query->result_array() as $row)	{
+				if ($row['person_official_id'] == "") {
+					continue;
+				}
+
+				$student = new stdClass();
+				$student->name = $row['person_givenName'];
+				$student->sn1 = $row['person_sn1'];
+				$student->sn2 = $row['person_sn2'];
+				$student->fullname = $row['person_givenName'] .' '.$row['person_sn1'].' '.$row['person_sn2'] ;
+				$student->fullname_alt = $row['person_sn1'] .' '.$row['person_sn1'].', '.$row['person_givenName'] . " - " . $row['person_official_id'] . " ( " . $row['person_id'] . " )" ;
+				$student->person_id = $row['person_id'];
+				$student->official_id = $row['person_official_id'];
+
+   				$student_array[$row['person_id']] = $student ;
+
+			}
+			return $student_array;
+		}			
+		else {
+			return array();
+		}
+	}	
+
 	function get_teacher_ids_and_names($teacher_id,$academic_period_id=null,$orderby="asc", $id_is_teacher_id = false) {
 
 		if ($academic_period_id == null) {
@@ -3382,6 +3467,106 @@ function get_current_academic_period() {
 		}
 		return $all_usernames_info;
 
+	}
+
+	function get_student_incidents($academic_period_id,$student_id){
+
+		$all_usernames_info = $this->get_all_usernames_info();
+
+		/*
+		SELECT `incident_id`, `incident_student_id`, `person_givenName`, `person_sn1`, `person_sn2`, `incident_time_slot_id`, `time_slot_start_time`, `time_slot_end_time`, `incident_day`, `incident_date`, `incident_study_submodule_id`, `incident_type`, `incident_notes`, `incident_entryDate`, `incident_last_update`, `incident_creationUserId`, `incident_lastupdateUserId`
+		FROM (`incident`)
+		JOIN `person` ON `person`.`person_id` = `incident`.`incident_student_id`
+		JOIN `time_slot` ON `time_slot`.`time_slot_id` = `incident`.`incident_time_slot_id`
+		ORDER BY `incident_date` DESC
+		*/
+
+		$this->db->select('incident_id, incident_student_id, person_givenName, person_sn1, person_sn2, incident_time_slot_id, 
+			time_slot_start_time, time_slot_end_time, incident_day, incident_date, incident_study_submodule_id, study_submodules_shortname,
+			study_submodules_name, study_submodules_study_module_id, study_module_shortname, study_module_name, study_submodules_courseid,
+			incident_type, incident_type_name, incident_type_shortName, enrollment_id, enrollment_group_id, classroom_group_code, 
+			classroom_group_name , incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, 
+			incident_lastupdateUserId');
+		$this->db->from('incident');
+		$this->db->join('person','person.person_id = incident.incident_student_id');
+		$this->db->join('time_slot','time_slot.time_slot_id = incident.incident_time_slot_id');		
+		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');	
+		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		
+		//$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
+		$this->db->where('enrollment.enrollment_periodid',"2014-15");
+		$this->db->where('incident.incident_student_id',$student_id);
+			
+		$this->db->order_by('incident_date',"DESC");
+		$this->db->order_by('incident_time_slot_id',"DESC");
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		$all_incidents_array = array();
+		if ($query->num_rows() > 0) {			
+			$i = 0;
+			foreach ($query->result() as $row)	{
+				$all_incidents_array[$i]['id'] = $row->incident_id;
+				$all_incidents_array[$i]['student_id'] = $row->incident_student_id;
+				$all_incidents_array[$i]['person_givenName'] = $row->person_givenName;
+				$all_incidents_array[$i]['person_sn1'] = $row->person_sn1;
+				$all_incidents_array[$i]['person_sn2'] = $row->person_sn2;
+				$all_incidents_array[$i]['time_slot_id'] = $row->incident_time_slot_id;
+				$all_incidents_array[$i]['time_slot_start_time'] = $row->time_slot_start_time;
+				$all_incidents_array[$i]['time_slot_end_time'] = $row->time_slot_end_time;
+				$all_incidents_array[$i]['day'] = $row->incident_day;
+				$all_incidents_array[$i]['date'] = $row->incident_date;
+				$all_incidents_array[$i]['study_submodule_id'] = $row->incident_study_submodule_id;
+				$all_incidents_array[$i]['study_submodules_shortname'] = $row->study_submodules_shortname;
+				$all_incidents_array[$i]['study_submodules_name'] = $row->study_submodules_name;
+				$all_incidents_array[$i]['study_module_id'] = $row->study_submodules_study_module_id;
+				$all_incidents_array[$i]['study_module_shortname'] = $row->study_module_shortname;
+				$all_incidents_array[$i]['study_module_name'] = $row->study_module_name;
+				$all_incidents_array[$i]['type'] = $row->incident_type;
+				$all_incidents_array[$i]['incident_type_name'] = $row->incident_type_name;
+				$all_incidents_array[$i]['incident_type_shortName'] = $row->incident_type_shortName;
+				$all_incidents_array[$i]['study_submodules_courseid'] = $row->study_submodules_courseid;
+				$all_incidents_array[$i]['enrollment_group_id'] = $row->enrollment_group_id;
+				$all_incidents_array[$i]['enrollment_id'] = $row->enrollment_id;
+				$all_incidents_array[$i]['classroom_group_code'] = $row->classroom_group_code;
+				$all_incidents_array[$i]['classroom_group_name'] = $row->classroom_group_name;
+				$all_incidents_array[$i]['notes'] = $row->incident_notes;
+				$all_incidents_array[$i]['entryDate'] = $row->incident_entryDate;
+				$all_incidents_array[$i]['last_update'] = $row->incident_last_update;
+				$all_incidents_array[$i]['creationUserId'] = $row->incident_creationUserId;
+				$all_incidents_array[$i]['lastupdateUserId'] = $row->incident_lastupdateUserId;
+
+				if (is_array($all_usernames_info)) {
+					if (array_key_exists($row->incident_creationUserId,$all_usernames_info)) {
+						$creation_username_info = $all_usernames_info[$row->incident_creationUserId];
+						$creation_username_info_str = $creation_username_info->username;
+						$creation_username_info_title = $creation_username_info->sn1 . " " . $creation_username_info->sn2 . ", " . $creation_username_info->givenName . " (" .  $creation_username_info->person_id . ")";
+						
+						$all_incidents_array[$i]['creationUser'] = $creation_username_info_str;
+						$all_incidents_array[$i]['creationUserTitle'] = $creation_username_info_title;
+					}
+					if (array_key_exists($row->incident_lastupdateUserId,$all_usernames_info)) {
+						$lastupdate_username_info = $all_usernames_info[$row->incident_lastupdateUserId];
+
+						$lastupdate_username_info_str = $lastupdate_username_info->username;
+						$lastupdate_username_info_title = 
+						$lastupdate_username_info->sn1 . " " . $lastupdate_username_info->sn2 . ", " . $lastupdate_username_info->givenName . " (" .  $lastupdate_username_info->person_id. ")";
+						
+						$all_incidents_array[$i]['lastupdateUser'] = $lastupdate_username_info_str;
+						$all_incidents_array[$i]['lastupdateUserTitle'] = $lastupdate_username_info_title;
+
+					}
+				}
+
+
+				$i++;
+			}
+		}
+		return $all_incidents_array;
 	}
 
 	function get_all_incidents(){
