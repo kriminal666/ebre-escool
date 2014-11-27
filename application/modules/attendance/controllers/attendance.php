@@ -225,7 +225,19 @@ class attendance extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/ebre-escool.js'));
-
+        
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/jquery.easy-pie-chart.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/flot/jquery.flot.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/flot/jquery.flot.pie.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/jquery.sparkline.min.js'));
 
 		$header_data['menu']= $active_menu;
 		return $header_data; 
@@ -582,16 +594,22 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function get_incidents_statistics_by_student($student_id=null) {
+	public function get_incidents_statistics_by_student($student_id=null,$classroom_group_id=null) {
 		if  ($student_id==null) {
 			if(isset($_POST['student_id'])) {
 	        	$student_id = $_POST['student_id'];
 			}
 		}
 
+        if  ($classroom_group_id==null) {
+            if(isset($_POST['classroom_group_id'])) {
+                $classroom_group_id = $_POST['classroom_group_id'];
+            }
+        }
+
 		$result = new stdClass();
 		if ($student_id != null) {
-			$result = $this->attendance_model->get_incidents_statistics_by_student($student_id);	
+			$result = $this->attendance_model->get_incidents_statistics_by_student($student_id,$classroom_group_id);	
 		}
 
 		print_r(json_encode($result));

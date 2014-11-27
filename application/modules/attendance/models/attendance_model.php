@@ -2132,9 +2132,11 @@ function get_current_academic_period() {
 
 		$academic_periods_shortname = $this->get_academic_period_name_by_period_id($academic_period_id);
 
-        $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id');
+        $this->db->select('person_id,person_givenName,person_sn1,person_sn2,person_official_id,enrollment_id,
+        	enrollment_group_id,classroom_group_code, classroom_group_name');
 		$this->db->from('person');
 		$this->db->join('enrollment','person.person_id = enrollment.enrollment_personid');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
 		$this->db->where('enrollment_periodid', $academic_periods_shortname);
 		$this->db->order_by('person_sn1', $orderby);
 		$this->db->order_by('person_sn2', $orderby);
@@ -2147,11 +2149,14 @@ function get_current_academic_period() {
 
 		if ($query->num_rows() > 0) {
 
-			$student_array = array();
+			$students_array = array();
 			foreach ($query->result_array() as $row)	{
 				if ($row['person_official_id'] == "") {
 					continue;
 				}
+				
+				//DEBUG
+				//echo $row['person_sn1'] . " " . $row['person_sn2'] . ", " . $row['person_givenName']  . " (" . $row['person_id'] . ")". "<br/>";
 
 				$student = new stdClass();
 				$student->name = $row['person_givenName'];
@@ -2162,10 +2167,26 @@ function get_current_academic_period() {
 				$student->person_id = $row['person_id'];
 				$student->official_id = $row['person_official_id'];
 
-   				$student_array[$row['person_id']] = $student ;
+				//Check if person already exists:
+				if (array_key_exists($row['person_id'], $students_array)) {
+					array_push($students_array[$row['person_id']]->enrolled_classroom_groups, $row['enrollment_group_id']);
+					array_push($students_array[$row['person_id']]->enrollments, $row['enrollment_id']);
+					array_push($students_array[$row['person_id']]->enrolled_classroom_groups_full_names, $row['classroom_group_code'] . ". " . $row['classroom_group_name'] . " (" . $row['enrollment_group_id'] . ")");
+				} else {
+					$student->enrolled_classroom_groups = array();
+					$student->enrollments = array();
+					$student->enrolled_classroom_groups_full_names = array();
+					
+					array_push($student->enrolled_classroom_groups, $row['enrollment_group_id']);
+					array_push($student->enrollments, $row['enrollment_id']);
+					array_push($student->enrolled_classroom_groups_full_names, $row['classroom_group_code'] . ". " . $row['classroom_group_name'] . " (" . $row['enrollment_group_id'] . ")");
+					$students_array[$row['person_id']] = $student ;
+				}
+
+   				
 
 			}
-			return $student_array;
+			return $students_array;
 		}			
 		else {
 			return array();
@@ -3550,8 +3571,10 @@ function get_current_academic_period() {
 
 	}
 
-	function get_student_incidents($academic_period_id,$student_id){
+	function get_student_incidents($academic_period_id,$student_id,$classroom_group_id){
 
+		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);
+		
 		$all_usernames_info = $this->get_all_usernames_info();
 
 		/*
@@ -3577,8 +3600,8 @@ function get_current_academic_period() {
 		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
 		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
 		
-		//$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
-		$this->db->where('enrollment.enrollment_periodid',"2014-15");
+		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
 		$this->db->where('incident.incident_student_id',$student_id);
 			
 		$this->db->order_by('incident_date',"DESC");
@@ -3748,7 +3771,144 @@ function get_current_academic_period() {
 		return $all_incidents_array;
 	}
 
-	function get_incidents_statistics_by_student($student_id,$academic_period_id=null) {
+	function get_incident_days(){
+
+		$incident_days = array();
+
+		$monday = new stdClass();
+		$monday->shortName = "Dl";
+		$monday->name = "Dilluns";
+		$monday->subtotal = 0;
+		$incident_days[1]= $monday;
+
+		$tuesday = new stdClass();
+		$tuesday->shortName = "Dt";
+		$tuesday->name = "Dimarts";
+		$tuesday->subtotal = 0;
+		$incident_days[2]= $tuesday;
+
+		$wednesday = new stdClass();
+		$wednesday->shortName = "Dc";
+		$wednesday->name = "Dimecres";
+		$wednesday->subtotal = 0;
+		$incident_days[3]= $wednesday;
+
+		$thursday = new stdClass();
+		$thursday->shortName = "Dj";
+		$thursday->name = "Dijous";
+		$thursday->subtotal = 0;
+		$incident_days[4]= $thursday;
+
+		$friday = new stdClass();
+		$friday->shortName = "Dv";
+		$friday->name = "Divendres";
+		$friday->subtotal = 0;
+		$incident_days[5]= $friday;
+
+		return $incident_days;
+
+	}
+
+	function get_shift($classroom_group_id,$academic_period_id=null){
+
+		if ($academic_period_id == null) {
+			$academic_period_id = $this->get_current_academic_period_id();
+		}
+
+		/*
+		SELECT shift_id,shift_name
+		FROM shift 
+		INNER JOIN classroom_group_academic_periods  ON classroom_group_academic_periods.classroom_group_academic_periods_shift = shift.shift_id
+		INNER JOIN classroom_group ON classroom_group.classroom_group_id =   classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id
+		WHERE classroom_group_academic_periods_academic_period_id=5 AND `classroom_group_id`=1
+		*/
+
+		$this->db->select('classroom_group_academic_periods_classroom_group_id,classroom_group_code,shift_id, 
+		shift_name, entryDate, last_update, creationUserId, lastupdateUserId, markedForDeletion, markedForDeletionDate');
+		$this->db->from('shift');
+		$this->db->join('classroom_group_academic_periods','classroom_group_academic_periods.classroom_group_academic_periods_shift = shift.shift_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id =   classroom_group_academic_periods.classroom_group_academic_periods_classroom_group_id');
+		$this->db->where('classroom_group_academic_periods_academic_period_id',$academic_period_id);
+		$this->db->where('classroom_group_id',$classroom_group_id);
+					
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		$all_incidents_array = array();
+		if ($query->num_rows() == 1) {	
+			$row = $query->row();
+			$shift = new stdClass();
+
+			$shift->id = $row->shift_id;
+			$shift->name = $row->shift_name;
+
+			return $shift;
+		} else {
+			return false;
+		}
+
+		//TABLE: classroom_group_academic_periods
+		// Field: classroom_group_academic_periods_shift
+	}
+
+	function get_incident_time_slots($shift_id){
+
+		$incident_time_slots = array();
+
+		$first_time_slot_id = 1;
+		$last_time_slot_id = 15;
+		switch ($shift_id) {
+			case 1:
+				//Morning
+				$first_time_slot_id = 1;
+				$last_time_slot_id = 7;
+				break;
+			case 2:
+				$first_time_slot_id = 9;
+				$last_time_slot_id = 15;
+				//Afternoon
+				break;				
+			default:
+				return false;
+		}
+
+		//DEBUG:
+		//echo "first_time_slot_id: " . $first_time_slot_id . "||";
+		//echo "last_time_slot_id: " . $last_time_slot_id . "||";
+
+		/*
+		SELECT time_slot_id,time_slot_external_code,time_slot_start_time,time_slot_end_time,time_slot_order 
+		FROM time_slot 
+		WHERE time_slot_lective=1 AND time_slot_id BETWEEN 1 AND 7
+		*/
+
+		$this->db->select('time_slot_id,time_slot_external_code,time_slot_start_time,time_slot_end_time,time_slot_order');
+		$this->db->from('time_slot');		
+		$this->db->where('time_slot_lective',1);
+		$between_str = "BETWEEN " . $first_time_slot_id . " AND " . $last_time_slot_id;
+		$this->db->where('time_slot_id ' . $between_str);
+					
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() > 0) {	
+			foreach ($query->result() as $row)	{
+				$time_slot = new stdClass();
+				$time_slot->shortName = $row->time_slot_start_time . "-" . $row->time_slot_end_time;
+				$time_slot->subtotal = 0;
+				$time_slot->external_code = $row->time_slot_external_code;
+				$time_slot->start_time = $row->time_slot_start_time;
+				$time_slot->end_time = $row->time_slot_end_time;
+				$time_slot->order = $row->time_slot_order;
+
+				$incident_time_slots[$row->time_slot_id] = $time_slot;
+			}
+		}
+
+		return $incident_time_slots;
+	}
+	
+	function get_incidents_statistics_by_student($student_id,$classroom_group_id,$academic_period_id=null) {
 
 		if ($academic_period_id == null) {
 			$academic_period_id = $this->get_current_academic_period_id();
@@ -3761,24 +3921,43 @@ function get_current_academic_period() {
 
 		$incident_types = $this->get_incident_types();
 
+		$incident_days = $this->get_incident_days();
+
+
+		$shift = $this->get_shift($classroom_group_id);
+
+		//DEBUG:
+		//echo "classroom_group_id: " . $classroom_group_id . " | shift: " . $shift->id;
+		$incident_time_slots = $this->get_incident_time_slots($shift->id);
+
+		//DEBUG
+		//print_r($incident_time_slots);
+
 		$result = new stdClass();
+		$result->shift = $shift;
 
-		/*
-		SELECT incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id,
-		 incident_type, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
-		 incident_markedForDeletion, incident_markedForDeletionDate 
-	    FROM incident 
-	    WHERE incident_student_id=5400 AND incident_date BETWEEN '2014-09-01' AND '2015-07-31'
-		*/
-
-		$this->db->select('incident_id, incident_student_id, incident_time_slot_id, incident_day, incident_date, incident_study_submodule_id,
-		 incident_type, incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, incident_lastupdateUserId, 
-		 incident_markedForDeletion, incident_markedForDeletionDate');
+		$this->db->select('incident_id, incident_student_id, person_givenName, person_sn1, person_sn2, incident_time_slot_id, 
+			time_slot_start_time, time_slot_end_time, incident_day, incident_date, incident_study_submodule_id, study_submodules_shortname,
+			study_submodules_name, study_submodules_study_module_id, study_module_shortname, study_module_name, study_submodules_courseid,
+			incident_type, incident_type_name, incident_type_shortName, enrollment_id, enrollment_group_id, classroom_group_code, 
+			classroom_group_name , incident_notes, incident_entryDate, incident_last_update, incident_creationUserId, 
+			incident_lastupdateUserId');
 		$this->db->from('incident');
+		$this->db->join('person','person.person_id = incident.incident_student_id');
+		$this->db->join('time_slot','time_slot.time_slot_id = incident.incident_time_slot_id');		
+		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');	
+		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
+		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		
+		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
 		$this->db->where('incident.incident_student_id',$student_id);
-		$dateRange = "incident.incident_date BETWEEN '$academic_period_initialDate%' AND '$academic_period_finalDate%'";
-		$this->db->where($dateRange, NULL, FALSE);  
 			
+		$this->db->order_by('incident_date',"DESC");
+		$this->db->order_by('incident_time_slot_id',"DESC");
+
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br/>";
 
@@ -3788,12 +3967,27 @@ function get_current_academic_period() {
 			$result->totalIncidents_current_academic_period = $query->num_rows();
 			foreach ($query->result() as $row)	{
 				$incident_type = $row->incident_type;
+				$incident_day = $row->incident_day;
+				$incident_time_slot_id = $row->incident_time_slot_id;				
 
 				if ( array_key_exists($incident_type, $incident_types)){
 					$incident_types[$incident_type]->subtotal++;
 				}
+
+				if ( array_key_exists($incident_day, $incident_days)){
+					$incident_days[$incident_day]->subtotal++;
+				}
+
+				if ( array_key_exists($incident_time_slot_id, $incident_time_slots)){
+					$incident_time_slots[$incident_time_slot_id]->subtotal++;
+				}
 			}
 			$result->incident_types = $incident_types;
+			$result->incident_days = $incident_days;
+			$result->incident_time_slots = $incident_time_slots;
+
+			$result->initialDate = $academic_period->initial_date;
+			$result->finalDate = $academic_period->final_date;
 		}
 
 		return $result;

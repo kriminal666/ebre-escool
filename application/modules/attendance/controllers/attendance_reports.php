@@ -56,7 +56,7 @@ class attendance_reports extends skeleton_main {
     
     }
 
-    function get_student_incidents($academic_period_id = null, $student_id = null){
+    function get_student_incidents($academic_period_id = null, $student_id = null, $classroom_group_id = null){
 
         if ($student_id == null) {
             if(isset($_POST['student_id'])){
@@ -70,6 +70,12 @@ class attendance_reports extends skeleton_main {
             }
         }
 
+        if ($classroom_group_id == null) {
+            if(isset($_POST['classroom_group_id'])){
+                $classroom_group_id=$_POST['classroom_group_id'];
+            }
+        }
+
         if (!$this->skeleton_auth->logged_in()) {
             //redirect them to the login page
             redirect($this->skeleton_auth->login_page, 'refresh');
@@ -78,7 +84,7 @@ class attendance_reports extends skeleton_main {
         $student_incidents = array();
         
         if ($student_id != "") {
-            $student_incidents = $this->attendance_model->get_student_incidents($academic_period_id,$student_id);    
+            $student_incidents = $this->attendance_model->get_student_incidents($academic_period_id,$student_id,$classroom_group_id);    
         }
        
         echo '{
