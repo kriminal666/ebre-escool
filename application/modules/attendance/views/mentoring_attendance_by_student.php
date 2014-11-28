@@ -543,7 +543,7 @@ function update_statistics_graphs(data_piechart_study_modules,data_piechart_stud
     if(item) {
       if (previousPoint != item.seriesIndex) {
         previousPoint = item.seriesIndex;
-        var tip = item.series['label'] + " : " + item.series['percent'].toFixed(2)+'% ' + '('+ item.series.data[0][1]+')';
+        var tip = item.series['label'] + " : " + parseFloat(item.series['percent']).toFixed(2)+'% ' + '('+ item.series.data[0][1]+')';
         $tooltip.show().children(0).text(tip);
       }
       $tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
@@ -571,7 +571,7 @@ function update_statistics_graphs(data_piechart_study_modules,data_piechart_stud
     if(item) {
       if (previousPoint != item.seriesIndex) {
         previousPoint = item.seriesIndex;
-        var tip = item.series['label'] + " : " + item.series['percent'].toFixed(2)+'% ' + '('+ item.series.data[0][1]+')';
+        var tip = item.series['label'] + " : " + parseFloat(item.series['percent']).toFixed(2)+'% ' + '('+ item.series.data[0][1]+')';
         $tooltip.show().children(0).text(tip);
       }
       $tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
