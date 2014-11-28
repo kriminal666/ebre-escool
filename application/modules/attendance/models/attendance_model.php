@@ -3930,6 +3930,9 @@ function get_current_academic_period() {
 		//echo "classroom_group_id: " . $classroom_group_id . " | shift: " . $shift->id;
 		$incident_time_slots = $this->get_incident_time_slots($shift->id);
 
+		$incident_study_submodules = array();
+		$incident_study_modules = array();
+
 		//DEBUG
 		//print_r($incident_time_slots);
 
@@ -3968,7 +3971,14 @@ function get_current_academic_period() {
 			foreach ($query->result() as $row)	{
 				$incident_type = $row->incident_type;
 				$incident_day = $row->incident_day;
-				$incident_time_slot_id = $row->incident_time_slot_id;				
+				$incident_time_slot_id = $row->incident_time_slot_id;
+				$incident_study_submodule_id = $row->incident_study_submodule_id;			
+				$incident_study_submodule_name = $row->study_submodules_name;
+				$incident_study_submodule_shortName = $row->study_submodules_shortname;
+
+				$incident_study_module_id = $row->study_submodules_study_module_id;
+				$incident_study_module_shortname = $row->study_module_shortname;
+				$incident_study_module_name = $row->study_module_name;
 
 				if ( array_key_exists($incident_type, $incident_types)){
 					$incident_types[$incident_type]->subtotal++;
@@ -3981,11 +3991,37 @@ function get_current_academic_period() {
 				if ( array_key_exists($incident_time_slot_id, $incident_time_slots)){
 					$incident_time_slots[$incident_time_slot_id]->subtotal++;
 				}
+
+				if ( array_key_exists($incident_study_submodule_id, $incident_study_submodules)){
+					$incident_study_submodules[$incident_study_submodule_id]->subtotal++;
+				} else {
+					//Not exists? Then create:
+					$study_submodule = new stdClass();
+					$study_submodule->id = $incident_study_submodule_id;
+					$study_submodule->name = $incident_study_submodule_name;
+					$study_submodule->shortName = $incident_study_submodule_shortName;
+					$study_submodule->subtotal = 1;
+					$incident_study_submodules[$incident_study_submodule_id] = $study_submodule;
+				}
+
+				if ( array_key_exists($incident_study_module_id, $incident_study_modules)){
+					$incident_study_modules[$incident_study_module_id]->subtotal++;
+				} else {
+					//Not exists? Then create:
+					$study_module = new stdClass();
+					$study_module->id = $incident_study_module_id;
+					$study_module->name = $incident_study_module_name;
+					$study_module->shortName = $incident_study_module_shortname;
+					$study_module->subtotal = 1;
+					$incident_study_modules[$incident_study_module_id] = $study_module;
+				}
 			}
 			$result->incident_types = $incident_types;
 			$result->incident_days = $incident_days;
 			$result->incident_time_slots = $incident_time_slots;
-
+			$result->incident_study_submodules = $incident_study_submodules;
+			$result->incident_study_modules = $incident_study_modules;
+			
 			$result->initialDate = $academic_period->initial_date;
 			$result->finalDate = $academic_period->final_date;
 		}

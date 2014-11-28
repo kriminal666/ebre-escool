@@ -360,18 +360,89 @@ function reload_incidents_statistics_by_student() {
 
       $("#shift_span").html(data.shift.name);
 
+      colors_array = ["#68BC31","#2091CF","#AF4E96","#DA5430","#FEE074","#119966","#00FFFF","#FFA500","#A52A2A","#8B0000","#ADFF2F","#808000","#AFEEEE","#FF00FF"];
+      
+      //console.debug(JSON.stringify(colors_array));
+
+      //STUDY SUBMODULES
+      var study_submodules_array = [];
+      var str_total_incidents_by_study_submodule="";
+      var str_array_total_incidents_by_study_submodule="";
+      var counter = 0;
+      $.each(data.incident_study_submodules, function( index, value ) {
+        //console.debug( value.name + " " + value.shortName + " (" + index + ")" + ": " + value.subtotal );
+        str_total_incidents_by_study_submodule = str_total_incidents_by_study_submodule + "<span title=\"" + value.name +"\"><strong>" + value.shortName + "</strong></span>: " + value.subtotal + " ";
+        str_array_total_incidents_by_study_submodule = str_array_total_incidents_by_study_submodule + value.subtotal + ",";
+
+        study_submodules_array.push({
+            label: value.shortName + "." + value.name,
+            data: value.subtotal,
+            color: colors_array[counter],
+        });
+        counter++;
+      });
+      str_array_total_incidents_by_study_submodule = str_array_total_incidents_by_study_submodule.substring(0,str_array_total_incidents_by_time_slot.length - 1);
+      $("#total_incidents_by_study_submodule").html(str_total_incidents_by_study_submodule);
+      //console.debug(str_total_incidents_by_study_submodule);
+
+      //console.debug("STUDY SUBMODULES JSON $$$$$$$$$$$$$$$$$------------------------------");
+      //console.debug(JSON.stringify(study_submodules_array));
+
+      //STUDY MODULES
+      study_modules_array = [];
+      var str_total_incidents_by_study_module="";
+      var str_array_total_incidents_by_study_module="";
+      var counter = 0;
+      $.each(data.incident_study_modules, function( index, value ) {
+        //console.debug( value.name + " " + value.shortName + " (" + index + ")" + ": " + value.subtotal );
+        str_total_incidents_by_study_module = str_total_incidents_by_study_module + "<span title=\"" + value.name +"\"><strong>" + value.shortname + "</strong></span>: " + value.subtotal + " ";
+        str_array_total_incidents_by_study_module = str_array_total_incidents_by_study_module + value.subtotal + ",";
+
+        study_modules_array.push({
+            label: value.shortName + "." + value.name,
+            data: value.subtotal,
+            color: colors_array[counter],
+        });
+        counter++;
+      });
+      str_array_total_incidents_by_study_module = str_array_total_incidents_by_study_module.substring(0,str_array_total_incidents_by_time_slot.length - 1);
+      $("#total_incidents_by_study_module").html(str_total_incidents_by_study_module);
+      //console.debug(str_total_incidents_by_study_module);
+
+      //console.debug(JSON.stringify(study_modules_array));
+
       var date_range = data.initialDate + " - " + data.finalDate;
       $("#selected_date_range").html(date_range);
 
       $("#student_statistics_widget-box").removeClass("collapsed");
-      update_statistics_graphs();
+
+      
+
+      /*var data_piechart_study_submodules = [
+        { label: "UF1",  data: 38.7, color: "#68BC31"},
+        { label: "UF2",  data: 24.5, color: "#2091CF"},
+        { label: "UF3",  data: 8.2, color: "#AF4E96"},
+        { label: "UF4",  data: 18.6, color: "#DA5430"},
+        { label: "UF5",  data: 10, color: "#FEE074"}
+        ];
+      */
+        /*
+      var data_piechart_study_modules = [
+        { label: "MP1",  data: 38.7, color: "#68BC31"},
+        { label: "MP2",  data: 24.5, color: "#2091CF"},
+        { label: "MP3",  data: 8.2, color: "#AF4E96"},
+        { label: "MP4",  data: 18.6, color: "#DA5430"},
+        { label: "MP5",  data: 10, color: "#FEE074"}
+        ];*/
+
+      update_statistics_graphs(study_modules_array,study_submodules_array);
 
       //$("#").html(totalIncidents_current_academic_period);
     });
 
 }
 
-function update_statistics_graphs(){
+function update_statistics_graphs(data_piechart_study_modules,data_piechart_study_submodules){
   var $box = $('#sparkline_days').closest('.infobox');
   var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
   $('#sparkline_days').sparkline('html', {tagValuesAttribute:'data-values', type: 'bar',
@@ -402,15 +473,24 @@ function update_statistics_graphs(){
   
 
   // UF PIE CHART
-  var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
-  var data = [
-        { label: "UF1",  data: 38.7, color: "#68BC31"},
-        { label: "UF2",  data: 24.5, color: "#2091CF"},
-        { label: "UF3",  data: 8.2, color: "#AF4E96"},
-        { label: "UF4",  data: 18.6, color: "#DA5430"},
-        { label: "UF5",  data: 10, color: "#FEE074"}
-        ];
+  var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'170px'});
   function drawPieChart(placeholder, data, position) {
+
+    data_length = data.length;
+
+    number_of_columns=1;
+    margin1 = 20;
+    if (data_length < 9) {
+      number_of_columns=1;
+      margin1 = 20;
+    } else if (number_of_columns > 17) {
+      number_of_columns=3;
+      margin1 = -40;
+    } else {
+      number_of_columns=2;
+      margin1 = -10;
+    }    
+
     $.plot(placeholder, data, {
     series: {
       pie: {
@@ -427,10 +507,15 @@ function update_statistics_graphs(){
       }
     },
     legend: {
+      labelFormatter: function(label, series) {
+          var labels = label.split(".");
+          return '<span title="' + labels[0] + ". " + labels[1] + ' (' + series.data[0][1] + ')">'+labels[0] + '</span>';
+      },
       show: true,
+      noColumns: number_of_columns,
       position: position || "ne", 
       labelBoxBorderColor: null,
-      margin:[-30,15]
+      margin:[margin1,-10]
     }
     ,
     grid: {
@@ -440,13 +525,13 @@ function update_statistics_graphs(){
    })
    };
 
-   drawPieChart(placeholder, data);
+   drawPieChart(placeholder, data_piechart_study_submodules);
 
    /**
    we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
    so that's not needed actually.
    */
-   placeholder.data('chart', data);
+   placeholder.data('chart', data_piechart_study_submodules);
    placeholder.data('draw', drawPieChart);
   
   
@@ -458,7 +543,7 @@ function update_statistics_graphs(){
     if(item) {
       if (previousPoint != item.seriesIndex) {
         previousPoint = item.seriesIndex;
-        var tip = item.series['label'] + " : " + item.series['percent']+'%';
+        var tip = item.series['label'] + " : " + item.series['percent']+'% ' + '('+ item.series.data[0][1]+')';
         $tooltip.show().children(0).text(tip);
       }
       $tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
@@ -473,27 +558,20 @@ function update_statistics_graphs(){
 
   // MP PIE CHART
   var placeholder1 = $('#piechart-placeholder1').css({'width':'90%' , 'min-height':'150px'});
-  var data1 = [
-        { label: "MP1",  data: 38.7, color: "#68BC31"},
-        { label: "MP2",  data: 24.5, color: "#2091CF"},
-        { label: "MP3",  data: 8.2, color: "#AF4E96"},
-        { label: "MP4",  data: 18.6, color: "#DA5430"},
-        { label: "MP5",  data: 10, color: "#FEE074"}
-        ];
-  drawPieChart(placeholder1, data1);
+  drawPieChart(placeholder1, data_piechart_study_modules);
 
    /**
    we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
    so that's not needed actually.
    */
-   placeholder1.data('chart', data);
+   placeholder1.data('chart', data_piechart_study_modules);
    placeholder1.data('draw', drawPieChart);
 
    placeholder1.on('plothover', function (event, pos, item) {
     if(item) {
       if (previousPoint != item.seriesIndex) {
         previousPoint = item.seriesIndex;
-        var tip = item.series['label'] + " : " + item.series['percent']+'%';
+        var tip = item.series['label'] + " : " + item.series['percent']+'% ' + '('+ item.series.data[0][1]+')';
         $tooltip.show().children(0).text(tip);
       }
       $tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
