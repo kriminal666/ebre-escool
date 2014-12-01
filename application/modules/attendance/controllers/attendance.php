@@ -110,12 +110,12 @@ class attendance extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/chosen.min.css'));        
-*/
+
 		//JS Already load at skeleton main!!!
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			$jquery_url);
-
+*/
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			$jquery_ui_url);	
@@ -594,7 +594,7 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function get_incidents_statistics_by_student($student_id=null,$classroom_group_id=null) {
+	public function get_incidents_statistics_by_student($student_id=null,$classroom_group_id=null,$initial_date=null,$final_date=null) {
 		if  ($student_id==null) {
 			if(isset($_POST['student_id'])) {
 	        	$student_id = $_POST['student_id'];
@@ -607,9 +607,21 @@ class attendance extends skeleton_main {
             }
         }
 
+        if  ($initial_date==null) {
+            if(isset($_POST['initial_date'])) {
+                $initial_date = $_POST['initial_date'];
+            }
+        }
+
+        if  ($final_date==null) {
+            if(isset($_POST['final_date'])) {
+                $final_date = $_POST['final_date'];
+            }
+        }
+
 		$result = new stdClass();
 		if ($student_id != null) {
-			$result = $this->attendance_model->get_incidents_statistics_by_student($student_id,$classroom_group_id);	
+			$result = $this->attendance_model->get_incidents_statistics_by_student($student_id,$classroom_group_id,$initial_date,$final_date);	
 		}
 
 		print_r(json_encode($result));

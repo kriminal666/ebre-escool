@@ -1607,7 +1607,7 @@ function get_current_academic_period() {
 		/*
 		SELECT academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current FROM academic_periods WHERE 1
 		*/
-		$this->db->select('academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current');
+		$this->db->select('academic_periods_id,academic_periods_shortname, academic_periods_name,academic_periods_alt_name,academic_periods_current,academic_periods_initial_date,academic_periods_final_date');
 		$this->db->from('academic_periods');
 	
 
@@ -1626,6 +1626,9 @@ function get_current_academic_period() {
 				$academic_period->alt_name = $row->academic_periods_alt_name;
 				$academic_period->current = $row->academic_periods_current;
 
+				$academic_period->initial_date = $row->academic_periods_initial_date;
+				$academic_period->final_date = $row->academic_periods_final_date;
+				
 				$all_academic_periods[$academic_period->id] = $academic_period;
 			}
 			return $all_academic_periods;
@@ -3571,7 +3574,7 @@ function get_current_academic_period() {
 
 	}
 
-	function get_student_incidents($academic_period_id,$student_id,$classroom_group_id){
+	function get_student_incidents($academic_period_id,$student_id,$classroom_group_id,$initial_date,$final_date){
 
 		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);
 		
@@ -3603,6 +3606,9 @@ function get_current_academic_period() {
 		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
 		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
 		$this->db->where('incident.incident_student_id',$student_id);
+
+		$between_str = "BETWEEN '" . $initial_date . "' AND '" . $final_date . "'";
+		$this->db->where('incident_date ' . $between_str);
 			
 		$this->db->order_by('incident_date',"DESC");
 		$this->db->order_by('incident_time_slot_id',"DESC");
@@ -3908,8 +3914,8 @@ function get_current_academic_period() {
 		return $incident_time_slots;
 	}
 	
-	function get_incidents_statistics_by_student($student_id,$classroom_group_id,$academic_period_id=null) {
-
+	function get_incidents_statistics_by_student($student_id,$classroom_group_id,$initial_date,$final_date,$academic_period_id=null) {
+					
 		if ($academic_period_id == null) {
 			$academic_period_id = $this->get_current_academic_period_id();
 		}
@@ -3957,6 +3963,9 @@ function get_current_academic_period() {
 		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
 		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
 		$this->db->where('incident.incident_student_id',$student_id);
+		$between_str = "BETWEEN '" . $initial_date . "' AND '" . $final_date . "'";
+		$this->db->where('incident.incident_date ' . $between_str);
+		
 			
 		$this->db->order_by('incident_date',"DESC");
 		$this->db->order_by('incident_time_slot_id',"DESC");
@@ -3966,7 +3975,6 @@ function get_current_academic_period() {
 
 		$all_incidents_array = array();
 		if ($query->num_rows() > 0) {	
-			//$result->totalIncidents = 50;
 			$result->totalIncidents_current_academic_period = $query->num_rows();
 			foreach ($query->result() as $row)	{
 				$incident_type = $row->incident_type;
@@ -4021,7 +4029,18 @@ function get_current_academic_period() {
 			$result->incident_time_slots = $incident_time_slots;
 			$result->incident_study_submodules = $incident_study_submodules;
 			$result->incident_study_modules = $incident_study_modules;
-			
+
+			$result->initialDate = $academic_period->initial_date;
+			$result->finalDate = $academic_period->final_date;
+		} else {
+			$result->totalIncidents_current_academic_period = $query->num_rows();
+			//No incidents on selected data range?. Initialize all values to 0
+			$result->incident_types = $incident_types;
+			$result->incident_days = $incident_days;
+			$result->incident_time_slots = $incident_time_slots;
+			$result->incident_study_submodules = $incident_study_submodules;
+			$result->incident_study_modules = $incident_study_modules;
+
 			$result->initialDate = $academic_period->initial_date;
 			$result->finalDate = $academic_period->final_date;
 		}
