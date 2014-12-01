@@ -777,7 +777,7 @@ $(function() {
 
     var last_week_start = new Date(week_start.setDate(week_start.getDate() -7));
     var last_week_start_date =formatted_date(last_week_start);
-    var last_week_start_date_mysql =formatted_date(last_week_start);
+    var last_week_start_date_mysql =mysql_formatted_date(last_week_start);
 
     var last_week_end = new Date(week_end.setDate(week_end.getDate() -7));
     var last_week_end_date =formatted_date(last_week_end);
