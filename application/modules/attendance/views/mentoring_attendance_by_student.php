@@ -79,6 +79,19 @@
               </select> 
             </td>
           </tr> 
+          <tr id="selected_date_range_tr">
+            <td><label for="selected_date_range">Rang de dates:</label></td>
+            <td>
+              <div class="control-group">
+                <div class="row-fluid input-prepend">
+                  <span class="add-on">
+                    <i class="icon-calendar"></i>
+                  </span>
+                  <input class="span10" type="text" name="date-range-picker" id="id-date-range-picker-1" disabled="true" value="" />
+                </div>
+              </div>
+            </td>
+          </tr> 
         </div>
       </table>
      </form>
@@ -93,7 +106,7 @@
                     <div class="widget-header widget-header-flat widget-header-small">
                       <h5>
                         <i class="icon-signal"></i>
-                        <span class="green">Dades glogals Alumne. </span> <span class="green" id="selected_student_title"></span> &nbsp;&nbsp;&nbsp; Rang de dates escollit: <span class="purple" id="selected_date_range"></span> <span style="display:none;" id="selected_initial_date" value="-1"></span> <span style="display:none;" id="selected_final_date" value="-1"></span>
+                        <span class="green">Dades glogals Alumne. </span> <span class="green" id="selected_student_title"></span> <span style="display:none;" id="selected_initial_date" value="-1"></span> <span style="display:none;" id="selected_final_date" value="-1"></span>
                       </h5>
 
                       <div class="widget-toolbar no-border">
@@ -637,7 +650,69 @@ function get_final_date(){
   return $("#selected_final_date").html();
 }
 
+function reload_daterangepicker(start_date,end_date){
+  //DEBUG
+  /*
+  console.debug("reload_daterangepicker!");
+  console.debug("start_date: " + start_date);
+  console.debug("end_date: " + end_date);
+  */
+  $('#id-date-range-picker-1').daterangepicker(
+    {
+      locale:'ca',
+      format: 'DD-MM-YYYY',
+      startDate: start_date,
+      endDate: end_date
+    },
+    function(start, end, label) {
+      console.debug('A date range was chosen: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      $("#selected_date_range").html(start.format('DD/MM/YYYY') + " - " + end.format('DD/MM/YYYY'));
+      $("#selected_initial_date").html(start.format('YYYY-MM-DD'));
+      $("#selected_final_date").html(end.format('YYYY-MM-DD'));
+
+      //GET SELECTED STUDENT
+      var selected_student = get_selected_student();
+
+      if (selected_student!="") {
+        //RELOAD STATISTICS
+        reload_incidents_statistics_by_student();
+
+        //RELOAD INCIDENT LIST DATATABLES
+        student_incidents_table.ajax.reload();
+      } else {
+        console.debug("Nothing to reload! No student selected");
+      }
+    }
+    ).prev().on(ace.click_event, function(){
+    $(this).next().focus();
+  });
+
+  $("#id-date-range-picker-1").attr( "value", start_date + " - " + end_date);  
+}
+
+
+
 $(function() { 
+
+  //Default DATE RANGE. Current month
+  var curr_date =new Date();
+  var first_day = new Date(curr_date.getFullYear(), curr_date.getMonth(), 1);
+  var last_day = new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 0);
+
+  var current_date =formatted_date(curr_date);
+  var month_start_date = formatted_date(first_day);                 
+  var month_end_date = formatted_date(last_day);
+  var month_start_date_mysql =mysql_formatted_date(first_day);                 
+  var month_end_date_mysql =mysql_formatted_date(last_day);
+
+  //console.debug("current_date: " + current_date);
+  //console.debug("month_start_date: " + month_start_date);
+  //console.debug("month_end_date: " + month_end_date);
+
+  $("#selected_initial_date").html(month_start_date_mysql);
+  $("#selected_final_date").html(month_end_date_mysql);
+
+  reload_daterangepicker(month_start_date,month_end_date);
 
   $('[name="dropdown_option"]').click(function() {
     var id = $(this).attr("id");
@@ -646,8 +721,9 @@ $(function() {
 
     $("#dropdown_selected_option").html(selected_text);
 
-    console.debug("dropdown_option selected: " + id);
-    console.debug("number selected: " + number);
+    //DEBUG:
+    //console.debug("dropdown_option selected: " + id);
+    //console.debug("number selected: " + number);
 
     /*
     "dropdown_option_1" number="1">Mes actual</a>
@@ -658,7 +734,6 @@ $(function() {
     "dropdown_option_6" number="6">Tot l'any</a>
     "dropdown_option_7" number="7">Rang de dates</a>
 
-    <span id="selected_date_range" class="purple">2014-12-01 - 2014-12-31</span>
     <span id="selected_initial_date" value="-1" style="display:none;">2014-12-01</span>
     <span id="selected_final_date" value="-1" style="display:none;">2014-12-31</span>
     */
@@ -671,11 +746,15 @@ $(function() {
     var last_last_month_day = new Date(curr_date.getFullYear(), curr_date.getMonth() , 0);
 
     var current_date =formatted_date(curr_date);
-    var month_start_date =mysql_formatted_date(first_month_day);                 
-    var month_end_date =mysql_formatted_date(last_month_day);
+    var month_start_date = formatted_date(first_month_day);                 
+    var month_end_date = formatted_date(last_month_day);
+    var month_start_date_mysql =mysql_formatted_date(first_month_day);                 
+    var month_end_date_mysl =mysql_formatted_date(last_month_day);
 
-    var last_month_start_date =mysql_formatted_date(first_last_month_day);                 
-    var last_month_end_date =mysql_formatted_date(last_last_month_day);
+    var last_month_start_date = formatted_date(first_last_month_day);                 
+    var last_month_end_date = formatted_date(last_last_month_day);
+    var last_month_start_date_mysql = mysql_formatted_date(first_last_month_day);                 
+    var last_month_end_date_mysql = mysql_formatted_date(last_last_month_day);
 
     //console.debug("current_date: " + current_date);
     //console.debug("month_start_date: " + month_start_date);
@@ -686,9 +765,11 @@ $(function() {
     var week_start_tstmp = curr_date.setDate(diff);          
     var week_start = new Date(week_start_tstmp);
     var week_start_date =formatted_date(week_start);
+    var week_start_date_mysql = mysql_formatted_date(week_start);
     var week_end  = new Date(week_start_tstmp);  // first day of week
     week_end = new Date (week_end.setDate(week_end.getDate() + 6));
     var week_end_date =formatted_date(week_end);
+    var week_end_date_mysql = mysql_formatted_date(week_end);
     date=week_start_date + ' to '+week_end_date;    // date range for current week
     /*
      var week_end_date =formatted_date(new Date()); // limit current week date range upto current day.
@@ -696,50 +777,74 @@ $(function() {
 
     var last_week_start = new Date(week_start.setDate(week_start.getDate() -7));
     var last_week_start_date =formatted_date(last_week_start);
+    var last_week_start_date_mysql =formatted_date(last_week_start);
 
     var last_week_end = new Date(week_end.setDate(week_end.getDate() -7));
     var last_week_end_date =formatted_date(last_week_end);
+    var last_week_end_date_mysql = mysql_formatted_date(last_week_end);
  
     switch (number) {
     case "1":
         //Current month
-        $("#selected_date_range").html(month_start_date + " - " + month_end_date);
-        $("#selected_initial_date").html(month_start_date);
-        $("#selected_final_date").html(month_end_date);
+        $("#selected_initial_date").html(month_start_date_mysql);
+        $("#selected_final_date").html(month_end_date_mysql);        
+        reload_daterangepicker(month_start_date,month_end_date);
+        $("#id-date-range-picker-1").prop('disabled', true);
         break;
     case "2":
         //Last month
-        $("#selected_date_range").html(last_month_start_date + " - " + last_month_end_date);
-        $("#selected_initial_date").html(last_month_start_date);
-        $("#selected_final_date").html(last_month_end_date);
+        $("#selected_initial_date").html(last_month_start_date_mysql);
+        $("#selected_final_date").html(last_month_end_date_mysql);
+        reload_daterangepicker(last_month_start_date,last_month_end_date);
+        $("#id-date-range-picker-1").prop('disabled', true);
         break;
     case "3":
         //Current week
-        $("#selected_date_range").html(week_start_date + " - " + week_end_date);
-        $("#selected_initial_date").html(week_start_date);
-        $("#selected_final_date").html(week_end_date);
+        $("#selected_initial_date").html(week_start_date_mysql);
+        $("#selected_final_date").html(week_end_date_mysql);
+        reload_daterangepicker(week_start_date,week_end_date);
+        $("#id-date-range-picker-1").prop('disabled', true);
         break;
     case "4":
         //Last week
-        $("#selected_date_range").html(last_week_start_date + " - " + last_week_end_date);
-        $("#selected_initial_date").html(last_week_start_date);
-        $("#selected_final_date").html(last_week_end_date);
+        $("#selected_initial_date").html(last_week_start_date_mysql);
+        $("#selected_final_date").html(last_week_end_date_mysql);
+        reload_daterangepicker(last_week_start_date,last_week_end_date);
+        $("#id-date-range-picker-1").prop('disabled', true);
         break;
     case "5":
         //Other months
+        console.debug("TODO");
         break;
     case "6":
         //All year
-        var selected_academic_period_initial_date  = get_selected_academic_period_initial_date();
-        var selected_academic_period_final_date  = get_selected_academic_period_final_date();
-        console.debug("selected_academic_period_initial_date: " + selected_academic_period_initial_date);
-        console.debug("selected_academic_period_final_date: " + selected_academic_period_final_date);        
-        $("#selected_date_range").html(selected_academic_period_initial_date + " - " + selected_academic_period_final_date);
-        $("#selected_initial_date").html(selected_academic_period_initial_date);
-        $("#selected_final_date").html(selected_academic_period_final_date);
+        var selected_academic_period_initial_date_mysql  = get_selected_academic_period_initial_date();
+        var selected_academic_period_final_date_mysql  = get_selected_academic_period_final_date();
+
+        var initial_date = new Date(selected_academic_period_initial_date_mysql);
+        var final_date = new Date(selected_academic_period_final_date_mysql);
+
+        var selected_academic_period_initial_date_without_format = 
+          new Date(initial_date.getFullYear(), 
+                   initial_date.getMonth(),
+                   initial_date.getDay());
+        var selected_academic_period_final_date_without_format = 
+          new Date(final_date.getFullYear(), 
+                   final_date.getMonth(), 
+                   final_date.getDay());
+
+        var selected_academic_period_initial_date  =  formatted_date(selected_academic_period_initial_date_without_format);
+        var selected_academic_period_final_date  = formatted_date(selected_academic_period_final_date_without_format);
+
+        $("#selected_initial_date").html(selected_academic_period_initial_date_mysql);
+        $("#selected_final_date").html(selected_academic_period_final_date_mysql);
+        reload_daterangepicker(selected_academic_period_initial_date,selected_academic_period_final_date);
+        $("#id-date-range-picker-1").prop('disabled', true);
+        return;
         break;
     case "7":
         //range date to choose
+        $("#id-date-range-picker-1").prop('disabled', false);
         break;    
     } 
 
@@ -766,28 +871,6 @@ $(function() {
 
   $("#selected_classroom_group").select2({placeholder: "Seleccioneu un grup de classe...",allowClear: true,dropdownAutoWidth: 'true'});
 
-  //Default DATE RANGE. Current month
-  var curr_date =new Date();
-  var first_day = new Date(curr_date.getFullYear(), curr_date.getMonth(), 1);
-  var last_day = new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 0);
-
-  var current_date =formatted_date(curr_date);
-  var month_start_date =mysql_formatted_date(first_day);                 
-  var month_end_date =mysql_formatted_date(last_day);
-
-  //console.debug("current_date: " + current_date);
-  //console.debug("month_start_date: " + month_start_date);
-  //console.debug("month_end_date: " + month_end_date);
-
-  $("#selected_date_range").html(month_start_date + " - " + month_end_date);
-  $("#selected_initial_date").html(month_start_date);
-  $("#selected_final_date").html(month_end_date);
-
-  //Rang de dates escollit: <span class="purple" id="selected_date_range"></span> 
-  //<span style="display:none;" id="selected_initial_date" value="-1"></span> 
-  //<span style="display:none;" id="selected_final_date" value="-1"></span>
-
-
   $('#select_class_list_academic_period_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
         var pathArray = window.location.pathname.split( '/' );
@@ -797,8 +880,6 @@ $(function() {
         window.location.href = baseURL + "/" + selectedValue;
 
     });
-
-  
 
   $('#selected_range').on("change", function(e) {  
     console.debug("selected_range change!");

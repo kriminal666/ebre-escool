@@ -100,6 +100,9 @@ class attendance extends skeleton_main {
         $header_data= $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/dataTables.colVis.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/daterangepicker.css'));
 
 /*        
         $header_data= $this->add_css_to_html_header_data(
@@ -237,8 +240,18 @@ class attendance extends skeleton_main {
                     base_url('assets/js/flot/jquery.flot.pie.min.js'));
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
-                    base_url('assets/js/jquery.sparkline.min.js'));
-
+                    base_url('assets/js/jquery.sparkline.min.js'));        
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/moment.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/daterangepicker.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/locales/bootstrap-datepicker.ca.js'));
+    
+        
 		$header_data['menu']= $active_menu;
 		return $header_data; 
 	}
