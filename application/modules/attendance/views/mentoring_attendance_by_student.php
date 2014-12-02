@@ -666,6 +666,10 @@ $(function() {
   //console.debug("get_selected_academic_period_initial_date: " + get_selected_academic_period_initial_date());
   //console.debug("get_selected_academic_period_final_date: " + get_selected_academic_period_final_date());
 
+  //console.debug("month_start_date: " + month_start_date);
+  //console.debug("month_end_date: " + month_end_date);
+
+
   $('#reportrange').daterangepicker(
     {
       locale: {
@@ -687,8 +691,8 @@ $(function() {
          'Mes anterior': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
          'Tot l\'any': [moment(get_selected_academic_period_initial_date(), "YYYY-MM-DD"), moment(get_selected_academic_period_final_date(), "YYYY-MM-DD")],
       },
-      startDate: month_start_date,
-      endDate: month_end_date
+      startDate: moment(month_start_date, "DD-MM-YYYY") ,
+      endDate: moment(month_end_date, "DD-MM-YYYY") ,
     },
     function(start, end) {
         $('#reportrange span').html(start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'));
