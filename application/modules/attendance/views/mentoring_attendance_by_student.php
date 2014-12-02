@@ -1,3 +1,4 @@
+<div class="main-content">
  <style TYPE="text/css"> 
   #reportrange {
     background: #ffffff;
@@ -17,9 +18,6 @@
     padding-left: 3px;
   }
   </style>
-
-<div class="main-content">
-
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
   try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
@@ -42,7 +40,7 @@
   <?php echo lang('mentoring_attendance_by_student');?>
   <small>
    <i class="icon-double-angle-right"></i>
-    <span id="title_teacher_name"></span>
+    <span id="title_student_name"></span>
   </small>
  </h1>
 </div>
@@ -738,7 +736,11 @@ $(function() {
 
   $('#selected_student').on("change", function(e) {  
         var selected_student = $("#selected_student").select2("val");
+        var theSelection = $("#selected_student").select2('data').text;
+
         //console.debug("selected_student: " + selected_student);
+
+        $("#title_student_name").html(theSelection);
 
         selected_student_text = "";
         if (selected_student != "") {
@@ -896,7 +898,11 @@ $('#selected_classroom_group').on("change", function(e) {
                                       },
                                       {
                                               "sExtends": "print",
-                                              "sButtonText": "<?php echo lang("Print");?>"
+                                              "sButtonText": "<?php echo lang("Print");?>",
+                                              "sToolTip": "Vista impressió",
+                                              "sMessage": "<center><h2>Llistat de faltes</h2></center>",
+                                              "sInfo": "<h6>Vista impressió</h6><p>Si us plau utilitzeu l'opció d'imprimir del vostre navegador (Ctrl+P) per "+
+                                                       "imprimir. Feu clic a la tecla Esc per tornar.",
                                       },
                               ]
 

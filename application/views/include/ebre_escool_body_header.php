@@ -1323,9 +1323,5 @@
         <script type="text/javascript">
           try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
         </script>
-      </div>
-
-  </div>
-
-
-<!-- END OF body_header. DO NOT CLOSE Body tag. Closed in body footer--> 
+      </div><!-- /.sidebar -->
+<!-- END OF body_header. DO NOT CLOSE main-container tag!!!!!. Closed in body footer-->
