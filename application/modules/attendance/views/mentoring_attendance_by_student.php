@@ -1,3 +1,23 @@
+ <style TYPE="text/css"> 
+  #reportrange {
+    background: #ffffff;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    color: #333333;
+    padding: 8px;
+    line-height: 18px;
+    cursor: pointer;
+  }
+  #reportrange .caret {
+    margin-top: 8px;
+    margin-left: 2px;
+  }
+  #reportrange span {
+    padding-left: 3px;
+  }
+  </style>
+
 <div class="main-content">
 
 <div id="breadcrumbs" class="breadcrumbs">
@@ -98,30 +118,12 @@
                         <span style="display:none;" id="selected_initial_date" value="-1"></span> 
                         <span style="display:none;" id="selected_final_date" value="-1"></span>
                       </h5>
-                      <style TYPE="text/css"> 
-                      #reportrange {
-                        background: #ffffff;
-                        -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
-                        -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
-                        box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
-                        color: #333333;
-                        padding: 8px;
-                        line-height: 18px;
-                        cursor: pointer;
-                      }
-                      #reportrange .caret {
-                        margin-top: 8px;
-                        margin-left: 2px;
-                      }
-                      #reportrange span {
-                        padding-left: 3px;
-                      }
-                      </style>
+                     
 
                       <div class="widget-toolbar no-border">
                         <div id="reportrange" class="pull-right">
                           <i class="icon-calendar"></i>
-                          <span>TODO</span>
+                          <span>Rang de dates</span>
                           <b class="caret" style="position: relative; top: -5px"></b>
                         </div>
                       </div>
@@ -275,15 +277,14 @@ function get_selected_academic_period_id() {
 }
 
 function get_selected_academic_period_initial_date() {
-  var selected_academic_period_value = $("#select_class_list_academic_period_filter").select2("data").id;
-
-  var selected_academic_period_initial_date = $('option[value="'+selected_academic_period_value+'"]').attr("initial_date");
+  var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
+  var selected_academic_period_initial_date = $('option[value="'+selectedValue+'"]').attr("initial_date");
   return selected_academic_period_initial_date;
 }
 
 function get_selected_academic_period_final_date() {
-  var selected_academic_period_value = $("#select_class_list_academic_period_filter").select2("data").id;
-  var selected_academic_period_final_date = $('option[value="'+selected_academic_period_value+'"]').attr("final_date");
+  var selectedValue = $("#select_class_list_academic_period_filter").select2("val");
+  var selected_academic_period_final_date = $('option[value="'+selectedValue+'"]').attr("final_date");
   return selected_academic_period_final_date;
 }
 
@@ -340,9 +341,10 @@ function reload_incidents_statistics_by_student() {
       //console.debug("totalIncidents_current_academic_period: " + data.totalIncidents_current_academic_period );
 
       //$("#total_incidents").html(data.totalIncidents);
-      $("#total_incidents_current_academic_period").html(data.totalIncidents_current_academic_period);
-      $("#day_of_week_total").html(data.totalIncidents_current_academic_period);
-      $("#time_slots_total").html(data.totalIncidents_current_academic_period);
+      totalIncidents = data.totalIncidents_current_academic_period;
+      $("#total_incidents_current_academic_period").html(totalIncidents);
+      $("#day_of_week_total").html(totalIncidents);
+      $("#time_slots_total").html(totalIncidents);
 
       var str_total_incidents_current_academic_period_by_type="";
       $.each(data.incident_types, function( index, value ) {
@@ -351,6 +353,7 @@ function reload_incidents_statistics_by_student() {
       });
       $("#total_incidents_current_academic_period_by_type").html(str_total_incidents_current_academic_period_by_type);
 
+      //Days sparkline
       var str_total_incidents_by_day="";
       var str_array_total_incidents_by_day="";
       $.each(data.incident_days, function( index, value ) {
@@ -362,7 +365,7 @@ function reload_incidents_statistics_by_student() {
       $("#total_incidents_by_day").html(str_total_incidents_by_day);
       $("#sparkline_days").attr("data-values",str_array_total_incidents_by_day);
 
-      //Time slots
+      //Time slots sparkline
       var str_total_incidents_by_time_slot="";
       var str_array_total_incidents_by_time_slot="";
       $.each(data.incident_time_slots, function( index, value ) {
@@ -447,7 +450,8 @@ function reload_incidents_statistics_by_student() {
         ];*/
 
       if ( (study_modules_array.length == 0) || (study_submodules_array.length == 0) ) {
-        console.debug("No data values for pie chart. Skipping update_statistics_graphs...");
+        console.debug("No data values for pie chart. Skipping update_statistics_graphs... Resettings graphs");
+        update_statistics_graphs(study_modules_array,study_submodules_array,true);  
       } else {
         update_statistics_graphs(study_modules_array,study_submodules_array);  
       }
@@ -458,7 +462,7 @@ function reload_incidents_statistics_by_student() {
 
 }
 
-function update_statistics_graphs(data_piechart_study_modules,data_piechart_study_submodules){
+function update_statistics_graphs(data_piechart_study_modules,data_piechart_study_submodules,total_is_zero){
 
   var $box = $('#sparkline_days').closest('.infobox');
   var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
@@ -490,6 +494,11 @@ function update_statistics_graphs(data_piechart_study_modules,data_piechart_stud
   
 
   // UF PIE CHART
+  if (total_is_zero) {
+    $('#piechart-placeholder').html("UFs/UDs");
+    $('#piechart-placeholder1').html("MPs/Cs");
+    return;
+  }
   var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'170px'});
   function drawPieChart(placeholder, data, position) {
 
@@ -631,6 +640,8 @@ function get_final_date(){
 
 $(function() { 
 
+  $("#select_class_list_academic_period_filter").select2({dropdownAutoWidth: 'true'});
+
   //Default DATE RANGE. Current month
   var curr_date =new Date();
   var first_day = new Date(curr_date.getFullYear(), curr_date.getMonth(), 1);
@@ -648,6 +659,12 @@ $(function() {
 
   $("#selected_initial_date").html(month_start_date_mysql);
   $("#selected_final_date").html(month_end_date_mysql);
+
+  //console.debug("moment: " +moment());
+  //console.debug("moment(month_start_date_mysql, \"YYYY-MM-DD\"): " + moment(month_start_date_mysql, "YYYY-MM-DD"));
+  //console.debug("moment(month_end_date_mysql, \"YYYY-MM-DD\"): " + moment(month_end_date_mysql, "YYYY-MM-DD"));
+  //console.debug("get_selected_academic_period_initial_date: " + get_selected_academic_period_initial_date());
+  //console.debug("get_selected_academic_period_final_date: " + get_selected_academic_period_final_date());
 
   $('#reportrange').daterangepicker(
     {
@@ -667,7 +684,8 @@ $(function() {
          'Últims 7 dies': [moment().subtract('days', 6), moment()],
          'Últims 30 dies': [moment().subtract('days', 29), moment()],
          'Mes actual': [moment().startOf('month'), moment().endOf('month')],
-         'Mes anterior': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+         'Mes anterior': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+         'Tot l\'any': [moment(get_selected_academic_period_initial_date(), "YYYY-MM-DD"), moment(get_selected_academic_period_final_date(), "YYYY-MM-DD")],
       },
       startDate: month_start_date,
       endDate: month_end_date
@@ -694,7 +712,7 @@ $(function() {
 
   $('#reportrange span').html(month_start_date + ' - ' + month_end_date);
 
-  $("#select_class_list_academic_period_filter").select2({dropdownAutoWidth: 'true'});
+  
 
   $("#selected_student").select2({placeholder: "Seleccioneu un alumne...",allowClear: true,dropdownAutoWidth: 'true'});
 
