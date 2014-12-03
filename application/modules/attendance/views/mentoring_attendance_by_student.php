@@ -958,7 +958,11 @@ $('#selected_classroom_group').on("change", function(e) {
     
     var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/attendance_reports/mentoring_attendance_by_student_pdf_report";    
     //console.debug(baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date);    
-    window.location.href = baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date;
+
+    window.open(
+      baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date,
+      '_blank');
+
     });
 
 });
