@@ -46,67 +46,75 @@
 </div>
 
 <div class="row-fluid">
-  <!-- FILTER FORM -->    
-   <div style="width:60%; margin:0px auto;">
-    
 
-    <form method="post" action="" class="form-horizontal" role="form">
-      <table class="table table-bordered" cellspacing="10" cellpadding="5">
-        <div class="form-group ui-widget">
-          <tr>
-            <td><label for="grup" style="width:150px;">Període acadèmic:</label></td>
-            <td>
-                      <select id="select_class_list_academic_period_filter">
-                      <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
-                        <?php if ( $selected_academic_period_id) : ?>
-                          <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
-                            <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-                          <?php else: ?>
-                              <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-                          <?php endif; ?>
-                        <?php else: ?>   
-                            <?php if ( $academic_period_value->current == 1) : ?>
-                              <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-                            <?php else: ?>
-                              <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
-                            <?php endif; ?> 
-                        <?php endif; ?> 
-                      <?php endforeach; ?>
-                      </select>    
-                    </td>
-            </tr> 
-          <tr>
-            <td><label for="student">Selecciona l'alumne:</label></td>
-            <td><select data-place_holder="TODO" id="selected_student" name="student" data-size="5" data-live-search="true">
-              <option></option>
-              <?php foreach ($students as $student_key => $student) { ?>
-                <?php if ( $student_key == $default_student_key ) : ?>
-                  <option enrollment_ids="<?php echo implode(',', $student->enrollments);?>" enrollment_classroom_groups="<?php echo implode(',', $student->enrolled_classroom_groups);?>" enrollment_classroom_groups_fullnames="<?php echo implode(',', $student->enrolled_classroom_groups_full_names);?>" selected="selected" value="<?php echo $student_key ?>" ><?php echo $student->fullname_alt; ?></option>
-                <?php else: ?>  
-                  <option enrollment_ids="<?php echo implode(',', $student->enrollments);?>" enrollment_classroom_groups="<?php echo implode(',', $student->enrolled_classroom_groups);?>" enrollment_classroom_groups_fullnames="<?php echo implode(',', $student->enrolled_classroom_groups_full_names);?>" value="<?php echo $student_key ?>" ><?php echo $student->fullname_alt; ?></option>  
-                <?php endif;?>
-
-              <?php } ?>
-              </select> 
-            </td>
-          </tr> 
-          <tr id="selected_classroom_group_tr" style="display:none;">
-            <td><label for="classroom_group">Selecciona el grup de classe:</label></td>
-            <td><select data-place_holder="TODO" id="selected_classroom_group" name="classroom_group" data-size="5" data-live-search="true">
-              <option value="-1">---</option>
-              </select> 
-            </td>
-          </tr> 
-        </div>
-      </table>
-     </form>
+   <div class="span2 center">
+      <div></div>
     </div>
+    <div class="span7 center">
+       <!-- FILTERS -->    
+       <div style="width:90%; margin:0px auto;">
+        
+          <table class="table table-bordered" cellspacing="10" cellpadding="5">
+            <div class="form-group ui-widget">
+              <tr>
+                <td><label for="grup" style="width:150px;">Període acadèmic:</label></td>
+                <td>
+                          <select id="select_class_list_academic_period_filter">
+                          <?php foreach ($academic_periods as $academic_period_key => $academic_period_value) : ?>
+                            <?php if ( $selected_academic_period_id) : ?>
+                              <?php if ( $academic_period_key == $selected_academic_period_id) : ?>
+                                <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                              <?php else: ?>
+                                  <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                              <?php endif; ?>
+                            <?php else: ?>   
+                                <?php if ( $academic_period_value->current == 1) : ?>
+                                  <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" selected="selected" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                                <?php else: ?>
+                                  <option initial_date="<?php echo $academic_period_value->initial_date ;?>" final_date="<?php echo $academic_period_value->final_date ;?>" value="<?php echo $academic_period_key ;?>"><?php echo $academic_period_value->shortname ;?></option>
+                                <?php endif; ?> 
+                            <?php endif; ?> 
+                          <?php endforeach; ?>
+                          </select>    
+                        </td>
+                </tr> 
+              <tr>
+                <td><label for="student">Selecciona l'alumne:</label></td>
+                <td><select data-place_holder="TODO" id="selected_student" name="student" data-size="5" data-live-search="true">
+                  <option></option>
+                  <?php foreach ($students as $student_key => $student) { ?>
+                    <?php if ( $student_key == $default_student_key ) : ?>
+                      <option enrollment_ids="<?php echo implode(',', $student->enrollments);?>" enrollment_classroom_groups="<?php echo implode(',', $student->enrolled_classroom_groups);?>" enrollment_classroom_groups_fullnames="<?php echo implode(',', $student->enrolled_classroom_groups_full_names);?>" selected="selected" value="<?php echo $student_key ?>" ><?php echo $student->fullname_alt; ?></option>
+                    <?php else: ?>  
+                      <option enrollment_ids="<?php echo implode(',', $student->enrollments);?>" enrollment_classroom_groups="<?php echo implode(',', $student->enrolled_classroom_groups);?>" enrollment_classroom_groups_fullnames="<?php echo implode(',', $student->enrolled_classroom_groups_full_names);?>" value="<?php echo $student_key ?>" ><?php echo $student->fullname_alt; ?></option>  
+                    <?php endif;?>
 
-
-
-
-
-
+                  <?php } ?>
+                  </select> 
+                </td>
+              </tr> 
+              <tr id="selected_classroom_group_tr" style="display:none;">
+                <td><label for="classroom_group">Selecciona el grup de classe:</label></td>
+                <td><select data-place_holder="TODO" id="selected_classroom_group" name="classroom_group" data-size="5" data-live-search="true">
+                  <option value="-1">---</option>
+                  </select> 
+                </td>
+              </tr> 
+            </div>
+          </table>
+        </div>
+      </div>
+    <div class="span2 center">
+      <div>
+        <div class="space-6" ></div>
+         <button id="button_report1" class="btn btn-app btn-grey radius-4" style="display:none;">
+          <i class="icon-save bigger-160"></i>
+           <h6>Informe tutor/a</h6>
+         </button>
+        </div>
+    </div>  
+</div>    
+<div class="row-fluid">
                   <div class="widget-box collapsed" id="student_statistics_widget-box">
                     <div class="widget-header widget-header-flat widget-header-small">
                       <h5>
@@ -736,8 +744,11 @@ $(function() {
 
   $('#selected_student').on("change", function(e) {  
         var selected_student = $("#selected_student").select2("val");
-        var theSelection = $("#selected_student").select2('data').text;
-
+        var theSelection = "";
+        if (selected_student!="") {
+          theSelection = $("#selected_student").select2('data').text;  
+        } 
+        
         //console.debug("selected_student: " + selected_student);
 
         $("#title_student_name").html(theSelection);
@@ -745,7 +756,10 @@ $(function() {
         selected_student_text = "";
         if (selected_student != "") {
           var selected_student_text = $("#selected_student").select2('data').text;
-        }        
+          $("#button_report1").show();
+        } else {
+          $("#button_report1").hide();
+        }       
         //console.debug("selected_student onchange: " + selected_student);
         $("#selected_student_title").html(selected_student_text);
 
@@ -927,6 +941,25 @@ $('#selected_classroom_group').on("change", function(e) {
             }
              
         });  
+
+  $("#button_report1").click(function() {
+    console.debug( "Click on report button!");
+
+    //Open report in pdf
+
+    var selectedAcademicPeriodValue = $("#select_class_list_academic_period_filter").select2("val");
+    var selected_student = $("#selected_student").select2("val");
+    var selected_classroom_group_id = get_selected_classroom_group_id();
+    var initial_date = get_initial_date();
+    var final_date = get_final_date();
+    
+    var pathArray = window.location.pathname.split( '/' );
+    var secondLevelLocation = pathArray[1];
+    
+    var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/attendance_reports/mentoring_attendance_by_student_pdf_report";    
+    console.debug(baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date);    
+    //window.location.href = baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date;
+    });
 
 });
 </script>

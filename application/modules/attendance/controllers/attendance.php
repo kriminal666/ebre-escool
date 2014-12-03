@@ -1019,7 +1019,7 @@ class attendance extends skeleton_main {
 
 	}
 
-	public function mentoring_attendance_by_student ($academic_period_id = null) {
+    public function mentoring_attendance_by_student ($academic_period_id = null) {
 
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
@@ -1060,7 +1060,8 @@ class attendance extends skeleton_main {
 		$this->load->add_package_path(APPPATH.'third_party/fpdf-codeigniter/application/');
 		#$this->load->library('fpdf');
 		$this->load->library('fpdf');
-		$pdf=new FPDF();
+		
+        $pdf = new FPDF('P', 'mm', 'A4','font/');
 		
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);

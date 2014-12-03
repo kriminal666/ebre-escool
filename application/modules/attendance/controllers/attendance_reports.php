@@ -689,6 +689,193 @@ class attendance_reports extends skeleton_main {
         $this->load_footer();      
     }
 
+    public function mentoring_attendance_by_student_pdf_report(
+        $academic_period_id, $student_id,$classroom_group_id,$initial_date,$final_date){
+
+        //DEBUG:
+        /*
+        echo "academic_period_id: " . $academic_period_id . "<br/>";
+        echo "student_id: " . $student_id . "<br/>";
+        echo "classroom_group_id: " . $classroom_group_id . "<br/>";
+        echo "initial_date: " . $initial_date . "<br/>";
+        echo "final_date: " . $final_date . "<br/>";*/
+
+        $pdf = new FPDF('P', 'mm', 'A4','font/');        
+        $pdf->SetMargins(30,15,30);
+        $pdf->AddPage();
+        $pdf->SetFont('Times','B',16);
+
+        //Exact position start writing
+        $pdf->Image(base_url('/uploads/person_photos/logo_iesebre_2010_11.jpg'),30,10,40,15);
+
+        $TITLE_CENTER_TEXT_LINE1 = "PROCEDIMENT DE GESTIÓ";
+        $TITLE_CENTER_TEXT_LINE2 = "DE L'ACCIÓ TUTORIAL";
+        $TITLE_RIGHT_TEXT = "PGQ14-D07";
+        $SUBTITLE_LINE_1 = "COMUNICAT DE FALTES D'ASSISTÈNCIA";
+        $SUBTITLE_LINE_2 = "DE L'ALUMNAT";
+
+        $data_report = new stdClass();
+        $data_report = $this->attendance_model->get_mentoring_attendance_by_student_pdf_report_data(
+            $academic_period_id, $student_id,$classroom_group_id,$initial_date,$final_date);
+
+        /*
+        $data_report->fullname = "David Tomàs Vergés";
+        $data_report->classroom_group_full_name = "SMX 1 A";
+        $data_report->num_total_incidents = "50";
+        $data_report->incidents_fj = "50";
+        $data_report->incidents_fi = "50";
+        $data_report->incidents_r = "50";
+        $data_report->incidents_e = "50";
+        */
+
+        $student_full_name =  $data_report->fullname;
+        $classroom_group_full_name = $data_report->classroom_group_full_name;
+        $num_total_incidents=$data_report->num_total_incidents;
+        
+        if ($num_total_incidents == "1") {
+            $hours_text="hora";
+        } else {
+            $hours_text="hores";
+        }
+
+        $incidents_fj = $data_report->incidents_fj;
+        if ($incidents_fj == "1") {
+            $incidents_fj_hours_text="hora";
+        } else {
+            $incidents_fj_hours_text="hores";
+        }
+
+        $incidents_fi = $data_report->incidents_fi;
+        if ($incidents_fi == "1") {
+            $incidents_fi_hours_text="hora";
+        } else {
+            $incidents_fi_hours_text="hores";
+        }
+
+        $incidents_r = $data_report->incidents_r;
+        if ($incidents_r == "1") {
+            $incidents_r_hours_text="hora";
+        } else {
+            $incidents_r_hours_text="hores";
+        }
+        $incidents_e = $data_report->incidents_e;
+        if ($incidents_e == "1") {
+            $incidents_e_hours_text="hora";
+        } else {
+            $incidents_e_hours_text="hores";
+        }
+        
+        $initial_date_array = explode("-", $initial_date);
+        $final_date_array = explode("-", $final_date);
+
+        $initial_date = $initial_date_array[2] . "/". $initial_date_array[1] . "/" . $initial_date_array[0];
+        $final_date = $final_date_array[2] . "/". $final_date_array[1] . "/" . $final_date_array[0];
+ 
+        $TEXT = "L'alumne/a " . $student_full_name . " del grup " . $classroom_group_full_name . " ha realitzat un total de ";
+        $TEXT = $TEXT . $num_total_incidents . " " . $hours_text . " d'incidències des del dia " . $initial_date;
+        $TEXT = $TEXT . " fins al dia " . $final_date . ", de les quals " . $incidents_fj . " " . $incidents_fj_hours_text;
+        $TEXT = $TEXT . " són faltes justificades, " . $incidents_fi . " " . $incidents_fi_hours_text;
+        $TEXT = $TEXT . " són faltes injustificades, " . $incidents_r . " " . $incidents_r_hours_text;
+        $TEXT = $TEXT . " són retards no justificats i " . $incidents_e . " " . $incidents_e_hours_text;
+        $TEXT = $TEXT . " són expulsions de classe, cosa que poso en coneixement de vostè.";
+
+        $FOOT_TEXT_LEFT="El tutor/la tutora";
+        $FOOT_TEXT_RIGHT="El pare/mare/tutor legal";
+
+        setlocale(LC_TIME, "ca_ES"); 
+        $formatted_time = strftime("%e de %B del %Y", time());
+        
+        //$FOOT_LOCATION_AND_DATE="Tortosa, 6 de novembre de 2014";
+        $FOOT_LOCATION_AND_DATE = "Tortosa, " . $formatted_time;
+
+        $pdf->SetFont('Arial','B',12);
+        $pdf->Cell(160,6,utf8_decode($TITLE_CENTER_TEXT_LINE1),0,0,'C');
+        $pdf->SetFont('Arial','',10);
+        $pdf->Cell(0,6,utf8_decode($TITLE_RIGHT_TEXT),0,0,'R');
+        $pdf->ln();
+        $pdf->SetFont('Arial','B',12);
+        $pdf->Cell(160,6,utf8_decode($TITLE_CENTER_TEXT_LINE2),0,0,'C');
+        
+        $pdf->Line(30, 27, 210-30, 27); // 30mm from each edge
+
+        $pdf->ln();
+        $pdf->ln();
+
+        $pdf->SetFont('Arial','B',14);
+        $pdf->Cell(160,6,utf8_decode($SUBTITLE_LINE_1),0,0,'C');
+        $pdf->ln();
+        $pdf->Cell(160,6,utf8_decode($SUBTITLE_LINE_2),0,0,'C');
+
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->SetFont('Arial','',12);
+        $pdf->MultiCell(0, 7, utf8_decode($TEXT));
+
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->ln();
+
+        $pdf->Cell(0, 6, utf8_decode($FOOT_TEXT_LEFT),0,0,'L');
+        $pdf->Cell(0, 6, utf8_decode($FOOT_TEXT_RIGHT),0,0,'R');
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->Cell(0, 6, utf8_decode($FOOT_LOCATION_AND_DATE),0,0,'L');
+
+        $pdf->ln();
+        $pdf->ln();
+        $cx = $pdf->GetX();
+        $cy = $pdf->GetY();
+
+        $pdf->Image(base_url('/assets/img/scissors.png'),$cx,$cy-1.5,3,3);
+        $pdf->Line(30, $cy, 210-30, $cy); // 30mm from each edge
+
+        //REPEAT:
+        $pdf->ln();
+        $pdf->ln();
+
+        $cx = $pdf->GetX();
+        $cy = $pdf->GetY();
+
+        $pdf->Image(base_url('/uploads/person_photos/logo_iesebre_2010_11.jpg'),$cx,$cy-5,40,15);
+
+        $pdf->SetFont('Arial','B',12);
+        $pdf->Cell(160,6,utf8_decode($TITLE_CENTER_TEXT_LINE1),0,0,'C');
+        $pdf->Cell(160,6,utf8_decode($TITLE_CENTER_TEXT_LINE2),0,0,'C');
+        $pdf->SetFont('Arial','',10);
+        $pdf->Cell(0,6,utf8_decode($TITLE_RIGHT_TEXT),0,0,'R');
+        $pdf->ln();
+        $cy = $pdf->GetY();
+        $pdf->Line(30, $cy+5, 210-30, $cy+5); // 30mm from each edge
+
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->SetFont('Arial','B',14);
+        $pdf->Cell(160,6,utf8_decode($SUBTITLE_LINE_1),0,0,'C');
+        $pdf->ln();
+        $pdf->Cell(160,6,utf8_decode($SUBTITLE_LINE_2),0,0,'C');
+
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->SetFont('Arial','',12);
+        $pdf->MultiCell(0, 7, utf8_decode($TEXT));
+
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->ln();
+
+        $pdf->Cell(0, 6, utf8_decode($FOOT_TEXT_LEFT),0,0,'L');
+        $pdf->Cell(0, 6, utf8_decode($FOOT_TEXT_RIGHT),0,0,'R');
+        $pdf->ln();
+        $pdf->ln();
+        $pdf->Cell(0, 6, utf8_decode($FOOT_LOCATION_AND_DATE),0,0,'L');
+
+        $pdf->Output();
+        
+    }
+
     function class_sheet_report($academic_period_id = null, $classroom_group_id = null) {
 
         $selected_academic_period_id = false;

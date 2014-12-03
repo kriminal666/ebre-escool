@@ -4104,4 +4104,69 @@ function get_current_academic_period() {
 		}
 	}
 
+	function get_student_fullname($student_id) {
+
+		$this->db->select('person_sn1,person_sn2,person_givenName');
+		$this->db->from('person');
+		$this->db->where('person.person_id',$student_id);
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() == 1) {	
+			$row = $query->row();
+			if ($row->person_sn2 == "") {
+				return $row->person_sn1 . ", " . $row->person_givenName;
+			} else {
+				return $row->person_sn1 . " " . $row->person_sn2 . ", " . $row->person_givenName;	
+			}
+			
+		} else {
+			return "";
+		}
+
+	}
+
+	function get_classroomgroup_fullname($classroom_group_id) {
+
+		/*SELECT classroom_group_code,classroom_group_name FROM classroom_group WHERE classroom_group_id=73 */
+		$this->db->select('classroom_group_code,classroom_group_name');
+		$this->db->from('classroom_group');
+		$this->db->where('classroom_group_id',$classroom_group_id);
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		if ($query->num_rows() == 1) {	
+			$row = $query->row();
+			return $row->classroom_group_code . " (" . $row->classroom_group_name . ")";
+		} else {
+			return "";
+		}
+
+	}
+
+	function get_mentoring_attendance_by_student_pdf_report_data (
+		$academic_period_id, $student_id,$classroom_group_id,$initial_date,$final_date) {
+
+		$data_report = new stdClass();		
+        $data_report->fullname = $this->get_student_fullname($student_id);
+        $data_report->classroom_group_full_name = $this->get_classroomgroup_fullname($classroom_group_id);
+
+		$incidents_statistics_by_student =
+			$this->get_incidents_statistics_by_student(
+				$student_id,$classroom_group_id,$initial_date,$final_date,$academic_period_id);
+
+		//print_r($incidents_statistics_by_student->incident_types);
+
+        $data_report->num_total_incidents = $incidents_statistics_by_student->totalIncidents_current_academic_period;
+        $data_report->incidents_fj = $incidents_statistics_by_student->incident_types[4]->subtotal;
+        $data_report->incidents_fi = $incidents_statistics_by_student->incident_types[3]->subtotal;
+        $data_report->incidents_r =  $incidents_statistics_by_student->incident_types[5]->subtotal;
+        $data_report->incidents_e =  $incidents_statistics_by_student->incident_types[7]->subtotal;
+        
+        return $data_report;
+        
+	}
+
 }
