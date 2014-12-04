@@ -302,7 +302,7 @@
                                 <i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i>
                               </a>
 
-                              <a class="blue" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
+                              <a class="blue" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student_with_error->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
                                 <i class="icon-bell bigger-130" title="Consulta matrícula"></i>
                               </a>
                               
