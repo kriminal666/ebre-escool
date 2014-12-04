@@ -36,7 +36,8 @@ class persons_model  extends CI_Model  {
     function getPersonalDataByPersonId($person_id) {
 
     	$this->db->from('person');
-        $this->db->select('person_locality_name,person_entryDate,person_date_of_birth');
+        $this->db->select('person_locality_id,locality_name,person_entryDate,person_date_of_birth');
+        $this->db->join('locality','locality_id = person_locality_id');
         $this->db->where('person_id',$person_id);
 	       
         $query = $this->db->get();
@@ -45,7 +46,8 @@ class persons_model  extends CI_Model  {
 
 		if ($query->num_rows() == 1) {
 			$row = $query->row();
-			$person['person_locality_name'] = $row->person_locality_name;
+			$person['person_locality_id'] = $row->person_locality_id;
+			$person['person_locality_name'] = $row->locality_name;
 			$person['person_date_of_birth'] = $row->person_date_of_birth;
 			$person['person_entryDate'] = $row->person_entryDate;
 		}			
