@@ -3847,7 +3847,7 @@ function get_current_academic_period() {
 
 			$shift->id = $row->shift_id;
 			$shift->name = $row->shift_name;
-
+			//$shift->time_slots = $this->get_incident_time_slots($row->shift_id);
 			return $shift;
 		} else {
 			return false;

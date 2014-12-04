@@ -205,7 +205,7 @@
 
                                 <div class="infobox-data" style="padding-left: 25px;">
                                   <span class="infobox-data-number" id="time_slots_total">---</span>
-                                  <div class="infobox-content">Franjes horàries. Torn: <span id="shift_span"></span></div>
+                                  <div class="infobox-content">Franjes horàries. Torn: <span id="shift_span"></span><span id="shift_id" style="display:none;"></span></div>
                                 </div>
                               </div>
                           </div>
@@ -385,6 +385,7 @@ function reload_incidents_statistics_by_student() {
       $("#sparkline_time_slots").attr("data-values",str_array_total_incidents_by_time_slot);
 
       $("#shift_span").html(data.shift.name);
+      $("#shift_id").html(data.shift.id);
 
       colors_array = ["#68BC31","#2091CF","#AF4E96","#DA5430","#FEE074","#119966","#00FFFF","#FFA500","#A52A2A","#8B0000","#ADFF2F","#808000","#AFEEEE","#FF00FF"];
       
@@ -482,21 +483,42 @@ function update_statistics_graphs(data_piechart_study_modules,data_piechart_stud
           3: 'Dijous',
           4: 'Divendres',
      }
-    }, barWidth: 12, barColor: barColor , chartRangeMin:$('#sparkline_time_slots').data('min') || 0} );
+    }, barWidth: 12, barColor: barColor , chartRangeMin:$('#sparkline_days').data('min') || 0} );
 
   var $box = $('#sparkline_time_slots').closest('.infobox');
   var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
-  $('#sparkline_time_slots').sparkline('html', {tagValuesAttribute:'data-values', type: 'bar',
-    tooltipFormat: '{{offset:offset}} {{value}}',
-    tooltipValueLookups: {
-      'offset': {
-          0: 'F1',
-          1: 'F2',
-          2: 'F3',
-          3: 'F4',
-          4: 'F5',
-     }
-    }, barWidth: 12, barColor: barColor , chartRangeMin:$('#sparkline_time_slots').data('min') || 0} );
+
+  
+  shift_id = $("#shift_id").html();
+  if (shift_id==2) {
+      $('#sparkline_time_slots').sparkline('html', {tagValuesAttribute:'data-values', type: 'bar',
+      tooltipFormat: '{{offset:offset}} {{value}}',
+      tooltipValueLookups: {
+        'offset': {
+            0: '15:30 - 16:30',
+            1: '16:30 - 17:30',
+            2: '17:30 - 18:30',
+            3: '19:00 - 20:00',
+            4: '20:00 - 21:00',
+            5: '21:00 - 22:00',
+       }
+      }, barWidth: 12, barColor: barColor , chartRangeMin:$('#sparkline_time_slots').data('min') || 0} );
+  } else {
+      $('#sparkline_time_slots').sparkline('html', {tagValuesAttribute:'data-values', type: 'bar',
+      tooltipFormat: '{{offset:offset}} {{value}}',
+      tooltipValueLookups: {
+        'offset': {
+            0: '08:00 - 9:00',
+            1: '09:00 - 10:00',
+            2: '10:00 - 11:00',
+            3: '11:30 - 12:30',
+            4: '12:30 - 13:30',
+            5: '13:30 - 14:30',
+       }
+      }, barWidth: 12, barColor: barColor , chartRangeMin:$('#sparkline_time_slots').data('min') || 0} );
+  }
+
+  
   
 
   // UF PIE CHART
