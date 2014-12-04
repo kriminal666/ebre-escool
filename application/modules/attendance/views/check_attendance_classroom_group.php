@@ -298,10 +298,14 @@
 
                           <td>
                             <div class="hidden-phone visible-desktop action-buttons">
-                              <a class="blue" href="#">
-                                <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student_with_error->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
+                              <a class="blue" href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student_with_error->person_official_id);?>" target="_blank">
+                                <i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i>
                               </a>
 
+                              <a class="blue" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
+                                <i class="icon-bell bigger-130" title="Consulta matrícula"></i>
+                              </a>
+                              
                               <?php if ( $user_is_admin ) : ?>
                               <a class="green" href="#">
                                 <i class="icon-pencil bigger-130" title="Modificació de matrícula"></i>
@@ -624,8 +628,12 @@
 
                       <td>
                         <div class="hidden-phone visible-desktop action-buttons">
-                          <a class="blue" href="#">
-                            <a href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student->person_official_id);?>" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a>
+                          <a class="blue" href="<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/' . $student->person_official_id);?>" target="_blank">
+                              <i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i>
+                          </a>
+
+                          <a class="orange" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
+                            <i class="icon-bell bigger-130" title="Consulta incidències"></i>
                           </a>
 
                           <?php if ( $user_is_admin ) : ?>
@@ -656,7 +664,7 @@
                               <li>
                                 <a href="#" class="tooltip-info" data-rel="tooltip" title="View">
                                   <span class="blue">
-                                    <i class="icon-zoom-in bigger-120"></i>1
+                                    <i class="icon-zoom-in bigger-120"></i>Pendent
                                   </span>
                                 </a>
                               </li>
@@ -671,7 +679,7 @@
 
                               <li>
                                 <a href="#" class="tooltip-error" data-rel="tooltip" title="Ocultar">
-                                  <span class="red">BB
+                                  <span class="red">
                                     <i class="icon-eye-close bigger-120"></i>
                                   </span>
                                 </a>
@@ -679,6 +687,7 @@
                             </ul>
                           </div>
                         </div>
+
                       </td>
                     </tr>
                     <?php endforeach;?>
