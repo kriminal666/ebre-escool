@@ -232,7 +232,7 @@
 
     <center><i id="spinner" class="icon-spinner icon-spin orange bigger-300" style="display: none;"></i></center>
 
-    <div class="widget-box collapsed" id="student_statistics_widget-box">
+    <div class="widget-box collapsed" id="student_statistics_by_study_modules_submodules_widget_box">
       <div class="widget-header widget-header-flat widget-header-small">
         <h5>
           <i class="icon-group"></i>
