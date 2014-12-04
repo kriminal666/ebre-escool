@@ -3978,17 +3978,21 @@ function get_current_academic_period() {
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br/>";
 
+		$shift = new stdClass();
+
 		$all_incidents_array = array();
 		if ($query->num_rows() == 1) {	
 			$row = $query->row();
-			$shift = new stdClass();
+			
 
 			$shift->id = $row->shift_id;
 			$shift->name = $row->shift_name;
 			//$shift->time_slots = $this->get_incident_time_slots($row->shift_id);
 			return $shift;
 		} else {
-			return false;
+			$shift->id = "";
+			$shift->name = "";
+			return $shift;
 		}
 
 		//TABLE: classroom_group_academic_periods
@@ -4013,7 +4017,7 @@ function get_current_academic_period() {
 				//Afternoon
 				break;				
 			default:
-				return false;
+				break;	
 		}
 
 		//DEBUG:
