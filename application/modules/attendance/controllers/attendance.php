@@ -1019,7 +1019,7 @@ class attendance extends skeleton_main {
 
 	}
 
-    public function mentoring_attendance_by_student ($academic_period_id = null) {
+    public function mentoring_attendance_by_student ($academic_period_id = null, $student_id=null,$classroom_group_id=null) {
 
 		$active_menu = array();
 		$active_menu['menu']='#mentoring';
@@ -1043,14 +1043,24 @@ class attendance extends skeleton_main {
         $data['academic_periods'] = $academic_periods;
         $data['selected_academic_period_id'] = $academic_period_id;
 
-        $data['default_student_key'] = 0;
+        
 
         $students_array = $this->attendance_model->get_students($academic_period_id);
         $data['students'] = $students_array;
 
+        $data['default_student_key'] = 0;
+        if ($student_id != null) {
+            $data['default_student_key'] = $student_id;
+        }
+
+        $data['classroom_group_id'] = 0;
+        if ($classroom_group_id != null) {
+            $data['classroom_group_id'] = $classroom_group_id;
+        }
+
         $incident_types = $this->attendance_model->get_incident_types();
         $data['incident_types'] = $incident_types;
-		
+
 		$this->load->view('mentoring_attendance_by_student',$data);	
 
 		$this->_load_body_footer();		

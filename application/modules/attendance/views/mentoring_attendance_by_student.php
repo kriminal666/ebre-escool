@@ -801,8 +801,6 @@ $(function() {
 
   $('#reportrange span').html(month_start_date + ' - ' + month_end_date);
 
-  
-
   $("#selected_student").select2({placeholder: "Seleccioneu un alumne...",allowClear: true,dropdownAutoWidth: 'true'});
 
   $("#selected_classroom_group").select2({placeholder: "Seleccioneu un grup de classe...",allowClear: true,dropdownAutoWidth: 'true'});
@@ -817,11 +815,8 @@ $(function() {
 
     });
 
-  $('#selected_range').on("change", function(e) {  
-    console.debug("selected_range change!");
-  });
-
   $('#selected_student').on("change", function(e) {  
+        console.debug("selected_student on change!");
         var selected_student = $("#selected_student").select2("val");
         var theSelection = "";
         if (selected_student!="") {
@@ -1141,6 +1136,59 @@ $('#selected_classroom_group').on("change", function(e) {
       '_blank');
 
     });
+
+    
+
+    // CHECK IF ALL NECESSARY DATA IS ALREADY GIVEN THEN RELOAD EVERYTHING
+
+
+    var selected_student2 = get_selected_student();
+
+    if (selected_student2 != "") {
+      $("#selected_classroom_group_tr").show();
+
+      //POPULATE classroom_group SELECT2 id: selected_classroom_group
+      // Info ara in options :
+      // Example1:                   <option enrollment_ids="6012" enrollment_classroom_groups="53" value="3933" >Abdelghani , Carxofa - X3480024P ( 3333 )</option>  
+      // Example2: <option enrollment_ids="6010,4577" enrollment_classroom_groups="34,43" value="2930" >Abella Pepiton, Marco - 45670085N ( 2933 )</option>  
+
+      var enrollment_classroom_groups = $("option[value='" + selected_student2 + "']").attr("enrollment_classroom_groups");        
+      var enrollment_classroom_groups_fullnames = $("option[value='" + selected_student2 + "']").attr("enrollment_classroom_groups_fullnames");
+      var enrollment_ids = $("option[value='" + selected_student2 + "']").attr("enrollment_ids");  
+
+      //console.debug("enrollment_ids: " + enrollment_ids);      
+      //console.debug("enrollment_classroom_groups: " + enrollment_classroom_groups); 
+
+      $('#selected_classroom_group').find('option').remove();
+
+      var default_classroom_group_id = "";
+      <?php 
+      if ($classroom_group_id!="") {
+        echo 'var default_classroom_group_id = "' . $classroom_group_id . '";';
+      }
+      ?>
+
+      var enrollment_classroom_groupsSplit= enrollment_classroom_groups.split(',');
+      var enrollment_classroom_groupsFullNamesSplit= enrollment_classroom_groups_fullnames.split(',');
+      $.each(enrollment_classroom_groupsSplit,function(enrollment_classroom_group_id){
+            //console.debug("enrollment_classroom_group_id: " + enrollment_classroom_groupsSplit[enrollment_classroom_group_id]);
+            if ((default_classroom_group_id != "") && (default_classroom_group_id == enrollment_classroom_group_id)) {
+              $("#selected_classroom_group").append('<option selected="selected" value="'+enrollment_classroom_groupsSplit[enrollment_classroom_group_id]+'">'+enrollment_classroom_groupsFullNamesSplit[enrollment_classroom_group_id]+'</option>');
+            } else {
+              $("#selected_classroom_group").append('<option value="'+enrollment_classroom_groupsSplit[enrollment_classroom_group_id]+'">'+enrollment_classroom_groupsFullNamesSplit[enrollment_classroom_group_id]+'</option>');
+            }
+      });
+      
+      $("#selected_classroom_group").select2("val", enrollment_classroom_groupsSplit[0]);
+      $("#selected_classroom_group").select2();
+
+      reload_incidents_statistics_by_student();
+
+      //Reload datatables
+      student_incidents_table.ajax.reload();
+      study_modules_table.ajax.reload();
+      study_submodules_table.ajax.reload();
+    } 
 
 });
 </script>
