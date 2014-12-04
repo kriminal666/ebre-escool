@@ -3574,6 +3574,144 @@ function get_current_academic_period() {
 
 	}
 
+	function get_student_incidents_by_study_modules($academic_period_id,$student_id,$classroom_group_id,$initial_date,$final_date){
+		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);
+		
+		/*
+		SELECT `study_module_id`, `study_module_order`, `study_module_shortname`, `study_module_name`, 
+		`incident_study_submodule_id`, `study_submodules_order`, `study_submodules_shortname`, 
+		`study_submodules_name`, `study_module_academic_periods_totalHours`, count(incident_id) as total
+		FROM (`incident`)
+		JOIN `study_submodules` ON `incident`.`incident_study_submodule_id` = `study_submodules`.`study_submodules_id`
+		JOIN `study_submodules_academic_periods` ON `study_submodules_academic_periods_study_submodules_id`= `study_submodules_id`
+		JOIN `study_module` ON `study_module`.`study_module_id` = `study_submodules`.`study_submodules_study_module_id`
+		JOIN `study_module_academic_periods` ON `study_module_academic_periods`.`study_module_academic_periods_study_module_id` = `study_module`.`study_module_id`
+		JOIN `enrollment` ON `incident`.`incident_student_id` = `enrollment`.`enrollment_personid` AND enrollment.enrollment_course_id = study_submodules_courseid
+		WHERE `enrollment`.`enrollment_group_id` =  '73'
+		AND `enrollment`.`enrollment_periodid` =  '2014-15'
+		AND `incident`.`incident_student_id` =  '5592'
+		AND `incident_date` BETWEEN '2014-12-01' AND '2014-12-31'
+		GROUP BY `study_module_id`
+		ORDER BY `study_module_order`, `study_module_shortname`, `study_submodules_order`, `study_submodules_shortname
+		*/
+
+		$this->db->select('study_module_id,study_module_order,study_module_shortname,study_module_name,incident_study_submodule_id,
+			study_submodules_order,study_submodules_shortname,study_submodules_name, 
+			study_module_academic_periods_totalHours,count(incident_id) as total');
+		$this->db->from('incident');
+		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods_study_submodules_id= study_submodules_id');
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
+		$this->db->join('study_module_academic_periods',
+			'study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');
+
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
+		
+		//$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		
+		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
+		$this->db->where('incident.incident_student_id',$student_id);
+		$this->db->group_by('study_module_id');
+		$this->db->order_by('study_module_order,study_module_shortname, 
+			study_submodules_order,study_submodules_shortname');
+
+		$between_str = "BETWEEN '" . $initial_date . "' AND '" . $final_date . "'";
+		$this->db->where('incident_date ' . $between_str);
+			
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		$all_incidents_array_by_study_modules = array();
+		if ($query->num_rows() > 0) {			
+			$i = 0;
+			foreach ($query->result() as $row)	{
+				$all_incidents_array_by_study_modules[$i]['study_module_id'] = $row->study_module_id;
+				$all_incidents_array_by_study_modules[$i]['study_module_shortname'] = $row->study_module_shortname;
+				$all_incidents_array_by_study_modules[$i]['study_module_name'] = $row->study_module_name;
+
+				$all_incidents_array_by_study_modules[$i]['study_module_total_incidents'] = $row->total;
+				$all_incidents_array_by_study_modules[$i]['study_module_total_hours'] = $row->study_module_academic_periods_totalHours;
+
+				$per_cent = 0;
+				if (! ($row->study_module_academic_periods_totalHours == 0)) {
+					$per_cent = ($row->total / $row->study_module_academic_periods_totalHours) * 100;
+				} 
+				$per_cent = number_format($per_cent,2) . "%";
+				$all_incidents_array_by_study_modules[$i]['study_module_total_incidents_percent'] = $per_cent;
+
+				$i++;
+			}
+		}
+		return $all_incidents_array_by_study_modules;
+	}
+
+	function get_student_incidents_by_study_submodules($academic_period_id,$student_id,$classroom_group_id,$initial_date,$final_date){
+		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);
+		
+		/*
+		SELECT study_module_order,study_module_shortname,study_module_name,incident_study_submodule_id,
+		study_submodules_order,study_submodules_shortname,study_submodules_name, 
+		study_submodules_academic_periods_totalHours,count(incident_id) as total
+		FROM incident 
+		INNER JOIN study_submodules ON study_submodules_id  = incident_study_submodule_id
+		INNER JOIN study_submodules_academic_periods ON study_submodules_academic_periods_study_submodules_id= study_submodules_id
+		INNER JOIN study_module  ON study_module_id =study_submodules_study_module_id
+		WHERE incident_date BETWEEN '2014-11-01' AND '2014-11-30' AND incident_student_id=5592
+		GROUP BY incident_study_submodule_id ORDER BY study_module_order,study_module_shortname, study_submodules_order,study_submodules_shortname
+		*/
+
+		$this->db->select('study_module_id,study_module_order,study_module_shortname,study_module_name,
+			incident_study_submodule_id,study_submodules_order,study_submodules_shortname,study_submodules_name, 
+			study_submodules_academic_periods_totalHours,count(incident_id) as total');
+		$this->db->from('incident');
+		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods_study_submodules_id= study_submodules_id');
+		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
+
+		//$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		
+		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
+		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
+		$this->db->where('incident.incident_student_id',$student_id);
+
+		$between_str = "BETWEEN '" . $initial_date . "' AND '" . $final_date . "'";
+		$this->db->where('incident_date ' . $between_str);
+		$this->db->group_by('incident_study_submodule_id');
+		$this->db->order_by('study_module_order,study_module_shortname, study_submodules_order,study_submodules_shortname');		
+			
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br/>";
+
+		$all_incidents_array_by_study_submodules = array();
+		if ($query->num_rows() > 0) {			
+			$i = 0;
+			foreach ($query->result() as $row)	{
+				$all_incidents_array_by_study_submodules[$i]['study_module_id'] = $row->study_module_id;
+				$all_incidents_array_by_study_submodules[$i]['study_module_shortname'] = $row->study_module_shortname;
+				$all_incidents_array_by_study_submodules[$i]['study_module_name'] = $row->study_module_name;
+
+				$all_incidents_array_by_study_submodules[$i]['study_submodule_id'] = $row->incident_study_submodule_id;
+				$all_incidents_array_by_study_submodules[$i]['study_submodules_shortname'] = $row->study_submodules_shortname;
+				$all_incidents_array_by_study_submodules[$i]['study_submodules_name'] = $row->study_submodules_name;
+
+				$all_incidents_array_by_study_submodules[$i]['study_submodule_total_incidents'] = $row->total;
+				$all_incidents_array_by_study_submodules[$i]['study_submodule_total_hours'] = $row->study_submodules_academic_periods_totalHours;
+
+				$per_cent = 0;
+				if (! ($row->study_submodules_academic_periods_totalHours == 0)) {
+					$per_cent = ($row->total / $row->study_submodules_academic_periods_totalHours) * 100;
+				} 
+				$per_cent = number_format($per_cent,2) . "%";
+				$all_incidents_array_by_study_submodules[$i]['study_submodule_total_incidents_percent'] = $per_cent;
+
+				$i++;
+			}
+		}
+		return $all_incidents_array_by_study_submodules;
+	}
+
 	function get_student_incidents($academic_period_id,$student_id,$classroom_group_id,$initial_date,$final_date){
 
 		$academic_period = $this->get_academic_period_by_period_id($academic_period_id);

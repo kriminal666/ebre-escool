@@ -108,6 +108,110 @@ class attendance_reports extends skeleton_main {
     
     }
 
+    function get_student_incidents_by_study_modules($academic_period_id = null, $student_id = null, $classroom_group_id = null,$initial_date=null,$final_date=null){
+        if ($student_id == null) {
+            if(isset($_POST['student_id'])){
+                $student_id=$_POST['student_id'];
+            }
+        }
+
+        if ($academic_period_id == null) {
+            if(isset($_POST['academic_period_id'])){
+                $academic_period_id=$_POST['academic_period_id'];
+            }
+        }
+
+        if ($classroom_group_id == null) {
+            if(isset($_POST['classroom_group_id'])){
+                $classroom_group_id=$_POST['classroom_group_id'];
+            }
+        }
+
+        if ($initial_date == null) {
+            if(isset($_POST['initial_date'])){
+                $initial_date=$_POST['initial_date'];
+            }
+        }
+
+        if ($final_date == null) {
+            if(isset($_POST['final_date'])){
+                $final_date=$_POST['final_date'];
+            }
+        }
+
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $student_incidents = array();
+
+        if ($student_id != "") {
+            $student_incidents = $this->attendance_model->get_student_incidents_by_study_modules($academic_period_id,$student_id,
+                $classroom_group_id,$initial_date,$final_date);    
+        }
+       
+        echo '{
+           "aaData": ';
+
+            print_r(json_encode($student_incidents));
+
+        echo '}';
+    
+    }
+
+    function get_student_incidents_by_study_submodules($academic_period_id = null, $student_id = null, $classroom_group_id = null,$initial_date=null,$final_date=null){
+        if ($student_id == null) {
+            if(isset($_POST['student_id'])){
+                $student_id=$_POST['student_id'];
+            }
+        }
+
+        if ($academic_period_id == null) {
+            if(isset($_POST['academic_period_id'])){
+                $academic_period_id=$_POST['academic_period_id'];
+            }
+        }
+
+        if ($classroom_group_id == null) {
+            if(isset($_POST['classroom_group_id'])){
+                $classroom_group_id=$_POST['classroom_group_id'];
+            }
+        }
+
+        if ($initial_date == null) {
+            if(isset($_POST['initial_date'])){
+                $initial_date=$_POST['initial_date'];
+            }
+        }
+
+        if ($final_date == null) {
+            if(isset($_POST['final_date'])){
+                $final_date=$_POST['final_date'];
+            }
+        }
+
+        if (!$this->skeleton_auth->logged_in()) {
+            //redirect them to the login page
+            redirect($this->skeleton_auth->login_page, 'refresh');
+        }
+
+        $student_incidents = array();
+
+        if ($student_id != "") {
+            $student_incidents = $this->attendance_model->get_student_incidents_by_study_submodules($academic_period_id,$student_id,
+                $classroom_group_id,$initial_date,$final_date);    
+        }
+       
+        echo '{
+           "aaData": ';
+
+            print_r(json_encode($student_incidents));
+
+        echo '}';
+    
+    }
+
     
 
     function attendance_reports_all_incidents($academic_period_id = null) { 

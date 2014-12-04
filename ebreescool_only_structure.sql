@@ -670,6 +670,7 @@ CREATE TABLE IF NOT EXISTS `study_module_academic_periods` (
   `study_module_academic_periods_study_module_id` int(11) NOT NULL,
   `study_module_academic_periods_academic_period_id` int(11) NOT NULL,
   `study_module_academic_periods_external_code` varchar(20) NOT NULL,
+  `study_module_academic_periods_totalHours` int(11) NOT NULL,  
   `study_module_academic_periods_external_code_esborrar` varchar(20) NOT NULL COMMENT 'Necessari per migracions i importacions GPUNTIS',
   `study_module_academic_periods_initialDate` datetime NOT NULL,
   `study_module_academic_periods_endDate` datetime NOT NULL,

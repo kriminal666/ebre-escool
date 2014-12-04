@@ -232,6 +232,61 @@
 
     <center><i id="spinner" class="icon-spinner icon-spin orange bigger-300" style="display: none;"></i></center>
 
+    <div class="widget-box collapsed" id="student_statistics_widget-box">
+      <div class="widget-header widget-header-flat widget-header-small">
+        <h5>
+          <i class="icon-group"></i>
+          <span class="green">Dades per Mòduls professionals/Crèdits i Unitats Formatives/Unitats didàctiques
+        </h5>
+
+        <div class="widget-toolbar">
+          <a data-action="collapse" href="#">
+            <i class="icon-chevron-up"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="widget-body">
+        <div class="widget-main">
+          <div class="clearfix">
+          <div class="span6">
+            <div class="table-header" style="text-align:center;">
+              Mòduls professionals/Crèdits
+            </div>
+              <table class="table table-striped table-bordered table-hover table-condensed" id="study_modules_table">
+               <thead style="background-color: #d9edf7;">
+                <tr>      
+                   <th><?php echo lang('attendance_reports_student_incidents_study_module')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_module_total_incidents')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_module_total_hours')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_module_incidents_percent')?></th>
+                </tr>
+               </thead>  
+             </table> 
+          </div>
+          <div class="span6">
+              <div class="table-header" style="text-align:center;">
+                Unitats formàtives/Unitats didàctiques
+              </div>
+              <table class="table table-striped table-bordered table-hover table-condensed" id="study_submodules_table">
+               <thead style="background-color: #d9edf7;">
+                <tr>      
+                   <th><?php echo lang('attendance_reports_student_incidents_study_module')?></th> 
+                   <th><?php echo lang('attendance_reports_student_incidents_study_submodule')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_submodule_total_incidents')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_submodule_total_hours')?></th>
+                   <th><?php echo lang('attendance_reports_student_incidents_study_submodule_incidents_percent')?></th>
+                </tr>
+               </thead>  
+             </table> 
+          </div>
+        </div>
+      </div> 
+
+    </div>   
+
+    <div class="space-6" ></div>
+
     <!-- DEBUG --> 
     <?php //var_export($students);?>
 
@@ -735,6 +790,8 @@ $(function() {
 
           //RELOAD INCIDENT LIST DATATABLES
           student_incidents_table.ajax.reload();
+          study_modules_table.ajax.reload();
+          study_submodules_table.ajax.reload();
         } else {
           console.debug("Nothing to reload. no student selected!");
         }
@@ -821,6 +878,8 @@ $(function() {
 
         //Reload datatables
         student_incidents_table.ajax.reload();
+        study_modules_table.ajax.reload();
+        study_submodules_table.ajax.reload();
 });
 
 $('#selected_classroom_group').on("change", function(e) { 
@@ -830,10 +889,106 @@ $('#selected_classroom_group').on("change", function(e) {
       reload_incidents_statistics_by_student();
       //Reload datatables
       student_incidents_table.ajax.reload();
+      study_modules_table.ajax.reload();
+      study_submodules_table.ajax.reload();
 });
 
     
-
+    study_modules_table = $("#study_modules_table").DataTable( {
+      "bDestroy": true,
+      "sServerMethod": "POST",
+      "sAjaxSource": "<?php echo base_url('index.php/attendance/attendance_reports/get_student_incidents_by_study_modules');?>", 
+      "fnServerParams": function ( aoData ) {
+          aoData.push( { "name": "academic_period_id", "value": get_selected_academic_period_id() });
+          aoData.push( { "name": "student_id", "value": get_selected_student() });
+          aoData.push( { "name": "classroom_group_id", "value": get_selected_classroom_group_id() });
+          aoData.push( { "name": "initial_date", "value": get_initial_date() });
+          aoData.push( { "name": "final_date", "value": get_final_date() });
+      },
+      "aoColumns": [
+          { "mData": function(data, type, full) {
+                      return data.study_module_shortname + ". " + data.study_module_name + " (" + data.study_module_id + ")";
+                    }},
+          { "mData": function(data, type, full) {
+                      return data.study_module_total_incidents;
+                    }},
+          { "mData": function(data, type, full) {
+                      return data.study_module_total_hours;
+                    }},   
+          { "mData": function(data, type, full) {
+                      return data.study_module_total_incidents_percent;
+                    }},
+        ],
+      "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+      "bPaginate": false,
+      "bFilter": false,
+      "bInfo": false,
+    });
+    study_submodules_table = $("#study_submodules_table").DataTable( {
+      "bDestroy": true,
+      "sServerMethod": "POST",
+      "sAjaxSource": "<?php echo base_url('index.php/attendance/attendance_reports/get_student_incidents_by_study_submodules');?>", 
+      "fnServerParams": function ( aoData ) {
+          aoData.push( { "name": "academic_period_id", "value": get_selected_academic_period_id() });
+          aoData.push( { "name": "student_id", "value": get_selected_student() });
+          aoData.push( { "name": "classroom_group_id", "value": get_selected_classroom_group_id() });
+          aoData.push( { "name": "initial_date", "value": get_initial_date() });
+          aoData.push( { "name": "final_date", "value": get_final_date() });
+      },
+      "aoColumns": [
+          { "mData": function(data, type, full) {
+                      return data.study_module_shortname + ". " + data.study_module_name + " (" + data.study_module_id + ")";
+                    }},
+          { "mData": function(data, type, full) {
+                      return data.study_submodules_shortname + ". " + data.study_submodules_name + " (" + data.study_submodule_id + ")";
+                    }},          
+          { "mData": function(data, type, full) {
+                      return data.study_submodule_total_incidents;
+                    }},
+          { "mData": function(data, type, full) {
+                      return data.study_submodule_total_hours;
+                    }},   
+          { "mData": function(data, type, full) {
+                      return data.study_submodule_total_incidents_percent;
+                    }},
+        ],
+      "oLanguage": {
+                        "sProcessing":   "Processant...",
+                        "sLengthMenu":   "Mostra _MENU_ registres",
+                        "sZeroRecords":  "No s'han trobat registres.",
+                        "sInfo":         "Mostrant de _START_ a _END_ de _TOTAL_ registres",
+                        "sInfoEmpty":    "Mostrant de 0 a 0 de 0 registres",
+                        "sInfoFiltered": "(filtrat de _MAX_ total registres)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Filtrar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                                "sFirst":    "Primer",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Següent",
+                                "sLast":     "Últim"
+                        }
+            },
+      "bPaginate": false,
+      "bFilter": false,
+      "bInfo": false,
+    });
 
     student_incidents_table = $('#student_incidents').DataTable( {
                       "order": [[ 1, "desc" ],[3, "desc"]],
