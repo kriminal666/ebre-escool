@@ -1,10 +1,10 @@
+<div class="main-content">
+
 <style TYPE="text/css"> 
 .row-highlight {
   background-color: #e4efc9;
 }
 </style>
-
-<div class="main-content">
 
 <div id="breadcrumbs" class="breadcrumbs">
  <script type="text/javascript">
@@ -67,13 +67,15 @@
          <?php endforeach; ?> 
         </select> 
 
-      </div>
-        <div class="span4"><a id="link_to_teacher_timetable" href="<?php echo base_url('/index.php/timetables/allteacherstimetables');?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar"></i> Horari</a></div>
+        </div>
+          <div class="span4"><a id="link_to_teacher_timetable" href="<?php echo base_url('/index.php/timetables/allteacherstimetables');?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar"></i> Horari</a>
+        </div>
       </div>
 
       <div class="space-8"></div>
 
-      <table class="table table-striped table-bordered table-hover table-condensed" id="TODO_filter">
+      <div class="row-fluid">
+      <table class="table table-striped table-bordered table-hover table-condensed" id="table_filter" width="90%">
           <thead style="background-color: #d9edf7;">
             <tr>
               <td colspan="6" style="text-align: center;"> <strong>Filtres
@@ -140,6 +142,8 @@
             </tr>
           </thead>  
         </table> 
+
+        </div>
 
         <div class="span2"></div>
 
@@ -247,46 +251,37 @@
                         <div class="dd2-content"><a target="_blank" href="<?php echo base_url('/index.php/attendance/attendance_reports/class_sheet_report/' . $academic_period_id . '/' . $default_classroom_group_id);?>">Llençol amb les fotos dels estudiants (PDF)</a></div>
                       </li>
                     </ol>
-
-
-
-
-
-
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>          
-
-
-
-
-
-
-
-
       </div>  
+
+      <div class="widget-box">
+          <div class="widget-header header-color-dark">
+            <h5 class="bigger lighter">Llista de classe. Període acadèmic: <span id="academic_period_text"></span></h5>
+
+            <div class="widget-toolbar">
+              # alumnes: <span id="number_of_students"></span>
+            </div>
+          </div>
+          <div class="widget-body">
+            <div class="widget-toolbox">
+              <span class="badge badge-warning"><i class="icon-group"></i></span> Grup de classe: 
+              <span id="selected_classgroup_code"></span>. <span id="selected_classgroup_name"></span>  
+              <span class="label label-info" style="float:right;">
+                <i class="icon-user"></i>
+                Tutor: <span id="selected_classgroup_mentor"></span>
+              </span> 
+              
+            </div>
+          </div>
+        </div>
+        
 
         <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
          <thead style="background-color: #d9edf7;">
-          <tr>
-            <td colspan="12" style="text-align: center;"> <h4>
-              <a href="#">
-                <?php echo "Llista de classe"?>. Període acadèmic: <span id="academic_period_text"></div>
-              </a>
-              </h4></td>
-          </tr>
-          <tr>
-            <td colspan="2" style="text-align: right;">Nom grup:</td>
-            <td colspan="2" style="text-align: left;"> <div id="selected_classgroup_name"></div> </td>
-            <td style="text-align: right;">Codi grup:</td>
-            <td style="text-align: left;"> <div id="selected_classgroup_code"></div> </td>
-            <td style="text-align: left;"> # alumnes: </div> </td>
-            <td style="text-align: right;"> <div id="number_of_students"></div></div> </td>
-            <td style="text-align: right;">Tutor:</td>
-            <td colspan="3" style="text-align: left;"> <div id="selected_classgroup_mentor"></div> </td>
-          </tr>
           <tr>
              <th><?php echo lang('mentoring_classlists_num')?></th>
              <th title="<?php echo lang('mentoring_classlists_type_full');?>"><?php echo lang('mentoring_classlists_type');?></th>
@@ -461,7 +456,7 @@ $(function() {
 
     });
 
-    $("#select_class_list_mentor_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un tutor", allowClear: true });
+    $("#select_class_list_mentor_filter").select2({ width: 'element', placeholder: "Seleccioneu un tutor", allowClear: true });
 
     $('#select_class_list_mentor_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_mentor_filter").select2("val");
@@ -551,7 +546,7 @@ $(function() {
                         { "mData": "initial_password" },
                         { "mData": "last_login" },
                         { "mData": "personal_email" },
-                        { "mData": "corporative_email" },
+                        { "mData": "corporative_email","bVisible": false },
                         { "mData": function(data, type, full) {
                             var eyeiconclass = "icon-eye-close";
                             var color_class = "purple";
@@ -569,7 +564,10 @@ $(function() {
                         }},
                       ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]], 
-                      "sDom": 'TC<"clear">lfrtip',                    
+                      "sDom": 'TRC<"clear">lfrtip', 
+                      "oColVis": {
+                          "buttonText": "Mostrar / amagar columnes"
+                      },                   
                       "oTableTools": {
                               "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
@@ -594,7 +592,11 @@ $(function() {
                                       },
                                       {
                                               "sExtends": "print",
-                                              "sButtonText": "<?php echo lang("Print");?>"
+                                              "sButtonText": "<?php echo lang("Print");?>",
+                                              "sToolTip": "Vista impressió",
+                                              "sMessage": "<center><h2>Llistat de faltes</h2></center>",
+                                              "sInfo": "<h6>Vista impressió</h6><p>Si us plau utilitzeu l'opció d'imprimir del vostre navegador (Ctrl+P) per "+
+                                                       "imprimir. Feu clic a la tecla Esc per tornar.",
                                       },
                               ]
 
@@ -631,7 +633,7 @@ $(function() {
       class_list_table.ajax.reload();
     });
 
-    $("#select_class_list_classgroup_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un grup de classe", allowClear: true });
+    $("#select_class_list_classgroup_filter").select2({ width: 'element', placeholder: "Seleccioneu un grup de classe", allowClear: true });
 
     $('#select_class_list_classgroup_filter').on("change", function(e) {  
         var selectedValue = $("#select_class_list_classgroup_filter").select2("val");

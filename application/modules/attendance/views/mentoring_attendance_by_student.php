@@ -1003,7 +1003,7 @@ $('#selected_classroom_group').on("change", function(e) {
                       "aoColumns": [
                         { "mData": function(data, type, full) {
                                     return data.id;
-                                  }},
+                                  },"bVisible": false },
                         { "mData": function(data, type, full) {
                                     return data.date;
                                   }},
@@ -1060,6 +1060,9 @@ $('#selected_classroom_group').on("change", function(e) {
                       ],
                   "aLengthMenu": [[10, 25, 50,100,200,500,1000,5000,-1], [10, 25, 50,100,200,500,1000,5000,"Totes"]],
                   "sDom": 'TRfC<"clear">lrtip', 
+                  "oColVis": {
+                          "buttonText": "Mostrar / amagar columnes"
+                      }, 
                   "oTableTools": {
                     "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
@@ -1115,7 +1118,7 @@ $('#selected_classroom_group').on("change", function(e) {
         });  
 
   $("#button_report1").click(function() {
-    console.debug( "Click on report button!");
+    //console.debug( "Click on report button!");
 
     //Open report in pdf
 
