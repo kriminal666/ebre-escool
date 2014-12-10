@@ -1085,7 +1085,7 @@ jQuery(function($) {
         number_of_time_slots = <?php echo count($time_slots);?>;
         console.debug("number_of_time_slots: " + number_of_time_slots);
 
-        var datatables_columns = [{ "bSortable": false },{"bVisible": false},{ "sType": "html","type": "html"},null,null,null,{"bVisible": false},{"bVisible": false},{"bVisible": false}]; 
+        var datatables_columns = [{ "bSortable": false },{"bVisible": false},{ "sType": "html","type": "html"},null,null,null,null,{"bVisible": false},{"bVisible": false}]; 
         
         for (i = 0; i < number_of_time_slots; i++) {
           datatables_columns.push({ "bSortable": false });
