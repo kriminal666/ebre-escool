@@ -1117,7 +1117,7 @@ class attendance_model  extends CI_Model  {
 			return array('name' => $row->study_module_name, 'shortname' => $row->study_module_shortname, 'code' => $row->study_module_academic_periods_external_code);
 		}			
 		else {
-			return "";
+			return array();
 		}
 	}
 

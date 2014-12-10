@@ -1370,12 +1370,25 @@ class attendance extends skeleton_main {
 
 		$data['selected_study_module_key']= $selected_study_module_id;
 
+        //echo "selected_study_module_id: " . $selected_study_module_id;
 		$selected_study_module_info = $this->attendance_model->getStudyModuleInfoByModuleId($selected_study_module_id);
 
-		$selected_study_module_name = $selected_study_module_info['name'];
-		$selected_study_module_shortname = $selected_study_module_info['shortname'];
-		$selected_study_module_code = $selected_study_module_info['code'];
-
+        //echo "selected_study_module_info: ";
+        //print_r($selected_study_module_info);
+        $selected_study_module_name = "";
+        $selected_study_module_shortname = "";
+        $selected_study_module_code = ""; 
+        $data['selected_study_module_error']= false;
+        $data['selected_study_module_error_message']= "";
+        if (count($selected_study_module_info) > 0) {
+            $selected_study_module_name = $selected_study_module_info['name'];
+            $selected_study_module_shortname = $selected_study_module_info['shortname'];
+            $selected_study_module_code = $selected_study_module_info['code'];
+        } else {
+            $data['selected_study_module_error']= true;
+            $data['selected_study_module_error_message']="No s'ha trobat a la base de dades el mòdul professional/Crèdit: " . $selected_study_module_id . " contacteu amb l'administrador.";
+        }
+		
 		/*
 		echo "selected_study_module_name: $selected_study_module_name<br/>";
 		echo "selected_study_module_shortname: $selected_study_module_shortname<br/>";

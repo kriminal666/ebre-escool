@@ -36,6 +36,25 @@
  </h1>
 </div>
 
+<?php if ( $selected_study_module_error ): ?>
+
+  <div class="alert alert-block alert-error" style="">
+    <button type="button" class="close" data-dismiss="alert">
+      <i class="icon-remove"></i>
+    </button>
+
+    <i class="icon-ok red"></i>
+
+    
+    <strong class="red">
+      IMPORTANT : 
+    </strong>
+     <?php echo $selected_study_module_error_message ;?>
+  </div>
+
+<?php endif;?>  
+
+
 <div class="alert alert-block alert-error" style="display:none;">
                 <button type="button" class="close" data-dismiss="alert">
                   <i class="icon-remove"></i>
