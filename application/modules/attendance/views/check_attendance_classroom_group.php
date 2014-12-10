@@ -321,8 +321,8 @@
                                 <i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i>
                               </a>
 
-                              <a class="blue" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student_with_error->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
-                                <i class="icon-bell bigger-130" title="Consulta matrícula"></i>
+                              <a class="orange" href="<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/' . $academic_period_id . '/' . $student_with_error->person_id . '/' . $selected_classroom_group_key);?>" target="_blank">
+                                <i class="icon-bell bigger-130" title="Consulta incidències"></i>
                               </a>
                               
                               <?php if ( $user_is_admin ) : ?>
@@ -343,9 +343,37 @@
 
   <?php endif;?>
 
+   <div class="widget-box">
+      <div class="widget-header header-color-dark">
+        Professor/a: <span id ="current_selected_teacher" teacher_code="<?php echo $teacher_code;?>" title="<?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " | " . $teacher_id  . " )";?>"><strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong></span> 
+
+        <div class="widget-toolbar">
+          Professors/es del grup: 
+              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <?php echo $selected_group_teacher;?>
+                            <i class="icon-angle-down icon-on-right bigger-110"></i>
+                          </button>
+
+                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
+                          <?php foreach ($group_teachers as $group_teacher_key => $group_teacher): ?>
+                            <li <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="active"';} ?> >
+                              <a href="#" 
+                                <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="blue"';}?> >
+                                <i class="icon-caret-right bigger-110">&nbsp;</i>
+                                <?php echo $group_teacher->sn1 . " " . $group_teacher->sn2 . ", " . $group_teacher->givenName; ?>
+                              </a>
+                            </li>      
+                          <?php endforeach; ?>
+                          </ul>
+        </div>
+      </div>
+     
+    </div>
 
   <div class="table-header">
+    
     <i class="icon-group"></i> 
+    
     <div class="inline position-relative">
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_department_name;?>
@@ -364,7 +392,9 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+    
     <i class="icon-double-angle-right"></i> 
+    
     <div class="inline position-relative">
               <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" id="selected_classroom_group_id" selected_classroom_group_id="<?php echo $selected_classroom_group_key;?>">
                             <?php echo $selected_classroom_group_shortname;?>
@@ -383,7 +413,9 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+
     <i class="icon-double-angle-right"></i> 
+    
     <div class="inline position-relative">
               <button id="current_selected_study_module" study_module_id="<?php echo $selected_study_module_key ;?>" class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
                             <?php echo $selected_study_module_shortname;?>
@@ -402,6 +434,7 @@
                           <?php endforeach; ?>
                           </ul>
     </div>
+
     <i class="icon-double-angle-right"></i>
     <button id="current_selected_lesson_id" lesson_id="<?php echo $selected_lesson_id ;?>" class="btn btn-minier btn-primary">
       <?php echo $selected_lesson_id;?>
@@ -413,31 +446,12 @@
     <i class="icon-calendar" style="margin-left:50px;"></i> Data: <?php echo $days_of_week[$day_of_week_number] . " " . $check_attendance_date_alt;?>
     <a href="<?php echo base_url('/index.php/timetables/allgroupstimetables/' . $selected_classroom_group_key) ?>" style="text-decoration:none;color: inherit;"><i class="icon-calendar" style="margin-left:50px;"></i> Horari de grup</a>
 
-    <div class="inline position-relative" style="float:right;color:#555;">
-              Professor/a: <span id ="current_selected_teacher" teacher_code="<?php echo $teacher_code;?>" title="<?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " | " . $teacher_id  . " )";?>"><strong><?php echo $teacher_givenName . " " . $teacher_sn1 . " " . $teacher_sn2 . " ( codi: " . $teacher_code . " )";   ?></strong></span> | 
-              Professors/es del grup: 
-              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <?php echo $selected_group_teacher;?>
-                            <i class="icon-angle-down icon-on-right bigger-110"></i>
-                          </button>
-
-                          <ul class="dropdown-menu pull-right dropdown-125 dropdown-lighter dropdown-caret">
-                          <?php foreach ($group_teachers as $group_teacher_key => $group_teacher): ?>
-                            <li <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="active"';} ?> >
-                              <a href="#" 
-                                <?php if ($group_teachers_default_teacher_key == $group_teacher_key ) { echo 'class="blue"';}?> >
-                                <i class="icon-caret-right bigger-110">&nbsp;</i>
-                                <?php echo $group_teacher->sn1 . " " . $group_teacher->sn2 . ", " . $group_teacher->givenName; ?>
-                              </a>
-                            </li>      
-                          <?php endforeach; ?>
-                          </ul>
-    </div>
-  </div>
-
+    
+</div><!-- TABLE HEADER END!-->
 
 <?php //var_export($incidents); ?>
 
+<div class="row-fluid">
  <table id="students_table" class="table table-striped table-bordered table-hover">
                   <thead> 
                     <tr>
@@ -712,8 +726,9 @@
                     <?php endforeach;?>
                   </tbody>
   </table>                
-
-  <div class="space-30"></div>
+ </div>
+ 
+ <div class="space-30"/>
 
 </div>
 </div>
@@ -1066,8 +1081,59 @@ jQuery(function($) {
         //var checkbox_show_hidden_students_selected = $("#checkbox_show_hidden_students").prop('checked');
 
         //$(".check_attendance_select2").select2({placeholder: "Select report type", allowClear: true});
+
+        number_of_time_slots = <?php echo count($time_slots);?>;
+        console.debug("number_of_time_slots: " + number_of_time_slots);
+
+        var datatables_columns = [{ "bSortable": false },{"bVisible": false},{ "sType": "html","type": "html"},null,null,null,{"bVisible": false},{"bVisible": false},{"bVisible": false}]; 
         
+        for (i = 0; i < number_of_time_slots; i++) {
+          datatables_columns.push({ "bSortable": false });
+        }
+        
+        datatables_columns.push(null);
+        datatables_columns.push({ "bSortable": false });
+
+        console.debug(datatables_columns);
+
         oTable1 = $('#students_table').DataTable( {
+          "sDom": 'TRC<"clear">lfrtip', 
+                      "oColVis": {
+                          "buttonText": "Mostrar / amagar columnes"
+                      },                   
+                      "oTableTools": {
+                              "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
+                              "aButtons": [
+                                      {
+                                              "sExtends": "copy",
+                                              "sButtonText": "<?php echo lang("Copy");?>"
+                                      },
+                                      {
+                                              "sExtends": "csv",
+                                              "sButtonText": "CSV"
+                                      },
+                                      {
+                                              "sExtends": "xls",
+                                              "sButtonText": "XLS"
+                                      },
+                                      {
+                                              "sExtends": "pdf",
+                                              "sPdfOrientation": "landscape",
+                                              "sPdfMessage": "<?php echo lang("class_list");?>",
+                                              "sTitle": "llista_de_classe",
+                                              "sButtonText": "PDF"
+                                      },
+                                      {
+                                              "sExtends": "print",
+                                              "sButtonText": "<?php echo lang("Print");?>",
+                                              "sToolTip": "Vista impressió",
+                                              "sMessage": "<center><h2>Llistat de faltes</h2></center>",
+                                              "sInfo": "<h6>Vista impressió</h6><p>Si us plau utilitzeu l'opció d'imprimir del vostre navegador (Ctrl+P) per "+
+                                                       "imprimir. Feu clic a la tecla Esc per tornar.",
+                                      },
+                              ]
+
+              },
           "oLanguage": {
                         "sProcessing":   "Processant...",
                         "sLengthMenu":   "Mostra _MENU_ registres",
@@ -1086,13 +1152,8 @@ jQuery(function($) {
                         }
             },
         "bPaginate": false,
-        "aoColumns": [
-            { "bSortable": false },null,{ "sType": "html","type": "html"},null,null,null,null,null,null, { "bSortable": false },{ "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, { "bSortable": false }, null,
-          { "bSortable": false }
-        ] } );
-
-        
-        
+        "aoColumns": datatables_columns 
+        });
 
         $("#checkbox_show_all_group_enrolled_students").change(function() {
           oTable1.fnDraw();
