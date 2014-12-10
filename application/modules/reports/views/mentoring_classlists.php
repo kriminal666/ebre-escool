@@ -314,7 +314,7 @@ var class_list_table;
 function click_on_hidden_student(element) {
   var person_id = element.getAttribute("person_id");
   var action = element.getAttribute("action");
-  var classroom_group_id = selected_classroom_group_id();
+  var classroom_group_id = get_selected_classroom_group_id();
   var teacher_id = $("#teacher").val();
   var academic_period_id = $("#select_class_list_academic_period_filter").val();
 
@@ -404,7 +404,7 @@ var group_names = [];
 
 
 
-function selected_classroom_group_id(){
+function get_selected_classroom_group_id(){
 
   selected_group = $("#select_class_list_classgroup_filter").val();
   //console.debug(selected_group);
@@ -430,6 +430,12 @@ function selectedteacherid(){
   selected_teacher_id = $("#teacher").val();
   //console.debug(selected_group);
   return selected_teacher_id;
+}
+
+function get_selected_academic_period_id(){
+  selected_academic_period_id = $("#select_class_list_academic_period_filter").val();
+  //console.debug(selected_academic_period_id;
+  return selected_academic_period_id;
 }
 
 
@@ -482,14 +488,14 @@ $(function() {
     });
 
     //classroom_group_id = 3;
-    //console.debug("selected_classroom_group_id: " + selected_classroom_group_id());
+    //console.debug("selected_classroom_group_id: " + get_selected_classroom_group_id());
 
     class_list_table = $('#class_list').DataTable( {
                       "bDestroy": true,
                       "sServerMethod": "POST",
                       "sAjaxSource": "<?php echo base_url('index.php/reports/get_class_list');?>", 
                       "fnServerParams": function ( aoData ) {
-                          aoData.push( { "name": "classroom_group_id", "value": selected_classroom_group_id() });
+                          aoData.push( { "name": "classroom_group_id", "value": get_selected_classroom_group_id() });
                           aoData.push( { "name": "academic_period_id", "value": <?php echo $academic_period_id;?> });
                           aoData.push( { "name": "checkbox_show_all_group_enrolled_students", "value": selectedcheckbox1() });
                           aoData.push( { "name": "checkbox_show_all_students", "value": selectedcheckbox2() });
@@ -559,8 +565,15 @@ $(function() {
                                 title = "Mostrar alumne";
                                 var action = "unhide";
                             }
+                            
                             var url1 = "<?php echo base_url('/index.php/enrollment/enrollment_query_by_person/false/');?>/" + data.person_official_id;
-                            return '<div class="hidden-phone visible-desktop action-buttons"><a class="blue" href="#"><a href="' + url1 + '" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a></a><?php if ( $user_is_admin ) : ?><a class="green" href="#" title="Modificar matrícula"><i class="icon-pencil bigger-130" title="Modificar matrícula"></i></a><?php endif;?><a person_id="' + data.person_id + '" id="hide_student_id_' + data.person_id + '" class="' + color_class + '" href="#"  action="' + action + '" title="' + title + '" onclick="event.preventDefault();click_on_hidden_student(this);"><i class="' + eyeiconclass + ' bigger-130" id="icon_hide_student_id_' + data.person_id + '" title="' + title + '"></i></a></div><div class="hidden-desktop visible-phone"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown"><i class="icon-caret-down icon-only bigger-120"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close"><li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"><i class="icon-zoom-in bigger-120"></i>1</span></a></li><li><a href="#" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="icon-edit bigger-120"></i></span></a></li><li><a href="#" class="tooltip-error" data-rel="tooltip" title="' + title + '"><span class="red" title="' + title + '"><i class="' + eyeiconclass + ' bigger-120" title="Amagar alumne"></i></span></a></li></ul></div></div>'
+
+                            selected_academic_period_id = get_selected_academic_period_id();
+                            selected_classroom_group_id = get_selected_classroom_group_id();
+                            //http://localhost/ebre-escool/index.php/attendance/mentoring_attendance_by_student/5/2930/34
+                            var url2 = "<?php echo base_url('/index.php/attendance/mentoring_attendance_by_student/');?>/" + selected_academic_period_id + "/" + data.person_id + "/" + selected_classroom_group_id;
+
+                            return '<div class="hidden-phone visible-desktop action-buttons"><a class="blue" href="' + url1 + '" target="_blank"><i class="icon-zoom-in bigger-130" title="Consulta matrícula"></i></a><?php if ( $user_is_admin ) : ?><a class="green" href="#" title="Modificar matrícula"><i class="icon-pencil bigger-130" title="Modificar matrícula"></i></a><?php endif;?><a class="orange" target="_blank" href="' + url2 + '"><i class="icon-bell bigger-130" title="Consulta incidències"></i></a><a person_id="' + data.person_id + '" id="hide_student_id_' + data.person_id + '" class="' + color_class + '" href="#"  action="' + action + '" title="' + title + '" onclick="event.preventDefault();click_on_hidden_student(this);"><i class="' + eyeiconclass + ' bigger-130" id="icon_hide_student_id_' + data.person_id + '" title="' + title + '"></i></a></div><div class="hidden-desktop visible-phone"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown"><i class="icon-caret-down icon-only bigger-120"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close"><li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"><i class="icon-zoom-in bigger-120"></i>1</span></a></li><li><a href="#" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="icon-edit bigger-120"></i></span></a></li><li><a href="#" class="tooltip-error" data-rel="tooltip" title="' + title + '"><span class="red" title="' + title + '"><i class="' + eyeiconclass + ' bigger-120" title="Amagar alumne"></i></span></a></li></ul></div></div>'
                         }},
                       ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]], 
