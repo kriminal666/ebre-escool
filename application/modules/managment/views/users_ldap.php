@@ -684,14 +684,14 @@
        <td>
         <button class="btn btn-mini btn-danger" id="select_all">
           <i class="icon-bolt"></i>
-          Selecionar tots
+          Seleccionar tots
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>
        <td>
         <button class="btn btn-mini btn-danger" id="unselect_all">
           <i class="icon-bolt"></i>
-          Deselecionar tots
+          Deseleccionar tots
           <i class="icon-arrow-right icon-on-right"></i>
         </button>
        </td>

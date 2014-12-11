@@ -4311,4 +4311,18 @@ function get_current_academic_period() {
         
 	}
 
+	function get_mentoring_attendance_by_students_pdf_report_data (
+		$academic_period_id, $student_ids,$classroom_group_id,$initial_date,$final_date) {
+
+		$data_reports = array();
+		foreach ($student_ids as $student_id_key => $student_id) {
+			$data_report = $this->get_mentoring_attendance_by_student_pdf_report_data (
+				$academic_period_id, $student_id,$classroom_group_id,$initial_date,$final_date);
+			array_push($data_reports, $data_report);
+		}
+
+		return $data_reports;
+        
+	}
+
 }

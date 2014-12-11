@@ -4,6 +4,23 @@
 .row-highlight {
   background-color: #e4efc9;
 }
+#reportrange {
+    background: #ffffff;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+    color: #333333;
+    padding: 8px;
+    line-height: 18px;
+    cursor: pointer;
+  }
+  #reportrange .caret {
+    margin-top: 8px;
+    margin-left: 2px;
+  }
+  #reportrange span {
+    padding-left: 3px;
+  }
 </style>
 
 <div id="breadcrumbs" class="breadcrumbs">
@@ -258,16 +275,52 @@
                 </div>          
       </div>  
 
+      <span style="display:none;" id="selected_initial_date" value="-1"></span> 
+      <span style="display:none;" id="selected_final_date" value="-1"></span>
+
       <div class="widget-box">
           <div class="widget-header header-color-dark">
             <h5 class="bigger lighter">Llista de classe. Període acadèmic: <span id="academic_period_text"></span></h5>
 
             <div class="widget-toolbar">
               # alumnes: <span id="number_of_students"></span>
+              <a data-action="collapse" href="#">
+                <i class="icon-chevron-up"></i>
+              </a>
+              <a data-action="close" href="#">
+                <i class="icon-remove"></i>
+              </a>
             </div>
           </div>
           <div class="widget-body">
-            <div class="widget-toolbox">
+
+            <div class="widget-toolbox" style="line-height: 35px;">
+              <i class="icon-arrow-down bigger-110"></i>
+              &nbsp;Accions amb els alumnes seleccionats: &nbsp;
+              <div class="btn-group">
+                <button class="btn btn-mini btn-danger" id ="print_incidents_report">
+                  <i class="icon-bell bigger-110"></i>
+                  Imprimir informe de faltes d'assistència
+                </button>
+                <button class="btn btn-mini btn-success" id="select_all">
+                  <i class="icon-bolt"></i>
+                  Seleccionar tots
+                  <i class="icon-arrow-right icon-on-right"></i>
+                </button>
+                <button class="btn btn-mini btn-primary" id="unselect_all">
+                  <i class="icon-bolt"></i>
+                  Deseleccionar tots
+                  <i class="icon-arrow-right icon-on-right"></i>
+                </button>
+              </div>
+              <div id="reportrange" class="pull-right">
+                <i class="icon-calendar"></i>
+                <span>Rang de dates</span>
+                <b class="caret" style="position: relative; top: -5px"></b>
+              </div>
+            </div>
+
+            <div class="widget-toolbox" style="line-height: 25px;">
               <span class="badge badge-warning"><i class="icon-group"></i></span> Grup de classe: 
               <span id="selected_classgroup_code"></span>. <span id="selected_classgroup_name"></span>  
               <span class="label label-info" style="float:right;">
@@ -276,29 +329,36 @@
               </span> 
               
             </div>
+            
+
+            <div class="space-10"></div>
+
+            <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
+               <thead style="background-color: #d9edf7;">
+                <tr>
+                   <th>&nbsp;<i class="icon-check"></i></th>
+                   <th><?php echo lang('mentoring_classlists_num')?></th>
+                   <th title="<?php echo lang('mentoring_classlists_type_full');?>"><?php echo lang('mentoring_classlists_type');?></th>
+                   <th><?php echo lang('mentoring_classlists_hidden')?></th>
+                   <th><?php echo lang('mentoring_classlists_photo')?></th>
+                   <th><?php echo lang('mentoring_classlists_student')?></th>
+                   <th><?php echo lang('mentoring_classlists_officialid')?></th>
+                   <th><?php echo lang('mentoring_classlists_username')?></th>
+                   <th><?php echo lang('mentoring_classlists_initial_password')?></th>
+                   <th><?php echo lang('mentoring_classlists_last_login')?></th>
+                   <th><?php echo lang('mentoring_classlists_personal_email')?></th>
+                   <th><?php echo lang('mentoring_classlists_corporative_email')?></th>
+                   <th>Accions&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                </tr>
+               </thead>
+               
+              </table> 
+
           </div>
         </div>
         
 
-        <table class="table table-striped table-bordered table-hover table-condensed" id="class_list">
-         <thead style="background-color: #d9edf7;">
-          <tr>
-             <th><?php echo lang('mentoring_classlists_num')?></th>
-             <th title="<?php echo lang('mentoring_classlists_type_full');?>"><?php echo lang('mentoring_classlists_type');?></th>
-             <th><?php echo lang('mentoring_classlists_hidden')?></th>
-             <th><?php echo lang('mentoring_classlists_photo')?></th>
-             <th><?php echo lang('mentoring_classlists_student')?></th>
-             <th><?php echo lang('mentoring_classlists_officialid')?></th>
-             <th><?php echo lang('mentoring_classlists_username')?></th>
-             <th><?php echo lang('mentoring_classlists_initial_password')?></th>
-             <th><?php echo lang('mentoring_classlists_last_login')?></th>
-             <th><?php echo lang('mentoring_classlists_personal_email')?></th>
-             <th><?php echo lang('mentoring_classlists_corporative_email')?></th>
-             <th>Accions&nbsp;&nbsp;&nbsp;&nbsp;</th>
-          </tr>
-         </thead>
-         
-        </table> 
+        
 
     
 
@@ -308,6 +368,29 @@
 </div>
 
 <script>
+
+formatted_date = function(date){
+      var m = ("0"+ (date.getMonth()+1)).slice(-2); // in javascript month start from 0.
+      var d = ("0"+ date.getDate()).slice(-2); // add leading zero
+      var y = date.getFullYear();
+      return  d +'-'+m+'-'+y;
+}
+
+mysql_formatted_date = function(date){
+      var m = ("0"+ (date.getMonth()+1)).slice(-2); // in javascript month start from 0.
+      var d = ("0"+ date.getDate()).slice(-2); // add leading zero
+      var y = date.getFullYear();
+      return  y +'-'+m+'-'+d;
+}
+
+function get_initial_date(){
+  return $("#selected_initial_date").html();
+  
+}
+
+function get_final_date(){
+  return $("#selected_final_date").html();
+}
 
 var class_list_table;
 
@@ -441,7 +524,73 @@ function get_selected_academic_period_id(){
 
 $(function() {
 
-     $("#teacher").select2(); 
+  $("#select_all").click(function() {
+
+    $('input:checkbox[name="student-checkbox"]').map(function () {
+      this.checked = true;
+    }).get(); 
+    
+  });
+
+  $("#unselect_all").click(function() {
+
+    $('input:checkbox[name="student-checkbox"]').map(function () {
+      this.checked = false;
+    }).get(); 
+    
+  });
+
+  //Default DATE RANGE. Current month
+  var curr_date =new Date();
+  var first_day = new Date(curr_date.getFullYear(), curr_date.getMonth(), 1);
+  var last_day = new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 0);
+
+  var current_date =formatted_date(curr_date);
+  var month_start_date = formatted_date(first_day);                 
+  var month_end_date = formatted_date(last_day);
+  var month_start_date_mysql =mysql_formatted_date(first_day);                 
+  var month_end_date_mysql =mysql_formatted_date(last_day);
+
+  //console.debug("current_date: " + current_date);
+  //console.debug("month_start_date: " + month_start_date);
+  //console.debug("month_end_date: " + month_end_date);
+
+  $("#selected_initial_date").html(month_start_date_mysql);
+  $("#selected_final_date").html(month_end_date_mysql);
+
+  $('#reportrange').daterangepicker(
+    {
+      locale: {
+        applyLabel: 'Seleccionar',
+        cancelLabel: 'Netejar',
+        fromLabel: 'De',
+        toLabel: 'A',
+        customRangeLabel: 'Rang de dates',
+        daysOfWeek: ['dl', 'dt', 'dc', 'dj', 'dv', 'ds','dg'],
+        monthNames: ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'],
+        firstDay: 1
+      },
+      ranges: {
+         'Avui': [moment(), moment()],
+         'Ahir': [moment().subtract('days', 1), moment().subtract('days', 1)],
+         'Últims 7 dies': [moment().subtract('days', 6), moment()],
+         'Últims 30 dies': [moment().subtract('days', 29), moment()],
+         'Mes actual': [moment().startOf('month'), moment().endOf('month')],
+         'Mes anterior': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+      },
+      startDate: moment(month_start_date, "DD-MM-YYYY") ,
+      endDate: moment(month_end_date, "DD-MM-YYYY") ,
+    },
+    function(start, end) {
+        $('#reportrange span').html(start.format('DD-MM-YYYY') + ' - ' + end.format('DD-MM-YYYY'));
+        $("#selected_initial_date").html(start.format('YYYY-MM-DD'));
+        $("#selected_final_date").html(end.format('YYYY-MM-DD'));
+    }
+  );
+
+  $('#reportrange span').html(month_start_date + ' - ' + month_end_date);
+
+    $("#teacher").select2(); 
 
     $("#select_class_list_academic_period_filter").select2();
 
@@ -513,6 +662,9 @@ $(function() {
                           $('.image-thumbnail').fancybox();
                       },
                       "aoColumns": [
+                        { "mData": function(data, type, full) {
+                                    return '<label><input class="ace" type="checkbox" name="student-checkbox" id="' + data.person_id + '"><span class="lbl">&nbsp;</span></label>';
+                                  }},
                         { "mData": function(data, type, full) {
                                     return data.number;
                                   }},
@@ -607,7 +759,7 @@ $(function() {
                                               "sExtends": "print",
                                               "sButtonText": "<?php echo lang("Print");?>",
                                               "sToolTip": "Vista impressió",
-                                              "sMessage": "<center><h2>Llistat de faltes</h2></center>",
+                                              "sMessage": "<center><h2>Llistat de clase</h2></center>",
                                               "sInfo": "<h6>Vista impressió</h6><p>Si us plau utilitzeu l'opció d'imprimir del vostre navegador (Ctrl+P) per "+
                                                        "imprimir. Feu clic a la tecla Esc per tornar.",
                                       },
@@ -664,6 +816,43 @@ $(function() {
     $("#selected_classgroup_name").text(group_names[selectedValue]);
     $("#selected_classgroup_code").text(group_codes[selectedValue]);
     $("#selected_classgroup_mentor").text(mentor_names[selectedValue]);
+
+    $("#print_incidents_report").click(function() {
+        var txt;
+        var r = confirm("Esteu segurs que voleu crear l'informe PDF per als alumnes seleccionats?");
+        if (r == true) {
+          console.debug("True selected!!!");
+
+          var values = $('input:checkbox[name="student-checkbox"]:checked.ace').map(function () {
+            return this.id;
+          }).get(); 
+          console.debug("values: " + values);
+
+          if (values != "") {
+            //Open report in pdf
+
+            values = String(values).replace(/,/g, '-');
+            console.debug("values: " + values);
+
+            var selectedAcademicPeriodValue = $("#select_class_list_academic_period_filter").select2("val");
+            var selected_classroom_group_id = $("#select_class_list_classgroup_filter").select2("val");
+            var initial_date = get_initial_date();
+            var final_date = get_final_date();
+            
+            var pathArray = window.location.pathname.split( '/' );
+            var secondLevelLocation = pathArray[1];
+            
+            var baseURL = window.location.protocol + "//" + window.location.host + "/" + secondLevelLocation + "/index.php/attendance/attendance_reports/mentoring_attendance_by_student_pdf_report";    
+            //console.debug(baseURL + "/" + selectedAcademicPeriodValue + "/" + selected_student + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date);    
+
+            window.open(
+              baseURL + "/" + selectedAcademicPeriodValue + "/" + values + "/" + selected_classroom_group_id + "/" + initial_date + "/" + final_date,
+              '_blank');
+          } else {
+            alert ("Marqueu almenys un alumne!");
+          }
+        }
+    });
 
 });
 

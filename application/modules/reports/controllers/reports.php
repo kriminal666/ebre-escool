@@ -130,6 +130,9 @@ class reports extends skeleton_main {
         $header_data = $this->add_css_to_html_header_data(
             $header_data,
             base_url('assets/css/jquery.gritter.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/daterangepicker.css'));
 
 /*        
         $header_data= $this->add_css_to_html_header_data(
@@ -252,6 +255,15 @@ class reports extends skeleton_main {
         $header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
                     base_url('assets/js/jquery.gritter.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/moment.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/daterangepicker.min.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+                    $header_data,
+                    base_url('assets/js/date-time/locales/bootstrap-datepicker.ca.js'));
 
 		$header_data= $this->add_javascript_to_html_header_data(
                     $header_data,
