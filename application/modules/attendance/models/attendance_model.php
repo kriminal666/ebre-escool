@@ -3601,13 +3601,12 @@ function get_current_academic_period() {
 		$this->db->from('incident');
 		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
 		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods_study_submodules_id= study_submodules_id');
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
 		$this->db->join('study_module_academic_periods',
 			'study_module_academic_periods.study_module_academic_periods_study_module_id = study_module.study_module_id');
 
-		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
-		
-		//$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_study_id = course.course_study_id');
 		
 		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
 		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
@@ -3667,8 +3666,10 @@ function get_current_academic_period() {
 		$this->db->from('incident');
 		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
 		$this->db->join('study_submodules_academic_periods','study_submodules_academic_periods_study_submodules_id= study_submodules_id');
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
-		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
+
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_study_id = course.course_study_id');
 
 		//$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
 		
@@ -3737,9 +3738,10 @@ function get_current_academic_period() {
 		$this->db->join('time_slot','time_slot.time_slot_id = incident.incident_time_slot_id');		
 		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');	
 		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
-		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
-		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_study_id = course.course_study_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = course.course_id');
 		
 		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
 		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
@@ -4098,9 +4100,10 @@ function get_current_academic_period() {
 		$this->db->join('time_slot','time_slot.time_slot_id = incident.incident_time_slot_id');		
 		$this->db->join('incident_type','incident.incident_type = incident_type.incident_type_id');	
 		$this->db->join('study_submodules','incident.incident_study_submodule_id = study_submodules.study_submodules_id');	
+		$this->db->join('course','course.course_id = study_submodules.study_submodules_courseid');
 		$this->db->join('study_module','study_module.study_module_id = study_submodules.study_submodules_study_module_id');
-		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_course_id = study_submodules_courseid');
-		$this->db->join('classroom_group','classroom_group.classroom_group_id = enrollment.enrollment_group_id');
+		$this->db->join('enrollment','incident.incident_student_id = enrollment.enrollment_personid AND enrollment.enrollment_study_id = course.course_study_id');
+		$this->db->join('classroom_group','classroom_group.classroom_group_course_id = course.course_id');
 		
 		$this->db->where('enrollment.enrollment_group_id',$classroom_group_id);
 		$this->db->where('enrollment.enrollment_periodid',$academic_period->shortname);
