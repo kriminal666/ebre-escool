@@ -1149,6 +1149,7 @@ $('#selected_classroom_group').on("change", function(e) {
 
     if (selected_student2 != "") {
       $("#selected_classroom_group_tr").show();
+      $("#button_report1").show();
 
       //POPULATE classroom_group SELECT2 id: selected_classroom_group
       // Info ara in options :
