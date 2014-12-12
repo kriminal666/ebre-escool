@@ -15,9 +15,9 @@
 
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
  //Cargar la librería 
-require APPPATH.'base_url("/libraries/REST_Controller.php")';
+require APPPATH.'libraries/REST_Controller.php';
 
-class Criminal extends REST_Controller
+class Hell extends REST_Controller
 {
     //Cargar el controlador padre 
 	function __construct()
@@ -32,11 +32,10 @@ class Criminal extends REST_Controller
         $this->methods['user_get']['limit'] = 500; //500 requests per hour per user/key
         $this->methods['user_post']['limit'] = 100; //100 requests per hour per user/key
         $this->methods['user_delete']['limit'] = 50; //50 requests per hour per user/key
-
+        //Load model
+        $this->load->model('teachers');
     }
-    function index(){
-        echo "hola";
-    }
+  
     //obtener solo un usuario
     function user_get()
     {
@@ -82,15 +81,17 @@ class Criminal extends REST_Controller
         
         $this->response($message, 200); // 200 being the HTTP response code
     }
-    //Sacar todos los usuarios
-    function users_get()
+    //get all teachers from data base
+    function teachers_get()
     {
-        //$users = $this->some_model->getSomething( $this->get('limit') );
-        $users = array(
+        //Get all teachers from teacher table
+        $users = $this->teachers->getAllTeachers();
+        /*$users = array(
 			array('id' => 1, 'name' => 'Some Guy', 'email' => 'example1@example.com'),
 			array('id' => 2, 'name' => 'Person Face', 'email' => 'example2@example.com'),
 			3 => array('id' => 3, 'name' => 'Scotty', 'email' => 'example3@example.com', 'fact' => array('hobbies' => array('fartings', 'bikes'))),
-		);
+		);*/
+
         
         if($users)
         {
