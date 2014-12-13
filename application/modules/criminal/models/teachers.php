@@ -19,22 +19,25 @@ class Teachers  extends CI_Model  {
 //GET ALL TEACHERS
 function getAllTeachers() {
           $data = $this->db->get('teacher');
-          $teachers = array();
+          $teachers = arrayObject();
           if ($data->num_rows() > 0) {
-          /*foreach ($data->result() as $row){
-              $teachers= array(
-              "person_oficcialid"=>$row->person_oficcialid,
-              "teacher_creationUserId"=>$row->teacher_creationUserId,
-              "teacher_entryDate"=>$row->teacher_entryDate,
-              "teacher_id"=>$row->teacher_id,
-              "teacher_last_update"=>$row->teacher_last_update,
-              "teacher_markedForDeletionDate"=>$row->teacher_markedForDeletionDate,
-              "teacher_markedFordeletionDate"=>$row->teacher_marked,
-              "teacher_person_id"=>$row->teacher_person_id,
-              "teacher_user_id"=>$row->teacher_user_id);*/
-              
+          foreach ($data->result() as $row){
+              $aux= array(
+              "personoficcialid"=>$row->person_officialid,
+              "teachercreationuserid"=>$row->teacher_creationUserId,
+              "teacherentrydate"=>$row->teacher_entryDate,
+              "teacherid"=>$row->teacher_id,
+              "teacherlastupdateuserid"=>$row->teacher_lastupdateUserId,
+              "teacherlastupdate"=>$row->teacher_last_update,
+              "teachermarkedfordeletion"=>$row->teacher_markedForDeletion,
+              "teachermarkedfordeletiondate"=>$row->teacher_markedForDeletionDate,
+              "teacherpersonid"=>$row->teacher_person_id,
+              "teacheruserid"=>$row->teacher_user_id);
 
-               return $data;
+              array_push($teachers,$aux);
+            }
+
+               return $teachers;
              
           }else{
                
