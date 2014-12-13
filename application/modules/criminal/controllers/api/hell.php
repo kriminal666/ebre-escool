@@ -36,8 +36,8 @@ class Hell extends REST_Controller
         $this->load->model('teachers');
     }
   
-    //obtener solo un usuario
-    function user_get()
+    //get just one teacher with id
+    function teacher_get()
     {
         //obtener el identificador que se le pasa en la url
         if(!$this->get('id'))
@@ -46,18 +46,18 @@ class Hell extends REST_Controller
         	$this->response(NULL, 400);
         }
 
-        // $user = $this->some_model->getSomething( $this->get('id') );
-    	$users = array(
+        $user = $this->teachers->getOneTeacher( $this->get('id') );
+    	/*$users = array(
 			1 => array('id' => 1, 'name' => 'Some Guy', 'email' => 'example1@example.com', 'fact' => 'Loves swimming'),
 			2 => array('id' => 2, 'name' => 'Person Face', 'email' => 'example2@example.com', 'fact' => 'Has a huge face'),
 			3 => array('id' => 3, 'name' => 'Scotty', 'email' => 'example3@example.com', 'fact' => 'Is a Scott!', array('hobbies' => array('fartings', 'bikes'))),
-		);
+		);*/
 		
-    	$user = @$users[$this->get('id')];
+    	//$user = @$users[$this->get('id')];
     	//si hay usuario se da la respuesta correcta
         if($user)
         {
-            $this->response($user, 200); // 200 being the HTTP response code
+            $this->response($user->result(), 200); // 200 being the HTTP response code
         }
 
         else
@@ -86,37 +86,22 @@ class Hell extends REST_Controller
     {
         //Get all teachers from teacher table
         $users = $this->teachers->getAllTeachers();
-        //var_dump($users);
-        //Can get data with this
-        if($users){
-        foreach ($users as $row) {
-            echo $row->personoficcialid;
-            /*.",".$row->teachercreationuserid.",".$row->teacherentrydate.",".
-              $row->teacherid.",".$row->teacherlastupdateuserid.",".$row->teacherlastupdate.",".
-              $row->teachermarkedfordeletion.",".$row->teachermarkedfordeletiondate.",".$row->teacherpersonid.
-              ",".$row->teacheruserid."<br />";*/
-        }
-    }else{
-        echo "hola";
-    }
-
-       /* $users = array(
+       /*$users = array(
 			array('id' => 1, 'name' => 'Some Guy', 'email' => 'example1@example.com'),
 			array('id' => 2, 'name' => 'Person Face', 'email' => 'example2@example.com'),
 			3 => array('id' => 3, 'name' => 'Scotty', 'email' => 'example3@example.com', 'fact' => array('hobbies' => array('fartings', 'bikes'))),
 		);*/
-
-        /*
+ 
         if($users)
         {
             //Dont work with real database array
-            $this->response($users, 200); // 200 being the HTTP response code
+            $this->response($users->result(), 200); // 200 being the HTTP response code
         }
 
         else
         {
             $this->response(array('error' => 'Couldn\'t find any users!'), 404);
-        }*/
+        }
     }
 
 

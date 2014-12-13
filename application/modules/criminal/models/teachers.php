@@ -19,37 +19,44 @@ class Teachers  extends CI_Model  {
 //GET ALL TEACHERS
 function getAllTeachers() {
           $data = $this->db->get('teacher');
-          $teachers = arrayObject();
+          $teachers = array();
           if ($data->num_rows() > 0) {
-          foreach ($data->result() as $row){
-              $aux= array(
-              "personoficcialid"=>$row->person_officialid,
-              "teachercreationuserid"=>$row->teacher_creationUserId,
-              "teacherentrydate"=>$row->teacher_entryDate,
-              "teacherid"=>$row->teacher_id,
-              "teacherlastupdateuserid"=>$row->teacher_lastupdateUserId,
-              "teacherlastupdate"=>$row->teacher_last_update,
-              "teachermarkedfordeletion"=>$row->teacher_markedForDeletion,
-              "teachermarkedfordeletiondate"=>$row->teacher_markedForDeletionDate,
-              "teacherpersonid"=>$row->teacher_person_id,
-              "teacheruserid"=>$row->teacher_user_id);
 
-              array_push($teachers,$aux);
-            }
-
-               return $teachers;
+               return $data;
              
           }else{
                
           return FALSE;
           }
      }
-
-
+     //Get just one teacher by id
+     function getOneTeacher($id){
+       $this->db->where('teacher_id',$id);
+       $data = $this->db->get('teacher');
+       //Test if we have row
+       if ($data->num_rows() > 0){
+        return $data;
+      }else{
+        return false;
+      }
+    }
+    /*
+         function deleteTeacher($del) {
+      if ($del) {
+          $this->db->where('name',$del);
+          $this->db->delete('users');
+          echo "usuario borrado";
+      }else{
+          echo "usuario no existe";
+      }
+      }*/
 
 
 
 }
+
+
+
 
 
 
