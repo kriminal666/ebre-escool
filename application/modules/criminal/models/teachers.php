@@ -40,16 +40,16 @@ function getAllTeachers() {
         return false;
       }
     }
-    /*
-         function deleteTeacher($del) {
+    //Delete teacher using id
+    function deleteTeacher($del) {
       if ($del) {
           $this->db->where('name',$del);
           $this->db->delete('users');
-          echo "usuario borrado";
+          return true;
       }else{
-          echo "usuario no existe";
+          return false;
       }
-      }*/
+      }
 
 
 

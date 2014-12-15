@@ -73,13 +73,25 @@ class Hell extends REST_Controller
         
         $this->response($message, 200); // 200 being the HTTP response code
     }
-    
-    function user_delete()
-    {
-    	//$this->some_model->deletesomething( $this->get('id') );
-        $message = array('id' => $this->get('id'), 'message' => 'DELETED!');
+    //Delete teacher using the id
+    function teacher_delete(){
+    //test if user sends the id
+        if(!$this->get('id')){
         
-        $this->response($message, 200); // 200 being the HTTP response code
+            //Si no hay identificador se manda el código de respuesta
+            $this->response(NULL, 400);
+        }
+        
+    	$response = $this->teachers->teacher_delete( $this->get('id') );
+
+        if($response){
+            $message = array('id' => $this->get('id'), 'message' => 'DELETED!');
+            $this->response($message, 200); // 200 being the HTTP response code
+        }else{
+        $message = array('id' => $this->get('id'), 'message' => 'ERROR!');
+        
+        $this->response($message, 422); // 422 being the HTTP response code
+       } 
     }
     //get all teachers from data base
     function teachers_get()
@@ -96,11 +108,8 @@ class Hell extends REST_Controller
         {
             //Dont work with real database array
             $this->response($users->result(), 200); // 200 being the HTTP response code
-        }
-
-        else
-        {
-            $this->response(array('error' => 'Couldn\'t find any users!'), 404);
+        }else{
+           $this->response(array('error' => 'Couldn\'t find any users!'), 404);
         }
     }
 
