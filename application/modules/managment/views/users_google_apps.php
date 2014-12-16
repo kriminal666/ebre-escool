@@ -34,6 +34,7 @@
 
       $(function(){
 
+              
               $("#select_class_list_academic_period_filter").select2();
 
               $("#academic_period_text").text( $("#select_class_list_academic_period_filter").select2("data").text);
@@ -62,117 +63,131 @@
 
               var selectedAP = $("#select_class_list_academic_period_filter").select2("val");
 
-
-              /*
-              <th>&nbsp;</th> 
-               <th>Id</th>
-               <th>Etag</th>
-               <th>Kind</th>
-               <th>primaryEmail</th>
-               <th>givenName</th>
-               <th>familyName</th>
-               <th>isAdmin</th>
-               <th>isDelegatedAdmin</th>
-               <th>lastLoginTime</th>
-               <th>creationTime</th>
-               <th>deletionTime</th>
-               <th>agreedToTerms</th>
-               <th>password</th>
-               <th>hashFunction</th>
-               <th>suspended</th>
-               <th>suspensionReason</th>
-               <th>changePasswordAtNextLogin</th>
-               <th>ipWhitelisted</th>
-               <th>customerId</th>
-               <th>orgUnitPath</th>
-               <th>isMailboxSetup</th>
-               <th>includeInGlobalAddressList</th>
-               <th>thumbnailPhotoUrl</th>
-              */
-
               var all_google_apps_users_table = $('#all_google_apps_users').DataTable( {
                       "bDestroy": true,
                       "sAjaxSource": "<?php echo base_url('index.php/managment/get_users_google_apps/');?>/" + selectedAP,
+                      "fnInitComplete": function () {
+                          $("#spinner").hide();   // Hide the spinner
+                      },
                       "aoColumns": [
                         { "mData": function(data, type, full) {
-                                    //return data.last_modification_user;
-                                    return "checbox";
-                                  }},                      
+                                    return '<label><input class="ace" type="checkbox" name="google-apps-user-checkbox" id="' + data.Id + '"><span class="lbl">&nbsp;</span></label>';
+                                  }},   
                         { "mData": function(data, type, full) {
-                            return "Id";            
-                        }},    
-                        { "mData": function(data, type, full) {
-                            return "Etag";            
-                        }},    
-                        { "mData": function(data, type, full) {
-                            return "Kind";            
-                        }},    
-                        { "mData": function(data, type, full) {
-                            return "primaryEmail";            
-                        }},    
-                        { "mData": function(data, type, full) {
-                            return "givenName";            
-                        }},    
-                        { "mData": function(data, type, full) {
-                            return "familyName";            
+                          if (data.thumbnailPhotoUrl != null) {
+                            return '<a class="image-thumbnail" href="' + data.thumbnailPhotoUrl + '"><img data-rel="tooltip" class="msg-photo" alt="'+ data.fullName +'" title="'+ data.fullName +'" src="' + data.thumbnailPhotoUrl + '" alt="foto usuari Google Apps" style="width:75px;"></img></a>';                            
+                          } else {
+                            return 'Sense foto';
+                          }
                         }},
                         { "mData": function(data, type, full) {
-                            return "isAdmin";            
-                        }}, 
+                            return data.primaryEmail;            
+                        }},  
                         { "mData": function(data, type, full) {
-                            return "isDelegatedAdmin";            
-                        }}, 
+                            return data.givenName;            
+                        }},    
                         { "mData": function(data, type, full) {
-                            return "lastLoginTime";            
-                        }}, 
-                        { "mData": function(data, type, full) {
-                            return "creationTime";            
-                        }}, 
-                        { "mData": function(data, type, full) {
-                            return "deletionTime";            
+                            return data.familyName;                
                         }},
                         { "mData": function(data, type, full) {
-                            return "agreedToTerms";            
-                        }},  
+                            return data.fullName;                
+                        },"bVisible": false},    
                         { "mData": function(data, type, full) {
-                            return "deletionTime";            
-                        }},  
+                            return data.id;            
+                        },"bVisible": false},
                         { "mData": function(data, type, full) {
-                            return "password";            
-                        }},  
+                            return data.etag;            
+                        },"bVisible": false},    
                         { "mData": function(data, type, full) {
-                            return "hashFunction";            
-                        }},  
+                            return data.kind;            
+                        },"bVisible": false},    
                         { "mData": function(data, type, full) {
-                            return "suspended";            
-                        }},  
-                        { "mData": function(data, type, full) {
-                            return "suspensionReason";            
+                            return data.isAdmin;            
                         }}, 
                         { "mData": function(data, type, full) {
-                            return "changePasswordAtNextLogin";            
+                            return data.isDelegatedAdmin;            
+                        },"bVisible": false}, 
+                        { "mData": function(data, type, full) {
+                            return data.lastLoginTime;            
+                        }}, 
+                        { "mData": function(data, type, full) {
+                            return data.creationTime;            
+                        }}, 
+                        { "mData": function(data, type, full) {
+                            return data.deletionTime;            
+                        },"bVisible": false},
+                        { "mData": function(data, type, full) {
+                            return data.agreedToTerms;            
+                        }},  
+                        { "mData": function(data, type, full) {
+                            return data.aliases;            
+                        }},  
+                        { "mData": function(data, type, full) {
+                            return data.hashFunction;            
+                        },"bVisible": false},  
+                        { "mData": function(data, type, full) {
+                            return data.password;            
+                        },"bVisible": false},  
+                        { "mData": function(data, type, full) {
+                            return data.suspended;            
+                        }},  
+                        { "mData": function(data, type, full) {
+                            return data.suspensionReason;            
+                        }}, 
+                        { "mData": function(data, type, full) {
+                            return data.changePasswordAtNextLogin;            
+                        }}, 
+                        { "mData": function(data, type, full) {
+                            if (data.addresses !=null) {
+                              return data.addresses;
+                            } else {
+                              return "Sense adreces";
+                            }
+                        },"bVisible": false},  
+                        { "mData": function(data, type, full) {
+                            return data.ipWhitelisted;            
+                        },"bVisible": false},  
+                        { "mData": function(data, type, full) {
+                            return data.customerId;            
+                        },"bVisible": false}, 
+                        { "mData": function(data, type, full) {
+                            return data.orgUnitPath;            
                         }},   
                         { "mData": function(data, type, full) {
-                            return "ipWhitelisted";            
+                            return data.isMailboxSetup;            
                         }},   
                         { "mData": function(data, type, full) {
-                            return "orgUnitPath";            
+                            return data.includeInGlobalAddressList;            
                         }},   
                         { "mData": function(data, type, full) {
-                            return "isMailboxSetup";            
-                        }},   
+                          strEmails="";
+                          $.each(data.emails, function( index, value ) {
+                              primary = "";
+                              if (value.primary) {
+                                primary = "primari";
+                              }
+                              strEmails = strEmails + value.address + " ( tipus: " + value.type + " " + primary + "), ";
+                          });       
+                          return strEmails;  
+                        },"bVisible": false},   
                         { "mData": function(data, type, full) {
-                            return "includeInGlobalAddressList";            
-                        }},   
-                        { "mData": function(data, type, full) {
-                            return "thumbnailPhotoUrl";            
-                        }},                             
+                          strExternalIds="";
+                          if (data.externalIds != null) {
+                            $.each(data.externalIds, function( index, value ) {
+                                strExternalIds = strExternalIds + value.value + " ( tipus: " + value.type + "), ";
+                            });         
+                          }
+                          return strExternalIds;  
+                        }},  
                       ],
                       "columnDefs": [
                                       { "type": "html", "targets": 3 }
                                     ],
                       "aLengthMenu": [[10, 25, 50,100,200,-1], [10, 25, 50,100,200, "<?php echo lang('All');?>"]],       
-                      "sDom": 'TC<"clear">lfrtip',               
+                      "sDom": 'TRC<"clear">lfrtip', 
+                      "oColVis": {
+                          "buttonText": "Mostrar / amagar columnes"
+                      },                   
                       "oTableTools": {
                               "sSwfPath": "<?php echo base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/swf/copy_csv_xls_pdf.swf');?>",
                               "aButtons": [
@@ -197,7 +212,11 @@
                                       },
                                       {
                                               "sExtends": "print",
-                                              "sButtonText": "<?php echo lang("Print");?>"
+                                              "sButtonText": "<?php echo lang("Print");?>",
+                                              "sToolTip": "Vista impressió",
+                                              "sMessage": "<center><h2>Usuaris Google Apps</h2></center>",
+                                              "sInfo": "<h6>Vista impressió</h6><p>Si us plau utilitzeu l'opció d'imprimir del vostre navegador (Ctrl+P) per "+
+                                                       "imprimir. Feu clic a la tecla Esc per tornar.",
                                       },
                               ]
 
@@ -222,6 +241,8 @@
             }
         }); 
 
+
+
         $("#select_all").click(function() {
 
           $('input:checkbox').map(function () {
@@ -238,364 +259,15 @@
           
         });
 
-      
-        $("#sync_mysql_password_to_ldap").click(function() {
-              var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta sincronització massiva de paswords de MySQL a Ldap?");
-              if (r == true) {
+     
+    
 
-                  var values = $('input:checkbox:checked.ace').map(function () {
-                    return this.id;
-                  }).get(); 
-                  
-                  //AJAX
-                  $.ajax({
-                  url:'<?php echo base_url("index.php/managment/sync_mysql_password_to_ldap");?>',
-                  type: 'post',
-                  data: {
-                      values: values,
-                  },
-                  datatype: 'json',
-                  statusCode: {
-                    404: function() {
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/sync_mysql_password_to_ldap' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    },
-                    500: function() {
-                      $("#response").html('A server-side error has occurred.');
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/sync_mysql_password_to_ldap ' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    }
-                  },
-                  error: function() {
-                    $.gritter.add({
-                        title: 'Error!',
-                        text: 'Ha succeït un error!' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                  },
-                  success: function(data) {
-                    //console.debug("data:" + JSON.stringify(data));
-                    //console.debug(JSON.stringify(all_google_apps_users_table));
-                    all_google_apps_users_table.ajax.reload();
-                  }
-                }).done(function(data){
-                    //TODO: Something to check?
-                
-                });
-              }
-
-        });
-
-
-
-        $("#interchange_windows_passwords").click(function() {
-              var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta operació de intercanviar paraules de pas Windows de forma massiva?");
-              if (r == true) {
-
-                  var values = $('input:checkbox:checked.ace').map(function () {
-                    return this.id;
-                  }).get(); 
-                  
-                  //AJAX
-                  $.ajax({
-                  url:'<?php echo base_url("index.php/managment/interchange_windows_passwords");?>',
-                  type: 'post',
-                  data: {
-                      values: values,
-                  },
-                  datatype: 'json',
-                  statusCode: {
-                    404: function() {
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/interchange_windows_passwords' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    },
-                    500: function() {
-                      $("#response").html('A server-side error has occurred.');
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/interchange_windows_passwords ' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    }
-                  },
-                  error: function() {
-                    $.gritter.add({
-                        title: 'Error!',
-                        text: 'Ha succeït un error!' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                  },
-                  success: function(data) {
-                    //console.debug("data:" + JSON.stringify(data));
-                    //console.debug(JSON.stringify(all_google_apps_users_table));
-                    all_google_apps_users_table.ajax.reload();
-                  }
-                }).done(function(data){
-                    //TODO: Something to check?
-                
-                });
-              }
-
-        });
-
-      $("#avoid_change_of_password_on_windows").click(function() {
-              var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta operació de forma massiva?");
-              if (r == true) {
-
-                  var values = $('input:checkbox:checked.ace').map(function () {
-                    return this.id;
-                  }).get(); 
-                  
-                  //AJAX
-                  $.ajax({
-                  url:'<?php echo base_url("index.php/managment/avoid_change_of_password_on_windows");?>',
-                  type: 'post',
-                  data: {
-                      values: values,
-                  },
-                  datatype: 'json',
-                  statusCode: {
-                    404: function() {
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/avoid_change_of_password_on_windows' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    },
-                    500: function() {
-                      $("#response").html('A server-side error has occurred.');
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/avoid_change_of_password_on_windows ' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    }
-                  },
-                  error: function() {
-                    $.gritter.add({
-                        title: 'Error!',
-                        text: 'Ha succeït un error!' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                  },
-                  success: function(data) {
-                    //console.debug("data:" + JSON.stringify(data));
-                    //console.debug(JSON.stringify(all_google_apps_users_table));
-                    all_google_apps_users_table.ajax.reload();
-                  }
-                }).done(function(data){
-                    //TODO: Something to check?
-                
-                });
-              }
-
-        });
-        
-
-        $("#sync_mysql_ldap").click(function() {
-              var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta sincronització massiva de MySQL a Ldap?");
-              if (r == true) {
-
-                  var values = $('input:checkbox:checked.ace').map(function () {
-                    return this.id;
-                  }).get(); 
-                  
-                  //AJAX
-                  $.ajax({
-                  url:'<?php echo base_url("index.php/managment/sync_mysql_ldap");?>',
-                  type: 'post',
-                  data: {
-                      values: values,
-                  },
-                  datatype: 'json',
-                  statusCode: {
-                    404: function() {
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/sync_mysql_ldap' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    },
-                    500: function() {
-                      $("#response").html('A server-side error has occurred.');
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/sync_mysql_ldap ' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    }
-                  },
-                  error: function() {
-                    $.gritter.add({
-                        title: 'Error!',
-                        text: 'Ha succeït un error!' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                  },
-                  success: function(data) {
-                    //console.debug("data:" + JSON.stringify(data));
-                    //console.debug(JSON.stringify(all_google_apps_users_table));
-                    all_google_apps_users_table.ajax.reload();
-                  }
-                }).done(function(data){
-                    //TODO: Something to check?
-                
-                });
-              }
-
-        });
-
-        
-        $("#assign_ldap_rol").click(function() {
-              var txt;
-              var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva d'assignació de rols?");
-              if (r == true) {
-
-                  var values = $('input:checkbox:checked.ace').map(function () {
-                    return this.id;
-                  }).get(); 
-                  
-                  //AJAX
-                  $.ajax({
-                  url:'<?php echo base_url("index.php/managment/assign_multiple_ldap_roles");?>',
-                  type: 'post',
-                  data: {
-                      values: values,
-                  },
-                  datatype: 'json',
-                  statusCode: {
-                    404: function() {
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/assign_multiple_ldap_roles' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    },
-                    500: function() {
-                      $("#response").html('A server-side error has occurred.');
-                      $.gritter.add({
-                        title: 'Error connectant amb el servidor!',
-                        text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/assign_multiple_ldap_roles ' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                    }
-                  },
-                  error: function() {
-                    $.gritter.add({
-                        title: 'Error!',
-                        text: 'Ha succeït un error!' ,
-                        class_name: 'gritter-error gritter-center'
-                      });
-                  },
-                  success: function(data) {
-                    //console.debug("data:" + JSON.stringify(data));
-                    //console.debug(JSON.stringify(all_google_apps_users_table));
-                    all_google_apps_users_table.ajax.reload();
-                  }
-                }).done(function(data){
-                    //TODO: Something to check?
-                
-                });
-              }
-
-        });
-
-
-        $("#create_multiple_initial_passwords").click(function() {
-
-                var txt;
-                var r = confirm("Esteu segurs que voleu fer aquesta modificació massiva de paraules de pas dels usuaris? Els usuaris ja no podran entrar al sistema fins que no els entregueu la nova paraula de pas!");
-                if (r == true) {
-
-                    var values = $('input:checkbox:checked.ace').map(function () {
-                      return this.id;
-                    }).get(); 
-                    
-                    //AJAX
-                    $.ajax({
-                    url:'<?php echo base_url("index.php/managment/create_multiple_initial_passwords");?>',
-                    type: 'post',
-                    data: {
-                        values: values,
-                    },
-                    datatype: 'json',
-                    statusCode: {
-                      404: function() {
-                        $.gritter.add({
-                          title: 'Error connectant amb el servidor!',
-                          text: 'No s\'ha pogut contactar amb el servidor. Error 404 not found. URL: index.php/managment/create_multiple_initial_passwords' ,
-                          class_name: 'gritter-error gritter-center'
-                        });
-                      },
-                      500: function() {
-                        $("#response").html('A server-side error has occurred.');
-                        $.gritter.add({
-                          title: 'Error connectant amb el servidor!',
-                          text: 'No s\'ha pogut contactar amb el servidor. Error 500 Internal Server error. URL: index.php/managment/create_multiple_initial_passwords ' ,
-                          class_name: 'gritter-error gritter-center'
-                        });
-                      }
-                    },
-                    error: function() {
-                      $.gritter.add({
-                          title: 'Error!',
-                          text: 'Ha succeït un error!' ,
-                          class_name: 'gritter-error gritter-center'
-                        });
-                    },
-                    success: function(data) {
-                      //console.debug("data:" + JSON.stringify(data));
-                      //console.debug(JSON.stringify(all_google_apps_users_table));
-                      all_google_apps_users_table.ajax.reload();
-                    }
-                  }).done(function(data){
-                      //TODO: Something to check?
-                  
-                  });
-                }
-
-                
-                
-
-        });
-
-        $("#select_all_google_apps_users_main_organizational_unit_filter").select2({ width: 'resolve', placeholder: "Seleccioneu una unitat organitzativa", allowClear: true });
-
+        //$("#select_all_google_apps_users_main_organizational_unit_filter").select2({ width: 'resolve', placeholder: "Seleccioneu una unitat organitzativa", allowClear: true });
+        /*
         $("#select_all_google_apps_users_main_organizational_unit_filter").on( 'change', function () {
             var val = $(this).val();
             all_google_apps_users_table.column(5).search( val , false, true ).draw();
-        } );
-
-        all_google_apps_users_table.column(5).data().unique().sort().each( function ( d, j ) {
-                var StrippedString = d.replace(/(<([^>]+)>)/ig,"");
-                var textToSearch = StrippedString.slice(0,StrippedString.indexOf("(")-1).trim();
-                $("#select_all_google_apps_users_main_organizational_unit_filter").append( '<option value="'+ textToSearch  +'">'+ textToSearch +'</option>' )
-        } );
-
-        $("#select_all_google_apps_users_user_type_filter").select2({ width: 'resolve', placeholder: "Seleccioneu un tipus d'usuari", allowClear: true });
-
-        $("#select_all_google_apps_users_user_type_filter").on( 'change', function () {
-          console.debug("TEST");
-            var val = $(this).val();
-            all_google_apps_users_table.column(6).search( val  , false, true ).draw();
-        } );
-
-        all_google_apps_users_table.column(6).data().unique().sort().each( function ( d, j ) {
-              $("#select_all_google_apps_users_user_type_filter").append( '<option value="'+ d  +'">'+ d +'</option>' )
-        } );
+        } );*/
 
 });
 </script>
@@ -714,170 +386,46 @@
 
 </div>
 
+<center><i id="spinner" class="icon-spinner icon-spin orange bigger-300"></i></center>
+
 <table class="table table-striped table-bordered table-hover table-condensed" id="all_google_apps_users">
  <thead style="background-color: #d9edf7;">
   <tr>
-    <td colspan="36" style="text-align: center;"> <h4>
-      <a href="<?php echo base_url('/index.php/curriculum/user_ldaps') ;?>">
-        <?php echo $user_ldap_table_title?>. Període acadèmic: <span id="academic_period_text">
-      </a>
-      </h4></td>
-  </tr>
-  <tr>
      <th>&nbsp;</th> 
-     <th>Id</th>
-     <th>Etag</th>
-     <th>Kind</th>
+     <th>Photo</th>
      <th>primaryEmail</th>
      <th>givenName</th>
      <th>familyName</th>
+     <th>fullName</th>
+     <th>Id</th>
+     <th>Etag</th>
+     <th>Kind</th>
      <th>isAdmin</th>
      <th>isDelegatedAdmin</th>
      <th>lastLoginTime</th>
      <th>creationTime</th>
      <th>deletionTime</th>
      <th>agreedToTerms</th>
-     <th>password</th>
+     <th>aliases</th>
      <th>hashFunction</th>
+     <th>password</th>
      <th>suspended</th>
      <th>suspensionReason</th>
      <th>changePasswordAtNextLogin</th>
+     <th>Addresses</th>
      <th>ipWhitelisted</th>
      <th>customerId</th>
      <th>orgUnitPath</th>
      <th>isMailboxSetup</th>
      <th>includeInGlobalAddressList</th>
-     <th>thumbnailPhotoUrl</th>
+     <th>emails</th>
+     <th>externalIds</th>
   </tr>
  </thead>
  
 </table> 
 
-<!-- 
-
-{
-  "kind": "admin#directory#user",
-  "id": string,
-  "etag": etag,
-  "primaryEmail": string,
-  "name": {
-    "givenName": string,
-    "familyName": string,
-    "fullName": string
-  },
-  "isAdmin": boolean,
-  "isDelegatedAdmin": boolean,
-  "lastLoginTime": datetime,
-  "creationTime": datetime,
-  "deletionTime": datetime,
-  "agreedToTerms": boolean,
-  "password": string,
-  "hashFunction": string,
-  "suspended": boolean,
-  "suspensionReason": string,
-  "changePasswordAtNextLogin": boolean,
-  "ipWhitelisted": boolean,
-  "ims": [
-    {
-      "type": string,
-      "customType": string,
-      "protocol": string,
-      "customProtocol": string,
-      "im": string,
-      "primary": boolean
-    }
-  ],
-  "ims": string,
-  "emails": [
-    {
-      "address": string,
-      "type": string,
-      "customType": string,
-      "primary": boolean
-    }
-  ],
-  "emails": string,
-  "externalIds": [
-    {
-      "value": string,
-      "type": string,
-      "customType": string
-    }
-  ],
-  "externalIds": string,
-  "relations": [
-    {
-      "value": string,
-      "type": string,
-      "customType": string
-    }
-  ],
-  "relations": string,
-  "addresses": [
-    {
-      "type": string,
-      "customType": string,
-      "sourceIsStructured": boolean,
-      "formatted": string,
-      "poBox": string,
-      "extendedAddress": string,
-      "streetAddress": string,
-      "locality": string,
-      "region": string,
-      "postalCode": string,
-      "country": string,
-      "primary": boolean,
-      "countryCode": string
-    }
-  ],
-  "addresses": string,
-  "organizations": [
-    {
-      "name": string,
-      "title": string,
-      "primary": boolean,
-      "type": string,
-      "customType": string,
-      "department": string,
-      "symbol": string,
-      "location": string,
-      "description": string,
-      "domain": string,
-      "costCenter": string
-    }
-  ],
-  "organizations": string,
-  "phones": [
-    {
-      "value": string,
-      "primary": boolean,
-      "type": string,
-      "customType": string
-    }
-  ],
-  "phones": string,
-  "aliases": [
-    string
-  ],
-  "nonEditableAliases": [
-    string
-  ],
-  "customerId": string,
-  "orgUnitPath": string,
-  "isMailboxSetup": boolean,
-  "includeInGlobalAddressList": boolean,
-  "thumbnailPhotoUrl": string,
-  "customSchemas": {
-    (key): {
-      (key): (value)
-    }
-  }
-}
-
--->
-
-
-<div class="space-30"></div>
+  <div class="space-30"></div>
 
 	</div>	
 </div>

@@ -1021,6 +1021,12 @@ class managment extends skeleton_main {
 			$header_data,
 			base_url('assets/grocery_crud/themes/datatables/extras/TableTools/media/css/TableTools.css'));	
 		$header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/dataTables.colReorder.css'));
+        $header_data= $this->add_css_to_html_header_data(
+            $header_data,
+            base_url('assets/css/dataTables.colVis.css'));
+		$header_data= $this->add_css_to_html_header_data(
 			$header_data,
 			base_url('assets/css/tooltipster.css'));	
 		$header_data= $this->add_css_to_html_header_data(
@@ -1031,7 +1037,6 @@ class managment extends skeleton_main {
             base_url('assets/css/jquery.gritter.css'));  
 
 		//JS
-		
 			
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
@@ -1044,6 +1049,12 @@ class managment extends skeleton_main {
 		$header_data= $this->add_javascript_to_html_header_data(
 			$header_data,
 			base_url("assets/grocery_crud/themes/datatables/extras/TableTools/media/js/TableTools.js"));
+		$header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/dataTables.colReorder.js'));
+        $header_data= $this->add_javascript_to_html_header_data(
+            $header_data,
+                base_url('assets/js/dataTables.colVis.js'));
 
 		$header_data= $this->add_javascript_to_html_header_data(
             $header_data,
