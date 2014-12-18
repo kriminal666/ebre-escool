@@ -41,14 +41,34 @@ function getAllTeachers() {
       }
     }
     //Delete teacher using id
-    function deleteTeacher($del) {
-      if ($del) {
-          $this->db->where('name',$del);
-          $this->db->delete('users');
+    function deleteTeacher($data) {
+      if ($data) {
+          $this->db->where('teacher_id',$data);
+          $this->db->delete('teacher');
           return true;
       }else{
           return false;
       }
+      }
+        //update teacher
+      function updateTeacher($data){
+          if ($data['teacher_id']){
+            $this->db->where('teacher_id',$data['teacher_id']);
+            $this->db->update('teacher',$data);
+            return true;
+          }else{
+            return false;
+          }
+
+      }
+
+       function insertTeacher($data){
+          if ($data['teacher_id']){
+          $this->db->insert('teacher',$data);
+          return true;
+          } else{
+            return false;
+          }   
       }
 
 
