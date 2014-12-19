@@ -62,7 +62,7 @@ class Hell extends REST_Controller
 
         else
         {
-            $this->response(array('error' => 'User could not be found'), 404);
+            $this->response(array('error' => 'Teacher could not be found'), 404);
         }
     }
     
