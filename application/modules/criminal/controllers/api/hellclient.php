@@ -1,8 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-//include "skeleton_main.php";
-include "application/third_party/skeleton/application/controllers/skeleton_main.php";
-class HellClient extends skeleton_main {
+
+class HellClient extends CI_Controller{
 
 
 	function __construct()

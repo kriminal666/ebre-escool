@@ -263,11 +263,9 @@ $config['rest_keys_table'] = 'keys';
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
 */
-<<<<<<< HEAD
-$config['rest_enable_keys'] = true;
-=======
+
 $config['rest_enable_keys'] = TRUE;
->>>>>>> upstream/master
+
 
 /*
 |--------------------------------------------------------------------------

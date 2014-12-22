@@ -29,8 +29,8 @@ class ebreescool_api_test extends CI_Controller
         $config = array('server'          => 'http://localhost/ebre-escool/index.php/api/ebreescool/',
                         'api_key'         => $this->config->item('api_key'),
                         'api_name'        => 'X-API-KEY',
-                        //'http_user'       => 'username',
-                        //'http_pass'       => 'password',
+                        //'http_user'       => 'admin',
+                        //'http_pass'       => '1234',
                         //'http_auth'       => 'basic',
                         //'ssl_verify_peer' => TRUE,
                         //'ssl_cainfo'      => '/certs/cert.pem'
@@ -52,8 +52,8 @@ class ebreescool_api_test extends CI_Controller
 
     public function test_login(){
 
-        $username = "sergitur";
-        $password = "PUT_YOUR_PASSWORD_HERE";
+        $username = "";
+        $password = "";
         $realm = "ldap";
 
         $post_array = array("username" => $username, "password" => $password, "realm" => $realm);
