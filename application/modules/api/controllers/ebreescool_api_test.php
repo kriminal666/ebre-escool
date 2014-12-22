@@ -46,5 +46,22 @@ class ebreescool_api_test extends CI_Controller
         echo json_encode($person);
         
     }
+
+    public function test_login(){
+
+        $username = "sergitur";
+        $password = "PUT_YOUR_PASSWORD_HERE";
+        $realm = "ldap";
+
+        $post_array = array("username" => $username, "password" => $password, "realm" => $realm);
+        
+        // Pull in an array of tweets        
+        $result = $this->rest->post('login',$post_array);
+        echo "<br> STATUS CODE: " . $result = $this->rest->status() . "</br>";
+        $result = $this->rest->debug();
+
+        echo json_encode($result);
+        
+    }
     
 }
