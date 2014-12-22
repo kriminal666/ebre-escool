@@ -41,6 +41,7 @@ class ebreescool_api_test extends CI_Controller
 
     public function index(){
         // Pull in an array of tweets
+        
         $person = $this->rest->get('person/id/1');
 
         echo json_encode($person);
