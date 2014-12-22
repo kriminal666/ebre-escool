@@ -10,18 +10,13 @@
  * @link        http://acacha.org/meidawiki/index.php/ebre-escool
 */
 
-// This can be removed if you use __autoload() in config.php OR use Modular Extensions
-require APPPATH.'/libraries/REST_Controller.php';
 
-class ebreescool_api_test extends REST_Controller
+class ebreescool_api_test extends CI_Controller
 {
     function __construct()
     {
 
         parent::__construct();
-
-        // Load the rest client spark
-        $this->load->library('curl');
 
         // Load the library
         $this->load->library('REST');
@@ -46,10 +41,10 @@ class ebreescool_api_test extends REST_Controller
 
     public function index(){
         // Pull in an array of tweets
-        echo "Hola!";
         $person = $this->rest->get('person/id/1');
 
-        echo $person;
+        echo json_encode($person);
+        
     }
     
 }
