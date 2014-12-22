@@ -113,7 +113,7 @@ class api_model  extends CI_Model  {
 
 		if ($query->num_rows() == 1){
 			$row = $query->row(); 
-
+            
 			$person = new stdClass();
 
 			$person->id = $row->person_id;
