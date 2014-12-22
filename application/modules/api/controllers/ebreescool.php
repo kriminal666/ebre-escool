@@ -143,6 +143,7 @@ class ebreescool extends REST_Controller
         }
 
         $person = $this->api_model->getPerson( $this->get('id') );
+        //$person = $this->api_model->getPersonAlt( $this->get('id') );
         
         /*$persons = array(
             1 => array('id' => 1, 'name' => 'Some Guy', 'email' => 'example1@example.com', 'fact' => 'Loves swimming'),

@@ -8,7 +8,7 @@
  * @version    	1.0
  * @link		http://www.acacha.com/index.php/ebre-escool
  */
-class reports_model  extends CI_Model  {
+class api_model  extends CI_Model  {
 	
 	function __construct()
     {
@@ -69,11 +69,88 @@ class reports_model  extends CI_Model  {
 			return false;
 	}
 
-	function get_all_classgroups_report_info_by_mentor_id($academic_period_id, $mentor_id) {
-		return $this->get_all_classgroups_report_info($academic_period_id,$mentor_id);
+
+	function getPerson($id){
+		/*
+		SELECT person_id, person_givenName, person_sn1, person_sn2, 
+		person_email, person_secondary_email, person_terciary_email, 
+		person_official_id, person_official_id_type, person_date_of_birth,
+		 person_gender, person_secondary_official_id, 
+		 person_secondary_official_id_type, person_homePostalAddress, 
+		 person_photo, person_locality_id, person_locality_name, 
+		 person_telephoneNumber, person_mobile, person_bank_account_id, 
+		 person_notes, person_entryDate, person_last_update, 
+		 person_creationUserId, person_lastupdateUserId, 
+		 person_markedForDeletion, person_markedForDeletionDate, 
+		 dn, date_of_birth, user_type, username_original_ldap, 
+		 calculated_username, duplicated_username, original_username, 
+		 uidnumber, homedirectory, employeenumber, employeetype, 
+		 createbydn, modifiedbydn, userpassword, postalcode, 
+		 state 
+		 FROM person WHERE person_id = id
+		*/
+		$this->db->select('person_id, person_givenName, person_sn1, person_sn2, 
+		person_email, person_secondary_email, person_terciary_email, 
+		person_official_id, person_official_id_type, person_date_of_birth,
+		 person_gender, person_secondary_official_id, 
+		 person_secondary_official_id_type, person_homePostalAddress, 
+		 person_photo, person_locality_id, person_locality_name, 
+		 person_telephoneNumber, person_mobile, person_bank_account_id, 
+		 person_notes, person_entryDate, person_last_update, 
+		 person_creationUserId, person_lastupdateUserId, 
+		 person_markedForDeletion, person_markedForDeletionDate, 
+		 dn, date_of_birth, user_type, username_original_ldap, 
+		 calculated_username, duplicated_username, original_username, 
+		 uidnumber, homedirectory, employeenumber, employeetype, 
+		 createbydn, modifiedbydn, userpassword, postalcode, 
+		 state');
+		
+		$this->db->from('person');
+		$this->db->where('person_id',1);
+
+		$query = $this->db->get();
+		//echo $this->db->last_query(). "<br/>";
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+
+			$person = new stdClass();
+
+			$person->id = $row->person_id;
+			$person->givenName = $row->person_givenName;
+			$person->sn1 = $row->person_sn1;
+			$person->sn2 = $row->person_sn2;
+			$person->email = $row->person_email;
+			//...
+			
+			return $person;
+		}	
+		else
+			return false;
+
 	}
 
-	
+	function getPersonAlt($id){
+		/*
+		SELECT * FROM `person` WHERE person_id = id
+		*/
+		$this->db->select('*');
+		$this->db->from('person');
+		$this->db->where('person_id',1);
+		
+		$query = $this->db->get();
+		//echo $this->db->last_query(). "<br/>";
+
+		if ($query->num_rows() == 1){
+			$row = $query->row(); 
+			return $row;
+		}	
+		else {
+			return false;
+		}
+
+	}
+
 
 	function get_all_teachers_ids_and_names($orderby="ASC") {
 
