@@ -41,6 +41,24 @@ class HellClient extends skeleton_main {
         }
         echo json_encode($teacher);
     }
+
+    function updateTeacher(){
+             $id = 4;
+             $column = 'teacher_entryDate';
+             $dateTime = date('Y-m-d H:i:s');
+             $data = array(
+                'id'=>$id,
+                $column=>$data);
+             $update = $this->rest->
+
+
+
+
+
+
+    }
+
+
  }
 
  ?>

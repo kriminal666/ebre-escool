@@ -65,14 +65,18 @@ class Hell extends REST_Controller
             $this->response(array('error' => 'Teacher could not be found'), 404);
         }
     }
-    
-    function user_post()
+    //Update teacher
+    function teacher_post()
     {
-        //$this->some_model->updateUser( $this->get('id') );
+        $this->teachers->updateTeacher( $this->get('id') );
         $message = array('id' => $this->get('id'), 'name' => $this->post('name'), 'email' => $this->post('email'), 'message' => 'ADDED!');
         
         $this->response($message, 200); // 200 being the HTTP response code
     }
+
+
+
+
     //Delete teacher using the id
     function teacher_delete(){
     //test if user sends the id
