@@ -29,33 +29,29 @@ class HellClient extends CI_Controller{
        $getAllTeacher_Url = 'criminal/api/hell/teachers/';
 
      	//If not null get just one teacher by 'id'
-     	     if($id!=null){
+     	if($id!=null){
             // We call the function teacher_get of hell controller
      		$teacher = $this->rest->get($getTeacher_Url,array('id'=>$id));
-
         }else{
-     
-     		//we want to get all teachers from database
+            //we want to get all teachers from database
      		$teacher = $this->rest->get($getAllTeacher_Url,null);
         }
         echo json_encode($teacher);
     }
 
     function updateTeacher(){
-             $id = 4;
-             $column = 'teacher_entryDate';
-             $dateTime = date('Y-m-d H:i:s');
+            $updateTeacher_Url = 'criminal/api/hell/teacher/';
+            //EXAMPLE UPDATE WITHOUT FORM
+             $id = 41;
+             $column = 'person_officialid';
+             $officialId = '66666666L';
              $data = array(
                 'id'=>$id,
-                $column=>$data);
-             $update = $this->rest->
-
-
-
-
-
-
-    }
+                 $column=>$officialId);
+             
+             $updateResponse = $this->rest->post($updateTeacher_Url,$data);
+             echo json_encode($updateResponse);
+  }
 
 
  }
