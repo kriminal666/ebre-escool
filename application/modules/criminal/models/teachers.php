@@ -137,11 +137,26 @@ function getAllTeachers() {
       }
 
        function insertTeacher($data){
-          if ($data['teacher_id']){
-          $this->db->insert('teacher',$data);
-          return true;
-          } else{
-            return false;
+        //THE QUERY
+       // INSERT INTO `teacher`(`teacher_id`, `teacher_person_id`, `teacher_user_id`, 
+        //`teacher_entryDate`, `teacher_last_update`, `teacher_creationUserId`, 
+        //`teacher_lastupdateUserId`, `teacher_markedForDeletion`, 
+        //`teacher_markedForDeletionDate`, `person_officialid`) VALUES ($data);
+          if ($data){
+            $this->db->insert('teacher',$data);
+             //TESTING IF WE'VE DONE THE INSERT
+             //QUERY
+             //SELECT `teacher_id` FROM teacher WHERE teacher_id = $data['teacher_id'],
+              $this->db->select('teacher_id');
+              $this->db->where('teacher_id',$data['teacher_id']);
+              $this->db->from('teacher');
+              $query = $this->db->get();
+              if(!$query->num_rows()==0){
+                return true;
+              }else{
+                return false;
+              }
+          
           }   
       }
 

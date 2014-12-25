@@ -68,6 +68,26 @@ class HellClient extends CI_Controller{
             echo json_encode($message);
         }
     }
+    //Insert teacher into teacher table
+    function insertTeacher(){
+        //Example array to insert into table
+        $teacher = array(
+            'teacher_id'=>41,
+            'teacher_person_id'=>1772,
+            'teacher_user_id'=>3739,
+            'teacher_entryDate'=>'1970-01-11 00:00:00',
+            'teacher_creationUserid'=>15,
+            'teacher_lastupdateUserId'=>15,
+            'teacher_markedForDeletion'=>'n',
+            'teacher_markedForDeletionDate'=>'0000-00-00 00:00:00',
+            'person_officialid'=>'39847220L');
+
+        //Call the RestServer
+        $insertTeacher_Url = 'criminal/api/hell/teacher';
+        $insertResponse = $this->rest->put($insertTeacher_Url,$teacher);
+        echo json_encode($insertResponse); 
+
+    }
 
 
  }

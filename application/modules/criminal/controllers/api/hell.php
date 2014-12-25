@@ -118,20 +118,49 @@ class Hell extends REST_Controller
     function teachers_get()
     {
         //Get all teachers from teacher table
-        $users = $this->teachers->getAllTeachers();
+        $teachers = $this->teachers->getAllTeachers();
        /*$users = array(
 			array('id' => 1, 'name' => 'Some Guy', 'email' => 'example1@example.com'),
 			array('id' => 2, 'name' => 'Person Face', 'email' => 'example2@example.com'),
 			3 => array('id' => 3, 'name' => 'Scotty', 'email' => 'example3@example.com', 'fact' => array('hobbies' => array('fartings', 'bikes'))),
 		);*/
  
-        if($users)
+        if($teachers)
         {
             //Dont work with real database array
-            $this->response($users, 200); // 200 being the HTTP response code
+            $this->response($teachers, 200); // 200 being the HTTP response code
         }else{
-           $this->response(array('error' => 'Couldn\'t find any users!'), 404);
+           $this->response(array('error' => 'Couldn\'t find any teachers!'), 404);
         }
+    }
+
+    //Insert teacher
+    function teacher_put(){
+        //Get the array we send from RestClient
+        $data = array(
+            'teacher_id'=>$this->put('teacher_id'),
+            'teacher_person_id'=>$this->put('teacher_person_id'),
+            'teacher_user_id'=>$this->put('teacher_user_id'),
+            'teacher_entryDate'=>$this->put('teacher_entryDate'),
+            'teacher_creationUserid'=>$this->put('teacher_creationUserid'),
+            'teacher_lastupdateUserId'=>$this->put('teacher_lastupdateUserId'),
+            'teacher_markedForDeletion'=>$this->put('teacher_markedForDeletion'),
+            'teacher_markedForDeletionDate'=>$this->put('teacher_markedForDeletionDate'),
+            'person_officialid'=>$this->put('person_officialid'));
+      
+         //Call inset method in model
+         $insertResponse = $this->teachers->insertTeacher($data);
+         //Response
+         if($insertResponse){
+            $message = array('id' => $this->put('teacher_id'), 'message' => 'NEW TEACHER INSERTED');
+            $this->response($message,200);//200 being the HTTP response code
+
+         }else{
+            $message = array('id' => $this->put('teacher_id'), 'message' => 'ERROR INSERTING');
+            $this->response($message, 422); // 422 being the HTTP response code
+         }
+
+        
     }
 
 
