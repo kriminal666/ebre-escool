@@ -102,13 +102,13 @@ class Hell extends REST_Controller
             $this->response(NULL, 400);
         }
         
-    	$response = $this->teachers->teacher_delete( $this->get('id') );
+    	$response = $this->teachers->deleteTeacher( $this->get('id') );
 
         if($response){
             $message = array('id' => $this->get('id'), 'message' => 'DELETED!');
             $this->response($message, 200); // 200 being the HTTP response code
         }else{
-        $message = array('id' => $this->get('id'), 'message' => 'ERROR!');
+        $message = array('id' => $this->get('id'), 'message' => 'ERROR DELETING!');
         
         $this->response($message, 422); // 422 being the HTTP response code
        } 

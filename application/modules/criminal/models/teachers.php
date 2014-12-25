@@ -94,15 +94,27 @@ function getAllTeachers() {
       }
     }
     //Delete teacher using id
-    function deleteTeacher($data) {
-      if ($data) {
-          $this->db->where('teacher_id',$data);
+    function deleteTeacher($id) {
+      //THE QUERY
+      //DELETE FROM `teacher` WHERE teacher_id = $id
+      if ($id) {
+          $this->db->where('teacher_id',$id);
           $this->db->delete('teacher');
+          //TESTING IF WE DELETED IT
+          //QUERY
+          //SELECT `teacher_id` FROM teacher WHERE teacher_id = $id
+          $this->db->select('teacher_id');
+          $this->db->where('teacher_id',$id);
+          $this->db->from('teacher');
+          $query = $this->db->get();
+          if($query->num_rows()==0){
           return true;
-      }else{
+          }else{
           return false;
+          }
       }
-      }
+    }
+
         //update teacher
       function updateTeacher($id,$data){
         // THE QUERY

@@ -39,6 +39,7 @@ class HellClient extends CI_Controller{
         echo json_encode($teacher);
     }
 
+    //Update teacher
     function updateTeacher(){
             $updateTeacher_Url = 'criminal/api/hell/teacher/';
             //EXAMPLE UPDATE WITHOUT FORM
@@ -52,6 +53,21 @@ class HellClient extends CI_Controller{
              $updateResponse = $this->rest->post($updateTeacher_Url,$data);
              echo json_encode($updateResponse);
   }
+
+    //Delete teacher
+    function deleteTeacher($id){
+        $deleteTeacher_Url = 'criminal/api/hell/teacher';
+
+        if($id){
+            
+            $deleteResponse = $this->rest->delete($deleteTeacher_Url.'/id/'.$id);
+            echo json_encode($deleteResponse);
+            
+        }else{
+            $message = array('message'=>'YOU MUST SEND AN ID');
+            echo json_encode($message);
+        }
+    }
 
 
  }
