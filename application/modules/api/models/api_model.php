@@ -89,21 +89,21 @@ class api_model  extends CI_Model  {
 		 state 
 		 FROM person WHERE person_id = id
 		*/
-		$this->db->select('person_id, person_givenName, person_sn1, person_sn2, 
-		person_email, person_secondary_email, person_terciary_email, 
+		$this->db->select('person_id, person_givenName, person_sn1, person_sn2,
+		person_email, person_secondary_email, person_terciary_email,
 		person_official_id, person_official_id_type, person_date_of_birth,
-		 person_gender, person_secondary_official_id, 
-		 person_secondary_official_id_type, person_homePostalAddress, 
-		 person_photo, person_locality_id, person_locality_name, 
-		 person_telephoneNumber, person_mobile, person_bank_account_id, 
-		 person_notes, person_entryDate, person_last_update, 
-		 person_creationUserId, person_lastupdateUserId, 
-		 person_markedForDeletion, person_markedForDeletionDate, 
-		 dn, date_of_birth, user_type, username_original_ldap, 
-		 calculated_username, duplicated_username, original_username, 
-		 uidnumber, homedirectory, employeenumber, employeetype, 
-		 createbydn, modifiedbydn, userpassword, postalcode, 
-		 state');
+		person_gender, person_secondary_official_id,
+		person_secondary_official_id_type, person_homePostalAddress,
+		person_photo, person_locality_id, person_locality_name,
+		person_telephoneNumber, person_mobile, person_bank_account_id,
+		person_notes, person_entryDate, person_last_update,
+		person_creationUserId, person_lastupdateUserId,
+		person_markedForDeletion, person_markedForDeletionDate,
+		dn, date_of_birth, user_type, username_original_ldap,
+		calculated_username, duplicated_username, original_username,
+		uidnumber, homedirectory, employeenumber, employeetype,
+		createbydn, modifiedbydn, userpassword, postalcode,
+		state');
 		
 		$this->db->from('person');
 		$this->db->where('person_id',1);

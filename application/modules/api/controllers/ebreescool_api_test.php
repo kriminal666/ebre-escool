@@ -28,7 +28,7 @@ class ebreescool_api_test extends CI_Controller
         //http://localhost/ebre-escool/index.php/api/ebreescool/person/id/1
         $config = array('server'          => 'http://localhost/ebre-escool/index.php/api/ebreescool/',
                         'api_key'         => $this->config->item('api_key'),
-                        'api_name'        => 'X-API-KEY',
+                        'api_name'        => 'X-API-KEY'
                         //'http_user'       => 'admin',
                         //'http_pass'       => '1234',
                         //'http_auth'       => 'basic',
