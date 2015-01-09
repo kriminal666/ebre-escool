@@ -29,4 +29,4 @@ uploads/inventory_files/*
 uploads/qrcodes/*
 
 migration/
-application/config/rest_client.php
+application/modules/criminal/config/rest_client.php

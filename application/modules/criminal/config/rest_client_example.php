@@ -10,7 +10,7 @@
 |	Default: FALSE
 |
 */
-$config['api_key'] = "PUT_YOUR_API_KEY_HERE";
+$config['api_key'] = "PUT_HERE_YOUR_API_KEY";
 
 /* End of file rest_client.php */
 /* Location: ./system/application/config/rest_client.php */
