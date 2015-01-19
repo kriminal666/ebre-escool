@@ -74,6 +74,7 @@ function getAllTeachers() {
        $this->db->where('teacher_id',$id);
        $this->db->from('teacher');
        $query = $this->db->get();
+       //echo $this->db->last_query(). "<br/>";
        //Test if we have row
        if ($query->num_rows()==1){
         $row = $query->row();
@@ -100,6 +101,7 @@ function getAllTeachers() {
       if ($id) {
           $this->db->where('teacher_id',$id);
           $this->db->delete('teacher');
+          //echo $this->db->last_query(). "<br/>";
           //TESTING IF WE DELETED IT
           //QUERY
           //SELECT `teacher_id` FROM teacher WHERE teacher_id = $id
@@ -128,6 +130,7 @@ function getAllTeachers() {
           if ($id && $data){
             $this->db->where('teacher_id',$id);
             $this->db->update('teacher',$data);
+            //echo $this->db->last_query(). "<br/>";
             return true;
           }else{
             return false;
@@ -144,6 +147,7 @@ function getAllTeachers() {
         //`teacher_markedForDeletionDate`, `person_officialid`) VALUES ($data);
           if ($data){
             $this->db->insert('teacher',$data);
+            //echo $this->db->last_query(). "<br/>";
              //TESTING IF WE'VE DONE THE INSERT
              //QUERY
              //SELECT `teacher_id` FROM teacher WHERE teacher_id = $data['teacher_id'],
