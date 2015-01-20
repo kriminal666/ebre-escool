@@ -138,7 +138,7 @@ class Hell extends REST_Controller
     function teacher_put(){
         //Get the array we send from RestClient
         $data = array(
-            'teacher_id'=>$this->put('teacher_id'),
+            'teacher_id'=>'default',
             'teacher_person_id'=>$this->put('teacher_person_id'),
             'teacher_user_id'=>$this->put('teacher_user_id'),
             'teacher_entryDate'=>$this->put('teacher_entryDate'),
@@ -151,12 +151,12 @@ class Hell extends REST_Controller
          //Call inset method in model
          $insertResponse = $this->teachers->insertTeacher($data);
          //Response
-         if($insertResponse){
-            $message = array('id' => $this->put('teacher_id'), 'message' => 'NEW TEACHER INSERTED');
+         if($insertResponse['response']){
+            $message = array('id' => $insertResponse['id'], 'message' => 'NEW TEACHER INSERTED');
             $this->response($message,200);//200 being the HTTP response code
 
          }else{
-            $message = array('id' => $this->put('teacher_id'), 'message' => 'ERROR INSERTING');
+            $message = array('id' => NULL, 'message' => 'ERROR INSERTING');
             $this->response($message, 422); // 422 being the HTTP response code
          }
 

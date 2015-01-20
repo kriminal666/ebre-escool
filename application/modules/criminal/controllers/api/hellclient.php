@@ -72,7 +72,7 @@ class HellClient extends CI_Controller{
     function insertTeacher(){
         //Example array to insert into table
         $teacher = array(
-            'teacher_id'=>41,
+            
             'teacher_person_id'=>1772,
             'teacher_user_id'=>3739,
             'teacher_entryDate'=>'1970-01-11 00:00:00',
