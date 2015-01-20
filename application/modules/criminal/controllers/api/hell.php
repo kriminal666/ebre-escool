@@ -101,22 +101,22 @@ class Hell extends REST_Controller
             //Si no hay identificador se manda el código de respuesta
             $this->response(NULL, 400);
         }
+
         
     	$response = $this->teachers->deleteTeacher( $this->get('id') );
-
-        if($response){
+       
+       if($response){
             $message = array('id' => $this->get('id'), 'message' => 'DELETED!');
             $this->response($message, 200); // 200 being the HTTP response code
         }else{
         $message = array('id' => $this->get('id'), 'message' => 'ERROR DELETING!');
         
         $this->response($message, 422); // 422 being the HTTP response code
-       } 
+       }
     }
     
     //get all teachers from data base
-    function teachers_get()
-    {
+    function teachers_get(){
         //Get all teachers from teacher table
         $teachers = $this->teachers->getAllTeachers();
        /*$users = array(
@@ -136,9 +136,10 @@ class Hell extends REST_Controller
 
     //Insert teacher
     function teacher_put(){
+
         //Get the array we send from RestClient
         $data = array(
-            'teacher_id'=>'default',
+            
             'teacher_person_id'=>$this->put('teacher_person_id'),
             'teacher_user_id'=>$this->put('teacher_user_id'),
             'teacher_entryDate'=>$this->put('teacher_entryDate'),
@@ -147,23 +148,24 @@ class Hell extends REST_Controller
             'teacher_markedForDeletion'=>$this->put('teacher_markedForDeletion'),
             'teacher_markedForDeletionDate'=>$this->put('teacher_markedForDeletionDate'),
             'person_officialid'=>$this->put('person_officialid'));
-      
          //Call inset method in model
          $insertResponse = $this->teachers->insertTeacher($data);
+         //echo $insertResponse['response']." ".$insertResponse['id'];
+         
          //Response
          if($insertResponse['response']){
-            $message = array('id' => $insertResponse['id'], 'message' => 'NEW TEACHER INSERTED');
+            $message = array('id' => $insertResponse['id'],'message' => 'NEW TEACHER INSERTED');
             $this->response($message,200);//200 being the HTTP response code
 
          }else{
-            $message = array('id' => NULL, 'message' => 'ERROR INSERTING');
+            $message = array('id' => $insertResponse['id'], 'message' => 'ERROR INSERTING');
             $this->response($message, 422); // 422 being the HTTP response code
          }
 
         
     }
 
-
+    
 	public function send_post()
 	{
 		var_dump($this->request->body);

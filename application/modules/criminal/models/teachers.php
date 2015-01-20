@@ -100,20 +100,17 @@ function getAllTeachers() {
       //DELETE FROM `teacher` WHERE teacher_id = $id
       if ($id) {
           $this->db->where('teacher_id',$id);
-          $this->db->delete('teacher');
-          //echo $this->db->last_query(). "<br/>";
-          //TESTING IF WE DELETED IT
-          //QUERY
-          //SELECT `teacher_id` FROM teacher WHERE teacher_id = $id
-          $this->db->select('teacher_id');
-          $this->db->where('teacher_id',$id);
-          $this->db->from('teacher');
-          $query = $this->db->get();
-          if($query->num_rows()==0){
-          return true;
+          $what = $this->db->delete('teacher');
+          $row = $this->db->affected_rows();
+          //echo $this->db->last_query()."<br/>";
+          //TESTING IF WE DELETED IT 
+          if($row == 1){
+           return true;
           }else{
-          return false;
+           return false;
           }
+          
+     
       }
     }
 
@@ -133,46 +130,49 @@ function getAllTeachers() {
             //echo $this->db->last_query(). "<br/>";
             //Check if it have gone right
             if($this->db->affected_rows()==1){
-            return true;
-          }else{
-            return false;
+                return true;
+            }else{
+                return false;
+            }
           }
-        }
-
-
       }
 
        function insertTeacher($data){
-        //THE QUERY
-       // INSERT INTO `teacher`(`teacher_id`, `teacher_person_id`, `teacher_user_id`, 
-        //`teacher_entryDate`, `teacher_last_update`, `teacher_creationUserId`, 
-        //`teacher_lastupdateUserId`, `teacher_markedForDeletion`, 
-        //`teacher_markedForDeletionDate`, `person_officialid`) VALUES ($data);
-          if ($data){
+          //THE QUERY
+          // INSERT INTO `teacher`(`teacher_id`, `teacher_person_id`, `teacher_user_id`, 
+         //`teacher_entryDate`, `teacher_last_update`, `teacher_creationUserId`, 
+         //`teacher_lastupdateUserId`, `teacher_markedForDeletion`, 
+         //`teacher_markedForDeletionDate`, `person_officialid`) VALUES ($data);
+        if ($data){
+          //Make the insert
             $this->db->insert('teacher',$data);
-            //echo $this->db->last_query(). "<br/>";
-             //TESTING IF WE'VE DONE THE INSERT
-              $response = array();
-              if($this->db->affected_rows()==1){
-                $response = (
-                  'response'=>'true',
-                  'id'=>$this->db->insert_id());
-                return $response;
+
+            $row = $this->db->affected_rows();
+            $id = $this->db->insert_id();
+            $result=array();
+            $result['id'] = $id;
+            //Check if it have gone right and return response
+            if($row ==1){
+              $response = true;
+               $result['response'] = $response;
+             
               }else{
-                $response=('response'=>'false');
-                return $response;
+                $response = false;
+                $result['response'] = $response;
               }
-          
-          }   
+              return $result;
+
+            }
+
+        
+        }
       }
 
 
-
-}
-
-
-
-
-
+            //echo $this->db->last_query()."<br/>";
+           // echo $this->db->affected_rows();
+            
+            
+          
 
 ?>

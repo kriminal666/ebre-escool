@@ -45,7 +45,7 @@ class HellClient extends CI_Controller{
             //EXAMPLE UPDATE WITHOUT FORM
              $id = 41;
              $column = 'person_officialid';
-             $officialId = '66666666L';
+             $officialId = '88888888L';
              $data = array(
                 'id'=>$id,
                  $column=>$officialId);
@@ -71,6 +71,7 @@ class HellClient extends CI_Controller{
     //Insert teacher into teacher table
     function insertTeacher(){
         //Example array to insert into table
+
         $teacher = array(
             
             'teacher_person_id'=>1772,
@@ -82,9 +83,11 @@ class HellClient extends CI_Controller{
             'teacher_markedForDeletionDate'=>'0000-00-00 00:00:00',
             'person_officialid'=>'39847220L');
 
+      
         //Call the RestServer
         $insertTeacher_Url = 'criminal/api/hell/teacher';
         $insertResponse = $this->rest->put($insertTeacher_Url,$teacher);
+        //$this->rest->put($insertTeacher_Url,$teacher);
         echo json_encode($insertResponse); 
 
     }
