@@ -44,7 +44,8 @@ class Hell extends REST_Controller
         if(!$this->get('id'))
         {
             //Si no hay identificador se manda el código de respuesta
-        	$this->response(NULL, 400);
+        	 $message = array('id'=>'','message'=>'YOU MUST SEND AN ID');
+            $this->response($message, 400);
         }
 
         $teacher = $this->teachers->getOneTeacher( $this->get('id') );
@@ -63,7 +64,7 @@ class Hell extends REST_Controller
 
         else
         {
-            $this->response(array('error' => 'Teacher could not be found'), 404);
+            $this->response(array('id' => $this->get('id'),'message' => 'TEACHER NOT EXISTS!'), 404);
         }
     }
    
@@ -89,7 +90,7 @@ class Hell extends REST_Controller
           $this->response($message, 200); // 200 being the HTTP response code
         }else{
             $message = array('id' =>$id, 'message' => 'ERROR UPDATING!');
-            $this->response($message, 422); // 422 being the HTTP response code
+            $this->response($message, 404); // 404 being the HTTP response code(Not Found)
         }
     }
  
@@ -99,7 +100,8 @@ class Hell extends REST_Controller
         if(!$this->get('id')){
         
             //Si no hay identificador se manda el código de respuesta
-            $this->response(NULL, 400);
+            $message = array('id'=>'','message'=>'YOU MUST SEND AN ID');
+            $this->response($message, 400);
         }
 
         
@@ -111,7 +113,7 @@ class Hell extends REST_Controller
         }else{
         $message = array('id' => $this->get('id'), 'message' => 'ERROR DELETING!');
         
-        $this->response($message, 422); // 422 being the HTTP response code
+        $this->response($message, 404); // 400 being the HTTP response code(Not Found)
        }
     }
     
@@ -127,10 +129,10 @@ class Hell extends REST_Controller
  
         if($teachers)
         {
-            //Dont work with real database array
+            //Don't work with real database array
             $this->response($teachers, 200); // 200 being the HTTP response code
         }else{
-           $this->response(array('error' => 'Couldn\'t find any teachers!'), 404);
+           $this->response(array('id' => $this->get('id'),'message' => 'Couldn\'t find any teachers!'), 404);
         }
     }
 

@@ -43,7 +43,7 @@ class HellClient extends CI_Controller{
     function updateTeacher(){
             $updateTeacher_Url = 'criminal/api/hell/teacher/';
             //EXAMPLE UPDATE WITHOUT FORM
-             $id = 41;
+             $id = 200;
              $column = 'person_officialid';
              $officialId = '88888888L';
              $data = array(
@@ -55,7 +55,7 @@ class HellClient extends CI_Controller{
   }
 
     //Delete teacher
-    function deleteTeacher($id){
+    function deleteTeacher($id = null){
         $deleteTeacher_Url = 'criminal/api/hell/teacher';
 
         if($id){
@@ -64,8 +64,9 @@ class HellClient extends CI_Controller{
             echo json_encode($deleteResponse);
             
         }else{
-            $message = array('message'=>'YOU MUST SEND AN ID');
-            echo json_encode($message);
+          //call server without id if we don't have it
+           $message = $this->rest->delete($deleteTeacher_Url.'/id/');
+           echo json_encode($message);
         }
     }
     //Insert teacher into teacher table
@@ -87,7 +88,6 @@ class HellClient extends CI_Controller{
         //Call the RestServer
         $insertTeacher_Url = 'criminal/api/hell/teacher';
         $insertResponse = $this->rest->put($insertTeacher_Url,$teacher);
-        //$this->rest->put($insertTeacher_Url,$teacher);
         echo json_encode($insertResponse); 
 
     }
