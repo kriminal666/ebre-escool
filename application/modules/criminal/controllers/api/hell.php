@@ -77,9 +77,33 @@ class Hell extends REST_Controller
         }*/
         if (isset($_POST)){
             //GET DATA FROM POST
-             $id = $this->input->get_post('id');
+            $postdata = file_get_contents("php://input");
+            $array = json_decode($postdata);
+
+            $id = $array->{'id'};
              $data = array(
-             'person_officialid'=>$this->input->get_post('person_officialid'));
+            'person_officialid'=>$array->{'DNI_NIF'},
+            'teacher_creationUserid'=>$array->{'creator_id'},
+            'teacher_entryDate'=>$array->{'entry_date'},
+            'teacher_last_update'=>'',
+            'teacher_markedForDeletion'=>$array->{'marked_for_deletion'},
+            'teacher_markedForDeletionDate'=>$array->{'marked_for_deletion_date'},
+            'teacher_person_id'=>$array->{'person_id'},
+            'teacher_user_id'=>$array->{'user_id'});
+            //log_message('debug',"array ".var_dump($array));
+             /*log_message('debug', $id);
+             log_message('debug', $data['person_officialid']);
+             log_message('debug', $data['teacher_creationUserid']);
+             log_message('debug', $data['teacher_entryDate']);
+             log_message('debug', $data['teacher_last_update']);
+             log_message('debug', $data['teacher_markedForDeletion']);
+             log_message('debug', $data['teacher_markedForDeletionDate']);
+             log_message('debug', $data['teacher_person_id']);
+             log_message('debug', $data['teacher_user_id']);*/
+
+             
+             //$data = array(
+             //'person_officialid'=>$this->input->get_post('person_officialid'));
              //CALL TO MODEL
              $response = $this->teachers->updateTeacher($id,$data);
         }
