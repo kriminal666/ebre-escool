@@ -85,7 +85,6 @@ class Hell extends REST_Controller
             'person_officialid'=>$array->{'DNI_NIF'},
             'teacher_creationUserid'=>$array->{'creator_id'},
             'teacher_entryDate'=>$array->{'entry_date'},
-            'teacher_last_update'=>'',
             'teacher_markedForDeletion'=>$array->{'marked_for_deletion'},
             'teacher_markedForDeletionDate'=>$array->{'marked_for_deletion_date'},
             'teacher_person_id'=>$array->{'person_id'},
