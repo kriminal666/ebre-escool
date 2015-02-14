@@ -78,17 +78,19 @@ class Hell extends REST_Controller
         if (isset($_POST)){
             //GET DATA FROM POST
             $postdata = file_get_contents("php://input");
-            $array = json_decode($postdata);
+            //log_message('debug',$postdata);
+            $teacherObject = json_decode($postdata);
 
-            $id = $array->{'id'};
+            $id = $teacherObject->{'id'};
              $data = array(
-            'person_officialid'=>$array->{'DNI_NIF'},
-            'teacher_creationUserid'=>$array->{'creator_id'},
-            'teacher_entryDate'=>$array->{'entry_date'},
-            'teacher_markedForDeletion'=>$array->{'marked_for_deletion'},
-            'teacher_markedForDeletionDate'=>$array->{'marked_for_deletion_date'},
-            'teacher_person_id'=>$array->{'person_id'},
-            'teacher_user_id'=>$array->{'user_id'});
+            'person_officialid'=>$teacherObject->{'DNI_NIF'},
+            'teacher_creationUserid'=>$teacherObject->{'creator_id'},
+            'teacher_entryDate'=>$teacherObject->{'entry_date'},
+            'teacher_lastupdateUserId'=>$teacherObject->{'last_update_user_id'},
+            'teacher_markedForDeletion'=>$teacherObject->{'marked_for_deletion'},
+            'teacher_markedForDeletionDate'=>$teacherObject->{'marked_for_deletion_date'},
+            'teacher_person_id'=>$teacherObject->{'person_id'},
+            'teacher_user_id'=>$teacherObject->{'user_id'});
             //log_message('debug',"array ".var_dump($array));
              /*log_message('debug', $id);
              log_message('debug', $data['person_officialid']);
@@ -126,7 +128,7 @@ class Hell extends REST_Controller
             $message = array('id'=>'','message'=>'YOU MUST SEND AN ID');
             $this->response($message, 400);
         }
-
+        log_message('debug',"delete id: ".$this->get('id'));
         
     	$response = $this->teachers->deleteTeacher( $this->get('id') );
        
@@ -161,18 +163,25 @@ class Hell extends REST_Controller
 
     //Insert teacher
     function teacher_put(){
-
+   
         //Get the array we send from RestClient
         $data = array(
-            
-            'teacher_person_id'=>$this->put('teacher_person_id'),
-            'teacher_user_id'=>$this->put('teacher_user_id'),
-            'teacher_entryDate'=>$this->put('teacher_entryDate'),
-            'teacher_creationUserid'=>$this->put('teacher_creationUserid'),
-            'teacher_lastupdateUserId'=>$this->put('teacher_lastupdateUserId'),
-            'teacher_markedForDeletion'=>$this->put('teacher_markedForDeletion'),
-            'teacher_markedForDeletionDate'=>$this->put('teacher_markedForDeletionDate'),
-            'person_officialid'=>$this->put('person_officialid'));
+            'person_officialid'=>$this->put('DNI_NIF'),
+            'teacher_creationUserid'=>$this->put('creator_id'),
+            'teacher_entryDate'=>$this->put('entry_date'),
+            'teacher_lastupdateUserId'=>$this->put('last_update_user_id'),
+            'teacher_markedForDeletion'=>$this->put('marked_for_deletion'),
+            'teacher_markedForDeletionDate'=>$this->put('marked_for_deletion_date'),
+            'teacher_person_id'=>$this->put('person_id'),
+            'teacher_user_id'=>$this->put('user_id'));
+
+             /*log_message('debug', $data['person_officialid']);
+             log_message('debug', $data['teacher_creationUserid']);
+             log_message('debug', $data['teacher_entryDate']);
+             log_message('debug', $data['teacher_markedForDeletion']);
+             log_message('debug', $data['teacher_markedForDeletionDate']);
+             log_message('debug', $data['teacher_person_id']);
+             log_message('debug', $data['teacher_user_id']);*/
          //Call inset method in model
          $insertResponse = $this->teachers->insertTeacher($data);
          //echo $insertResponse['response']." ".$insertResponse['id'];
