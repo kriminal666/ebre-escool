@@ -198,6 +198,43 @@ class Hell extends REST_Controller
 
         
     }
+    //mark for deletion
+    function markForDeletion_post(){
+        if (isset($_POST)){
+            //GET DATA FROM POST
+            $postdata = file_get_contents("php://input");
+            //log_message('debug',$postdata);
+            $teacherObject = json_decode($postdata);
+            //Today
+            $today = date('Y-m-d H:i:s');
+            $id = $teacherObject->{'id'};
+             $data = array(
+            'teacher_markedForDeletion'=>$teacherObject->{'marked_for_deletion'},
+            'teacher_markedForDeletionDate'=>$today);
+            //log_message('debug',"array ".var_dump($array));
+             log_message('debug', $id);
+             log_message('debug', $data['teacher_markedForDeletion']);
+             log_message('debug', $data['teacher_markedForDeletionDate']);
+
+             //CALL TO MODEL
+             $response = $this->teachers->updateTeacher($id,$data);
+        }
+    
+       
+        if($response){
+          $message = array('id' => $id, 'message' => 'UPDATED!');
+          $this->response($message, 200); // 200 being the HTTP response code
+        }else{
+            $message = array('id' =>$id, 'message' => 'ERROR UPDATING!');
+            $this->response($message, 404); // 404 being the HTTP response code(Not Found)
+        }
+    
+    }
+
+
+
+
+
 
     
 	public function send_post()
