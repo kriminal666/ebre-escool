@@ -31,6 +31,7 @@ function getAllTeachers() {
     teacher_lastupdateUserId,teacher_markedForDeletion, 
     teacher_markedForDeletionDate , person_officialid');
     $this->db->from('teacher');
+    $this->db->where('teacher_markedForDeletion','n');
     $query = $this->db->get();
     //echo $this->db->last_query(). "<br/>";
     
