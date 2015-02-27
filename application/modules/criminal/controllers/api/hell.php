@@ -68,7 +68,7 @@ class Hell extends REST_Controller
         }
     }
    
-    //Update teacher
+    //Create new teacher
     function teacher_post()
     {
         /*if(isset($_POST)){
@@ -81,7 +81,6 @@ class Hell extends REST_Controller
             //log_message('debug',$postdata);
             $teacherObject = json_decode($postdata);
 
-            $id = $teacherObject->{'id'};
              $data = array(
             'person_officialid'=>$teacherObject->{'DNI_NIF'},
             'teacher_creationUserid'=>$teacherObject->{'creator_id'},
@@ -92,11 +91,11 @@ class Hell extends REST_Controller
             'teacher_person_id'=>$teacherObject->{'person_id'},
             'teacher_user_id'=>$teacherObject->{'user_id'});
             //log_message('debug',"array ".var_dump($array));
-             /*log_message('debug', $id);
-             log_message('debug', $data['person_officialid']);
+             //log_message('debug', $id);
+             /*log_message('debug', $data['person_officialid']);
              log_message('debug', $data['teacher_creationUserid']);
              log_message('debug', $data['teacher_entryDate']);
-             log_message('debug', $data['teacher_last_update']);
+             og_message('debug', $data['teacher_last_update']);
              log_message('debug', $data['teacher_markedForDeletion']);
              log_message('debug', $data['teacher_markedForDeletionDate']);
              log_message('debug', $data['teacher_person_id']);
@@ -106,15 +105,15 @@ class Hell extends REST_Controller
              //$data = array(
              //'person_officialid'=>$this->input->get_post('person_officialid'));
              //CALL TO MODEL
-             $response = $this->teachers->updateTeacher($id,$data);
+        $response = $this->teachers->insertTeacher($data);
         }
         //$message = array('id' => $this->get('id'), 'name' => $this->post('name'), 'email' => $this->post('email'), 'message' => 'ADDED!');
        
-        if($response){
-          $message = array('id' => $id, 'message' => 'UPDATED!');
+        if($response['response']){
+          $message = array('id' => $response['id'], 'message' => 'NEW TEACHER INSERTED!');
           $this->response($message, 200); // 200 being the HTTP response code
         }else{
-            $message = array('id' =>$id, 'message' => 'ERROR UPDATING!');
+            $message = array('id' =>$response['id'], 'message' => 'ERROR INSERTING!');
             $this->response($message, 404); // 404 being the HTTP response code(Not Found)
         }
     }
@@ -161,9 +160,10 @@ class Hell extends REST_Controller
         }
     }
 
-    //Insert teacher
+    //UPDATE teacher
     function teacher_put(){
-   
+        //GET THE ID
+         $id = $this->put('id');
         //Get the array we send from RestClient
         $data = array(
             'person_officialid'=>$this->put('DNI_NIF'),
@@ -174,8 +174,8 @@ class Hell extends REST_Controller
             'teacher_markedForDeletionDate'=>$this->put('marked_for_deletion_date'),
             'teacher_person_id'=>$this->put('person_id'),
             'teacher_user_id'=>$this->put('user_id'));
-
-             /*log_message('debug', $data['person_officialid']);
+             /*log_message('debug',$id);
+             log_message('debug', $data['person_officialid']);
              log_message('debug', $data['teacher_creationUserid']);
              log_message('debug', $data['teacher_entryDate']);
              log_message('debug', $data['teacher_markedForDeletion']);
@@ -183,42 +183,38 @@ class Hell extends REST_Controller
              log_message('debug', $data['teacher_person_id']);
              log_message('debug', $data['teacher_user_id']);*/
          //Call inset method in model
-         $insertResponse = $this->teachers->insertTeacher($data);
+         $updateResponse = $this->teachers->updateTeacher($id,$data);
          //echo $insertResponse['response']." ".$insertResponse['id'];
          
          //Response
-         if($insertResponse['response']){
-            $message = array('id' => $insertResponse['id'],'message' => 'NEW TEACHER INSERTED');
+         if($updateResponse){
+            $message = array('id' => $id,'message' => 'UPDATED!');
             $this->response($message,200);//200 being the HTTP response code
 
          }else{
-            $message = array('id' => $insertResponse['id'], 'message' => 'ERROR INSERTING');
+            $message = array('id' => $id, 'message' => 'ERROR UPDATING!');
             $this->response($message, 422); // 422 being the HTTP response code
          }
 
         
     }
-    //mark for deletion
-    function markForDeletion_post(){
-        if (isset($_POST)){
-            //GET DATA FROM POST
-            $postdata = file_get_contents("php://input");
-            //log_message('debug',$postdata);
-            $teacherObject = json_decode($postdata);
+    //mark for deletion update
+    function markForDeletion_put(){
+        
             //Today
             $today = date('Y-m-d H:i:s');
-            $id = $teacherObject->{'id'};
+            $id = $this->put('id');
              $data = array(
-            'teacher_markedForDeletion'=>$teacherObject->{'marked_for_deletion'},
+            'teacher_markedForDeletion'=>$this->put('marked_for_deletion'),
             'teacher_markedForDeletionDate'=>$today);
             //log_message('debug',"array ".var_dump($array));
-             log_message('debug', $id);
+            /* log_message('debug', $id);
              log_message('debug', $data['teacher_markedForDeletion']);
-             log_message('debug', $data['teacher_markedForDeletionDate']);
+             log_message('debug', $data['teacher_markedForDeletionDate']);*/
 
              //CALL TO MODEL
              $response = $this->teachers->updateTeacher($id,$data);
-        }
+        
     
        
         if($response){

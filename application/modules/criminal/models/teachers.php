@@ -149,6 +149,7 @@ function getAllTeachers() {
             $this->db->insert('teacher',$data);
 
             $row = $this->db->affected_rows();
+            //log_message('debug','insert response:'.$row);
             $id = $this->db->insert_id();
             $result=array();
             $result['id'] = $id;
