@@ -8,7 +8,10 @@ class HellClient extends CI_Controller{
     {
        parent::__construct();
         $this->load->library('Rest');
-        $config = array('server' =>'http://localhost/ebre-escool/index.php/');
+        $this->load->config('rest_client');
+        $config = array('server' =>'http://localhost/ebre-escool/index.php/',
+            'api_key' => $this->config->item('api_key'),
+            'api_name' => 'X-API-KEY');
         $this->rest->initialize($config);
     
         //We can add:
